@@ -1,6 +1,6 @@
 package com.example.cmput301f20t18;
 
-public class Shape {
+public abstract class Shape {
 
     private int x;
     private int y;
