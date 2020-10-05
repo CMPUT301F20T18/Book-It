@@ -5,3 +5,4 @@
 TODO:
 Solomon, I would remove the local.properties from your tracked files and remove it from the master branch as well.
 If someone pulls that by accident, their AS will crash.
+    - also your workplace.xml file
