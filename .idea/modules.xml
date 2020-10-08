@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/CMPUT301F20T18.iml" filepath="$PROJECT_DIR$/.idea/modules/CMPUT301F20T18.iml" group="CMPUT301F20T18" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/app.iml" group="CMPUT301F20T18/app" />
-    </modules>
-  </component>
-</project>
