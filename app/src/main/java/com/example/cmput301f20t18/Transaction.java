@@ -2,12 +2,19 @@ package com.example.cmput301f20t18;
 
 public abstract class Transaction {
     private String status;
-    private Integer transactionID;
+    private static Integer transactionID;
+    private Integer ID;
     private Integer bookID;
     //Variables bookOwner and bookBorrower will be users.
-    //Currently strings
     private String bookOwner;
     private String bookBorrower;
+
+    public Transaction(String status, Integer bookID) {
+        this.ID = transactionID;
+        Transaction.transactionID++;
+        this.status = status;
+        this.bookID = bookID;
+    }
     //private User bookOwner;
     //private User bookBorrower;
 
@@ -19,12 +26,8 @@ public abstract class Transaction {
         this.status = status;
     }
 
-    public Integer getTransactionID() {
+    public Integer getID() {
         return transactionID;
-    }
-
-    public void setTransactionID(Integer transactionID) {
-        this.transactionID = transactionID;
     }
 
     public Integer getBookID() {
