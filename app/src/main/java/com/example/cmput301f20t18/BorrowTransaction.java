@@ -1,5 +1,4 @@
 package com.example.cmput301f20t18;
 
-public class Octagon extends Shape {
-
+public class BorrowTransaction {
 }
