@@ -1,6 +1,7 @@
 srbutler srbutler715
 deinum   jdeinum
-<<<<<<< HEAD
-=======
 sysong1	 ssong119
->>>>>>> master
+sysong1  ssong119
+warwick  Chase-Warwick
+shuval   phlafoo
+jggil    JohnathonGil
