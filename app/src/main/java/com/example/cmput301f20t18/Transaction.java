@@ -1,29 +1,60 @@
 package com.example.cmput301f20t18;
 
+//Transaction class acts as a general blueprint for
+//RequestTransaction, BorrowTransaction, and ReturnTransaction.
+
+//Transactions have two Users involved the owner and the borrower.
+
+//Transactions contain two ID's which uniquely identify the transaction
+//and the book that is part of the transaction as well as a static
+//transactionID variable which is how unique ID's are given to any given transaction.
+
+//Transactions also have a status which detail what stage the Transaction is currently in.
 public abstract class Transaction {
-    private String status;
-    private static Integer transactionID;
+    private User bookOwner;
+    private User bookBorrower;
     private Integer ID;
     private Integer bookID;
-    //Variables bookOwner and bookBorrower will be users.
-    private String bookOwner;
-    private String bookBorrower;
+    private String status;
 
-    public Transaction(String status, Integer bookID) {
-        this.ID = transactionID;
-        Transaction.transactionID++;
-        this.status = status;
+
+    private static Integer transactionID;
+
+    //For use in creating a brand new transaction
+    public Transaction(User bookOwner, User bookBorrower, Integer bookID) {
+        this.bookOwner = bookOwner;
+        this.bookBorrower = bookBorrower;
         this.bookID = bookID;
+        this.ID = transactionID;
+        this.status = "request";
+
+        Transaction.transactionID++;
     }
-    //private User bookOwner;
-    //private User bookBorrower;
+    //For use in changing the status of a transaction
+    public Transaction(User bookOwner, User bookBorrower, Integer bookId, Integer ID, String status){
+        this.bookOwner = bookOwner;
+        this.bookBorrower = bookBorrower;
+        this.bookID = bookID;
+        this.ID = ID;
+        this.status = status;
+    }
+
+    //Used to update status of a transaction
+    public Transaction changeStatus(String status) {
+        if (status.equals("request")){
+            return new RequestTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
+        }
+        else if (status.equals("exchange")){
+            return new ExchangeTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
+        }
+        else if (status.equals("borrow")){
+            return new BorrowTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
+        }
+        return this;
+    }
 
     public String getStatus() {
         return status;
-    }
-
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     public Integer getID() {
@@ -32,9 +63,5 @@ public abstract class Transaction {
 
     public Integer getBookID() {
         return bookID;
-    }
-
-    public void setBookID(Integer bookID) {
-        this.bookID = bookID;
     }
 }

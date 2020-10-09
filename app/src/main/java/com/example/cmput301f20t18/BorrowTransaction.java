@@ -1,15 +1,8 @@
 package com.example.cmput301f20t18;
 
-import com.google.android.gms.maps.model.LatLng;
-
-public class BorrowTransaction {
-    private LatLng location;
-
-    public LatLng getLocation() {
-        return location;
-    }
-
-    public void setLocation(LatLng location) {
-        this.location = location;
+//Transaction wherein the borrower is now in the possession of the book
+public class BorrowTransaction extends Transaction{
+    public BorrowTransaction(User bookOwner, User bookBorrower, Integer bookId, Integer ID, String status) {
+        super(bookOwner, bookBorrower, bookId, ID, status);
     }
 }
