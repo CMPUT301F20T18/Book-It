@@ -16,20 +16,21 @@ public class ExchangeTransaction extends Transaction{
         this.bookBorrowerScanned = false;
     }
 
+    public void scanned(User userWhoScanned){
+        if (userWhoScanned == this.bookOwnerScanned){
+            this.bookOwnerScanned = true;
+        }
+        else if (userWhoScanned == this.bookBorrowerScanned){
+            this.bookBorrowerScanned = true;
+        }
+    }
+
     public Boolean getBookOwnerScanned() {
         return bookOwnerScanned;
     }
 
-    public void setBookOwnerScanned(Boolean bookOwnerScanned) {
-        this.bookOwnerScanned = bookOwnerScanned;
-    }
-
     public Boolean getBookBorrowerScanned() {
         return bookBorrowerScanned;
-    }
-
-    public void setBookBorrowerScanned(Boolean bookBorrowerScanned) {
-        this.bookBorrowerScanned = bookBorrowerScanned;
     }
 
     public LatLng getLocation() {
