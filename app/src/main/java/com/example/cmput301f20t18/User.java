@@ -92,7 +92,7 @@ public class User {
         private ArrayList<Integer> Transactions;
 
         public int requestBook(int bookid) {
-            Transaction newRequest = new Transaction()
+            // Transaction newRequest = new Transaction()
         }
 
         public int pickupBook(int bookid) {
