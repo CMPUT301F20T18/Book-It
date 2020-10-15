@@ -5,4 +5,8 @@ public class BorrowTransaction extends Transaction{
     public BorrowTransaction(User bookOwner, User bookBorrower, Integer bookId, Integer ID, String status) {
         super(bookOwner, bookBorrower, bookId, ID, status);
     }
+
+    public Transaction finish(){
+        return this.changeStatus("exchange");
+    }
 }

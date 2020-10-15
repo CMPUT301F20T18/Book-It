@@ -17,12 +17,19 @@ public class ExchangeTransaction extends Transaction{
     }
 
     public void scanned(User userWhoScanned){
-        if (userWhoScanned == this.bookOwnerScanned){
+        if (userWhoScanned.equals(this.bookOwnerScanned)){
             this.bookOwnerScanned = true;
         }
-        else if (userWhoScanned == this.bookBorrowerScanned){
+        else if (userWhoScanned.equals(this.bookBorrowerScanned)){
             this.bookBorrowerScanned = true;
         }
+    }
+
+    public Transaction handOff(){
+        if (this.bookOwnerScanned && this.bookBorrowerScanned){
+            return this.changeStatus("borrow");
+        }
+        return this;
     }
 
     public Boolean getBookOwnerScanned() {
