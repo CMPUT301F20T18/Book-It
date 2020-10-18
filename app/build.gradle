@@ -46,7 +46,6 @@ dependencies {
     implementation platform('com.google.firebase:firebase-bom:25.12.0')
     implementation 'com.google.firebase:firebase-analytics'
     implementation 'com.android.support:multidex:1.0.3'
-    implementation 'com.google.android.gms:play-services:7.8+'
     implementation 'com.google.android.gms:play-services-mlkit-barcode-scanning:16.1.2'
     // CameraX core library using the camera2 implementation
     def camerax_version = "1.0.0-beta10"
