@@ -3,13 +3,10 @@ package com.example.cmput301f20t18;
 import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
-import android.graphics.Point;
-import android.graphics.Rect;
 import android.media.Image;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
@@ -42,8 +39,14 @@ import java.util.Objects;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
-import java.util.logging.Logger;
 
+
+/**
+ * This activity implements an ISBN scanner and returns the ISBN calling this activity
+ * This activity must be called with startActivityForResult to function properly
+ * @author Jacob Deinum
+ * @version 1.0
+ */
 public class Scanner extends AppCompatActivity {
 
     private int REQUEST_CODE_PERMISSIONS = 1001;
@@ -51,15 +54,16 @@ public class Scanner extends AppCompatActivity {
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     public PreviewView previewView;
     public Button cap;
-    InputImage picture;
-    private String isbn_string;
+    private Executor executor = Executors.newSingleThreadExecutor();
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_scanner);
         previewView = findViewById(R.id.previewView);
         cap = (Button) findViewById(R.id.capture);
-        isbn_string = null;
+
 
         // determine if the user has given the proper privileges to use the camera
         if (allPermissionsGranted()) {
@@ -71,10 +75,10 @@ public class Scanner extends AppCompatActivity {
 
     }
 
-    private Executor executor = Executors.newSingleThreadExecutor();
-
-
-    // return true if the user has given all the required permissions to use the camera
+    /**
+     * Checks if the user has granted camera permissions
+     * @return true if all permissions have been granted by the user, else false
+     */
     private boolean allPermissionsGranted() {
 
         for (String permission : REQUIRED_PERMISSIONS) {
@@ -85,6 +89,13 @@ public class Scanner extends AppCompatActivity {
         return true;
     }
 
+
+    /**
+     *
+     * @param requestCode An integer representing the request permissions
+     * @param permissions A string containing the required permissions
+     * @param grantResults An array of integers representing the permissions granted by the user
+     */
     @Override
     public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
 
@@ -98,6 +109,10 @@ public class Scanner extends AppCompatActivity {
         }
     }
 
+
+    /**
+     * Starts the camera and output the camera preview to screen
+     */
     public void startCamera() {
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(new Runnable() {
@@ -110,10 +125,13 @@ public class Scanner extends AppCompatActivity {
                 }
             }
         }, ContextCompat.getMainExecutor(this));
-
-
     }
 
+
+    /**
+     * Binds the preview and other functions to the screen
+     * @param cameraProvider represents the source of the input stream
+     */
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
         Preview preview = new Preview.Builder()
                 .build();
@@ -127,7 +145,7 @@ public class Scanner extends AppCompatActivity {
                 .setTargetRotation(Objects.requireNonNull(getDisplay()).getRotation())
                 .build();
 
-
+        // For future expansion , if user doesn't want a button to scan
         ImageAnalysis imageAnalysis = new ImageAnalysis.Builder()
                 .build();
 
@@ -136,6 +154,7 @@ public class Scanner extends AppCompatActivity {
         Camera camera = cameraProvider.bindToLifecycle((LifecycleOwner) this, cameraSelector, preview, imageCapture);
 
 
+        // set our on capture listener
         cap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -156,33 +175,40 @@ public class Scanner extends AppCompatActivity {
     }
 
 
-    // uses an input image and computes the isbn
+    /**
+     * Analyze an image from our camera and scan it to obtain the books ISBN
+     * @param image proxy image of the camera at the time the button was hit
+     * @return integer representation of the scanned ISBN
+     */
     public int scanCode(ImageProxy image) {
-        InputImage picture = null;
+
         // set-up our barcode format
         BarcodeScannerOptions options =
                 new BarcodeScannerOptions.Builder()
                         .setBarcodeFormats(Barcode.FORMAT_EAN_13, Barcode.FORMAT_EAN_8)
                         .build();
 
-
+        // convert proxy image to image ml kit can analyze
+        InputImage picture = null;
         @SuppressLint("UnsafeExperimentalUsageError") Image mediaImage = image.getImage();
-               if (mediaImage != null) {
+        if (mediaImage != null) {
             picture = InputImage.fromMediaImage(mediaImage, image.getImageInfo().getRotationDegrees());
         }
-        BarcodeScanner scanner = BarcodeScanning.getClient(options);
         assert picture != null;
+
+        // scan the code and obtain the results
+        BarcodeScanner scanner = BarcodeScanning.getClient(options);
         Task<List<Barcode>> result = scanner.process(picture)
                 .addOnSuccessListener(new OnSuccessListener<List<Barcode>>() {
+                    // found a barcode! Take the first barcode scanned, return the ISBN
                     @Override
                     public void onSuccess(List<Barcode> barcodes) {
                         for (Barcode barcode : barcodes) {
                             String rawValue = barcode.getRawValue();
                             int valueType = barcode.getValueType();
                             if (valueType == Barcode.TYPE_ISBN && rawValue != null) {
-                                isbn_string = rawValue;
                                     Intent intent = new Intent();
-                                    intent.putExtra("key", isbn_string);
+                                    intent.putExtra("key", rawValue);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                     return;
@@ -191,6 +217,8 @@ public class Scanner extends AppCompatActivity {
                         }
                     }
                 })
+
+                // no barcode found, keep going
                 .addOnFailureListener(new OnFailureListener() {
                     @Override
                     public void onFailure(@NonNull Exception e) {
@@ -200,8 +228,6 @@ public class Scanner extends AppCompatActivity {
 
         return 0;
     }
-
-
 }
 
 
