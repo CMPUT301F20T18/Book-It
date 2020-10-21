@@ -1,4 +1,8 @@
+CCID     GitHub Username (Contributors)
+
 srbutler srbutler715
 deinum   jdeinum
-sysong1	 ssong119
 warwick  Chase-Warwick
+sysong1	 ssong119
+jggil    JohnathonGil 
+shuval   phlafoo

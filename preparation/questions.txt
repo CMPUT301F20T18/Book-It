@@ -1,0 +1,34 @@
+Questions to Ask
+
+Each question has:
+A) # -> question # to keep track
+B) person -> whos asking?
+C) Question -> The question
+D) WHo Answered -> Position that answered it {Student, TA, Prof}
+E) Answer
+
+------------------------------------------------------------------------------------------------
+
+A) 1
+B) deinum
+C) What does the "accepted" status imply? Someone is set up to borrow the book but hasnt recieved   it yet?
+D) 
+E)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
