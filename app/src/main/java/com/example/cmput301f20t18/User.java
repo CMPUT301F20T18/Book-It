@@ -6,4 +6,8 @@ public class User {
     public Boolean equals(User user){
         return this.username.equals(user.username);
     }
+
+    public String getUsername(){
+        return username;
+    }
 }

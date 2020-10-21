@@ -50,6 +50,9 @@ public abstract class Transaction {
         else if (status.equals("borrow")){
             return new BorrowTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
         }
+        else if (status.equals("declined")){
+            return new DeclinedTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
+        }
         return this;
     }
 
@@ -63,5 +66,13 @@ public abstract class Transaction {
 
     public Integer getBookID() {
         return bookID;
+    }
+
+    public User getBookOwner(){
+        return bookOwner;
+    }
+
+    public User getBookBorrower(){
+        return bookBorrower;
     }
 }

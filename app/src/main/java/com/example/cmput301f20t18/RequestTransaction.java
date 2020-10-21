@@ -17,4 +17,8 @@ public class RequestTransaction extends Transaction{
     public Transaction accept(){
        return this.changeStatus("exchange");
     }
+
+    public Transaction decline(){
+        return this.changeStatus("declined");
+    }
 }
