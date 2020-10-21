@@ -27,9 +27,9 @@ public class User {
          */
         public ArrayList<Integer> getBooks(String type) {
             ArrayList<Integer> filtered = new ArrayList<Integer>();
-            for (int i = 0; i < Books.size(); i++) {
-                if (Library.getBook(Books.get(i)).getStatus() == type) {
-                    filtered.add(Books.get(i));
+            for (int i = 0; i < owner_books.size(); i++) {
+                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
+                    filtered.add(owner_books.get(i));
                 }
             }
             return filtered;
@@ -42,9 +42,9 @@ public class User {
 
         public void delBook(int bookID) {
             for (int i = 0 ; i < owner_books.size() ; i++) {
-                if (owner_books.get(i).getbookID() == bookID) {
+                if (owner_books.get(i) == bookID) {
                     owner_books.remove(i);
-                    // TO DO: Also delete the book from the book DB
+                    // TODO: Also delete the book from the book DB
                     return;
                 }
             }
@@ -60,7 +60,7 @@ public class User {
          */
         public void newBook(int isbn, String title, String author) {
             Book newBook = Library.addBook(isbn, title, author);
-            owner_books.add(newBook.getbookID());
+            owner_books.add(newBook.getId());
         }
 
 
@@ -73,22 +73,28 @@ public class User {
          */
         @RequiresApi(api = Build.VERSION_CODES.N)
         public void acceptRequest(RequestTransaction request) {
-            RequestTransaction denied;
-            request.accept();
+
+            // accept the request and replace the Request transaction with
+            // an Exchange transaction
+            Transaction accepted = request.accept();
+            if (accepted instanceof ExchangeTransaction) {
+                ExchangeTransaction new_ex = (ExchangeTransaction) accepted;
+                owner_transactions.remove(request);
+                owner_transactions.add(new_ex);
+            }
+
+
             // deny all other requests with the same bookID?
             int bookID = request.getBookID();
             for (int i = 0; i < owner_transactions.size(); i++) {
-                if (owner_transactions.get(i).getBookID() == bookID) {
-                    // TODO: Downcast here to gain access to requestTransaction methods
-                    Transaction current = owner_transactions.get(i);
 
-                    
-                    denied = owner_transactions.get(i);
+                // transaction deals with same book and is requested
+                if (owner_transactions.get(i).getBookID() == bookID && owner_transactions.get(i).getStatus() == "requested") {
                     owner_transactions.remove(i);
-                    denied.changeStatus("declined");
+
                     // TODO
                     // remove transactions from transaction DB with same bookID and requested status
-
+                    return;
                 }
             }
         }
@@ -101,8 +107,12 @@ public class User {
          */
         @RequiresApi(api = Build.VERSION_CODES.N)
         public void denyRequest(int t_id) {
-
-            // TODO: Implement notification for borrower
+            for (int i = 0 ; i < owner_transactions.size() ; i++) {
+                if (owner_transactions.get(i).getID() == t_id) {
+                    owner_transactions.remove(i);
+                    // TODO: Implement notification for borrower
+                }
+            }
         }
 
 
@@ -112,8 +122,12 @@ public class User {
          */
         public void signOff(int bookID) {
             for (int i = 0; i < owner_transactions.size(); i++) {
-                if (owner_transactions.get(i).getbookID() == bookID) {
-                    owner_transactions.get(i).ownerScan();
+                if (owner_transactions.get(i).getBookID() == bookID) {
+                    Transaction a_trans = owner_transactions.get(i);
+                    // scan the book as user??
+                    if (a_trans instanceof ExchangeTransaction) {
+                        ((ExchangeTransaction) a_trans).scanned(super);
+                    }
                 }
             }
         }
@@ -126,11 +140,11 @@ public class User {
     private class Borrower {
         private ArrayList<Transaction> borrower_transactions;
 
-        public int requestBook(int bookid) {
+        public int requestBook(int bookID) {
             // Transaction newRequest = new Transaction()
         }
 
-        public int pickupBook(int bookid) {
+        public int pickupBook(int bookID) {
 
         }
 

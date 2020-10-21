@@ -2,25 +2,64 @@ package com.example.cmput301f20t18;
 
 public class Book {
     private String title;
-    private long ISBN;
-    private long id;
-    private String photo;
+
+
+    private int isbn;
+    private String author;
+    private int id;
+    //private ??? photo;
     private String status;
+    private static Library library;
 
-    // no path to photo
-    public Book(String title, long ISBN) {
+    public Book(String title, int isbn, String author, int id, String status) {
         this.title = title;
-        this.ISBN = ISBN;
+        this.isbn = isbn;
+        this.author = author;
+        this.id = id;
+        this.status = status;
     }
 
-    // book receives path to photo
-    public Book(String title, long ISBN, String photo) {
-        this.title = title;
-        this.ISBN = ISBN;
-        this.photo = photo;
+    public String getTitle() {
+        return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+    }
 
+    public int getIsbn() {
+        return isbn;
+    }
 
+    public void setIsbn(int isbn) {
+        this.isbn = isbn;
+    }
+
+    public String getAuthor() {
+        return author;
+    }
+
+    public void setAuthor(String author) {
+        this.author = author;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public String getStatus() {
+        return status;
+    }
+
+    public void setStatus(String status) {
+        this.status = status;
+    }
+
+    public static void setLibrary(Library newLibrary){
+        library = newLibrary;
+    }
 }
-
