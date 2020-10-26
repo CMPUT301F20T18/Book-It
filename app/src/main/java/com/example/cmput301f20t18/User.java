@@ -9,12 +9,19 @@ import androidx.annotation.TransitionRes;
 
 import java.util.ArrayList;
 
+
+/**
+ * User represents any user in our system
+ * and contains both functionality for owners and borrowers, but not both have to be used
+ */
 public class User {
     private String username;
     private Bitmap profilePicture;
 
 
-    // implements the owner functionality for a user
+    /**
+     * Implements the functionality for owner behaviors
+     */
     private class Owner {
         private ArrayList<Transaction> owner_transactions;
         private ArrayList<Integer> owner_books;
@@ -134,30 +141,111 @@ public class User {
     }
 
 
-
-
-    // each users borrower interface
+    /**
+     * Borrower contains the implementation for any borrowing activities
+     */
     private class Borrower {
         private ArrayList<Transaction> borrower_transactions;
+        private ArrayList<Book> borrower_books;
 
-        public int requestBook(int bookID) {
-            // Transaction newRequest = new Transaction()
+        /**
+         * Request a book from a book owner
+         * Add the request to borrower transaction list
+         * @param bookID is the id of the book you wish to borrow
+         * @return returns a transaction object, containing the borrower request
+         */
+        public Transaction requestBook(int bookID) {
+            Book requested = bookLibrary.getBookByID(bookID);
+            User owner = requested.getOwner();
+            Transaction request = new RequestTransaction(owner, this, bookID);
+            borrower_transactions.add(request);
+            return request;
         }
 
-        public int pickupBook(int bookID) {
+
+        /**
+         * Pick-up the book, scanning it to mark it as borrowed
+         * @param bookID the ID of the book being picked up
+         */
+        public void pickupBook(int bookID) {
+            for (int i = 0; i < borrower_transactions.size(); i++) {
+                if (borrower_transactions.get(i).getBookID() == bookID) {
+                    Transaction a_trans = borrower_transactions.get(i);
+                    // scan the book as user??
+                    if (a_trans instanceof ExchangeTransaction) {
+                        ((ExchangeTransaction) a_trans).scanned(super);
+                    }
+                }
+            }
+        }
+
+
+        /**
+         * Drop off the book to the owner, scanning it to mark it as returned
+         * @param bookID The ID of the book being dropped off
+         */
+        public void dropOffBook(int bookID) {
+            for (int i = 0; i < borrower_transactions.size(); i++) {
+                if (borrower_transactions.get(i).getBookID() == bookID) {
+                    Transaction a_trans = borrower_transactions.get(i);
+                    // scan the book as user??
+                    if (a_trans instanceof BorrowTransaction) {
+                        ((BorrowTransaction) a_trans).finish();
+                    }
+                }
+            }
 
         }
+
+        /**
+         * Let the borrower search for books where the description contains a term
+         * @param term The term to filter for
+         * @return A list of integers representing book IDs of the books that matched
+         */
+        public ArrayList<Integer> bookSearch(String term) {
+        }
+
+        /**
+         * adds a transaction to a borrowers transaction list
+         * @param transaction the transaction id
+         */
+        public void transactionAdd(Transaction transaction) {
+
+        }
+
+        /**
+         * deletes a transaction from a borrower transaction list
+         * @param t_id The transaction id of the transaction to remove
+         */
+        public void transactionDelete(int t_id) {
+
+        }
+
+
+
+
 
 
     }
 
 
-    // contact for each user
+    /**
+     * Each user contains a contact object
+     * Representing their contact information and ideal pickup location
+     */
     private class Contact {
         private int phone;
+        private String pickup_location;
         private String address;
         private String email;
 
+        public String getPickup_location() {
+            return pickup_location;
+        }
+
+        public void setPickup_location(String pickup_location) {
+            this.pickup_location = pickup_location;
+        }
 
         public int getPhone() {
             return phone;
