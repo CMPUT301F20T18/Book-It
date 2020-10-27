@@ -32,15 +32,15 @@ public class User {
          * @param type The status of the book to be found
          * @return list of bookIDs matching the requested status
          */
-        public ArrayList<Integer> getBooks(String type) {
-            ArrayList<Integer> filtered = new ArrayList<Integer>();
-            for (int i = 0; i < owner_books.size(); i++) {
-                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
-                    filtered.add(owner_books.get(i));
-                }
-            }
-            return filtered;
-        }
+//        public ArrayList<Integer> getBooks(String type) {
+//            ArrayList<Integer> filtered = new ArrayList<Integer>();
+//            for (int i = 0; i < owner_books.size(); i++) {
+//                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
+//                    filtered.add(owner_books.get(i));
+//                }
+//            }
+//            return filtered;
+//        }
 
         /**
          * Deletes the book with bookID from the owners collection
@@ -65,10 +65,10 @@ public class User {
          * @param title Title of the book to be added
          * @param author Author of the book to be added
          */
-        public void newBook(int isbn, String title, String author) {
-            Book newBook = Library.addBook(isbn, title, author);
-            owner_books.add(newBook.getId());
-        }
+//        public void newBook(int isbn, String title, String author) {
+//            Book newBook = Library.addBook(isbn, title, author);
+//            owner_books.add(newBook.getId());
+//        }
 
 
 
@@ -133,7 +133,8 @@ public class User {
                     Transaction a_trans = owner_transactions.get(i);
                     // scan the book as user??
                     if (a_trans instanceof ExchangeTransaction) {
-                        ((ExchangeTransaction) a_trans).scanned(super);
+                        // TODO: Find way to include user
+                        //((ExchangeTransaction) a_trans).scanned();
                     }
                 }
             }
@@ -154,30 +155,30 @@ public class User {
          * @param bookID is the id of the book you wish to borrow
          * @return returns a transaction object, containing the borrower request
          */
-        public Transaction requestBook(int bookID) {
-            Book requested = bookLibrary.getBookByID(bookID);
-            User owner = requested.getOwner();
-            Transaction request = new RequestTransaction(owner, this, bookID);
-            borrower_transactions.add(request);
-            return request;
-        }
+//        public Transaction requestBook(int bookID) {
+//            Book requested = bookLibrary.getBookByID(bookID);
+//            User owner = requested.getOwner();
+//            Transaction request = new RequestTransaction(owner, this, bookID);
+//            borrower_transactions.add(request);
+//            return request;
+//        }
 
 
         /**
          * Pick-up the book, scanning it to mark it as borrowed
          * @param bookID the ID of the book being picked up
          */
-        public void pickupBook(int bookID) {
-            for (int i = 0; i < borrower_transactions.size(); i++) {
-                if (borrower_transactions.get(i).getBookID() == bookID) {
-                    Transaction a_trans = borrower_transactions.get(i);
-                    // scan the book as user??
-                    if (a_trans instanceof ExchangeTransaction) {
-                        ((ExchangeTransaction) a_trans).scanned(super);
-                    }
-                }
-            }
-        }
+//        public void pickupBook(int bookID) {
+//            for (int i = 0; i < borrower_transactions.size(); i++) {
+//                if (borrower_transactions.get(i).getBookID() == bookID) {
+//                    Transaction a_trans = borrower_transactions.get(i);
+//                    // scan the book as user??
+//                    if (a_trans instanceof ExchangeTransaction) {
+//                        ((ExchangeTransaction) a_trans).scanned(super);
+//                    }
+//                }
+//            }
+//        }
 
 
         /**
@@ -202,8 +203,9 @@ public class User {
          * @param term The term to filter for
          * @return A list of integers representing book IDs of the books that matched
          */
-        public ArrayList<Integer> bookSearch(String term) {
-        }
+//        public ArrayList<Integer> bookSearch(String term) {
+//
+//        }
 
         /**
          * adds a transaction to a borrowers transaction list
