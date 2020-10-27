@@ -1,4 +1,4 @@
 package com.example.cmput301f20t18;
 
-public class Heptagon extends Shape {
+public class DeclinedTransactionTest {
 }

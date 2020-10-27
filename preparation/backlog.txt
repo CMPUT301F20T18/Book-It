@@ -1,0 +1,416 @@
+Book-It: User Requirements Backlog
+
+Each backlog entry has the following format:
+A) # -> The unique ID entry number (non dense ordering)
+B) Item -> What is the main idea for the addition/change?
+C) Value -> What value does this implementation provide the customer? 
+D) Priority -> How important is it? {High, Medium, Low) (Implement risk as well)
+E) Status -> Is it open or closed?
+F) Story points -> Rate of Effort for the job (diffculty)  {0, 0.5, 1, 3, 5, 8, 13, 20, 40, 100}
+G) Additional comments
+
+------------------------------------------------------------------------------------------------
+** Notes **
+- ISBN should be a unique book number for each book.
+- Item and Value might have a lot of overlap, this is ok. Value is meant to make the idea clear
+  incase it isnt super obvious
+- add a ticket in the respective category, but keep the dense ordering. Make sure to update the 
+  current ticket number once you are done adding tickets
+- story points will likely not be accurate, be sure to update the point number when working on a   ticket
+
+
+
+
+NEXT TICKET NO: 31
+------------------------------------------------------------------------------------------------
+
+Books:
+
+A) 1
+B) Ability to add books to personal collection as an owner, using Title, Author, ISBN
+C) Owners can update their book collection by adding a book with the above
+D) H
+E) Open
+F) 0.5
+G) Likely a simple add function that adds a book object to a list of books.
+
+
+
+A) 2
+B) Owners can get the descritpion of a book using a books ISBN
+C) Allows owners to get the book description using its ISBN
+D) H
+E) Open
+F) 0.5
+G) Likely a simple search in a "Book List" by ISBN, folllowed by use of a getter.
+
+
+
+A) 3
+B) Books should have a borrowed status
+C) Marks the availablity of the book
+D) H
+E) Open
+F) 0
+G) Attributes for the book, likely will require setters and getters to access status.
+
+
+
+A) 4
+B) See all books as an owner, including description, status, and current borrowers.
+C) Can see which books are available to be borrowed, and which are currently borrowed
+D) H
+E) Open
+F) 3
+G) A generic listing, likely a recycler list of some sort that takes an owners book list as a
+   paramter
+
+
+
+A) 5
+B) order a book list by status, accepted, borrowed, requested
+C) Can see which books are available to be borrowed, and which are currently borrowed
+D) M
+E) Open
+F) 5
+G) Each Owner will have their own personal book list. If we provide a list for each status type,
+   sorting by status will be easiest, and adding/removing items will be easy (as we can remove 
+   from one list and into another in a single function call)
+
+
+A) 6
+B) view / edit a books details
+C) can update book details
+D) H
+E) Open
+F) 5
+G) ideally we give them a single location to view / update /delete, such as the generic book 
+listing just use a custom on click listener in a recyclerview
+
+
+A) 7
+B) owners can delete a book in their collection
+C) "
+D) H
+E) Open
+F) 3 
+G) ideally we use a new activity to view book details, along with the option to add / delete
+
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------
+User profile:
+
+A) 8
+B) owners / borrowers should have a unique account with contact information
+C) owners / borrowers list contact information to communicate the borrowing process
+D) H
+E) Open
+F) 8
+G) Probably the first big backend compenent, should have a login prompt that asks for username,
+   attached database will check if account exists, and bring user to the main page.
+
+
+A) 9
+B) Ability to edit account details for a users account
+C) Allows users to update account info without needing to create a new account
+D) M 
+E) Open
+F) 5
+G) similar to updating info for books, updating account info should ideally be its own activity
+
+
+
+A) 10
+B) Allow users to get contact information for a provided username
+C) Owners and borrowers can contact eachother just by knowing a username
+D) H
+F) 3
+G) Likely a simple query into a DB, that returns a tuple with the required info
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------
+Searching:
+
+A) 11
+B) search for a book using its decription as keywords
+C) Borrowers can find relevent books to borrow based on their own interests
+D) L
+E) Open
+F) 8
+G) Could potentially scan a global book list and look within books for keywords or
+   could use the database and query for results that way.
+
+
+
+A) 12
+B) search results by keyword shoud return a book, with description, owner username, and status
+C) allows borrowers to immeditately see if they can borrow a book they are interested in
+D) L
+E) Open
+F) 8 (likely implemented with #11)
+G) same as #11
+
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------
+Requesting:
+
+A) 13
+B) ability to request a book as a borrower if it is available
+C) would allow borrowers to request books
+D) H
+E) Open
+F) 3
+G) likely impletmented as a method for a borrower
+
+
+A) 14
+B) allows borrowers to view a list of requested books
+C) borrowers can keep track of all requested books
+D) M
+E) Open
+F) 3
+G) If each user has a list of books for each appropriate status, showing this list is simply 
+   making the recycler view for the list
+
+
+
+A) 15
+B) owners get notified if a book they own is requested to be borrowed
+C) owners can manage books dynamically
+D) L
+E) Open
+F) 8
+G) unsure of story points, not experienced with sending notifcations through applications
+   We could hold off on this and just have a section that shows requested books to start
+
+
+
+A) 16
+B) owners can view all the requests on a book they own
+C) allows owners to choose which person they lend the book to
+D) M
+E) Open
+F) 3
+G) each book could have a request list, displaying this list to an owner would be simple.
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------
+Accepting:
+
+A) 17
+B) Owners can accept the request for a book
+C) allows owners to choose which borrower they lend to
+D) H
+E) Open
+F) 8
+G) accepting a request would make several changes to the DB, including the book status
+   additionally, the book would be added to a borrowers and owners accepted list, and all other
+   requests for the same book would be rejected
+
+
+
+A) 18
+B) owners can decline a request for a book
+C) gives owners finer control over their lending
+D) M
+E) Open
+F) 3
+G) Requests can simply be deleleted, if so, I imagine the borrower will be notified that their
+   request is rejected
+
+
+
+A) 19
+B) borrowers want to be notified of an accepted request on a book they requested
+C) keeps borrowers up to date on borrow requests
+D) L
+E) Open
+F) 3
+G) When a request is accepted, it is added to a users accepted list, if a new item appears 
+   the borrower gets a notification
+
+
+
+A) 20
+B) borrows want to see all books they requested that are accepted, each with desc, and owner
+   username
+C) borrowers can see which books are available for pickup
+D) H
+E) Open
+F) 3
+G) likely just a recyclerview for the items in a borrowers accepted list
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------
+Borrowing:
+
+A) 21
+B) owners mark a book as borrowed after being scanned out (using ISBN)
+C) allows users to see books that are currently being borrowed
+D) H
+E) Open
+F) 3
+G) Implement a Pickup method within owner
+
+
+
+A) 22
+B) borrowers recieve an accepted book by scanning the ISBN 
+C) allows borrowers to borrow an accepted book, keeps track of borrowed books
+D) H
+E) Open
+F) 3
+G) Similar to #21, but for borrower, and it is Borrow
+
+
+
+A) 23
+B) allow borrowers to see a list of all books they are currently borrowing, with description and
+   owner username
+C) allows borrowers to keep track of their books
+D) H
+E) Open
+F) 1
+G) If each user has a list of borrowed books, we simply make a recyclerview for it
+
+
+
+
+
+
+
+
+
+------------------------------------------------------------------------------------------------
+Returning: 
+
+A) 24
+B) allow borrowers to return a book by scanning the books ISBN code to mark as available
+C) Allows books to be borrowed more than once
+D) H
+E) Open
+F) 1
+G) implement a Return method within borrower to return a book
+
+
+
+A) 25
+B) owners recieve the book by scanning the ISBN to confirm they have it available
+C) Allows books to be borrowed more than once
+D) H
+E) Open
+F) 1 
+G) same as #24, we can implement these together, and have the actions performed atomically
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------
+Photographs:
+
+A) 26
+B) owners can attach an image to any book listing
+C) provides more information to the borrower 
+D) L
+E) Open
+F) 0.5
+G) we can have a default image for each book object, with the option to add a new one
+   , likely just a method within owner
+
+
+
+A) 27
+B) owners can remove an image for a book
+C) gives owners more flexibility on listing their books
+D) L
+E) Open
+F) 0.5
+G) Same as #26, but deleteImage
+
+
+
+A) 28
+B) owners and borrowers should be able to enlarge an image and view it
+C) makes the book details more accessible for users
+D) L
+E) Open
+F) 0.5
+G) A simple Alert Dialog should suffice here.
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------
+Location:
+
+A) 29
+B) owners specify a location for a borrower to pickup a book
+C) allows books to be lended
+D) H
+E) Open
+F) 3
+G) I think for an owner to accept a borrow request, they must provide a location and time for
+pick up, can be implemented at the same time as #17
+
+
+
+A) 30
+B) borrowers can view the location of the book they want to pick up
+C) allows borrowers to plan for the pickup
+D) H
+E) Open
+F) 3
+G) similar to #29, borrowers should recieve a notification including the time and place for 
+pickup.
+
+
+
+
+
+
+
+
+
+
+-------------------------------------------------------------------------------------------------
+
+
+
