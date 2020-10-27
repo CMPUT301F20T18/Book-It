@@ -18,7 +18,7 @@ public abstract class Transaction {
     private String status;
 
 
-    private static Integer transactionID;
+    private static Integer transactionID = 0;
 
     //For use in creating a brand new transaction
     public Transaction(User bookOwner, User bookBorrower, Integer bookID) {
@@ -31,7 +31,7 @@ public abstract class Transaction {
         Transaction.transactionID++;
     }
     //For use in changing the status of a transaction
-    public Transaction(User bookOwner, User bookBorrower, Integer bookId, Integer ID, String status){
+    public Transaction(User bookOwner, User bookBorrower, Integer bookID, Integer ID, String status){
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
@@ -61,7 +61,7 @@ public abstract class Transaction {
     }
 
     public Integer getID() {
-        return transactionID;
+        return ID;
     }
 
     public Integer getBookID() {

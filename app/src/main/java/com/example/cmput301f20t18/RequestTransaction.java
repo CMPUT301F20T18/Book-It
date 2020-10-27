@@ -14,11 +14,11 @@ public class RequestTransaction extends Transaction{
         super(bookOwner, bookBorrower, bookId, ID, status);
     }
 
-    public Transaction accept(){
-       return this.changeStatus("exchange");
+    public ExchangeTransaction accept(){
+       return (ExchangeTransaction) this.changeStatus("exchange");
     }
 
-    public Transaction decline(){
-        return this.changeStatus("declined");
+    public DeclinedTransaction decline(){
+        return (DeclinedTransaction) this.changeStatus("declined");
     }
 }
