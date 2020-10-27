@@ -15,68 +15,77 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
-public class Register extends AppCompatActivity {
+public class Login extends AppCompatActivity {
 
-    EditText username;
-    EditText password;
-    EditText email;
-    EditText address;
+    private FirebaseAuth mAuth;
+    Button login;
     Button register;
-    FirebaseAuth mAuth;
+    EditText login_user;
+    EditText login_password;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
-
-        username = (EditText) findViewById(R.id.username);
-        password = (EditText) findViewById(R.id.password);
-        email = (EditText) findViewById(R.id.email);
-        address = (EditText) findViewById(R.id.address);
-        register = (Button) findViewById(R.id.registerButton);
+        setContentView(R.layout.activity_login);
         mAuth = FirebaseAuth.getInstance();
+        login = (Button) findViewById(R.id.login);
+        register = (Button) findViewById(R.id.Register);
+        login_user = (EditText) findViewById(R.id.username);
+        login_password = (EditText) findViewById(R.id.password);
 
-        register.setOnClickListener(new View.OnClickListener() {
-            // TODO: Add input verification
+        login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                String new_username = username.getText().toString();
-                String new_password = password.getText().toString();
-                String new_email= email.getText().toString();
-                String new_address = address.getText().toString();
+                String username = login_user.getText().toString();
+                String password = login_password.getText().toString();
 
-                mAuth.createUserWithEmailAndPassword(new_email, new_password)
+                mAuth.signInWithEmailAndPassword(username, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
+
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
                                     // Sign in success, update UI with the signed-in user's information
                                     FirebaseUser user = mAuth.getCurrentUser();
-                                    user.updateEmail(new_email);
-                                    // TODO: Set users address and username
 
                                     // start new activity with current user
                                     Intent intent = new Intent(getBaseContext(), HomeScreen.class);
                                     startActivityForResult(intent, 0);
                                 }
                                 else {
-                                    FirebaseAuthException e = (FirebaseAuthException)task.getException();
-                                    Toast.makeText(Register.this, "Failed Registration: "+e.getMessage(), Toast.LENGTH_SHORT).show();
-                                    return;
+                                    // If sign in fails, display a message to the user.
+                                    Toast.makeText(Login.this, "Authentication failed.",
+                                            Toast.LENGTH_SHORT).show();
 
                                 }
-
                             }
                         });
-
-
 
             }
         });
 
+        register.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(getApplicationContext(), Register.class);
+                startActivityForResult(intent, RESULT_OK);
+            }
+        });
+
+
+
     }
 
+
+//    @Override
+//    protected void onStart() {
+//        super.onStart();
+//        FirebaseUser current_user = mAuth.getCurrentUser();
+//
+//        // start the Homescreen, get all the users books later
+//        Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+//        startActivityForResult(intent, 0);
+//    }
 }

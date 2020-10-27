@@ -39,11 +39,11 @@
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
 
-<!--        <activity-->
-<!--      -->
-<!--        android:name=".SelectLocationActivity"-->
-<!--        android:label="@string/title_activity_select_location"></activity>-->
-    <activity android:name=".Scanner"/>
+        <activity
+            android:name=".SelectLocationActivity"
+            android:label="@string/title_activity_select_location"></activity>
+        <activity android:name=".Scanner"/>
+
 <!--        <meta-data-->
 <!--            android:name="com.google.android.geo.API_KEY"-->
 <!--            android:value="@string/google_maps_key" />-->
