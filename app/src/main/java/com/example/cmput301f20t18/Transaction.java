@@ -1,15 +1,11 @@
 package com.example.cmput301f20t18;
 
-//Transaction class acts as a general blueprint for
-//RequestTransaction, BorrowTransaction, and ReturnTransaction.
-
-//Transactions have two Users involved the owner and the borrower.
-
-//Transactions contain two ID's which uniquely identify the transaction
-//and the book that is part of the transaction as well as a static
-//transactionID variable which is how unique ID's are given to any given transaction.
-
-//Transactions also have a status which detail what stage the Transaction is currently in.
+/**
+ * A Transaction object represents various
+ * interactions that two people can have within the app
+ * requesting books, declining requests, transferring of books
+ * between users and returning the book to it's original owner
+ */
 public abstract class Transaction {
     private User bookOwner;
     private User bookBorrower;
@@ -18,9 +14,14 @@ public abstract class Transaction {
     private String status;
 
 
-    private static Integer transactionID;
+    private static Integer transactionID = 0;
 
-    //For use in creating a brand new transaction
+    /**
+     * This is used to create a new object of type transaction
+     * @param bookOwner The user who owns the book
+     * @param bookBorrower The user who is borrowing the book
+     * @param bookID The id of the book which is being borrowed
+     */
     public Transaction(User bookOwner, User bookBorrower, Integer bookID) {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
@@ -30,8 +31,20 @@ public abstract class Transaction {
 
         Transaction.transactionID++;
     }
+
+    /**
+     * This is the constructor used to change the status of
+     * a transaction
+     * @param bookOwner The user who owns the book
+     * @param bookBorrower The user who is borrowing the book
+     * @param bookID The id of the book being borrowed
+     * @param ID The id of the transaction
+     *           (assigned on creation)
+     * @param status The current state of the book
+     *               (request, exchange, borrow, declined)
+     */
     //For use in changing the status of a transaction
-    public Transaction(User bookOwner, User bookBorrower, Integer bookId, Integer ID, String status){
+    public Transaction(User bookOwner, User bookBorrower, Integer bookID, Integer ID, String status){
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
@@ -39,7 +52,11 @@ public abstract class Transaction {
         this.status = status;
     }
 
-    //Used to update status of a transaction
+    /**
+     * This is used to change the status of a transaction
+     * @param status The status that transaction should become
+     * @return the type of transaction specified by status
+     */
     public Transaction changeStatus(String status) {
         if (status.equals("request")){
             return new RequestTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
@@ -56,22 +73,44 @@ public abstract class Transaction {
         return this;
     }
 
+    /**
+     * Used to get the status of a transaction
+     * @return status of transaction
+     */
     public String getStatus() {
         return status;
     }
 
+    /**
+     * Used to get the ID of a transaction
+     * @return ID of transaction
+     */
     public Integer getID() {
-        return transactionID;
+        return ID;
     }
 
+    /**
+     * Used to get the ID of the
+     * book being borrowed
+     * @return ID of Book
+     */
     public Integer getBookID() {
         return bookID;
     }
 
+    /**
+     * Used to get the User who owns the book
+     * @return User who owns the book
+     */
     public User getBookOwner(){
         return bookOwner;
     }
 
+    /**
+     * Used to get the User who is borrowing
+     * or would like to borrow the book
+     * @return User who is borrowing the book
+     */
     public User getBookBorrower(){
         return bookBorrower;
     }
