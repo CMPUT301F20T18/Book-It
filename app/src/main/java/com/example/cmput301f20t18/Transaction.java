@@ -59,7 +59,7 @@ public abstract class Transaction {
      */
     public Transaction changeStatus(String status) {
         if (status.equals("request")){
-            return new RequestTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
+//            return new RequestTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
         }
         else if (status.equals("exchange")){
             return new ExchangeTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
