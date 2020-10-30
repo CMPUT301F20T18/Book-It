@@ -29,15 +29,12 @@ import static android.content.ContentValues.TAG;
 public class User {
     private String username;
     private String DB_id;
+    private int app_id;
+    private int phone;
+    private String pickup_location;
+    private String address;
+    private String email;
     private Bitmap profilePicture;
-
-
-
-    public User(String username, int appID, String DB_id, String email, String address) {
-        String id = auth.getUid();
-        FirebaseDatabase user_db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = user_db.getReference();
-    }
 
 
     /**
@@ -53,15 +50,15 @@ public class User {
          * @param type The status of the book to be found
          * @return list of bookIDs matching the requested status
          */
-//        public ArrayList<Integer> getBooks(String type) {
-//            ArrayList<Integer> filtered = new ArrayList<Integer>();
-//            for (int i = 0; i < owner_books.size(); i++) {
-//                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
-//                    filtered.add(owner_books.get(i));
-//                }
-//            }
-//            return filtered;
-//        }
+        public ArrayList<Integer> getBooks(String type) {
+            ArrayList<Integer> filtered = new ArrayList<Integer>();
+            for (int i = 0; i < owner_books.size(); i++) {
+                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
+                    filtered.add(owner_books.get(i));
+                }
+            }
+            return filtered;
+        }
 
         /**
          * Deletes the book with bookID from the owners collection
@@ -72,8 +69,10 @@ public class User {
             for (int i = 0 ; i < owner_books.size() ; i++) {
                 if (owner_books.get(i) == bookID) {
                     owner_books.remove(i);
-                    // TODO: Also delete the book from the book DB
-                    return;
+
+                    // delete the book from the DB
+
+
                 }
             }
         }
@@ -89,9 +88,24 @@ public class User {
         public void newBook(int isbn, String title, String author) {
 
             FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference mRef = db.getReference("Book");
+            DatabaseReference bookRef = db.getReference("Book");
+            DatabaseReference baseRef = db.getReference();
 
-            // TODO: get unique ID number for each book
+            baseRef.child("max_book_id").addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                    int id = snapshot.getValue(Integer.class);
+                    owner_books.add(id);
+                    Book book = new Book(title, isbn, author, id, "available", null);
+                    bookRef.child(Integer.toString(id)).setValue(book);
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
 
 
         }
