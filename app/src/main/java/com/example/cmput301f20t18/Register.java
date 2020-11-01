@@ -22,7 +22,14 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.core.FirestoreClient;
 
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Objects;
 
 public class Register extends AppCompatActivity {
@@ -33,6 +40,8 @@ public class Register extends AppCompatActivity {
     EditText address;
     Button register;
     FirebaseAuth mAuth;
+    FirebaseFirestore DB;
+    CollectionReference users;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -46,9 +55,16 @@ public class Register extends AppCompatActivity {
         register = (Button) findViewById(R.id.registerButton);
         mAuth = FirebaseAuth.getInstance();
 
+
+
+        DB = FirebaseFirestore.getInstance();
+        users = DB.collection("users");
+
         register.setOnClickListener(new View.OnClickListener() {
             // TODO: Add input verification
             @Override
+
+
             public void onClick(View view) {
 
                 String new_username = username.getText().toString();
@@ -85,21 +101,22 @@ public class Register extends AppCompatActivity {
 
                                                 // Sign in success, update UI with the signed-in user's information
                                                 FirebaseUser user = mAuth.getCurrentUser();
+                                                username_ref.child(new_username).setValue(new_username);
 
-                                                FirebaseDatabase user_db = FirebaseDatabase.getInstance();
-                                                DatabaseReference ref = user_db.getReference();
 
-                                                Baseref.child("users").child((mAuth.getUid())).child("username").setValue(new_username);
-                                                Baseref.child("users").child((mAuth.getUid())).child("email").setValue(new_email);
-                                                Baseref.child("users").child((mAuth.getUid())).child("address").setValue(new_address);
-                                                Baseref.child("username_list").child(new_username).setValue(new_username);
 
-                                                // TODO: Find max value of current id in the DB, make new ID max + 1
+                                                // set user ID
                                                 Baseref.child("max_user_id").addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         Long val = snapshot.getValue(Long.class);
-                                                        Baseref.child("users").child((mAuth.getUid())).child("appID").setValue(val + 1);
+                                                        // add the user to the collection
+                                                        User person = new User(new_username, val, mAuth.getUid(), new_email, new_address);
+                                                        users.document(mAuth.getUid()).set(person);
+
+
+
+                                                        // update the ID
                                                         Baseref.child("max_user_id").setValue(val + 1);
                                                     }
 
