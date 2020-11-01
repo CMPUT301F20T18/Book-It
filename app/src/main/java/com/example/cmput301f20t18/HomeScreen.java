@@ -24,9 +24,13 @@ public class HomeScreen extends AppCompatActivity {
     User current;
     Library lib;
 
-
+public class HomeScreen extends AppCompatActivity {
+    User user;
+    List<Book> ownedBooks;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
         DB = FirebaseFirestore.getInstance();

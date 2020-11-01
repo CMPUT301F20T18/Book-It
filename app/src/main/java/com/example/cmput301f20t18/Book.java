@@ -1,5 +1,7 @@
 package com.example.cmput301f20t18;
 
+import android.graphics.Bitmap;
+
 /**
  * A book object represents a book within our library
  */
@@ -8,10 +10,11 @@ public class Book {
     private int isbn;
     private String author;
     private int id;
-    //TODO: private ??? photo;
+    private Bitmap photo;
     private String status;
-    private static Library library;
     private User owner;
+
+    private static Library library = new Library();
 
     /**
      * A book in our system

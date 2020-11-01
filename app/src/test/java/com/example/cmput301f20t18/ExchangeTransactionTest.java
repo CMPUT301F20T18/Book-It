@@ -1,5 +1,7 @@
 package com.example.cmput301f20t18;
 
+import com.google.protobuf.StringValueOrBuilder;
+
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -9,17 +11,14 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 //NOT DONE
 public class ExchangeTransactionTest {
     private ExchangeTransaction mockExchangeTransaction(){
-        return new RequestTransaction(mockUser("Owner"), mockUser("Borrower"), 10).accept();
-    }
-    private User mockUser(String user){
-        return new User(user);
+        return new RequestTransaction("Owner", "Borrower", 10).accept();
     }
 
     @Test
     void testScanned(){
         ExchangeTransaction transaction = mockExchangeTransaction();
-        User bookOwner = transaction.getBookOwner();
-        User bookBorrower = transaction.getBookBorrower();
+        String bookOwner = transaction.getBookOwner();
+        String bookBorrower = transaction.getBookBorrower();
 
         assertFalse(transaction.getBookOwnerScanned());
         assertFalse(transaction.getBookBorrowerScanned());
@@ -36,8 +35,8 @@ public class ExchangeTransactionTest {
     @Test
     void testHandOffReady(){
         ExchangeTransaction transaction = mockExchangeTransaction();
-        User bookOwner = transaction.getBookOwner();
-        User bookBorrower = transaction.getBookBorrower();
+        String bookOwner = transaction.getBookOwner();
+        String bookBorrower = transaction.getBookBorrower();
 
         assertFalse(transaction.handOffReady());
 
@@ -51,8 +50,8 @@ public class ExchangeTransactionTest {
     @Test
     void testHandOff(){
         ExchangeTransaction exchangeTransaction = mockExchangeTransaction();
-        User bookOwner = exchangeTransaction.getBookOwner();
-        User bookBorrower = exchangeTransaction.getBookBorrower();
+        String bookOwner = exchangeTransaction.getBookOwner();
+        String bookBorrower = exchangeTransaction.getBookBorrower();
         Integer ID = exchangeTransaction.getID();
         Integer bookID = exchangeTransaction.getBookID();
 
