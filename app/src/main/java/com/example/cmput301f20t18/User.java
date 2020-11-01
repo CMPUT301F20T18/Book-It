@@ -28,16 +28,29 @@ import static android.content.ContentValues.TAG;
  */
 public class User {
     private String username;
-    private String DB_id;
+    private long appID;
+    private String dbID;
     private Bitmap profilePicture;
+    private String email;
+    private String address;
 
 
+    public User(){
 
-    public User(String username, int appID, String DB_id, String email, String address) {
-        String id = auth.getUid();
-        FirebaseDatabase user_db = FirebaseDatabase.getInstance();
-        DatabaseReference ref = user_db.getReference();
     }
+
+
+    public User(String username, long appID, String DB_id, String email, String address) {
+        this.username = username;
+        this.appID = appID;
+        this.dbID = DB_id;
+        this.email = email;
+        this.address = address;
+        this.profilePicture = null;
+    }
+
+
+
 
 
     /**

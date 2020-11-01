@@ -34,16 +34,18 @@ public class HomeScreen extends AppCompatActivity {
         auth = FirebaseAuth.getInstance();
         String id = auth.getUid();
         DocumentReference person = users.document(id);
+
+        // successfully found account
         person.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
             @Override
             public void onSuccess(DocumentSnapshot documentSnapshot) {
                 if (documentSnapshot.exists()) {
                     current = documentSnapshot.toObject(User.class);
-                    Toast.makeText(HomeScreen.this, "current user is: " + current.getUsername(), Toast.LENGTH_LONG).show();
 
 
                 }
             }
         });
     }
+
 }
