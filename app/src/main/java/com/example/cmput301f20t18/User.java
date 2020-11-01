@@ -1,6 +1,5 @@
 package com.example.cmput301f20t18;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
@@ -8,7 +7,8 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.annotation.TransitionRes;
+
+import com.google.firebase.auth.FirebaseUser;
 
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -22,24 +22,22 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 
+
 /**
  * User represents any user in our system
  * and contains both functionality for owners and borrowers, but not both have to be used
  */
 public class User {
+    private static Library library = new Library();
     private String username;
     private String DB_id;
     private Bitmap profilePicture;
 
-
-
     public User(String username, long appID, String DB_id, String email, String address) {
-        //String id = auth.getUid();
+        String id = auth.getUid();
         FirebaseDatabase user_db = FirebaseDatabase.getInstance();
         DatabaseReference ref = user_db.getReference();
     }
-
-
     /**
      * Implements the functionality for owner behaviors
      */
@@ -53,15 +51,15 @@ public class User {
          * @param type The status of the book to be found
          * @return list of bookIDs matching the requested status
          */
-//        public ArrayList<Integer> getBooks(String type) {
-//            ArrayList<Integer> filtered = new ArrayList<Integer>();
-//            for (int i = 0; i < owner_books.size(); i++) {
-//                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
-//                    filtered.add(owner_books.get(i));
-//                }
-//            }
-//            return filtered;
-//        }
+        public ArrayList<Integer> getBooks(String type) {
+            ArrayList<Integer> filtered = new ArrayList<Integer>();
+            for (int i = 0; i < owner_books.size(); i++) {
+                if (library.getBook(owner_books.get(i)).getStatus() == type) {
+                    filtered.add(owner_books.get(i));
+                }
+            }
+            return filtered;
+        }
 
         /**
          * Deletes the book with bookID from the owners collection
