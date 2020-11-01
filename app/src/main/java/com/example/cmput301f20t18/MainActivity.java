@@ -24,11 +24,17 @@ public class MainActivity extends AppCompatActivity {
         //startActivity(intent);
 
 <<<<<<< HEAD
+<<<<<<< HEAD
         /* Testing bottom navigation menu */
         Intent intent = new Intent(MainActivity.this, HomeScreen.class);
         startActivity(intent);
 =======
 
+>>>>>>> origin/dev
+=======
+        /* Testing bottom navigation menu */
+        Intent intent = new Intent(MainActivity.this, HomeScreen.class);
+        startActivity(intent);
 >>>>>>> origin/dev
     }
 }

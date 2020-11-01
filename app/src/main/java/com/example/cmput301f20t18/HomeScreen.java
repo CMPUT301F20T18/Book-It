@@ -1,9 +1,14 @@
 package com.example.cmput301f20t18;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import androidx.annotation.NonNull;
 =======
 
+>>>>>>> origin/dev
+=======
+
+import androidx.annotation.NonNull;
 >>>>>>> origin/dev
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
@@ -13,11 +18,18 @@ import android.view.MenuItem;
 import android.widget.Toast;
 
 <<<<<<< HEAD
+<<<<<<< HEAD
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 =======
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+>>>>>>> origin/dev
+=======
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 >>>>>>> origin/dev
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
@@ -27,16 +39,14 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.List;
+
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore DB;
     CollectionReference users;
     User current;
-    Library lib;
 
-public class HomeScreen extends AppCompatActivity {
-    User user;
-    List<Book> ownedBooks;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -57,6 +67,13 @@ public class HomeScreen extends AppCompatActivity {
 
 
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+                }
+            }
+        });
+
+>>>>>>> origin/dev
         /* Bottom navigation menu */
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setItemIconTintList(null);
@@ -67,10 +84,13 @@ public class HomeScreen extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new BorrowedFragment()).commit();
 
+<<<<<<< HEAD
 =======
                 }
             }
         });
+>>>>>>> origin/dev
+=======
 >>>>>>> origin/dev
     }
 
@@ -102,7 +122,7 @@ public class HomeScreen extends AppCompatActivity {
                             selectedFragment).commit();
 
                     return true;
-                }
+                };
             };
-
 }
+
