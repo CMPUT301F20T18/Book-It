@@ -1,6 +1,5 @@
 package com.example.cmput301f20t18;
 
-
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,17 +7,14 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 public class RequestTransactionTest {
     private RequestTransaction mockRequestTransaction(){
-        return new RequestTransaction(mockUser("Owner"), mockUser("Borrower"), 10);
-    }
-    private User mockUser(String user){
-        return new User(user);
+        return new RequestTransaction("Owner", "Borrower", 10);
     }
 
     @Test
     void testAcceptRequest(){
         RequestTransaction requestTransaction = mockRequestTransaction();
-        User owner = requestTransaction.getBookOwner();
-        User borrower = requestTransaction.getBookBorrower();
+        String owner = requestTransaction.getBookOwner();
+        String borrower = requestTransaction.getBookBorrower();
         Integer ID = requestTransaction.getID();
         Integer bookID = requestTransaction.getBookID();
         ExchangeTransaction exchangeTransaction = requestTransaction.accept();
@@ -32,8 +28,8 @@ public class RequestTransactionTest {
     @Test
     void testDeclineRequest(){
         RequestTransaction requestTransaction = mockRequestTransaction();
-        User owner = requestTransaction.getBookOwner();
-        User borrower = requestTransaction.getBookBorrower();
+        String owner = requestTransaction.getBookOwner();
+        String borrower = requestTransaction.getBookBorrower();
         Integer ID = requestTransaction.getID();
         Integer bookID = requestTransaction.getBookID();
         DeclinedTransaction declinedTransaction = requestTransaction.decline();
