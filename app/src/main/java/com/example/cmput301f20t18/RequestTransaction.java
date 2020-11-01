@@ -1,5 +1,7 @@
 package com.example.cmput301f20t18;
 
+import android.app.DownloadManager;
+
 /**
  * A RequestTransaction represents a transaction
  * wherein the borrower has requested to borrow
@@ -15,7 +17,7 @@ public class RequestTransaction extends Transaction{
      * @param bookBorrower The User who has requested the book
      * @param bookID The ID of the book being requested
      */
-    public RequestTransaction(User bookOwner, User bookBorrower, Integer bookID) {
+    public RequestTransaction(String bookOwner, String bookBorrower, Integer bookID) {
         super(bookOwner, bookBorrower, bookID);
     }
 

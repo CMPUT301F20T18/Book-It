@@ -1,6 +1,10 @@
 package com.example.cmput301f20t18;
 
+<<<<<<< HEAD
 import androidx.annotation.NonNull;
+=======
+
+>>>>>>> origin/dev
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
@@ -8,19 +12,51 @@ import android.os.Bundle;
 import android.view.MenuItem;
 import android.widget.Toast;
 
+<<<<<<< HEAD
 import com.google.android.material.bottomnavigation.BottomNavigationView;
+=======
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
+import com.google.android.gms.tasks.Task;
+>>>>>>> origin/dev
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth auth;
+    FirebaseFirestore DB;
+    CollectionReference users;
+    User current;
+    Library lib;
 
+public class HomeScreen extends AppCompatActivity {
+    User user;
+    List<Book> ownedBooks;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+        DB = FirebaseFirestore.getInstance();
+        users = DB.collection("users");
+        auth = FirebaseAuth.getInstance();
+        String id = auth.getUid();
+        DocumentReference person = users.document(id);
+        person.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+            @Override
+            public void onSuccess(DocumentSnapshot documentSnapshot) {
+                if (documentSnapshot.exists()) {
+                    current = documentSnapshot.toObject(User.class);
+                    Toast.makeText(HomeScreen.this, "current user is: " + current.getUsername(), Toast.LENGTH_LONG).show();
 
+
+<<<<<<< HEAD
         /* Bottom navigation menu */
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setItemIconTintList(null);
@@ -31,6 +67,11 @@ public class HomeScreen extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new BorrowedFragment()).commit();
 
+=======
+                }
+            }
+        });
+>>>>>>> origin/dev
     }
 
     // class is not in onCreate() to avoid clutter but idk
