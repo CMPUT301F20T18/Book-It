@@ -34,7 +34,7 @@ public class User {
     private Bitmap profilePicture;
 
     public User(String username, long appID, String DB_id, String email, String address) {
-        String id = auth.getUid();
+        //String id = auth.getUid();
         FirebaseDatabase user_db = FirebaseDatabase.getInstance();
         DatabaseReference ref = user_db.getReference();
     }
