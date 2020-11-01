@@ -34,7 +34,7 @@ public class User {
 
 
     public User(String username, int appID, String DB_id, String email, String address) {
-        String id = auth.getUid();
+        //String id = auth.getUid();
         FirebaseDatabase user_db = FirebaseDatabase.getInstance();
         DatabaseReference ref = user_db.getReference();
     }
