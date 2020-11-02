@@ -33,6 +33,9 @@ public class User {
     private Bitmap profilePicture;
     private String email;
     private String address;
+    Borrower borrower;
+    Owner owner;
+
 
 
     public User(){
@@ -40,13 +43,15 @@ public class User {
     }
 
 
-    public User(String username, long appID, String DB_id, String email, String address) {
+    private User(String username, long appID, String DB_id, String email, String address) {
         this.username = username;
         this.appID = appID;
         this.dbID = DB_id;
         this.email = email;
         this.address = address;
         this.profilePicture = null;
+        borrower = new Borrower();
+        owner = new Owner();
     }
 
 
@@ -262,6 +267,10 @@ public class User {
 
         }
 
+        public ArrayList<Integer> getBooks() {
+            return this.borrower_books
+        }
+
 
 
 
@@ -315,5 +324,10 @@ public class User {
 
     public String getUsername(){
         return username;
+    }
+
+
+    public ArrayList<Integer> getBorrowedBooks() {
+        return this.borrower.getBooks();
     }
 }
