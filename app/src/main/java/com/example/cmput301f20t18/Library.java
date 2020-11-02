@@ -138,18 +138,14 @@ public class Library {
     }
   
     /**
-     * Grabs a Book object from Library's
-     * bookLibrary given the Book objects
-     * ID
-     * @param ID Integer representing the ID
-     *           of the Book object
+     * Grabs a List of Book objects from Library's
+     * bookLibrary given the Book object
+     * IDs
+     * @param IDs Integer List representing the IDs
+     *           of the Book objects
      * @return Book object that corresponds to
      *         the ID given
      */
-    public Book getBook(Integer ID){
-        return bookLibrary.get(ID);
-    }
-
     public List<Book> getBooks(List<Integer> IDs){
         List<Book> books = new List<Book>;
         for (int i = 0; i < books.size(); i++){
