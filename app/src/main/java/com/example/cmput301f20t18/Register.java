@@ -109,7 +109,7 @@ public class Register extends AppCompatActivity {
                                                 Baseref.child("max_user_id").addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                        Long val = snapshot.getValue(Long.class);
+                                                        Long val = (Long) snapshot.getValue(Long.class);
                                                         // add the user to the collection
                                                         User person = new User(new_username, val, mAuth.getUid(), new_email, new_address);
                                                         users.document(mAuth.getUid()).set(person);
