@@ -47,6 +47,7 @@ public class Library {
      * @return returns a list of books constructed from the
      * data in the database
      */
+    //TODO: Test this implementation of pulling data to see if it is effective
     private Hashtable<Integer, Book> getDataFromDB(){
         Hashtable<Integer, Book> bookMap = new Map<Integer, Book>;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
