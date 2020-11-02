@@ -53,7 +53,7 @@ public class Library {
     private List<Book> getDataFromDB(){
         BookLibOnCompleteListener listener = new BookLibOnCompleteListener();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Task QueryAttempt = db.collection("books")
+        Task QueryAttempt = db.collection("system").document("System").collection("books")
                 .get()
                 .addOnCompleteListener(listener);
         return listener.returnData();

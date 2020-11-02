@@ -28,7 +28,7 @@ public class User {
     private String address;
     Borrower borrower;
     Owner owner;
-    static Library lib;
+    private Library lib;
 
 
     /**
@@ -57,8 +57,6 @@ public class User {
         this.profilePicture = null;
         borrower = new Borrower();
         owner = new Owner();
-        lib = new Library();
-
     }
 
 
@@ -126,7 +124,7 @@ public class User {
                     Book book = new Book(title, isbn, author, val, "available", User.this);
                     lib.addBook(book);
                     owner_book_id.add(val);
-
+                    mRef.setValue(val + 1);
                 }
 
                 @Override
@@ -390,6 +388,22 @@ public class User {
     public void initUserBooks() {
         this.borrower.init();
         this.owner.init();
+    }
+
+    /**
+     * Give library access to the user
+     * @param lib The library
+     */
+    public void setLib(Library lib) {
+        this.lib = lib;
+    }
+
+    /**
+     * Gets the DB ID for a user
+     * @return String of the DB ID
+     */
+    public String getDbID() {
+        return this.dbID;
     }
 
 

@@ -14,7 +14,7 @@ public class Book {
     private String status;
     private User owner;
 
-    private static Library library = new Library();
+    //private static Library library = new Library();
 
     /**
      * A book in our system
@@ -31,6 +31,13 @@ public class Book {
         this.id = id;
         this.status = status;
         this.owner = owner;
+
+    }
+
+    /**
+     * Empty constructor for firebase
+     */
+    public Book() {
 
     }
 
@@ -104,7 +111,7 @@ public class Book {
      * @param newLibrary The library to associate the book to
      */
     public static void setLibrary(Library newLibrary){
-        library = newLibrary;
+        //library = newLibrary;
     }
 
     /**
