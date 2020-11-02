@@ -5,11 +5,15 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * Library is a storage and retrieval
@@ -34,13 +38,7 @@ public class Library {
      * to Libraries bookLibrary
      */
     public void updateBookLibrary(){
-        List<Book> books = getDataFromDB();
-        Hashtable<Integer, Book> bookMap = new Hashtable<Integer, Book>();
-        for (int i = 0; i < books.size(); i++){
-            Book book = books.get(i);
-            bookMap.put(book.getId(), book);
-        }
-        this.bookLibrary = bookMap;
+        this.bookLibrary = getDataFromDB();
     }
 
     /**
@@ -49,13 +47,16 @@ public class Library {
      * @return returns a list of books constructed from the
      * data in the database
      */
-    private List<Book> getDataFromDB(){
-        BookLibOnCompleteListener listener = new BookLibOnCompleteListener();
+    private Hashtable<Integer, Book> getDataFromDB(){
+        Hashtable<Integer, Book> bookMap = new Map<Integer, Book>;
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Task QueryAttempt = db.collection("books")
+        QuerySnapshot documents = db.collectionGroup("books")
                 .get()
-                .addOnCompleteListener(listener);
-        return listener.returnData();
+                .getResult();
+        for (DocumentSnapshot document:documents){
+            bookMap.put(parseInt(document.getId()), document.toObject(Book.class));
+        }
+        return bookMap;
     }
 
     /**
@@ -82,7 +83,9 @@ public class Library {
      */
     private void addDB(Book book){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("books")
+        db.collection("system")
+                .document("system")
+                .collection("book")
                 .document(Integer.toString(book.getId()))
                 .set(book);
     }
@@ -112,7 +115,9 @@ public class Library {
      */
     private void deleteDB(Book book){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("books")
+        db.collection("system")
+                .document("system")
+                .collection("book")
                 .document(Integer.toString(book.getId()))
                 .delete();
     }
@@ -131,7 +136,7 @@ public class Library {
     }
 
     public List<Book> getBooks(List<Integer> IDs){
-        List<Book> books;
+        List<Book> books = new List<Book>;
         for (int i = 0; i < books.size(); i++){
             books.add(bookLibrary.get(IDs.get(i)));
         }
