@@ -1,16 +1,11 @@
 package com.example.cmput301f20t18;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.annotation.TransitionRes;
 
-import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -18,9 +13,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
-
-import static android.content.ContentValues.TAG;
-
 
 
 /**
@@ -36,15 +28,27 @@ public class User {
     private String address;
     Borrower borrower;
     Owner owner;
+    static Library lib;
 
 
-
+    /**
+     * empty constructor used for firestore
+     */
     public User(){
 
     }
 
 
-    private User(String username, long appID, String DB_id, String email, String address) {
+    /**
+     * Constructor for initializing user
+     * First when a used first registers
+     * @param username Username the user picked
+     * @param appID The users id within our app
+     * @param DB_id The users authentication token
+     * @param email The users email address
+     * @param address The users address
+     */
+    public User(String username, long appID, String DB_id, String email, String address) {
         this.username = username;
         this.appID = appID;
         this.dbID = DB_id;
@@ -53,6 +57,8 @@ public class User {
         this.profilePicture = null;
         borrower = new Borrower();
         owner = new Owner();
+        lib = new Library();
+
     }
 
 
@@ -64,7 +70,8 @@ public class User {
      */
     public class Owner {
         private ArrayList<Transaction> owner_transactions;
-        private ArrayList<Integer> owner_books;
+        private ArrayList<Integer> owner_book_id;
+        private ArrayList<Book> owner_books;
 
 
         /**
@@ -72,15 +79,18 @@ public class User {
          * @param type The status of the book to be found
          * @return list of bookIDs matching the requested status
          */
-//        public ArrayList<Integer> getBooks(String type) {
-//            ArrayList<Integer> filtered = new ArrayList<Integer>();
-//            for (int i = 0; i < owner_books.size(); i++) {
-//                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
-//                    filtered.add(owner_books.get(i));
-//                }
-//            }
-//            return filtered;
-//        }
+        public ArrayList<Book> getBooks(String type) {
+            owner_books = lib.getBooks(owner_book_id);
+            ArrayList<Book> filtered = new ArrayList<Book>();
+            for (Book b : owner_books) {
+                if (b.getStatus().equals(type)) {
+                    filtered.add(b);
+                }
+            }
+
+
+            return filtered;
+        }
 
         /**
          * Deletes the book with bookID from the owners collection
@@ -89,9 +99,9 @@ public class User {
 
         public void delBook(int bookID) {
             for (int i = 0 ; i < owner_books.size() ; i++) {
-                if (owner_books.get(i) == bookID) {
+                if (owner_books.get(i).getId() == bookID) {
                     owner_books.remove(i);
-                    // TODO: Also delete the book from the book DB
+
                     return;
                 }
             }
@@ -108,9 +118,23 @@ public class User {
         public void newBook(int isbn, String title, String author) {
 
             FirebaseDatabase db = FirebaseDatabase.getInstance();
-            DatabaseReference mRef = db.getReference("Book");
+            DatabaseReference mRef = db.getReference().child("max_book_id");
+            mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    Integer val = snapshot.getValue(Integer.class);
+                    Book book = new Book(title, isbn, author, val, "available", User.this);
+                    lib.addBook(book);
+                    owner_book_id.add(val);
 
-            // TODO: get unique ID number for each book
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
 
 
         }
@@ -184,6 +208,13 @@ public class User {
                 }
             }
         }
+
+        /**
+         * Materialize books for owners
+         */
+        public void init() {
+            this.owner_books = lib.getBooks(this.owner_book_id);
+        }
     }
 
 
@@ -192,7 +223,9 @@ public class User {
      */
     public class Borrower {
         private ArrayList<Transaction> borrower_transactions;
+        private ArrayList<Integer> borrower_book_id;
         private ArrayList<Book> borrower_books;
+
 
         /**
          * Request a book from a book owner
@@ -200,30 +233,30 @@ public class User {
          * @param bookID is the id of the book you wish to borrow
          * @return returns a transaction object, containing the borrower request
          */
-//        public Transaction requestBook(int bookID) {
-//            Book requested = bookLibrary.getBookByID(bookID);
-//            User owner = requested.getOwner();
-//            Transaction request = new RequestTransaction(owner, this, bookID);
-//            borrower_transactions.add(request);
-//            return request;
-//        }
+        public Transaction requestBook(int bookID) {
+            Book requested = lib.getBook(bookID);
+            User owner = requested.getOwner();
+            Transaction request = new RequestTransaction(requested.getOwner().getUsername(), User.this.getUsername(), bookID);
+            borrower_transactions.add(request);
+            return request;
+        }
 
 
         /**
          * Pick-up the book, scanning it to mark it as borrowed
          * @param bookID the ID of the book being picked up
          */
-//        public void pickupBook(int bookID) {
-//            for (int i = 0; i < borrower_transactions.size(); i++) {
-//                if (borrower_transactions.get(i).getBookID() == bookID) {
-//                    Transaction a_trans = borrower_transactions.get(i);
-//                    // scan the book as user??
-//                    if (a_trans instanceof ExchangeTransaction) {
-//                        ((ExchangeTransaction) a_trans).scanned(super);
-//                    }
-//                }
-//            }
-//        }
+        public void pickupBook(int bookID) {
+            for (int i = 0; i < borrower_transactions.size(); i++) {
+                if (borrower_transactions.get(i).getBookID() == bookID) {
+                    Transaction a_trans = borrower_transactions.get(i);
+                    // scan the book as user??
+                    if (a_trans instanceof ExchangeTransaction) {
+                        ((ExchangeTransaction) a_trans).scanned(User.this.getUsername());
+                    }
+                }
+            }
+        }
 
 
         /**
@@ -248,9 +281,9 @@ public class User {
          * @param term The term to filter for
          * @return A list of integers representing book IDs of the books that matched
          */
-//        public ArrayList<Integer> bookSearch(String term) {
-//
-//        }
+        public ArrayList<Integer> bookSearch(String term) {
+            return null;
+        }
 
         /**
          * adds a transaction to a borrowers transaction list
@@ -268,13 +301,22 @@ public class User {
 
         }
 
-        public ArrayList<Integer> getBooks() {
-            return this.borrower_books
+
+        /**
+         * Returns a list of borrowed books for the borrower
+         * @return ArrayList of Books
+         */
+        public ArrayList<Book> getBooks() {
+            return this.borrower_books;
         }
 
 
-
-
+        /**
+         * materialize borrower books from bookID list
+         */
+        public void init() {
+            this.borrower_books = lib.getBooks(this.borrower_book_id);
+        }
 
 
     }
@@ -323,12 +365,32 @@ public class User {
         }
     }
 
+    /**
+     * Returns the given users username
+     * @return String oof the users username
+     */
     public String getUsername(){
         return username;
     }
 
 
-    public ArrayList<Integer> getBorrowedBooks() {
+    /**
+     * Returns the borrowers books
+     * @return ArrayList of Books
+     */
+    public ArrayList<Book> getBorrowedBooks() {
         return this.borrower.getBooks();
     }
+
+
+    /**
+     * Materializes all of the users books from their bookID list
+     * Used to speed up application and reduce queries to DB
+     */
+    public void initUserBooks() {
+        this.borrower.init();
+        this.owner.init();
+    }
+
+
 }

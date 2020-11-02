@@ -7,7 +7,7 @@ import android.graphics.Bitmap;
  */
 public class Book {
     private String title;
-    private int isbn;
+    private long isbn;
     private String author;
     private int id;
     private Bitmap photo;
@@ -24,7 +24,7 @@ public class Book {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, int isbn, String author, int id, String status, User owner) {
+    public Book(String title, long isbn, String author, int id, String status, User owner) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
@@ -54,7 +54,7 @@ public class Book {
      * Returns the ISBN of the book object
      * @return The ISBN of the book, as an integer
      */
-    public int getISBN() {
+    public long getISBN() {
         return isbn;
     }
 

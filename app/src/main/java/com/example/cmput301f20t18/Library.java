@@ -8,6 +8,7 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -130,13 +131,19 @@ public class Library {
         return bookLibrary.get(ID);
     }
 
-/*    public List<Book> getBooks(List<Integer> IDs){
-        List<Book> books;
+
+    /**
+     * Return a list of books for a USER
+     * @param IDs An arraylist of Integers referring to the books IDs to return
+     * @return an ArrayList of books
+     */
+    public ArrayList<Book> getBooks(ArrayList<Integer> IDs){
+        ArrayList<Book> books = new ArrayList<Book>();
         for (int i = 0; i < books.size(); i++){
             books.add(bookLibrary.get(IDs.get(i)));
         }
         return books;
-    }*/
+    }
 
     /**
      * A complete listener that allows for the retrieval
