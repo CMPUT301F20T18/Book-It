@@ -130,6 +130,14 @@ public class Library {
         return bookLibrary.get(ID);
     }
 
+/*    public List<Book> getBooks(List<Integer> IDs){
+        List<Book> books;
+        for (int i = 0; i < books.size(); i++){
+            books.add(bookLibrary.get(IDs.get(i)));
+        }
+        return books;
+    }*/
+
     /**
      * A complete listener that allows for the retrieval
      * of data onComplete

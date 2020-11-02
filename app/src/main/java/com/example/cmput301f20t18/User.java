@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import static android.content.ContentValues.TAG;
 
 
+
 /**
  * User represents any user in our system
  * and contains both functionality for owners and borrowers, but not both have to be used
