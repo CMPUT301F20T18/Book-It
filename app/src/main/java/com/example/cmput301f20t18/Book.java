@@ -7,14 +7,14 @@ import android.graphics.Bitmap;
  */
 public class Book {
     private String title;
-    private int isbn;
+    private long isbn;
     private String author;
     private int id;
     private Bitmap photo;
     private String status;
     private User owner;
 
-    private static Library library = new Library();
+    //private static Library library = new Library();
 
     /**
      * A book in our system
@@ -24,13 +24,20 @@ public class Book {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, int isbn, String author, int id, String status, User owner) {
+    public Book(String title, long isbn, String author, int id, String status, User owner) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
         this.id = id;
         this.status = status;
         this.owner = owner;
+
+    }
+
+    /**
+     * Empty constructor for firebase
+     */
+    public Book() {
 
     }
 
@@ -54,7 +61,7 @@ public class Book {
      * Returns the ISBN of the book object
      * @return The ISBN of the book, as an integer
      */
-    public int getISBN() {
+    public long getISBN() {
         return isbn;
     }
 
@@ -104,7 +111,7 @@ public class Book {
      * @param newLibrary The library to associate the book to
      */
     public static void setLibrary(Library newLibrary){
-        library = newLibrary;
+        //library = newLibrary;
     }
 
     /**

@@ -9,6 +9,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -135,6 +136,19 @@ public class Library {
     public Book getBook(Integer ID){
         return bookLibrary.get(ID);
     }
+  
+    /**
+     * Grabs a Book object from Library's
+     * bookLibrary given the Book objects
+     * ID
+     * @param ID Integer representing the ID
+     *           of the Book object
+     * @return Book object that corresponds to
+     *         the ID given
+     */
+    public Book getBook(Integer ID){
+        return bookLibrary.get(ID);
+    }
 
     public List<Book> getBooks(List<Integer> IDs){
         List<Book> books = new List<Book>;
@@ -143,7 +157,7 @@ public class Library {
         }
         return books;
     }
-
+  
     /**
      * A complete listener that allows for the retrieval
      * of data onComplete
