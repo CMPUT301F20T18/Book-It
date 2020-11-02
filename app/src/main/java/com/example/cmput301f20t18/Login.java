@@ -17,6 +17,10 @@ import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
 
+/**
+ * Allows the users to login into the app
+ * @author Jacob Deinum
+ */
 public class Login extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -29,26 +33,36 @@ public class Login extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_login);
+
+        // register parameters
         mAuth = FirebaseAuth.getInstance();
         login = (Button) findViewById(R.id.login);
         register = (Button) findViewById(R.id.Register);
         login_user = (EditText) findViewById(R.id.username);
         login_password = (EditText) findViewById(R.id.password);
 
+        // user clicks on login button
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+
+                // get entered info
                 String username = login_user.getText().toString();
                 String password = login_password.getText().toString();
 
+                // ensure input not empty
+                if (username.matches("") || password.matches("")) {
+                    Toast.makeText(Login.this, "Please fill all fields", Toast.LENGTH_LONG).show();
+                    return;
+                }
+
+                // attempt authentication
                 mAuth.signInWithEmailAndPassword(username, password)
                         .addOnCompleteListener(new OnCompleteListener<AuthResult>() {
 
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {
                                 if (task.isSuccessful()) {
-                                    // Sign in success, update UI with the signed-in user's information
-                                    FirebaseUser user = mAuth.getCurrentUser();
 
                                     // start new activity with current user
                                     Intent intent = new Intent(getBaseContext(), HomeScreen.class);
@@ -66,6 +80,7 @@ public class Login extends AppCompatActivity {
             }
         });
 
+        // user wants to register, redirect them to register activity
         register.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -78,6 +93,7 @@ public class Login extends AppCompatActivity {
 
     }
 
+// TODO: IMPLEMENT ONSTART
 
 //    @Override
 //    protected void onStart() {
