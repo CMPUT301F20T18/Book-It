@@ -26,5 +26,7 @@ public class MainActivity extends AppCompatActivity {
         /* Testing bottom navigation menu */
         Intent intent = new Intent(MainActivity.this, HomeScreen.class);
         startActivity(intent);
+
+
     }
 }
