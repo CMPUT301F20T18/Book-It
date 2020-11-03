@@ -17,6 +17,8 @@ public class SearchActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        setContentView(R.layout.activity_search);
+
         EditText searchEditText;
         Spinner searchSpinner;
         Button searchButton;

@@ -170,20 +170,22 @@ public class Library {
     public ArrayList<Book> searchBookLocal(int field, String query){
         ArrayList<Book> outBooks = new ArrayList<>();
         for(int key: this.bookLibrary.keySet()){
-            if (field == 0){
-                if (this.bookLibrary.get(key).getAuthor().toUpperCase() == query.toUpperCase()){
-                    outBooks.add(this.bookLibrary.get(key));
-                }
-            }
-            else if (field == 1){
-                if (this.bookLibrary.get(key).getTitle().toUpperCase() == query.toUpperCase()){
-                    outBooks.add(this.bookLibrary.get(key));
-                }
-            }
-            else if (field == 2){
-                if (this.bookLibrary.get(key).getISBN() == Long.parseLong(query)){
-                    outBooks.add(this.bookLibrary.get(key));
-                }
+            switch(field){
+                case 0:
+                    if (this.bookLibrary.get(key).getAuthor().toUpperCase() == query.toUpperCase()){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
+                case 1:
+                    if (this.bookLibrary.get(key).getTitle().toUpperCase() == query.toUpperCase()){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
+                case 2:
+                    if (this.bookLibrary.get(key).getISBN() == Long.parseLong(query)){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
             }
         }
         return outBooks;
