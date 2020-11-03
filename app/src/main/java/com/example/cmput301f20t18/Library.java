@@ -10,6 +10,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
@@ -50,7 +51,7 @@ public class Library {
      */
     //TODO: Test this implementation of pulling data to see if it is effective
     private Hashtable<Integer, Book> getDataFromDB(){
-        Hashtable<Integer, Book> bookMap = new Map<Integer, Book>;
+        Hashtable<Integer, Book> bookMap = new Hashtable<>();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         QuerySnapshot documents = db.collectionGroup("books")
                 .get()
@@ -147,8 +148,8 @@ public class Library {
      *         the ID given
      */
     public List<Book> getBooks(List<Integer> IDs){
-        List<Book> books = new List<Book>;
-        for (int i = 0; i < books.size(); i++){
+        List<Book> books = new ArrayList<>();
+        for (int i = 0; i < IDs.size(); i++){
             books.add(bookLibrary.get(IDs.get(i)));
         }
         return books;
