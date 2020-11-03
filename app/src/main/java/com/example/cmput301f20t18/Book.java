@@ -11,8 +11,9 @@ public class Book {
     private String author;
     private int id;
     private Bitmap photo;
-    private String status;
+    private int status;
     private User owner;
+    private int year;
 
     //private static Library library = new Library();
 
@@ -24,13 +25,14 @@ public class Book {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, long isbn, String author, int id, String status, User owner) {
+    public Book(String title, long isbn, String author, int id, int status, User owner, int year) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
         this.id = id;
         this.status = status;
         this.owner = owner;
+        this.year = year;
 
     }
 
@@ -94,7 +96,7 @@ public class Book {
      * get the status of the current book object
      * @return The status of the book
      */
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -102,7 +104,7 @@ public class Book {
      * set the status of the current book
      * @param status The new status for the book
      */
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
