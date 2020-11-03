@@ -13,10 +13,10 @@
 
     <ImageView
         android:id="@+id/login_image"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
+        android:layout_width="235dp"
+        android:layout_height="132dp"
         android:layout_marginStart="75dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="75dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -25,10 +25,10 @@
 
     <TextView
         android:id="@+id/sign_in"
-        android:layout_width="182dp"
-        android:layout_height="59dp"
+        android:layout_width="178dp"
+        android:layout_height="45dp"
         android:layout_marginStart="120dp"
-        android:layout_marginTop="25dp"
+        android:layout_marginTop="16dp"
         android:layout_marginEnd="120dp"
         android:text="Sign in to"
         android:textColor="@color/karryText"
@@ -39,8 +39,8 @@
 
     <ImageView
         android:id="@+id/logo_image"
-        android:layout_width="284dp"
-        android:layout_height="61dp"
+        android:layout_width="267dp"
+        android:layout_height="46dp"
         android:layout_marginStart="55dp"
         android:layout_marginTop="10dp"
         android:layout_marginEnd="55dp"
@@ -52,10 +52,10 @@
 
     <TextView
         android:id="@+id/textView_username"
-        android:layout_width="195dp"
-        android:layout_height="29dp"
+        android:layout_width="326dp"
+        android:layout_height="32dp"
         android:layout_marginStart="28dp"
-        android:layout_marginTop="360dp"
+        android:layout_marginTop="280dp"
         android:fontFamily="@font/poppins_medium"
         android:text="Username"
         android:textColor="@color/colorOrange"
@@ -68,7 +68,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="400dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_email"
         android:inputType="textEmailAddress"
@@ -76,27 +76,29 @@
         android:textColorHint="@color/textcolor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_username" />
 
     <TextView
         android:id="@+id/textView_password"
-        android:layout_width="195dp"
+        android:layout_width="327dp"
         android:layout_height="29dp"
         android:layout_marginStart="28dp"
+        android:layout_marginTop="12dp"
         android:layout_marginBottom="12dp"
         android:fontFamily="@font/poppins_medium"
         android:text="Password"
         android:textColor="@color/colorOrange"
         android:textSize="20dp"
         app:layout_constraintBottom_toTopOf="@+id/password"
-        app:layout_constraintStart_toStartOf="parent" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/username" />
 
     <EditText
         android:id="@+id/password"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="24dp"
-        android:layout_marginTop="52dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="24dp"
         android:hint="@string/prompt_password"
         android:imeActionLabel="@string/action_sign_in_short"
@@ -106,7 +108,7 @@
         android:textColorHint="@color/textcolor"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/username" />
+        app:layout_constraintTop_toBottomOf="@+id/textView_password" />
 
     <Button
         android:id="@+id/login"
@@ -114,15 +116,15 @@
         android:layout_height="54dp"
         android:layout_gravity="start"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="48dp"
+        android:background="@drawable/bad_button_background"
         android:fontFamily="@font/poppins"
         android:text="Sign in"
         android:textColor="@color/colorOrange"
         android:textSize="22dp"
-        android:background="@drawable/bad_button_background"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.515"
+        app:layout_constraintHorizontal_bias="0.505"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/password" />
 
@@ -132,18 +134,15 @@
         android:layout_height="52dp"
         android:layout_gravity="start"
         android:layout_marginStart="48dp"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="12dp"
         android:layout_marginEnd="48dp"
-        android:layout_marginBottom="16dp"
         android:background="@drawable/good_button_background"
         android:text="Register"
         android:textColor="@color/karryText"
         android:textSize="22dp"
-        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/login"
-        app:layout_constraintVertical_bias="0.0" />
+        app:layout_constraintTop_toBottomOf="@+id/login" />
 
     <ProgressBar
         android:id="@+id/loading"

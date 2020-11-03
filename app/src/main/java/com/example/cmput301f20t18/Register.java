@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +39,7 @@ public class Register extends AppCompatActivity {
     EditText password;
     EditText email;
     EditText address;
+    private TextView accountCreate, usernameText, passwordText, emailText, addressText;
     Button register;
     FirebaseAuth mAuth;
     FirebaseFirestore DB;
@@ -53,6 +55,12 @@ public class Register extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
         address = (EditText) findViewById(R.id.address);
         register = (Button) findViewById(R.id.registerButton);
+        accountCreate = (TextView) findViewById(R.id.text_Create_Account);
+        usernameText = (TextView) findViewById(R.id.text_username);
+        passwordText = (TextView) findViewById(R.id.text_password);
+        emailText = (TextView) findViewById(R.id.text_email);
+        addressText = (TextView) findViewById(R.id.text_address);
+
         mAuth = FirebaseAuth.getInstance();
 
 

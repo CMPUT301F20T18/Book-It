@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:orientation="vertical">
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="@drawable/ic_sign_in_background">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingBottom="50dp">
+
+        <TextView
+            android:id="@+id/text_Create_Account"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Create an Account"
+            android:textAlignment="center"
+            android:textColor="@color/karryText"
+            android:textSize="40sp" />
+
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/text_username"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_weight="1"
+        android:text="Username"
+        android:textSize="22sp"
+        android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/username"
@@ -10,9 +37,20 @@
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:ems="10"
+        android:hint="Username"
         android:inputType="textPersonName"
         android:text=""
-        android:hint="Username"/>
+        android:textColorHint="@color/textcolor"
+        android:textColor="@color/karryText"/>
+
+    <TextView
+        android:id="@+id/text_password"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_weight="1"
+        android:text="Password"
+        android:textSize="22sp"
+        android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/password"
@@ -21,7 +59,18 @@
         android:layout_weight="1"
         android:ems="10"
         android:inputType="textPassword"
-        android:hint="Password"/>
+        android:hint="Password"
+        android:textColorHint="@color/textcolor"
+        android:textColor="@color/karryText"/>
+
+    <TextView
+        android:id="@+id/text_email"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_weight="1"
+        android:text="Email"
+        android:textSize="22sp"
+        android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/email"
@@ -31,7 +80,18 @@
         android:ems="10"
         android:inputType="textEmailAddress"
         android:text=""
-        android:hint="Email"/>
+        android:hint="Email"
+        android:textColorHint="@color/textcolor"
+        android:textColor="@color/karryText"/>
+
+    <TextView
+        android:id="@+id/text_address"
+        android:layout_width="match_parent"
+        android:layout_height="6dp"
+        android:layout_weight="1"
+        android:text="Address"
+        android:textSize="22sp"
+        android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/address"
@@ -40,14 +100,20 @@
         android:layout_weight="1"
         android:ems="10"
         android:inputType="text"
-        android:hint="Address"/>
+        android:hint="Address"
+        android:textColorHint="@color/textcolor"
+        android:textColor="@color/karryText"/>
 
     <Button
         android:id="@+id/registerButton"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_width="166dp"
+        android:layout_height="6dp"
+        android:layout_gravity="center"
         android:layout_weight="1"
-        android:text="Register" />
+        android:background="@drawable/good_button_blue"
+        android:text="Sign Up"
+        android:textColor="@color/karryText"
+        android:textSize="20sp" />
 
 
 </LinearLayout>
