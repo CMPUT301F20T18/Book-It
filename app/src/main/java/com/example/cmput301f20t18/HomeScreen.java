@@ -1,14 +1,18 @@
 package com.example.cmput301f20t18;
 
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MenuItem;
 
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
@@ -52,7 +56,7 @@ public class HomeScreen extends AppCompatActivity {
         Task<DocumentSnapshot> retrieve_current_user = current_user.get();
 
         // successfully got all books and users
-        Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+       /* Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
             @Override
             public void onSuccess(List<Task<?>> tasks) {
                 User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
@@ -66,11 +70,49 @@ public class HomeScreen extends AppCompatActivity {
             }
 
 
-        });
+        });*/
 
+        /* Bottom navigation menu */
+        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav.setItemIconTintList(null);
+        bottomNav.setItemBackgroundResource(R.drawable.tab_background);
 
+        bottomNav.setOnNavigationItemSelectedListener(navListener);
+
+        getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                new BorrowedFragment()).commit();
 
 
     }
 
+    // class is not in onCreate() to avoid clutter but idk
+    private BottomNavigationView.OnNavigationItemSelectedListener navListener =
+            new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @Override
+                public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                    Fragment selectedFragment = null;
+
+                    switch (item.getItemId()) {
+                        case R.id.tab_borrowed:
+                            selectedFragment = new BorrowedFragment();
+                            break;
+                        case R.id.tab_search:
+                            selectedFragment = new SearchFragment();
+                            break;
+                        case R.id.tab_mybooks:
+                            selectedFragment = new MyBooksFragment();
+                            break;
+                        case R.id.tab_profile:
+                            selectedFragment = new ProfileFragment();
+                            break;
+                    }
+
+                    if (selectedFragment == null) { return false; }
+
+                    getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            selectedFragment).commit();
+
+                    return true;
+                }
+            };
 }
