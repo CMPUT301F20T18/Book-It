@@ -28,20 +28,20 @@
         android:layout_height="6dp"
         android:layout_weight="1"
         android:text="Username"
-        android:textSize="22sp"
+        android:textSize="25sp"
         android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/username"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="10dp"
         android:layout_weight="1"
         android:ems="10"
         android:hint="Username"
         android:inputType="textPersonName"
         android:text=""
-        android:textColorHint="@color/textcolor"
-        android:textColor="@color/karryText"/>
+        android:textColor="@color/karryText"
+        android:textColorHint="@color/textcolor" />
 
     <TextView
         android:id="@+id/text_password"
@@ -49,19 +49,19 @@
         android:layout_height="6dp"
         android:layout_weight="1"
         android:text="Password"
-        android:textSize="22sp"
+        android:textSize="25sp"
         android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/password"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="2dp"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="textPassword"
         android:hint="Password"
-        android:textColorHint="@color/textcolor"
-        android:textColor="@color/karryText"/>
+        android:inputType="textPassword"
+        android:textColor="@color/karryText"
+        android:textColorHint="@color/textcolor" />
 
     <TextView
         android:id="@+id/text_email"
@@ -69,20 +69,19 @@
         android:layout_height="6dp"
         android:layout_weight="1"
         android:text="Email"
-        android:textSize="22sp"
+        android:textSize="25sp"
         android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/email"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="6dp"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="textEmailAddress"
-        android:text=""
         android:hint="Email"
-        android:textColorHint="@color/textcolor"
-        android:textColor="@color/karryText"/>
+        android:inputType="textEmailAddress"
+        android:textColor="@color/karryText"
+        android:textColorHint="@color/textcolor" />
 
     <TextView
         android:id="@+id/text_address"
@@ -90,19 +89,19 @@
         android:layout_height="6dp"
         android:layout_weight="1"
         android:text="Address"
-        android:textSize="22sp"
+        android:textSize="25sp"
         android:textColor="@color/colorOrange"/>
 
     <EditText
         android:id="@+id/address"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="5dp"
         android:layout_weight="1"
         android:ems="10"
-        android:inputType="text"
         android:hint="Address"
-        android:textColorHint="@color/textcolor"
-        android:textColor="@color/karryText"/>
+        android:inputType="text"
+        android:textColor="@color/karryText"
+        android:textColorHint="@color/textcolor" />
 
     <Button
         android:id="@+id/registerButton"
