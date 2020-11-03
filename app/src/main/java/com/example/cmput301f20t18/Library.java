@@ -159,7 +159,43 @@ public class Library {
         }
         return books;
     }
-  
+    
+    /**
+     * Return a list of books for based on a search performed locally
+     * @param field represents the fields that can be searched
+     * @param query represents the information that we want a mathcing book for             
+     * @return an ArrayList of books that match the search
+     */
+
+    public ArrayList<Book> searchBookLocal(int field, String query){
+        ArrayList<Book> outBooks = new ArrayList<>();
+        for(int key: this.bookLibrary.keySet()){
+            if (field == 0){
+                if (this.bookLibrary.get(key).getAuthor().toUpperCase() == query.toUpperCase()){
+                    outBooks.add(this.bookLibrary.get(key));
+                }
+            }
+            else if (field == 1){
+                if (this.bookLibrary.get(key).getTitle().toUpperCase() == query.toUpperCase()){
+                    outBooks.add(this.bookLibrary.get(key));
+                }
+            }
+            else if (field == 2){
+                if (this.bookLibrary.get(key).getISBN() == Long.parseLong(query)){
+                    outBooks.add(this.bookLibrary.get(key));
+                }
+            }
+        }
+        return outBooks;
+    }
+    //ToDo
+    /*
+    public ArrayList<Book> searchBookDB(String field, String query){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference searchRef = db.collection("books");
+        Query searchQuery = searchRef.whereEqualTo(field, query);
+    }
+    */
     /**
      * A complete listener that allows for the retrieval
      * of data onComplete
