@@ -56,7 +56,7 @@ public class HomeScreen extends AppCompatActivity {
         Task<DocumentSnapshot> retrieve_current_user = current_user.get();
 
         // successfully got all books and users
-       /* Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+       Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
             @Override
             public void onSuccess(List<Task<?>> tasks) {
                 User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
@@ -70,7 +70,7 @@ public class HomeScreen extends AppCompatActivity {
             }
 
 
-        });*/
+        });
 
         /* Bottom navigation menu */
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
