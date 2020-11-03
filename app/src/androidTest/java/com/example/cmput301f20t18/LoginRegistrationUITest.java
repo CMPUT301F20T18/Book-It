@@ -51,6 +51,7 @@ public class LoginRegistrationUITest {
      */
     @Test
     public void RegisterUser(){
+        solo.assertCurrentActivity("Wrong Activity", SplashScreen.class);
         solo.assertCurrentActivity("Wrong Activity", Login.class);
         solo.clickOnButton("Register"); //Click Register Button
         //solo.sleep(60000);
@@ -67,6 +68,7 @@ public class LoginRegistrationUITest {
 
     public void LoginUser(){
 
+        solo.assertCurrentActivity("Wrong Activity", SplashScreen.class);
         solo.assertCurrentActivity("Wrong Activity", Login.class);
         solo.enterText((EditText) solo.getView(R.id.username), "johnathongil12@hotmail.com");
         solo.enterText((EditText) solo.getView(R.id.password), "Comp@Wiz2020");
