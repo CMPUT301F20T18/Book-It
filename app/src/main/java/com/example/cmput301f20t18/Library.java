@@ -30,7 +30,7 @@ public class Library {
      * Serves to construct and initialize the Library
      * such that it is ready for future calls
      */
-    Library(){
+    Library() {
         updateBookLibrary();
     }
 
@@ -39,8 +39,8 @@ public class Library {
      * and stores it in a map which is then assigned
      * to Libraries bookLibrary
      */
-    public void updateBookLibrary(){
-        this.bookLibrary = getDataFromDB();
+    public void updateBookLibrary() {
+        queryDatabase();
     }
 
     /**
@@ -50,16 +50,21 @@ public class Library {
      * data in the database
      */
     //TODO: Test this implementation of pulling data to see if it is effective
-    private Hashtable<Integer, Book> getDataFromDB(){
-        Hashtable<Integer, Book> bookMap = new Hashtable<>();
+    private void queryDatabase(){
+        BookLibOnCompleteListener listener = new BookLibOnCompleteListener();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        QuerySnapshot documents = db.collectionGroup("books")
+        Task<QuerySnapshot> queryAttempt = db.collectionGroup("books")
                 .get()
-                .getResult();
-        for (DocumentSnapshot document:documents){
-            bookMap.put(parseInt(document.getId()), document.toObject(Book.class));
+                .addOnCompleteListener(listener);
+    }
+
+    private void fillBookLibrary(List<Book> books){
+        Hashtable<Integer, Book> bookTable = new Hashtable<Integer, Book>();
+        for (Book book:books){
+            bookTable.put(book.getId(), book);
         }
-        return bookMap;
+        this.bookLibrary = bookTable;
     }
 
     /**
@@ -147,8 +152,8 @@ public class Library {
      * @return Book object that corresponds to
      *         the ID given
      */
-    public List<Book> getBooks(List<Integer> IDs){
-        List<Book> books = new ArrayList<>();
+    public ArrayList<Book> getBooks(List<Integer> IDs){
+        ArrayList<Book> books = new ArrayList<>();
         for (int i = 0; i < IDs.size(); i++){
             books.add(bookLibrary.get(IDs.get(i)));
         }
@@ -167,14 +172,11 @@ public class Library {
             if (task.isSuccessful()){
                 QuerySnapshot queryResult = (QuerySnapshot) task.getResult();
                 this.items = queryResult.toObjects(Book.class);
+                fillBookLibrary(items);
             }
             else{
-                throw new RuntimeException("Database query failed");
+                throw new RuntimeException("Database Query Failed");
             }
-        }
-
-        public List<Book> returnData(){
-            return this.items;
         }
     }
 }
