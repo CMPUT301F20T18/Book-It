@@ -22,7 +22,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-
+        <activity android:name=".MyBooksAddBook"></activity>
         <activity
             android:name=".SplashScreen"
             android:theme="@style/SplashTheme">
@@ -31,12 +31,12 @@
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>.5000
-
-        <activity android:name=".SearchActivity"></activity>
-        <!--<activity android:name=".BookSearchActivity" />
-        <activity android:name=".UserProfileActivity" />-->
-
+        </activity>
+        <activity android:name=".SearchActivity" />
+        <!--
+<activity android:name=".BookSearchActivity" />
+        <activity android:name=".UserProfileActivity" />
+        -->
         <activity android:name=".HomeScreen" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -49,7 +49,6 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
-
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
@@ -66,8 +65,7 @@
         <!-- android:label="@string/title_activity_select_location" /> -->
         <activity android:name=".Login" />
         <activity android:name=".Register" />
-        <activity android:name=".MainActivity">
-        </activity>
+        <activity android:name=".MainActivity"></activity>
     </application>
 
 </manifest>

@@ -3,7 +3,7 @@
         <item>Books</item>
         <item>Users</item>
     </string-array>
-    
+
     <string name="app_name">CMPUT301F20T18</string>
     <string name="title_activity_login">LoginActivity</string>
     <string name="prompt_email">Email</string>
