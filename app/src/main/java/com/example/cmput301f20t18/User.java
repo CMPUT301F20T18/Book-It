@@ -1,6 +1,5 @@
 package com.example.cmput301f20t18;
 
-import android.graphics.Bitmap;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
@@ -11,6 +10,8 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
@@ -21,18 +22,20 @@ import java.util.ArrayList;
  */
 public class User {
     private String username;
-    private long appID;
+    private int appID;
     private String dbID;
-    private Bitmap profilePicture;
+    private String profilePicture;
     private String email;
     private String address;
+
     Borrower borrower;
     Owner owner;
+    Contact contact;
     private Library lib;
 
 
     /**
-     * empty constructor used for firestore
+     * empty constructor used for firebase deserializing
      */
     public User(){
 
@@ -48,15 +51,16 @@ public class User {
      * @param email The users email address
      * @param address The users address
      */
-    public User(String username, long appID, String DB_id, String email, String address) {
+    public User(String username, int appID, String DB_id, String email, String address) {
         this.username = username;
         this.appID = appID;
         this.dbID = DB_id;
         this.email = email;
         this.address = address;
-        this.profilePicture = null;
-        borrower = new Borrower();
-        owner = new Owner();
+        this.profilePicture =  "picture";
+        borrower = new Borrower(new ArrayList<Transaction>(), new ArrayList<Integer>(), new ArrayList<Book>());
+        owner = new Owner(new ArrayList<Transaction>(), new ArrayList<Integer>(), new ArrayList<Book>());
+        contact = new Contact();
     }
 
 
@@ -70,6 +74,28 @@ public class User {
         private ArrayList<Transaction> owner_transactions;
         private ArrayList<Integer> owner_book_id;
         private ArrayList<Book> owner_books;
+
+        /**
+         * empty constructor for de-serializing
+         */
+        private Owner(){
+
+        }
+
+        /**
+         * Default constructor used for
+         * @param transactions list of transactions for the Owner
+         * @param book_id list of transaction for the owner
+         * @param books list of books for the owner
+         */
+        private Owner(ArrayList<Transaction> transactions, ArrayList<Integer> book_id, ArrayList<Book> books) {
+            this.owner_transactions = transactions;
+            this.owner_book_id = book_id;
+            this.owner_books = books;
+        }
+
+
+
 
 
         /**
@@ -125,6 +151,12 @@ public class User {
                     lib.addBook(book);
                     owner_book_id.add(val);
                     mRef.setValue(val + 1);
+
+
+                    // add the book to the DB
+                    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+                    CollectionReference book_ref = DB.collection("system").document("System").collection("books");
+                    book_ref.document(Integer.toString(val)).set(book);
                 }
 
                 @Override
@@ -224,6 +256,24 @@ public class User {
         private ArrayList<Integer> borrower_book_id;
         private ArrayList<Book> borrower_books;
 
+        /**
+         * Empty constructor for firebase
+         */
+        private Borrower() {
+
+        }
+
+        /**
+         * constructor for initializing the borrower object
+         * @param borrower_transactions list of the borrowers transactions
+         * @param borrower_book_id list of the book IDs this User is borrowing
+         * @param borrower_books list of the books this user is borrowing
+         */
+        public Borrower(ArrayList<Transaction> borrower_transactions, ArrayList<Integer> borrower_book_id, ArrayList<Book> borrower_books) {
+            this.borrower_transactions = borrower_transactions;
+            this.borrower_book_id = borrower_book_id;
+            this.borrower_books = borrower_books;
+        }
 
         /**
          * Request a book from a book owner
@@ -323,11 +373,20 @@ public class User {
      * Each user contains a contact object
      * Representing their contact information and ideal pickup location
      */
-    private class Contact {
+    public class Contact {
+
         private int phone;
         private String pickup_location;
         private String address;
         private String email;
+
+        /**
+         * empty constructor for firebase
+         */
+        private Contact() {
+
+        }
+
 
         public String getPickup_location() {
             return pickup_location;
