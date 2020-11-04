@@ -5,12 +5,17 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
+
+import static java.lang.Integer.parseInt;
 
 /**
  * Library is a storage and retrieval
@@ -25,7 +30,7 @@ public class Library {
      * Serves to construct and initialize the Library
      * such that it is ready for future calls
      */
-    Library(){
+    Library() {
         updateBookLibrary();
     }
 
@@ -34,14 +39,8 @@ public class Library {
      * and stores it in a map which is then assigned
      * to Libraries bookLibrary
      */
-    public void updateBookLibrary(){
-        List<Book> books = getDataFromDB();
-        Hashtable<Integer, Book> bookMap = new Hashtable<Integer, Book>();
-        for (int i = 0; i < books.size(); i++){
-            Book book = books.get(i);
-            bookMap.put(book.getId(), book);
-        }
-        this.bookLibrary = bookMap;
+    public void updateBookLibrary() {
+        queryDatabase();
     }
 
     /**
@@ -50,13 +49,22 @@ public class Library {
      * @return returns a list of books constructed from the
      * data in the database
      */
-    private List<Book> getDataFromDB(){
+    //TODO: Test this implementation of pulling data to see if it is effective
+    private void queryDatabase(){
         BookLibOnCompleteListener listener = new BookLibOnCompleteListener();
+
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Task QueryAttempt = db.collection("system").document("System").collection("books")
+        Task<QuerySnapshot> queryAttempt = db.collectionGroup("books")
                 .get()
                 .addOnCompleteListener(listener);
-        return listener.returnData();
+    }
+
+    private void fillBookLibrary(List<Book> books){
+        Hashtable<Integer, Book> bookTable = new Hashtable<Integer, Book>();
+        for (Book book:books){
+            bookTable.put(book.getId(), book);
+        }
+        this.bookLibrary = bookTable;
     }
 
     /**
@@ -83,7 +91,9 @@ public class Library {
      */
     private void addDB(Book book){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("books")
+        db.collection("system")
+                .document("system")
+                .collection("book")
                 .document(Integer.toString(book.getId()))
                 .set(book);
     }
@@ -113,7 +123,9 @@ public class Library {
      */
     private void deleteDB(Book book){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("books")
+        db.collection("system")
+                .document("system")
+                .collection("book")
                 .document(Integer.toString(book.getId()))
                 .delete();
     }
@@ -130,16 +142,19 @@ public class Library {
     public Book getBook(Integer ID){
         return bookLibrary.get(ID);
     }
-
-
+  
     /**
-     * Return a list of books for a USER
-     * @param IDs An arraylist of Integers referring to the books IDs to return
-     * @return an ArrayList of books
+     * Grabs a List of Book objects from Library's
+     * bookLibrary given the Book object
+     * IDs
+     * @param IDs Integer List representing the IDs
+     *           of the Book objects
+     * @return Book object that corresponds to
+     *         the ID given
      */
-    public ArrayList<Book> getBooks(ArrayList<Integer> IDs){
-        ArrayList<Book> books = new ArrayList<Book>();
-        for (int i = 0; i < books.size(); i++){
+    public ArrayList<Book> getBooks(List<Integer> IDs){
+        ArrayList<Book> books = new ArrayList<>();
+        for (int i = 0; i < IDs.size(); i++){
             books.add(bookLibrary.get(IDs.get(i)));
         }
         return books;
@@ -155,20 +170,22 @@ public class Library {
     public ArrayList<Book> searchBookLocal(int field, String query){
         ArrayList<Book> outBooks = new ArrayList<>();
         for(int key: this.bookLibrary.keySet()){
-            if (field == 0){
-                if (this.bookLibrary.get(key).getAuthor().toUpperCase() == query.toUpperCase()){
-                    outBooks.add(this.bookLibrary.get(key));
-                }
-            }
-            else if (field == 1){
-                if (this.bookLibrary.get(key).getTitle().toUpperCase() == query.toUpperCase()){
-                    outBooks.add(this.bookLibrary.get(key));
-                }
-            }
-            else if (field == 2){
-                if (this.bookLibrary.get(key).getISBN() == Long.parseLong(query)){
-                    outBooks.add(this.bookLibrary.get(key));
-                }
+            switch(field){
+                case 0:
+                    if (this.bookLibrary.get(key).getAuthor().toUpperCase() == query.toUpperCase()){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
+                case 1:
+                    if (this.bookLibrary.get(key).getTitle().toUpperCase() == query.toUpperCase()){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
+                case 2:
+                    if (this.bookLibrary.get(key).getISBN() == Long.parseLong(query)){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
             }
         }
         return outBooks;
@@ -181,7 +198,6 @@ public class Library {
         Query searchQuery = searchRef.whereEqualTo(field, query);
     }
     */
-
     /**
      * A complete listener that allows for the retrieval
      * of data onComplete
@@ -194,14 +210,11 @@ public class Library {
             if (task.isSuccessful()){
                 QuerySnapshot queryResult = (QuerySnapshot) task.getResult();
                 this.items = queryResult.toObjects(Book.class);
+                fillBookLibrary(items);
             }
             else{
-                throw new RuntimeException("Database query failed");
+                throw new RuntimeException("Database Query Failed");
             }
-        }
-
-        public List<Book> returnData(){
-            return this.items;
         }
     }
 }
