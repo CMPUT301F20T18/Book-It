@@ -22,7 +22,7 @@ public class ExchangeTransaction extends Transaction{
      * @param ID The ID of the transaction
      * @param status The state the transaction is in (exchange)
      */
-    public ExchangeTransaction(User bookOwner, User bookBorrower, Integer bookId, Integer ID, String status) {
+    public ExchangeTransaction(String bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
         super(bookOwner, bookBorrower, bookId, ID, status);
         this.bookOwnerScanned = false;
         this.bookBorrowerScanned = false;
@@ -33,7 +33,7 @@ public class ExchangeTransaction extends Transaction{
      * to be called when a user scans the book during a hand off
      * @param userWhoScanned The user who scanned the book
      */
-    public void scanned(User userWhoScanned){
+    public void scanned(String userWhoScanned){
         if (userWhoScanned.equals(this.getBookOwner())){
             this.bookOwnerScanned = true;
         }
@@ -80,5 +80,13 @@ public class ExchangeTransaction extends Transaction{
      */
     public void setLocation(LatLng location) {
         this.location = location;
+    }
+
+    public Boolean getBookOwnerScanned() {
+        return bookOwnerScanned;
+    }
+
+    public Boolean getBookBorrowerScanned() {
+        return bookBorrowerScanned;
     }
 }
