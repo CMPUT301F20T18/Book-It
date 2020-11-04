@@ -77,11 +77,11 @@ public class User {
          * @param type The status of the book to be found
          * @return list of bookIDs matching the requested status
          */
-        public ArrayList<Book> getBooks(String type) {
+        public ArrayList<Book> getBooks(int type) {
             owner_books = lib.getBooks(owner_book_id);
             ArrayList<Book> filtered = new ArrayList<Book>();
             for (Book b : owner_books) {
-                if (b.getStatus().equals(type)) {
+                if (b.getStatus() == type) {
                     filtered.add(b);
                 }
             }
@@ -121,7 +121,7 @@ public class User {
                 @Override
                 public void onDataChange(@NonNull DataSnapshot snapshot) {
                     Integer val = snapshot.getValue(Integer.class);
-                    Book book = new Book(title, isbn, author, val, "available", User.this);
+                    Book book = new Book(title, isbn, author, val, 0, User.this, 1984);
                     lib.addBook(book);
                     owner_book_id.add(val);
                     mRef.setValue(val + 1);
