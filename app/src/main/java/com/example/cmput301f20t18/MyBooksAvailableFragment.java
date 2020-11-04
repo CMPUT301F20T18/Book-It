@@ -74,7 +74,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_my_books_available, container, false);
 
-        recyclerView = (RecyclerView) view.findViewById(R.id.recyclerView);
+        recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 

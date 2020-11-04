@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -75,7 +76,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         Book book = bookList.get(position);
 
-        holder.imageView.setImageResource(R.drawable.default_cover);
+        //holder.imageView.setImageResource(R.drawable.default_cover);
         holder.textViewTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
         holder.textViewYear.setText(String.valueOf(book.getYear()));
@@ -91,7 +92,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                 holder.button.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog dialog = (new AlertDialog.Builder(v.getContext())
+                        Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
+                        v.getContext().startActivity(intent);
+                        /*AlertDialog dialog = (new AlertDialog.Builder(v.getContext())
                                 .setTitle("View Requests")
                                 .setMessage("todo")
                                 .setPositiveButton("ok", new DialogInterface.OnClickListener() {
@@ -105,7 +108,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                         Button buttonPositive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
                         buttonPositive.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
                         Button buttonNegative = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        buttonNegative.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                        buttonNegative.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));*/
                     }
                 });
                 break;
