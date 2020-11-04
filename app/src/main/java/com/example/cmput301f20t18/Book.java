@@ -2,6 +2,8 @@ package com.example.cmput301f20t18;
 
 import android.graphics.Bitmap;
 
+import java.util.Comparator;
+
 /**
  * A book object represents a book within our library
  */
@@ -129,4 +131,29 @@ public class Book {
     public void setOwner(User owner) {
         this.owner = owner;
     }
+
+    /**
+     * Used for sorting books when in the MyBooks>Available tab.
+     * Books are sorted by status then alphabetically by title.
+     * This is reliable only for books of status "available" or "requested".
+     *
+     * @return -1 if o1<o2, 0 if o1==o2, 1 if o1>o2
+     */
+    static Comparator<Book> getMyBooksAvailableComparator() {
+        return new Comparator<Book>() {
+            @Override
+            public int compare(Book o1, Book o2) {
+                if (o1.getStatus().equals(o2.getStatus())) {
+                    return o1.getTitle().compareToIgnoreCase(o2.getTitle()); // alphabetically
+                }
+                else if (o1.getStatus().equals("available")) { // "available" > "requested"
+                    return 1;
+                }
+                else {
+                    return -1;
+                }
+            }
+        };
+    }
+
 }
