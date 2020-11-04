@@ -34,12 +34,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         Book book = bookList.get(position);
 
-        String status = book.getStatus();
+        int status = book.getStatus();
         switch (status) {
-            case "available": return 0;
-            case "requested": return 1;
-            case "accepted": return 2;
-            case "borrowed": return 3;
+            case Book.STATUS_AVAILABLE: return 0;
+            case Book.STATUS_REQUESTED: return 1;
+            case Book.STATUS_ACCEPTED: return 2;
+            case Book.STATUS_BORROWED: return 3;
         }
         return -1;
     }
@@ -70,10 +70,24 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         holder.imageView.setImageResource(R.drawable.default_cover);
         holder.textViewTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
-        //holder.textViewYear.setText(book.getYear());
-        holder.textViewISBN.setText(Long.toString(book.getISBN()));
-        holder.textViewStatus.setText(book.getStatus());
+        holder.textViewYear.setText(String.valueOf(book.getYear()));
+        holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
+        int status = book.getStatus();
+        switch (status) {
+            case 0:
+                holder.textViewStatus.setText("Available");
+                break;
+            case 1:
+                holder.textViewStatus.setText("Requested");
+                break;
+            case 2:
+                holder.textViewStatus.setText("Accepted");
+                break;
+            case 3:
+                holder.textViewStatus.setText("Borrowed");
+                break;
+        }
     }
 
     @Override

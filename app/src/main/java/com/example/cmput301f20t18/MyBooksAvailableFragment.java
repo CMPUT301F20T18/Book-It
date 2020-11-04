@@ -76,9 +76,9 @@ public class MyBooksAvailableFragment extends Fragment {
 
         bookList = new ArrayList<>();
         bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
-                69, "requested", null));
+                69, Book.STATUS_REQUESTED, null, 1995));
         bookList.add(new Book("To Kill a Mockingbird",9781973907985L, "Harper Lee",
-                420, "available", null));
+                420, Book.STATUS_AVAILABLE, null, 1960));
 
         Collections.sort(bookList, Book.getMyBooksAvailableComparator());
 

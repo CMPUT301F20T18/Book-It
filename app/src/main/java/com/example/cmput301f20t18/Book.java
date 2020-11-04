@@ -8,6 +8,12 @@ import java.util.Comparator;
  * A book object represents a book within our library
  */
 public class Book {
+
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_REQUESTED = 1;
+    public static final int STATUS_ACCEPTED = 2;
+    public static final int STATUS_BORROWED = 3;
+
     private String title;
     private long isbn;
     private String author;
@@ -135,6 +141,18 @@ public class Book {
     }
 
     /**
+     * Set the year of a book
+     * @param year The new year of the book
+     */
+    public void setYear(int year) { this.year = year; }
+
+    /**
+     * Get the year of the book
+     * @return the year of the book
+     */
+    public int getYear() { return year; }
+
+    /**
      * Used for sorting books when in the MyBooks>Available tab.
      * Books are sorted by status then alphabetically by title.
      * This is reliable only for books of status "available" or "requested".
@@ -145,10 +163,10 @@ public class Book {
         return new Comparator<Book>() {
             @Override
             public int compare(Book o1, Book o2) {
-                if (o1.getStatus().equals(o2.getStatus())) {
+                if (o1.getStatus() == o2.getStatus()) {
                     return o1.getTitle().compareToIgnoreCase(o2.getTitle()); // alphabetically
                 }
-                else if (o1.getStatus().equals("available")) { // "available" > "requested"
+                else if (o1.getStatus() == STATUS_AVAILABLE) { // available > requested
                     return 1;
                 }
                 else {
