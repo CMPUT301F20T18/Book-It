@@ -25,16 +25,17 @@ public class SearchFragment extends Fragment {
         Button searchButton;
         ListView searchResultList;
 
-        //Sets up spinner Currently broken. Assigning adapter to spinner causes a crash and debugger
-        //complains about source not matching bytecode
+        //Set up spinner
         searchSpinner = view.findViewById(R.id.search_spinner);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(view.getContext(),
                 R.array.search_spinner_array, android.R.layout.simple_spinner_item);
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
         searchSpinner.setAdapter(spinnerAdapter);
 
+        //Set up search bar edit text
         searchEditText = view.findViewById(R.id.search_edit_text);
 
+        //Set up search button
         searchButton = view.findViewById(R.id.search_button);
 
         return view;
