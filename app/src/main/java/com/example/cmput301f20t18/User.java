@@ -1,13 +1,26 @@
 package com.example.cmput301f20t18;
 
-import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.util.Log;
+import android.widget.Toast;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.annotation.TransitionRes;
+
+import com.google.firebase.auth.FirebaseUser;
+
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 
 import java.util.ArrayList;
+
+import static android.content.ContentValues.TAG;
+
 
 
 /**
@@ -15,14 +28,20 @@ import java.util.ArrayList;
  * and contains both functionality for owners and borrowers, but not both have to be used
  */
 public class User {
+    private static Library library = new Library();
     private String username;
+    private String DB_id;
     private Bitmap profilePicture;
 
-
+    public User(String username, long appID, String DB_id, String email, String address) {
+        //String id = auth.getUid();
+        FirebaseDatabase user_db = FirebaseDatabase.getInstance();
+        DatabaseReference ref = user_db.getReference();
+    }
     /**
      * Implements the functionality for owner behaviors
      */
-    private class Owner {
+    public class Owner {
         private ArrayList<Transaction> owner_transactions;
         private ArrayList<Integer> owner_books;
 
@@ -32,15 +51,15 @@ public class User {
          * @param type The status of the book to be found
          * @return list of bookIDs matching the requested status
          */
-//        public ArrayList<Integer> getBooks(String type) {
-//            ArrayList<Integer> filtered = new ArrayList<Integer>();
-//            for (int i = 0; i < owner_books.size(); i++) {
-//                if (Library.getBook(owner_books.get(i)).getStatus() == type) {
-//                    filtered.add(owner_books.get(i));
-//                }
-//            }
-//            return filtered;
-//        }
+        public ArrayList<Integer> getBooks(String type) {
+            ArrayList<Integer> filtered = new ArrayList<Integer>();
+            for (int i = 0; i < owner_books.size(); i++) {
+                if (library.getBook(owner_books.get(i)).getStatus() == type) {
+                    filtered.add(owner_books.get(i));
+                }
+            }
+            return filtered;
+        }
 
         /**
          * Deletes the book with bookID from the owners collection
@@ -65,10 +84,15 @@ public class User {
          * @param title Title of the book to be added
          * @param author Author of the book to be added
          */
-//        public void newBook(int isbn, String title, String author) {
-//            Book newBook = Library.addBook(isbn, title, author);
-//            owner_books.add(newBook.getId());
-//        }
+        public void newBook(int isbn, String title, String author) {
+
+            FirebaseDatabase db = FirebaseDatabase.getInstance();
+            DatabaseReference mRef = db.getReference("Book");
+
+            // TODO: get unique ID number for each book
+
+
+        }
 
 
 
@@ -145,7 +169,7 @@ public class User {
     /**
      * Borrower contains the implementation for any borrowing activities
      */
-    private class Borrower {
+    public class Borrower {
         private ArrayList<Transaction> borrower_transactions;
         private ArrayList<Book> borrower_books;
 
@@ -222,10 +246,6 @@ public class User {
         public void transactionDelete(int t_id) {
 
         }
-
-
-
-
 
 
     }

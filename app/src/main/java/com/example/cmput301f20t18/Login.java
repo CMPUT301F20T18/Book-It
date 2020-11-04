@@ -9,6 +9,8 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -24,6 +26,11 @@ public class Login extends AppCompatActivity {
     Button register;
     EditText login_user;
     EditText login_password;
+    TextView usernameT;
+    TextView passwordT;
+    ImageView loginArt;
+    TextView signIn;
+    ImageView projectLogo;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,6 +41,11 @@ public class Login extends AppCompatActivity {
         register = (Button) findViewById(R.id.Register);
         login_user = (EditText) findViewById(R.id.username);
         login_password = (EditText) findViewById(R.id.password);
+        usernameT = (TextView) findViewById(R.id.textView_username);
+        passwordT = (TextView) findViewById(R.id.textView_password);
+        loginArt = (ImageView) findViewById(R.id.login_image);
+        signIn = (TextView) findViewById(R.id.sign_in);
+        projectLogo = (ImageView) findViewById(R.id.login_image);
 
         login.setOnClickListener(new View.OnClickListener() {
             @Override

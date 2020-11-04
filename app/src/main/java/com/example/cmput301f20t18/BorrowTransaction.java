@@ -1,12 +1,30 @@
 package com.example.cmput301f20t18;
 
-//Transaction wherein the borrower is now in the possession of the book
+/**
+ * A BorrowTransaction object is a type of transaction
+ * which handles the time at which the bookBorrower is
+ * in possession of the book
+ */
 public class BorrowTransaction extends Transaction{
-    public BorrowTransaction(User bookOwner, User bookBorrower, Integer bookId, Integer ID, String status) {
+    /**
+     * BorrowTransaction constructor called by ExchangeTransaction
+     *
+     * @param bookOwner The owner of the book
+     * @param bookBorrower The borrower of the book
+     * @param bookId The id of the book being borrowed
+     * @param ID The id of the transaction
+     * @param status The state of the transaction (borrow)
+     */
+    public BorrowTransaction(String bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
         super(bookOwner, bookBorrower, bookId, ID, status);
     }
 
-    public Transaction finish(){
-        return this.changeStatus("exchange");
+    /**
+     * Called when the borrower is ready to return the book
+     * to the bookOwner
+     * @return ExchangeTransaction with same ID, bookOwner, bookBorrower and bookID
+     */
+    public ExchangeTransaction finish(){
+        return (ExchangeTransaction) this.changeStatus("exchange");
     }
 }
