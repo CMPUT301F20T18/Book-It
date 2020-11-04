@@ -57,7 +57,7 @@
         android:layout_marginStart="28dp"
         android:layout_marginTop="280dp"
         android:fontFamily="@font/poppins_medium"
-        android:text="Username"
+        android:text="Email"
         android:textColor="@color/colorOrange"
         android:textSize="20dp"
         app:layout_constraintStart_toStartOf="parent"
