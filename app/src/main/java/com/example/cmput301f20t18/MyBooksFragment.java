@@ -25,9 +25,9 @@ public class MyBooksFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.mybooks_toolbar);
         toolbar.setTitle(getResources().getText(R.string.mybooks_header));
         TabLayout tabLayout = view.findViewById(R.id.mybooks_tab_layout);
-        TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
-        TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);
-        TabItem tabLending = view.findViewById(R.id.tab_mybooks_lending);
+        //TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
+        //TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);
+        //TabItem tabLending = view.findViewById(R.id.tab_mybooks_lending);
         ViewPager viewPager = view.findViewById(R.id.mybooks_viewPager);
 
         MyBooksPageAdapter pageAdapter = new MyBooksPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());

@@ -2,6 +2,6 @@
 <!-- this is for highlighting the background of the selected tab -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <!--<item android:drawable="@color/colorGray" android:state_pressed="true" />-->
-    <item android:drawable="@color/colorGray" android:state_checked="true" />
+    <item android:drawable="@color/colorGray1" android:state_checked="true" />
     <item android:drawable="@color/colorPrimary" />
 </selector>

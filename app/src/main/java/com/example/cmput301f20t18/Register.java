@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -38,6 +39,7 @@ public class Register extends AppCompatActivity {
     EditText password;
     EditText email;
     EditText address;
+    private TextView accountCreate, usernameText, passwordText, emailText, addressText;
     Button register;
     FirebaseAuth mAuth;
     FirebaseFirestore DB;
@@ -55,6 +57,12 @@ public class Register extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
         address = (EditText) findViewById(R.id.address);
         register = (Button) findViewById(R.id.registerButton);
+        accountCreate = (TextView) findViewById(R.id.text_Create_Account);
+        usernameText = (TextView) findViewById(R.id.text_username);
+        passwordText = (TextView) findViewById(R.id.text_password);
+        emailText = (TextView) findViewById(R.id.text_email);
+        addressText = (TextView) findViewById(R.id.text_address);
+
         mAuth = FirebaseAuth.getInstance();
 
 
@@ -112,7 +120,7 @@ public class Register extends AppCompatActivity {
                                                 Baseref.child("max_user_id").addListenerForSingleValueEvent(new ValueEventListener() {
                                                     @Override
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
-                                                        Long val = snapshot.getValue(Long.class);
+                                                        Long val = (Long) snapshot.getValue(Long.class);
                                                         // add the user to the collection
                                                         User person = new User(new_username, val, mAuth.getUid(), new_email, new_address);
                                                         system.document("System").collection("users").document(user.getUid()).set(person);
