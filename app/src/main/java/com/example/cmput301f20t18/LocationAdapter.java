@@ -1,6 +1,5 @@
 package com.example.cmput301f20t18;
 
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -8,10 +7,10 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -48,15 +47,22 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
 
         UserLocation location = locationList.get(position);
 
-        //holder.imageView.setImageResource(user.getProfilePicture);
-        /*holder.textViewUsername.setText(location.getAddress().getAddressLine(0));
+        holder.textViewAddress.setText(location.getAddress().getAddressLine(0));
+
+        holder.mapButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(v.getContext(), SelectLocationActivity.class);
+                v.getContext().startActivity(intent);
+            }
+        });
 
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 AlertDialog dialog = (new AlertDialog.Builder(v.getContext())
-                        .setTitle("Delete Request")
-                        .setMessage("Are you sure you want to delete this request?")
+                        .setTitle("Delete Location")
+                        .setMessage("Are you sure you want to delete this location?")
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
@@ -73,13 +79,14 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
             }
         });
 
-        holder.acceptButton.setOnClickListener(new View.OnClickListener() {
+        holder.selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                // UPDATE BOOK STATUS TO ACCEPTED
+                Intent intent = new Intent(v.getContext(), HomeScreen.class);
                 v.getContext().startActivity(intent);
             }
-        });*/
+        });
     }
 
     @Override
@@ -89,19 +96,19 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
 
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
 
-        ImageView imageView;
-        TextView textViewUsername;
+        TextView textViewAddress;
 
         Button deleteButton;
-        Button acceptButton;
+        Button selectButton;
+        Button mapButton;
 
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
 
-            imageView = itemView.findViewById(R.id.profile_view);
-            textViewUsername = itemView.findViewById(R.id.text_username);
-            deleteButton = itemView.findViewById(R.id.button_delete_request);
-            acceptButton = itemView.findViewById(R.id.button_accept_request);
+            textViewAddress = itemView.findViewById(R.id.text_address);
+            mapButton = itemView.findViewById(R.id.button_map);
+            deleteButton = itemView.findViewById(R.id.button_delete_location);
+            selectButton = itemView.findViewById(R.id.button_select_location);
         }
     }
 }

@@ -4,7 +4,6 @@ import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -38,7 +37,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.Reques
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View view = inflater.inflate(R.layout.card_requests, null);
+        View view = inflater.inflate(R.layout.card_request, null);
         return new RequestViewHolder(view);
     }
 
@@ -75,6 +74,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.Reques
         holder.acceptButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                // the user that made the request should be passed here
                 Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
                 v.getContext().startActivity(intent);
             }
