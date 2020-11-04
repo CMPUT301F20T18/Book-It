@@ -1,14 +1,18 @@
 package com.example.cmput301f20t18;
 
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -75,12 +79,16 @@ public class MyBooksAvailableFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
         bookList = new ArrayList<>();
-        bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
-                69, Book.STATUS_REQUESTED, null, 1995));
-        bookList.add(new Book("To Kill a Mockingbird",9781973907985L, "Harper Lee",
-                420, Book.STATUS_AVAILABLE, null, 1960));
+        bookList.add(new Book("The Great Gatsby", 9780684801520L, "F. Scott Fitzgerald",
+                420, Book.STATUS_REQUESTED, null, 1995));
+        bookList.add(new Book("To Kill a Mockingbird", 9781973907985L, "Harper Lee",
+                421, Book.STATUS_AVAILABLE, null, 1960));
+        bookList.add(new Book("Jane Eyre", 9780194241762L, "Charlotte Bronte",
+                422, Book.STATUS_REQUESTED, null, 1979));
+        bookList.add(new Book("A Passage to India", 9780140180763L, "E. M. Forster",
+                423, Book.STATUS_AVAILABLE, null, 1989));
 
-        Collections.sort(bookList, Book.getMyBooksAvailableComparator());
+        Collections.sort(bookList);
 
         BookAdapter bookAdapter = new BookAdapter(view.getContext(), bookList);
         recyclerView.setAdapter(bookAdapter);

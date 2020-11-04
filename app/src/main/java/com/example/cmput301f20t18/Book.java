@@ -2,12 +2,11 @@ package com.example.cmput301f20t18;
 
 import android.graphics.Bitmap;
 
-import java.util.Comparator;
 
 /**
  * A book object represents a book within our library
  */
-public class Book {
+public class Book implements Comparable<Book> {
 
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_REQUESTED = 1;
@@ -153,27 +152,22 @@ public class Book {
     public int getYear() { return year; }
 
     /**
-     * Used for sorting books when in the MyBooks>Available tab.
-     * Books are sorted by status then alphabetically by title.
-     * This is reliable only for books of status "available" or "requested".
+     * Used for sorting books.
+     * Books in My Books>Available are sorted by status and then alphabetically by title.
+     * Anywhere else books are sorted alphabetically by title.
      *
-     * @return -1 if o1<o2, 0 if o1==o2, 1 if o1>o2
+     * @return -1 if this<o, 0 if this==o, 1 if this>o
      */
-    static Comparator<Book> getMyBooksAvailableComparator() {
-        return new Comparator<Book>() {
-            @Override
-            public int compare(Book o1, Book o2) {
-                if (o1.getStatus() == o2.getStatus()) {
-                    return o1.getTitle().compareToIgnoreCase(o2.getTitle()); // alphabetically
-                }
-                else if (o1.getStatus() == STATUS_AVAILABLE) { // available > requested
-                    return 1;
-                }
-                else {
-                    return -1;
-                }
-            }
-        };
+    @Override
+    public int compareTo(Book o) {
+        if (this.getStatus() == o.getStatus()) {
+            return this.getTitle().compareToIgnoreCase(o.getTitle()); // alphabetically
+        }
+        else if (this.getStatus() == STATUS_AVAILABLE) { // available > requested
+            return 1;
+        }
+        else {
+            return -1;
+        }
     }
-
 }
