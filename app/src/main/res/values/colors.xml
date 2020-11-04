@@ -3,9 +3,12 @@
     <color name="colorPrimary">#434343</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FFE7D0</color>
-    <color name="colorGray">#2B2B2B</color>
     <color name="textcolor">#DDDDDD</color>
     <color name="colorOrange">#FC6E20</color>
     <color name="karryText">#FFE7D0</color>
-    <color name="curiousBlue">#2D9CDB</color>
+    <color name="colorBlue">#2D9CDB</color>
+    <color name="colorGray1">#2B2B2B</color>
+    <color name="colorGray2">#1B1B1B</color>
+    <color name="colorText">#8D8176</color>
+
 </resources>

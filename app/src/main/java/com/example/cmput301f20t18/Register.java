@@ -43,7 +43,9 @@ public class Register extends AppCompatActivity {
     Button register;
     FirebaseAuth mAuth;
     FirebaseFirestore DB;
+    CollectionReference system;
     CollectionReference users;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -66,7 +68,8 @@ public class Register extends AppCompatActivity {
 
 
         DB = FirebaseFirestore.getInstance();
-        users = DB.collection("users");
+        system = DB.collection("system");
+
 
         register.setOnClickListener(new View.OnClickListener() {
             // TODO: Add input verification
@@ -120,7 +123,7 @@ public class Register extends AppCompatActivity {
                                                         Long val = (Long) snapshot.getValue(Long.class);
                                                         // add the user to the collection
                                                         User person = new User(new_username, val, mAuth.getUid(), new_email, new_address);
-                                                        users.document(mAuth.getUid()).set(person);
+                                                        system.document("System").collection("users").document(user.getUid()).set(person);
 
 
 

@@ -5,54 +5,76 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.widget.Toast;
 
-import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore DB;
+    CollectionReference system;
     CollectionReference users;
-    User current;
+    CollectionReference books;
+    DocumentReference current_user;
+    Library lib;
+    final String TAG = "HOMESCREEN";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
+
         DB = FirebaseFirestore.getInstance();
-        users = DB.collection("users");
         auth = FirebaseAuth.getInstance();
         String id = auth.getUid();
-        DocumentReference person = users.document(id);
-        person.get().addOnSuccessListener(new OnSuccessListener<DocumentSnapshot>() {
+
+        // get all of our collections
+        system = DB.collection("system");
+        users = DB.collection("system").document("System").collection("users");
+        books = DB.collection("system").document("System").collection("books");
+        current_user = DB.collection("system").document("System").collection("users").document(id);
+
+        Task<QuerySnapshot> retrieve_users = users.get();
+        Task<QuerySnapshot> retrieve_books = books.get();
+        Task<DocumentSnapshot> retrieve_current_user = current_user.get();
+
+        /* phlafoo commented this out because it was causing crash on runtime */
+        // successfully got all books and users
+       /*Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
             @Override
-            public void onSuccess(DocumentSnapshot documentSnapshot) {
-                if (documentSnapshot.exists()) {
-                    current = documentSnapshot.toObject(User.class);
-                    Toast.makeText(HomeScreen.this, "current user is: " + current.getUsername(), Toast.LENGTH_LONG).show();
+            public void onSuccess(List<Task<?>> tasks) {
+                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
+                assert(current != null);
+
+                List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
+                List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
+                Log.d(TAG, Integer.toString(book_results.size()));
 
 
-                }
             }
-        });
+
+
+        });*/
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -61,14 +83,16 @@ public class HomeScreen extends AppCompatActivity {
 
         bottomNav.setOnNavigationItemSelectedListener(navListener);
 
+        // start at My Books by default
+        bottomNav.setSelectedItemId(R.id.tab_mybooks);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                new BorrowedFragment()).commit();
+                new MyBooksFragment()).commit();
 
 
 
     }
 
-    // class is not in onCreate() to avoid clutter but idk
+    // Not in onCreate() to avoid clutter but idk
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
@@ -99,7 +123,7 @@ public class HomeScreen extends AppCompatActivity {
                             selectedFragment).commit();
 
                     return true;
-                };
+                }
             };
 
     /*test code*/
@@ -119,5 +143,4 @@ public class HomeScreen extends AppCompatActivity {
         }
     }
 }
-
 
