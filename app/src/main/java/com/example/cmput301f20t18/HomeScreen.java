@@ -52,7 +52,7 @@ public class HomeScreen extends AppCompatActivity {
             }
         });
 
-        /* Bottom navigation menu */
+        //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setItemIconTintList(null);
         bottomNav.setItemBackgroundResource(R.drawable.tab_background);
