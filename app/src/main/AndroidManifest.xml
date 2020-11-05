@@ -17,7 +17,7 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-<<<<<<< HEAD
+
         <activity android:name=".MyBooksAddBook"></activity>
         <activity
             android:name=".SplashScreen"
@@ -34,9 +34,7 @@
         <activity android:name=".UserProfileActivity" />
         -->
         <activity android:name=".HomeScreen" />
-=======
 
->>>>>>> c0363d55943d827830aa57f39cd57d30cbbe7530
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -86,7 +84,7 @@
         <!-- android:label="@string/title_activity_select_location" /> -->
         <activity android:name=".Login" />
         <activity android:name=".Register" />
-        <activity android:name=".MainActivity" />
+        <activity android:name=".MainActivity"/>
 
     </application>
 
