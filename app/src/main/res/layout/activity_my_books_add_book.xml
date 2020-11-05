@@ -48,8 +48,8 @@
                 android:layout_height="35dp"
                 android:layout_marginLeft="310dp"
                 android:layout_marginTop="5dp"
-                android:background="@drawable/good_button_blue"
                 android:text="Done"
+                android:background="@drawable/good_button_blue"
                 android:textColor="@color/karryText"
                 android:textSize="15sp" />
 
