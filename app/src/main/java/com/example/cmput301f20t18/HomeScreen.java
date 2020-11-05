@@ -69,6 +69,7 @@ public class HomeScreen extends AppCompatActivity {
 
                 List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
                 List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
+                Log.d(TAG, Integer.toString(current.getBorrowedBooks().size()));
 
 
             }
