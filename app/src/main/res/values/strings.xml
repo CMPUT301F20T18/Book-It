@@ -29,5 +29,8 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="view_requests_header">Requests</string>
     <string name="choose_location_header">Choose location</string>
+    <string name="picking_up">picking up</string>
+    <string name="borrowing">borrowing</string>
+    <string name="owner">owner</string>
 
 </resources>

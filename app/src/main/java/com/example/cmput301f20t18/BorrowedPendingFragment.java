@@ -75,7 +75,7 @@ public class BorrowedPendingFragment extends Fragment {
 
         bookList = new ArrayList<>();
         bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
-                420, Book.STATUS_AVAILABLE, null, 1995));
+                420, Book.STATUS_ACCEPTED, null, 1995));
         bookList.add(new Book("To Kill a Mockingbird",9781973907985L, "Harper Lee",
                 421, Book.STATUS_ACCEPTED, null, 1960));
         bookList.add(new Book("Jane Eyre",9780194241762L, "Charlotte Bronte",
