@@ -211,7 +211,7 @@ public class Scanner extends AppCompatActivity {
                             String rawValue = barcode.getRawValue();
                             int valueType = barcode.getValueType();
                             if (valueType == Barcode.TYPE_ISBN && rawValue != null) {
-                                    Intent intent = new Intent(getBaseContext(), PostScanActivity.class);
+                                    Intent intent = new Intent(Scanner.this, PostScanActivity.class);
                                     intent.putExtra("ISBN", rawValue);
                                     setResult(RESULT_OK, intent);
                                     finish();
