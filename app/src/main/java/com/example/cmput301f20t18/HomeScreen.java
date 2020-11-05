@@ -59,7 +59,7 @@ public class HomeScreen extends AppCompatActivity {
 
         /* phlafoo commented this out because it was causing crash on runtime */
         // successfully got all books and users
-       Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+       /*Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
             @Override
             public void onSuccess(List<Task<?>> tasks) {
                 User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
@@ -72,7 +72,7 @@ public class HomeScreen extends AppCompatActivity {
             }
 
 
-        });
+        });*/
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -105,6 +105,7 @@ public class HomeScreen extends AppCompatActivity {
                             selectedFragment = new SearchFragment();
                             break;
                         case R.id.tab_scan:
+                            //startActivityForResult(new Intent(getApplicationContext(),PostScanActivity.class),1);
                             startActivityForResult(new Intent(getApplicationContext(),Scanner.class),1);
                             break;
                         case R.id.tab_mybooks:

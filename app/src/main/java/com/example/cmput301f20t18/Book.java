@@ -171,10 +171,6 @@ public class Book implements Comparable<Book> {
         }
     }
 
-    public long getIsbn() {
-        return isbn;
-    }
-
     public void setIsbn(long isbn) {
         this.isbn = isbn;
     }
