@@ -62,12 +62,40 @@ public class HomeScreen extends AppCompatActivity {
        Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
             @Override
             public void onSuccess(List<Task<?>> tasks) {
-//                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
-//                assert(current != null);
-//                Log.d(TAG, "onSuccess: " + current.getUsername());
-//
-//                List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
-//                List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
+                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
+                assert(current != null);
+                Log.d(TAG, "onSuccess: " + current.getUsername());
+                List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
+                List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
+
+                Log.d(TAG, "Number of users:" + Integer.toString(book_results.size()));
+                Log.d(TAG, "Number of books:" + Integer.toString(user_results.size()));
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
             }
 
