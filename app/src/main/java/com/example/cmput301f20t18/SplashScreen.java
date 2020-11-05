@@ -12,7 +12,7 @@ public class SplashScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
 
         /*This is the opening screen of the app*/
-        Intent intent = new Intent(SplashScreen.this, Login.class);
+        Intent intent = new Intent(SplashScreen.this, HomeScreen.class);
         startActivity(intent);
     }
 }
