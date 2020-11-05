@@ -28,6 +28,10 @@ public class MainActivity extends AppCompatActivity {
         Intent intentHomeScreen = new Intent(MainActivity.this, HomeScreen.class);
         startActivity(intentHomeScreen);
 
+        //Intent intent = new Intent(MainActivity.this, SelectLocationActivity.class);
+        //startActivity(intent);
+
+
 
 
     }
