@@ -168,6 +168,7 @@ public class Library {
      */
 
     public ArrayList<Book> searchBookLocal(int field, String query){
+        updateBookLibrary();
         ArrayList<Book> outBooks = new ArrayList<>();
         for(int key: this.bookLibrary.keySet()){
             switch(field){
