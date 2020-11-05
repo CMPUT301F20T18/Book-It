@@ -33,6 +33,7 @@
         <activity
             android:name=".SelectLocationActivity"
             android:label="@string/title_activity_select_location"></activity>
+        <activity android:name=".MyBooksAddBook" />
         <activity android:name=".ChooseLocationActivity" />
         <activity android:name=".ViewRequestsActivity" />
         <activity
