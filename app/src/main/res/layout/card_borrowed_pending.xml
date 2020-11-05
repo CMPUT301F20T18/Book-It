@@ -27,7 +27,7 @@
         style="?android:attr/borderlessButtonStyle"
         android:fontFamily="@font/poppins"
         android:text="Confirm pick up"
-        android:textColor="@color/colorAccent"
+        android:textColor="@color/colorOrange"
         app:layout_constraintEnd_toEndOf="@+id/include"
         app:layout_constraintTop_toTopOf="parent" />
 
