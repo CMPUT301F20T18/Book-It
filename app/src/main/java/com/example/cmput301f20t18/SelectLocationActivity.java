@@ -39,7 +39,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     public void onMapReady(GoogleMap googleMap) {
         List<Address> addresses;
         mMap = googleMap;
-        final Geocoder geocoder = new Geocoder(this);
         LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
 
@@ -48,38 +47,44 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
             public void onMapClick(LatLng latLng) {
                 mMap.clear();
                 Marker marker = null;
-                try{
-                    List<Address> possibleMarkerAddresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                    Address currentMarkerAddress = possibleMarkerAddresses.get(0);
-                    marker = mMap.addMarker( new MarkerOptions().position(latLng).title(getMarkerTitle(currentMarkerAddress)));
-                    marker.showInfoWindow();
+                if (Geocoder.isPresent()){
+                    Geocoder geocoder = new Geocoder(getApplicationContext());
+                    try {
+                        List<Address> possibleMarkerAddresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
+                        Address currentMarkerAddress = possibleMarkerAddresses.get(0);
+                        marker = mMap.addMarker(new MarkerOptions().position(latLng).title(getAddressString(currentMarkerAddress)));
+                        marker.showInfoWindow();
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
                 }
-                catch(IOException e){
-                    e.printStackTrace();
+                else{
+                    marker = mMap.addMarker(new MarkerOptions().position(latLng).title("Geocoder not present!"));
+                    marker.showInfoWindow();
                 }
             }
         };
         mMap.setOnMapClickListener(listener);
     }
 
-    private String getMarkerTitle(Address markerAddress){
-        String markerTitle = "";
-        String subThoroughfare = markerAddress.getSubThoroughfare();
-        String thoroughfare = markerAddress.getThoroughfare();
-        String locality = markerAddress.getLocality();
-        String adminArea = markerAddress.getAdminArea();
+    private String getAddressString(Address address){
+        String addressTitle = "";
+        String subThoroughfare = address.getSubThoroughfare();
+        String thoroughfare = address.getThoroughfare();
+        String locality = address.getLocality();
+        String adminArea = address.getAdminArea();
         if (subThoroughfare != null){
-            markerTitle += subThoroughfare + " ";
+            addressTitle += subThoroughfare + " ";
         }
         if (thoroughfare != null){
-            markerTitle += thoroughfare + " ";
+            addressTitle += thoroughfare + " ";
         }
         if (locality != null){
-            markerTitle += locality + ", ";
+            addressTitle += locality + ", ";
         }
         if (adminArea != null){
-            markerTitle += adminArea;
+            addressTitle += adminArea;
         }
-        return markerTitle;
+        return addressTitle;
     };
 }
