@@ -41,7 +41,7 @@
         android:inputType="textPersonName"
         android:text=""
         android:textColor="@color/karryText"
-        android:textColorHint="@color/textcolor" />
+        android:textColorHint="@color/colorLightGray" />
 
     <TextView
         android:id="@+id/text_password"
@@ -61,7 +61,7 @@
         android:hint="Password"
         android:inputType="textPassword"
         android:textColor="@color/karryText"
-        android:textColorHint="@color/textcolor" />
+        android:textColorHint="@color/colorLightGray" />
 
     <TextView
         android:id="@+id/text_email"
@@ -81,7 +81,7 @@
         android:hint="Email"
         android:inputType="textEmailAddress"
         android:textColor="@color/karryText"
-        android:textColorHint="@color/textcolor" />
+        android:textColorHint="@color/colorLightGray" />
 
     <TextView
         android:id="@+id/text_address"
@@ -101,7 +101,7 @@
         android:hint="Address"
         android:inputType="text"
         android:textColor="@color/karryText"
-        android:textColorHint="@color/textcolor" />
+        android:textColorHint="@color/colorLightGray" />
 
     <Button
         android:id="@+id/registerButton"
