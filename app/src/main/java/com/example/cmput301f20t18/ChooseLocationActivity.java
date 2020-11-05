@@ -36,8 +36,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
         address2.setAddressLine(0, "10305 80 Ave NW");
 
         locationList = new ArrayList<>();
-        locationList.add(new UserLocation(address1));
-        locationList.add(new UserLocation(address2));
+        locationList.add(new UserLocation(address1, null));
+        locationList.add(new UserLocation(address2, null));
 
         LocationAdapter locationAdapter = new LocationAdapter(this, locationList);
         recyclerView.setAdapter(locationAdapter);
