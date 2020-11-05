@@ -17,6 +17,7 @@
     <string name="title_activity_select_location">Empty For Now</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="mybooks_header">My Books</string>
+    <string name="mybooks_add_book">New Book</string>
     <string name="mybooks_available">Available</string>
     <string name="mybooks_pending">Pending pick up</string>
     <string name="mybooks_lending">Lending</string>

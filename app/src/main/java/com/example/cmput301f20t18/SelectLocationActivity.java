@@ -86,4 +86,8 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         }
         return markerTitle;
     };
+
+    private UserLocation getReturnValue(){
+
+    }
 }
