@@ -20,16 +20,10 @@ import java.util.List;
  * in Borrowed>Ready for pick up.
  */
 public class BorrowedPendingFragment extends Fragment {
-
-<<<<<<< HEAD
-    RecyclerView recyclerView;
-    List<Book> bookList;
-=======
     RecyclerView recyclerView;  // recycler that displays list of books
     List<Book> bookList;        // list of books
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
->>>>>>> 2d192af805a87c056c8bcb682b924dba02f180a4
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,7 +78,6 @@ public class BorrowedPendingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-<<<<<<< HEAD
 
         View view = inflater.inflate(R.layout.fragment_borrowed_pending, container, false);
 
@@ -107,10 +100,8 @@ public class BorrowedPendingFragment extends Fragment {
         BorrowedRecyclerViewAdapter borrowedAdapter = new BorrowedRecyclerViewAdapter(view.getContext(), bookList);
         recyclerView.setAdapter(borrowedAdapter);
 
-        return view;
-=======
+
         return inflater.inflate(R.layout.fragment_borrowed_pending, container, false);
->>>>>>> 2d192af805a87c056c8bcb682b924dba02f180a4
     }
 
     /**

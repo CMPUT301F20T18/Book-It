@@ -20,16 +20,10 @@ import java.util.List;
  * in Borrowed>Borrowing.
  */
 public class BorrowedBorrowingFragment extends Fragment {
-
-<<<<<<< HEAD
-    RecyclerView recyclerView;
-    List<Book> bookList;
-=======
     RecyclerView recyclerView;  // recycler that displays list of books
     List<Book> bookList;        // list of books
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
->>>>>>> 2d192af805a87c056c8bcb682b924dba02f180a4
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -84,10 +78,6 @@ public class BorrowedBorrowingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-<<<<<<< HEAD
-
-        View view = inflater.inflate(R.layout.fragment_borrowed_pending, container, false);
-=======
         return inflater.inflate(R.layout.fragment_borrowed_pending, container, false);
     }
 
@@ -103,16 +93,12 @@ public class BorrowedBorrowingFragment extends Fragment {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
->>>>>>> 2d192af805a87c056c8bcb682b924dba02f180a4
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-<<<<<<< HEAD
-=======
         // some hardcoded books
->>>>>>> 2d192af805a87c056c8bcb682b924dba02f180a4
         bookList = new ArrayList<>();
         bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
                 420, Book.STATUS_BORROWED, null, 1995));
@@ -127,10 +113,5 @@ public class BorrowedBorrowingFragment extends Fragment {
 
         BorrowedRecyclerViewAdapter borrowedAdapter = new BorrowedRecyclerViewAdapter(view.getContext(), bookList);
         recyclerView.setAdapter(borrowedAdapter);
-
-<<<<<<< HEAD
-        return view;
-=======
->>>>>>> 2d192af805a87c056c8bcb682b924dba02f180a4
     }
 }

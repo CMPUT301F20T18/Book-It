@@ -27,15 +27,8 @@ public class MainActivity extends AppCompatActivity {
 
         Intent intent = new Intent(MainActivity.this, HomeScreen.class);
         startActivity(intent);
-<<<<<<< HEAD
 
         //Intent intent = new Intent(MainActivity.this, SelectLocationActivity.class);
         //startActivity(intent);
-
-=======
->>>>>>> 2d192af805a87c056c8bcb682b924dba02f180a4
-
-
-
     }
 }
