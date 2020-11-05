@@ -4,12 +4,14 @@ import android.annotation.SuppressLint;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
@@ -116,6 +118,7 @@ public class Scanner extends AppCompatActivity {
     public void startCamera() {
         cameraProviderFuture = ProcessCameraProvider.getInstance(this);
         cameraProviderFuture.addListener(new Runnable() {
+            @RequiresApi(api = Build.VERSION_CODES.R)
             @Override
             public void run() {
                 try {
@@ -132,6 +135,7 @@ public class Scanner extends AppCompatActivity {
      * Binds the preview and other functions to the screen
      * @param cameraProvider represents the source of the input stream
      */
+    @RequiresApi(api = Build.VERSION_CODES.R)
     void bindPreview(@NonNull ProcessCameraProvider cameraProvider) {
         Preview preview = new Preview.Builder()
                 .build();
@@ -207,8 +211,8 @@ public class Scanner extends AppCompatActivity {
                             String rawValue = barcode.getRawValue();
                             int valueType = barcode.getValueType();
                             if (valueType == Barcode.TYPE_ISBN && rawValue != null) {
-                                    Intent intent = new Intent();
-                                    intent.putExtra("key", rawValue);
+                                    Intent intent = new Intent(getBaseContext(), PostScanActivity.class);
+                                    intent.putExtra("ISBN", rawValue);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                     return;
