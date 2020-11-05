@@ -86,8 +86,8 @@ public class MyBooksPendingFragment extends Fragment {
 
         Collections.sort(bookList);
 
-        BookAdapter bookAdapter = new BookAdapter(view.getContext(), bookList);
-        recyclerView.setAdapter(bookAdapter);
+        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList);
+        recyclerView.setAdapter(myBooksRecyclerViewAdapter);
 
         return view;
     }
