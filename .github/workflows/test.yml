@@ -31,8 +31,10 @@ jobs:
         run: ./gradlew test
 
 
+
       - name: Build project
         run: ./gradlew assemble
+      
 
 
 
