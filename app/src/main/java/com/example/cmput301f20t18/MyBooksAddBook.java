@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -44,12 +45,14 @@ public class MyBooksAddBook extends AppCompatActivity {
             @Override
             public void onClick(View v) {
 
-                String addTitle = bookTitle.getText().toString();
+ /*             String addTitle = bookTitle.getText().toString();
                 String addAuthor = author.getText().toString();
                 int addYear = Integer.parseInt(year.getText().toString());
                 long addISBN = Long.parseLong(isbn.getText().toString());
 
                 Book newBook = new Book(addTitle,addISBN,addAuthor,0,0,null,addYear);
+*/
+                finish();
 
             }
         });
