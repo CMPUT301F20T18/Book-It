@@ -50,11 +50,11 @@ public class User {
     /**
      * Default constructor for a user, used during registration
      *
-     * @param username
-     * @param appID
-     * @param DB_id
-     * @param email
-     * @param address
+     * @param username The username for the user
+     * @param appID The assigned app ID
+     * @param DB_id The users authentication token
+     * @param email The users email address
+     * @param address The users address
      */
     public User(String username, int appID, String DB_id, String email, String address) {
         this.username = username;
@@ -281,6 +281,7 @@ public class User {
         this.borrower_transactions.add(transaction);
     }
 
+
     /**
      * deletes a transaction from a borrower transaction list
      * @param t_id The transaction id of the transaction to remove
@@ -303,6 +304,7 @@ public class User {
     }
 
 
+
     /**
      * Materializes all of the users books from their bookID list
      * Used to speed up application and reduce queries to DB
@@ -310,6 +312,140 @@ public class User {
     public void initUserBooks() {
         this.borrower_books = lib.getBooks(borrower_book_id);
         this.owner_books = lib.getBooks(owner_book_id);
+    }
+
+
+
+
+    // setters and getters start here
+
+
+    /**
+     * Returns the users username
+     * @return String version of the users username
+     */
+    public String getUsername() {
+        return username;
+    }
+
+    /**
+     * Sets the users username
+     * @param username The new username for the user
+     */
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    /**
+     * Return the users appID
+     * @return integer representation of the users app ID
+     */
+    public int getAppID() {
+        return appID;
+    }
+
+    /**
+     * Set the users appID
+     * Note: Do not use this, Firestore requires it for de-serialization
+     * @param appID The new appID
+     */
+    public void setAppID(int appID) {
+        this.appID = appID;
+    }
+
+    /**
+     * Returns the Auth ID for the user
+     * Also used as a document ID within Firestore
+     * @return
+     */
+    public String getDbID() {
+        return dbID;
+    }
+
+    /**
+     * Set the DB ID
+     * Note: DO NOT USE! Firestore requires this for de-serialization however
+     * its use will result in the app breaking.
+     * @param dbID
+     */
+    public void setDbID(String dbID) {
+        this.dbID = dbID;
+    }
+
+    /**
+     * Get the users address
+     * @return String representation of the users address
+     */
+    public String getAddress() {
+        return address;
+    }
+
+
+    /**
+     * Sets the current users address
+     * @param address The new address for the user
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * Get the preferred pickup location for the user
+     * @return String representation of the user preferred pickup location
+     */
+    public String getPickup() {
+        return pickup;
+    }
+
+
+    /**
+     * Sets the users pickup location
+     * @param pickup
+     */
+    public void setPickup(String pickup) {
+        this.pickup = pickup;
+    }
+
+    /**
+     * Get the users phone number
+     * @return String representation of the users phone number
+     */
+    public String getPhone() {
+        return phone;
+    }
+
+    /**
+     * Set the users phone number
+     * @param phone The new phone number for the user
+     */
+    public void setPhone(String phone) {
+        this.phone = phone;
+    }
+
+
+    /**
+     * Get the users current email
+     * @return String representation of the users email
+     */
+    public String getEmail() {
+        return email;
+    }
+
+    /**
+     * Set the users email
+     * @param email The new email for the user
+     */
+    public void setEmail(String email) {
+        this.email = email;
+    }
+
+
+    /**
+     * Returns the current library used for the user
+     * @return the Library object associated with the user
+     */
+    public Library getLib() {
+        return lib;
     }
 
     /**
@@ -321,135 +457,107 @@ public class User {
     }
 
 
-
-
-
-
-
-
-
-
-
-
-    // setters and getters start here
-
-
-
-
-    public String getUsername() {
-        return username;
-    }
-
-
-
-
-    public void setUsername(String username) {
-        this.username = username;
-    }
-
-    public int getAppID() {
-        return appID;
-    }
-
-    public void setAppID(int appID) {
-        this.appID = appID;
-    }
-
-    public String getDbID() {
-        return dbID;
-    }
-
-    public void setDbID(String dbID) {
-        this.dbID = dbID;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
-    public String getPickup() {
-        return pickup;
-    }
-
-    public void setPickup(String pickup) {
-        this.pickup = pickup;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
-
-    public void setPhone(String phone) {
-        this.phone = phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public Library getLib() {
-        return lib;
-    }
-
+    /**
+     * Returns the list of the transactions associated with books they own
+     * @return ArrayList of Transactions associated with books a user owns
+     */
     public ArrayList<Transaction> getOwner_transactions() {
         return owner_transactions;
     }
 
-
+    /**
+     * Sets the users owner transactions
+     * @param owner_transactions The new Arraylist of transactions for the user
+     */
     public void setOwner_transactions(ArrayList<Transaction> owner_transactions) {
         this.owner_transactions = owner_transactions;
     }
 
+    /**
+     * Returns the IDs of the books the user owns
+     * @return ArrayList of Integers, representing the bookID of a book they own
+     */
     public ArrayList<Integer> getOwner_book_id() {
         return owner_book_id;
     }
 
+    /**
+     * Sets the list of the owners book ID
+     * @param owner_book_id ArrayList of bookIDs for the books an owner uses
+     */
     public void setOwner_book_id(ArrayList<Integer> owner_book_id) {
         this.owner_book_id = owner_book_id;
     }
 
+    /**
+     * returns the list of book the User owns
+     * @return ArrayList of books that the user owns
+     */
     public ArrayList<Book> getOwner_books() {
         return owner_books;
     }
 
+    /**
+     * Sets the list of user Books
+     * @param owner_books the new list of books owned by the user
+     */
     public void setOwner_books(ArrayList<Book> owner_books) {
         this.owner_books = owner_books;
     }
 
-
+    /**
+     * Get the list of books owned by the user
+     * @return ArrayList of books owned by the user
+     */
     public ArrayList<Book> borrowerGetBooks() {
         return this.borrower_books;
     }
 
 
+    /**
+     * Gets the list of transactions associated with books they borrow/request
+     * @return ArrayList of Transactions for books the user borrows
+     */
     public ArrayList<Transaction> getBorrower_transactions() {
         return borrower_transactions;
     }
 
+    /**
+     * Sets the Users borrower transactions
+     * @param borrower_transactions The new list of transactions to set
+     */
     public void setBorrower_transactions(ArrayList<Transaction> borrower_transactions) {
         this.borrower_transactions = borrower_transactions;
     }
 
+    /**
+     * Get the book IDs of all books the user has borrowed
+     * @return ArrayList of Integers representing the bookIDs of books the user has borrowed
+     */
     public ArrayList<Integer> getBorrower_book_id() {
         return borrower_book_id;
     }
 
+    /**
+     * Sets the list of book IDs for books borrowed by the user.
+     * @param borrower_book_id ArrayList of book IDs to assign to the user
+     */
     public void setBorrower_book_id(ArrayList<Integer> borrower_book_id) {
         this.borrower_book_id = borrower_book_id;
     }
 
+    /**
+     * Returns the Books borrowed by the user
+     * @return ArrayList of Books borrowed by the user
+     */
     public ArrayList<Book> getBorrower_books() {
         return borrower_books;
     }
 
+    /**
+     * Sets the users list of borrowed books
+     * @param borrower_books The new list of Books the user has borrowed
+     */
     public void setBorrower_books(ArrayList<Book> borrower_books) {
         this.borrower_books = borrower_books;
     }
