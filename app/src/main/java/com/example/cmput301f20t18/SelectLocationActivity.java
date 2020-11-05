@@ -22,10 +22,12 @@ import java.util.Locale;
 public class SelectLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private Address defaultAddress;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        defaultAddress = getIntent().getParcelableExtra("ADDRESS");
         setContentView(R.layout.activity_select_location);
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
@@ -35,18 +37,12 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        String userAddress = "116 St & 85 Ave, Edmonton, AB";       //Stand in (will be gotten from user). Currently U of A
         List<Address> addresses;
         mMap = googleMap;
         final Geocoder geocoder = new Geocoder(this);
-        try{
-            addresses = geocoder.getFromLocationName(userAddress, 1);
-            LatLng defaultLocation = new LatLng(addresses.get(0).getLatitude(), addresses.get(0).getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
-        }
-        catch(IOException e){
-            e.printStackTrace();
-        }
+        LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
+
         GoogleMap.OnMapClickListener listener = new GoogleMap.OnMapClickListener(){
             @Override
             public void onMapClick(LatLng latLng) {
