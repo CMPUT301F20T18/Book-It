@@ -3,7 +3,8 @@
     <color name="colorPrimary">#434343</color>
     <color name="colorPrimaryDark">#000000</color>
     <color name="colorAccent">#FFE7D0</color>
-    <color name="textcolor">#DDDDDD</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorLightGray">#DDDDDD</color>
     <color name="colorOrange">#FC6E20</color>
     <color name="karryText">#FFE7D0</color>
     <color name="colorBlue">#2D9CDB</color>
