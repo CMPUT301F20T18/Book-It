@@ -2,6 +2,8 @@ package com.example.cmput301f20t18;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
@@ -15,14 +17,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A simple {@link Fragment} subclass.
- * Use the {@link BorrowedRequestedFragment#newInstance} factory method to
- * create an instance of this fragment.
+ * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
+ * in Borrowed>Ready for pick up.
  */
 public class BorrowedRequestedFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    List<Book> bookList;
+    RecyclerView recyclerView;  // recycler that displays list of books
+    List<Book> bookList;        // list of books
+
+    /* Everything below here and above onCreateView() is auto-inserted boilerplate */
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -64,16 +67,40 @@ public class BorrowedRequestedFragment extends Fragment {
         }
     }
 
+    /**
+     * Instantiates view. The documentation recommends only inflating the layout here and doing
+     * everything else in {@link #onViewCreated(View, Bundle)}.
+     *
+     * @param inflater Used to inflate view
+     * @param container Parent view
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return Return the View
+     */
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+        return inflater.inflate(R.layout.fragment_borrowed_requested, container, false);
+    }
 
-        View view = inflater.inflate(R.layout.fragment_borrowed_requested, container, false);
+    /**
+     * Populates bookList and sets up adapter to display the list.
+     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has
+     * returned, but before any saved state has been restored in to the view.
+     *
+     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     */
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
 
         recyclerView = view.findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
+        //hardcoded some books
         bookList = new ArrayList<>();
         bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
                 420, Book.STATUS_REQUESTED, null, 1995));
@@ -88,7 +115,5 @@ public class BorrowedRequestedFragment extends Fragment {
 
         BorrowedRecyclerViewAdapter borrowedAdapter = new BorrowedRecyclerViewAdapter(view.getContext(), bookList);
         recyclerView.setAdapter(borrowedAdapter);
-
-        return view;
     }
 }

@@ -28,6 +28,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * This class probably needs to be divided up as it has many responsibilities.
+ */
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore DB;
