@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -26,7 +27,7 @@ public class MyBooksFragment extends Fragment {
 
         Toolbar toolbar = view.findViewById(R.id.mybooks_toolbar);
         toolbar.setTitle(getResources().getText(R.string.mybooks_header));
-        FloatingActionButton addBooks = view.findViewById(R.id.mybooks_add);
+        Button addBooks = view.findViewById(R.id.button_add_book);
         TabLayout tabLayout = view.findViewById(R.id.mybooks_tab_layout);
         //TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
         //TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);

@@ -38,21 +38,18 @@ public class MyBooksAddBook extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_my_books_add_book);
 
-        labelAuthor = (TextView) findViewById(R.id.author_prompt);
-        labelTitle = (TextView) findViewById(R.id.book_title_prompt);
-        labelYear = (TextView) findViewById(R.id.year_prompt);
-        labelISBN = (TextView) findViewById(R.id.isbn_prompt);
+        labelAuthor = findViewById(R.id.author_prompt);
+        labelTitle = findViewById(R.id.book_title_prompt);
+        labelYear = findViewById(R.id.year_prompt);
+        labelISBN = findViewById(R.id.isbn_prompt);
 
-        toolbar = findViewById(R.id.add_book_toolbar);
-        toolbar.setTitle(getResources().getText(R.string.mybooks_add_book));
+        author = findViewById(R.id.author_input);
+        bookTitle = findViewById(R.id.title_input);
+        year = findViewById(R.id.year_input);
+        isbn = findViewById(R.id.isbn_input);
 
-        author = (EditText) findViewById(R.id.author_input);
-        bookTitle = (EditText) findViewById(R.id.title_input);
-        year = (EditText) findViewById(R.id.year_input);
-        isbn = (EditText) findViewById(R.id.isbn_input);
-
-        done = (Button) findViewById(R.id.done_add_book);
-        cancel = (Button) findViewById(R.id.return_to_my_books);
+        done = findViewById(R.id.done_add_book);
+        cancel = findViewById(R.id.return_to_my_books);
 
         // establish connection to DB
         auth = FirebaseAuth.getInstance();
