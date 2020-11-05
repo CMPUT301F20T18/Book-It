@@ -14,9 +14,9 @@ public class UserLocation {
         this.address = address;
         this.latlng = latlng;
     }
-    public UserLocation(Address address){
+    public UserLocation(Address address, LatLng latlng){
         this.address = address;
-        this.latlng = new LatLng(address.getLatitude(), address.getLongitude());
+        this.latlng = latlng;
     }
 
     public String getTitle() {
