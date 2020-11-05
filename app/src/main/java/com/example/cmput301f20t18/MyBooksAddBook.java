@@ -3,15 +3,15 @@ package com.example.cmput301f20t18;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -19,6 +19,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 public class MyBooksAddBook extends AppCompatActivity {
@@ -30,6 +31,8 @@ public class MyBooksAddBook extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore DB;
     CollectionReference books;
+    CollectionReference users;
+
 
     //ImageButton addPic;
 
@@ -53,7 +56,11 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         // establish connection to DB
         auth = FirebaseAuth.getInstance();
+        DB = FirebaseFirestore.getInstance();
         books = DB.collection("system").document("System").collection("books");
+        users = DB.collection("system").document("System").collection("users");
+
+
 
 
 
@@ -72,16 +79,21 @@ public class MyBooksAddBook extends AppCompatActivity {
                         int addYear = Integer.parseInt(year.getText().toString());
                         long addISBN = Long.parseLong(isbn.getText().toString());
 
-                        int id = snapshot.getValue(Integer.class);
+                        Task<DocumentSnapshot> current_user = users.document(auth.getUid()).get();
+                        current_user.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                User user = task.getResult().toObject(User.class);
+                                int id = snapshot.getValue(Integer.class);
 
-                        Book newBook = new Book(addTitle,addISBN,addAuthor,id,Book.STATUS_AVAILABLE,null,addYear);
-                        books.document(Integer.toString(id)).set(newBook);
+                                Book newBook = new Book(addTitle,addISBN,addAuthor,id,Book.STATUS_AVAILABLE,user,addYear);
+                                books.document(Integer.toString(id)).set(newBook);
 
 
 
-
-
-
+                                max_book.setValue(id + 1);
+                            }
+                        });
 
                     }
 
