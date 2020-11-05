@@ -14,7 +14,7 @@ public class UserLocation {
         this.address = address;
         this.latlng = latlng;
     }
-    public UserLocation(Address address, LatLng latlng) {
+    public UserLocation(Address address, LatLng latlng){
         this.address = address;
         this.latlng = latlng;
     }
