@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,13 +10,12 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
-
-import org.w3c.dom.Text;
 
 import java.util.List;
 
@@ -62,7 +62,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             case Book.STATUS_ACCEPTED:
                 return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_pending, null));
             case Book.STATUS_BORROWED:
-                break; //TODO
+                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_lending, null));
             default: Log.d(TAG, "Error: Book status not found");
         }
 
@@ -75,7 +75,7 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
 
         Book book = bookList.get(position);
 
-        holder.imageView.setImageResource(R.drawable.default_cover);
+        //holder.imageView.setImageResource(R.drawable.default_cover);
         holder.textViewTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
         holder.textViewYear.setText(String.valueOf(book.getYear()));
@@ -84,36 +84,80 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
-                holder.textViewStatus.setText("Available");
+                //todo
                 break;
             case Book.STATUS_REQUESTED:
-                holder.textViewStatus.setText("Requested");
-                holder.button.setOnClickListener(new View.OnClickListener() {
+
+                // User clicks the "View requests" button
+                holder.buttonViewRequests.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog dialog = (new AlertDialog.Builder(v.getContext())
-                                .setTitle("View Requests")
-                                .setMessage("todo")
-                                .setPositiveButton("ok", new DialogInterface.OnClickListener() {
-                                    @Override
-                                    public void onClick(DialogInterface dialog, int which) {
-                                        //TODO
-                                    }
-                                })
-                                .setNegativeButton("back", null)).show();
-
-                        Button buttonPositive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                        buttonPositive.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
-                        Button buttonNegative = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        buttonNegative.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                        Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
+                        v.getContext().startActivity(intent);
                     }
                 });
                 break;
             case Book.STATUS_ACCEPTED:
-                holder.textViewStatus.setText("Accepted");
+
+                // User clicks the "Confirm pick up" button
+                holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        v.getContext().startActivity(intent);
+                        //TODO: upon successful scan, book status should be changed to "borrowed"
+                        // and should be updated in firestore
+                    }
+                });
+
+                // User clicks on profile photo
+                holder.buttonUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "*opens user profile* OwO", Toast.LENGTH_SHORT).show();
+                        // TODO: open the users profile in a new activity
+                    }
+                });
+
+                // User clicks on map button
+                holder.buttonMap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                        v.getContext().startActivity(intent);
+                    }
+                });
                 break;
             case Book.STATUS_BORROWED:
-                holder.textViewStatus.setText("Borrowed");
+
+                // User clicks the "Confirm return" button
+                holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        v.getContext().startActivity(intent);
+                        //TODO: upon successful scan, book status should be changed to "available"
+                        // and should be updated in firestore
+                    }
+                });
+
+                // User clicks on profile photo
+                holder.buttonUser.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Toast.makeText(context, "*opens user profile* OwO", Toast.LENGTH_SHORT).show();
+                        // TODO: open the users profile in a new activity
+                    }
+                });
+
+                // User clicks on map button
+                holder.buttonMap.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                        v.getContext().startActivity(intent);
+                    }
+                });
                 break;
         }
     }
@@ -132,20 +176,27 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         TextView textViewISBN;
         TextView textViewStatus;
 
-        Button button;
+        Button buttonViewRequests;
+        Button buttonConfirmPickUp;
+        Button buttonMap;
+        Button buttonUser;
+        Button buttonConfirmReturn;
 
         public BookViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view);
+
             textViewTitle = itemView.findViewById(R.id.text_book_title);
             textViewAuthor = itemView.findViewById(R.id.text_book_author);
             textViewYear = itemView.findViewById(R.id.text_book_year);
             textViewISBN = itemView.findViewById(R.id.text_book_isbn);
-            button = itemView.findViewById(R.id.button_view_requests);
 
-            // temporary
-            textViewStatus = itemView.findViewById(R.id.text_book_status);
+            buttonViewRequests = itemView.findViewById(R.id.button_view_requests);
+            buttonConfirmPickUp = itemView.findViewById(R.id.button_confirm_pick_up);
+            buttonMap = itemView.findViewById(R.id.button_mybooks_map);
+            buttonUser = itemView.findViewById(R.id.button_mybooks_user);
+            buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
 
         }
     }

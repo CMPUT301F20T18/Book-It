@@ -170,4 +170,22 @@ public class Book implements Comparable<Book> {
             return -1;
         }
     }
+
+
+
+    public void setIsbn(long isbn) {
+        this.isbn = isbn;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
+    }
 }

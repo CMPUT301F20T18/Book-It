@@ -21,6 +21,7 @@
 
             <ImageView
                 android:id="@+id/image_view"
+                android:src="@drawable/default_cover"
                 android:contentDescription="Book cover"
                 android:layout_width="100dp"
                 android:layout_height="150dp"
@@ -111,19 +112,6 @@
                 android:adjustViewBounds="false"
                 android:scaleType="fitXY"
                 android:src="@drawable/ic_spacer" />
-
-            <!-- temporary -->
-            <TextView
-                android:id="@+id/text_book_status"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/vc_spacer"
-                android:layout_toEndOf="@+id/image_view"
-                android:layout_marginStart="5dp"
-                android:layout_marginTop="2dp"
-                android:text="Status"
-                android:textColor="@color/colorAccent"
-                android:textSize="14sp"/>
 
 
         </RelativeLayout>
