@@ -1,17 +1,28 @@
 package com.example.cmput301f20t18;
 
+import android.graphics.Bitmap;
+
+
 /**
  * A book object represents a book within our library
  */
-public class Book {
+public class Book implements Comparable<Book> {
+
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_REQUESTED = 1;
+    public static final int STATUS_ACCEPTED = 2;
+    public static final int STATUS_BORROWED = 3;
+
     private String title;
-    private int isbn;
+    private long isbn;
     private String author;
     private int id;
-    //TODO: private ??? photo;
-    private String status;
-    private static Library library;
+    private Bitmap photo;
+    private int status;
     private User owner;
+    private int year;
+
+    //private static Library library = new Library();
 
     /**
      * A book in our system
@@ -21,13 +32,21 @@ public class Book {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, int isbn, String author, int id, String status, User owner) {
+    public Book(String title, long isbn, String author, int id, int status, User owner, int year) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
         this.id = id;
         this.status = status;
         this.owner = owner;
+        this.year = year;
+
+    }
+
+    /**
+     * Empty constructor for firebase
+     */
+    public Book() {
 
     }
 
@@ -51,7 +70,7 @@ public class Book {
      * Returns the ISBN of the book object
      * @return The ISBN of the book, as an integer
      */
-    public int getISBN() {
+    public long getISBN() {
         return isbn;
     }
 
@@ -84,7 +103,7 @@ public class Book {
      * get the status of the current book object
      * @return The status of the book
      */
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -92,7 +111,7 @@ public class Book {
      * set the status of the current book
      * @param status The new status for the book
      */
-    public void setStatus(String status) {
+    public void setStatus(int status) {
         this.status = status;
     }
 
@@ -101,7 +120,7 @@ public class Book {
      * @param newLibrary The library to associate the book to
      */
     public static void setLibrary(Library newLibrary){
-        library = newLibrary;
+        //library = newLibrary;
     }
 
     /**
@@ -118,5 +137,55 @@ public class Book {
      */
     public void setOwner(User owner) {
         this.owner = owner;
+    }
+
+    /**
+     * Set the year of a book
+     * @param year The new year of the book
+     */
+    public void setYear(int year) { this.year = year; }
+
+    /**
+     * Get the year of the book
+     * @return the year of the book
+     */
+    public int getYear() { return year; }
+
+    /**
+     * Used for sorting books.
+     * Books in My Books>Available are sorted by status and then alphabetically by title.
+     * Anywhere else books are sorted alphabetically by title.
+     *
+     * @return -1 if this<o, 0 if this==o, 1 if this>o
+     */
+    @Override
+    public int compareTo(Book o) {
+        if (this.getStatus() == o.getStatus()) {
+            return this.getTitle().compareToIgnoreCase(o.getTitle()); // alphabetically
+        }
+        else if (this.getStatus() == STATUS_AVAILABLE) { // available > requested
+            return 1;
+        }
+        else {
+            return -1;
+        }
+    }
+
+
+
+    public void setIsbn(long isbn) {
+        this.isbn = isbn;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+    public Bitmap getPhoto() {
+        return photo;
+    }
+
+    public void setPhoto(Bitmap photo) {
+        this.photo = photo;
     }
 }

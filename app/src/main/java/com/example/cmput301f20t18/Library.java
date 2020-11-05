@@ -1,103 +1,221 @@
 package com.example.cmput301f20t18;
 
 
+import androidx.annotation.NonNull;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
+
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Hashtable;
+import java.util.List;
+import java.util.Map;
 
-
-
+import static java.lang.Integer.parseInt;
 
 /**
- * An object that represents a library full of books
+ * Library is a storage and retrieval
+ * system for books within our system as well as
+ * a interface for the application to interact with
+ * the books collection of the database
  */
-
 public class Library {
-
-    private Hashtable<Integer, Book> books;
-    private Hashtable<String, ArrayList<Integer>> authorLookUp;
-    private Hashtable<String, ArrayList<Integer>> titleLookUp;
-    private Hashtable<Integer, ArrayList<Integer>> isbnLookUp;
+    private Hashtable<Integer, Book> bookLibrary;
 
     /**
-     * The library of books
+     * Serves to construct and initialize the Library
+     * such that it is ready for future calls
      */
-
     Library() {
-        this.books = new Hashtable<Integer, Book>();
-        this.authorLookUp = new Hashtable<>();
-        this.titleLookUp = new Hashtable<>();
-        this.isbnLookUp = new Hashtable<>();
-
+        updateBookLibrary();
     }
 
     /**
-     * returns a book object based on the id int passed in
-     * @param id an integer representing the id of the book to be returned
-     * @return The book object
+     * Parses the list returned by getDataFromDB
+     * and stores it in a map which is then assigned
+     * to Libraries bookLibrary
      */
-
-    public static Book getBook(int id){
-        return this.books.get(id);
+    public void updateBookLibrary() {
+        queryDatabase();
     }
 
     /**
-     * Adds a book object to the library, and updates the various searching HashTables
-     * @param book the Book object to be added to library
+     * Pulls data from the database and stores it in a list
+     * for future parsing
+     * @return returns a list of books constructed from the
+     * data in the database
      */
+    //TODO: Test this implementation of pulling data to see if it is effective
+    private void queryDatabase(){
+        BookLibOnCompleteListener listener = new BookLibOnCompleteListener();
 
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        Task<QuerySnapshot> queryAttempt = db.collectionGroup("books")
+                .get()
+                .addOnCompleteListener(listener);
+    }
+
+    private void fillBookLibrary(List<Book> books){
+        Hashtable<Integer, Book> bookTable = new Hashtable<Integer, Book>();
+        for (Book book:books){
+            bookTable.put(book.getId(), book);
+        }
+        this.bookLibrary = bookTable;
+    }
+
+    /**
+     * Adds a new book both locally and remotely
+     * @param book Book object to be added
+     */
     public void addBook(Book book){
-        this.books.put(book.getId(), book);
-        if ( this.authorLookUp.keySet().contains(book.getAuthor().toUpperCase())){
-            this.authorLookUp.get(book.getAuthor().toUpperCase()).add(book.getId());
-        }
-        else {
-            ArrayList tempAuthor = new ArrayList();
-            tempAuthor.add(book.getId());
-            this.authorLookUp.put(book.getAuthor().toUpperCase(), tempAuthor);
-        }
-        if ( this.titleLookUp.keySet().contains(book.getTitle().toUpperCase())){
-            this.titleLookUp.get(book.getTitle().toUpperCase()).add(book.getId());
-        }
-        else {
-            ArrayList tempTitle = new ArrayList();
-            tempTitle.add(book.getId());
-            this.titleLookUp.put(book.getTitle().toUpperCase(), tempTitle);
-        }
-        if ( this.isbnLookUp.keySet().contains(book.getISBN())){
-            this.isbnLookUp.get(book.getISBN()).add(book.getId());
-        }
-        else {
-            ArrayList tempIsbn = new ArrayList();
-            tempIsbn.add(book.getId());
-            this.isbnLookUp.put(book.getISBN(), tempIsbn);
-        }
+        addLocal(book);
+        addDB(book);
     }
 
     /**
-     * Deletes a book object based on the id int passed in
-     * @param id an integer representing the id of the book to be returned
+     * Adds a book to the local library
+     * @param book Book object to be added
      */
-
-    public void delBook(int id){
-        this.books.remove(id);
+    private void addLocal(Book book){
+        this.bookLibrary.put(book.getId(), book);
     }
 
     /**
-     * Checks whether a book with the corresponding id is in the library
-     * @param id an integer representing the id of the book to be returned
-     * @return A boolean representing whether the book is in the library
+     * Adds a book to the book collection
+     * within the database
+     * @param book Book object to be added
      */
-
-    public boolean hasBook(int id){
-        return this.books.containsKey(id);
+    private void addDB(Book book){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("system")
+                .document("system")
+                .collection("book")
+                .document(Integer.toString(book.getId()))
+                .set(book);
     }
 
     /**
-     * Checks the number of books currently in the library
-     * @return An int representing the number of books in the library
+     * Deletes a book both locally and remotely
+     * @param book Book object to be deleted
+     */
+    public void deleteBook(Book book){
+        deleteLocal(book);
+        deleteDB(book);
+    }
+
+    /**
+     * Removes the book from Libraries
+     * bookLibrary
+     * @param book Book object to be deleted
+     */
+    private void deleteLocal(Book book){
+        this.bookLibrary.remove(book);
+    }
+
+    /**
+     * Removes the book from the
+     * books collection of the database
+     * @param book Book object to be deleted
+     */
+    private void deleteDB(Book book){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        db.collection("system")
+                .document("system")
+                .collection("book")
+                .document(Integer.toString(book.getId()))
+                .delete();
+    }
+
+    /**
+     * Grabs a Book object from Library's
+     * bookLibrary given the Book objects
+     * ID
+     * @param ID Integer representing the ID
+     *           of the Book object
+     * @return Book object that corresponds to
+     *         the ID given
+     */
+    public Book getBook(Integer ID){
+        return bookLibrary.get(ID);
+    }
+  
+    /**
+     * Grabs a List of Book objects from Library's
+     * bookLibrary given the Book object
+     * IDs
+     * @param IDs Integer List representing the IDs
+     *           of the Book objects
+     * @return Book object that corresponds to
+     *         the ID given
+     */
+    public ArrayList<Book> getBooks(List<Integer> IDs){
+        ArrayList<Book> books = new ArrayList<>();
+        for (int i = 0; i < IDs.size(); i++){
+            books.add(bookLibrary.get(IDs.get(i)));
+        }
+        return books;
+    }
+    
+    /**
+     * Return a list of books for based on a search performed locally
+     * @param field represents the fields that can be searched
+     * @param query represents the information that we want a mathcing book for             
+     * @return an ArrayList of books that match the search
      */
 
-    public int numBooks(){
-        return this.books.keySet().size();
+    public ArrayList<Book> searchBookLocal(int field, String query){
+        updateBookLibrary();
+        ArrayList<Book> outBooks = new ArrayList<>();
+        for(int key: this.bookLibrary.keySet()){
+            switch(field){
+                case 0:
+                    if (this.bookLibrary.get(key).getAuthor().toUpperCase() == query.toUpperCase()){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
+                case 1:
+                    if (this.bookLibrary.get(key).getTitle().toUpperCase() == query.toUpperCase()){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
+                case 2:
+                    if (this.bookLibrary.get(key).getISBN() == Long.parseLong(query)){
+                        outBooks.add(this.bookLibrary.get(key));
+                    }
+                    break;
+            }
+        }
+        return outBooks;
+    }
+    //ToDo
+    /*
+    public ArrayList<Book> searchBookDB(String field, String query){
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference searchRef = db.collection("books");
+        Query searchQuery = searchRef.whereEqualTo(field, query);
+    }
+    */
+    /**
+     * A complete listener that allows for the retrieval
+     * of data onComplete
+     */
+    private class BookLibOnCompleteListener implements OnCompleteListener{
+        private List<Book> items;
+
+        @Override
+        public void onComplete(@NonNull Task task) {
+            if (task.isSuccessful()){
+                QuerySnapshot queryResult = (QuerySnapshot) task.getResult();
+                this.items = queryResult.toObjects(Book.class);
+                fillBookLibrary(items);
+            }
+            else{
+                throw new RuntimeException("Database Query Failed");
+            }
+        }
     }
 }
