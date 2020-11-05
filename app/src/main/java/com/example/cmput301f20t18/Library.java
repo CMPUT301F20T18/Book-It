@@ -5,8 +5,10 @@ import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -191,13 +193,26 @@ public class Library {
         return outBooks;
     }
     //ToDo
-    /*
-    public ArrayList<Book> searchBookDB(String field, String query){
+/*
+    public List<Book> searchBookDB(String field, String query){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference searchRef = db.collection("books");
-        Query searchQuery = searchRef.whereEqualTo(field, query);
+        CollectionReference searchRef = db.collection("system")
+                .document("system")
+                .collection("book");
+        final List<Book>[] results = new List[]{null};
+        searchRef.whereArrayContains(field, query).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                QuerySnapshot queryResult = (QuerySnapshot) task.getResult();
+                results[0] = queryResult.toObjects(Book.class);
+
+
+            }
+        });
+        return results[0];
+
     }
-    */
+*/
     /**
      * A complete listener that allows for the retrieval
      * of data onComplete
