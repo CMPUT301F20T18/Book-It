@@ -17,11 +17,13 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * Allows the users to login into the app
- * @author Jacob Deinum
+ * Allows the users to sign in / register for the application
+ * @see Register
+ * @see User
  */
 public class Login extends AppCompatActivity {
 
@@ -82,8 +84,8 @@ public class Login extends AppCompatActivity {
                                 }
                                 else {
                                     // If sign in fails, display a message to the user.
-                                    Toast.makeText(Login.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
+                                    FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                                    Toast.makeText(Login.this, "Wrong username or password!" , Toast.LENGTH_SHORT).show();
 
                                 }
                             }

@@ -19,7 +19,8 @@ import java.util.ArrayList;
 
 /**
  * User represents any user in our system
- * and contains both functionality for owners and borrowers, but not both have to be used
+ * a user may interact with another user, or a Library object
+ * @see Library
  */
 public class User {
     private String username;

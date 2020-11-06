@@ -29,7 +29,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class probably needs to be divided up as it has many responsibilities.
+ * Homescreen is the first object a user sees upon signing in, and will contain all the books
+ * borrowed by the user.
+ * Homescreen also manages fragments, and provides a mean for two fragments to interact
+ * @see User
+ * @see Book
  */
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth auth;
