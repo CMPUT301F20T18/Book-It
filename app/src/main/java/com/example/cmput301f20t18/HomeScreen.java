@@ -62,17 +62,17 @@ public class HomeScreen extends AppCompatActivity {
         Task<DocumentSnapshot> retrieve_current_user = current_user.get();
 
         // successfully got all books and users
-       Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+        Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
             @Override
             public void onSuccess(List<Task<?>> tasks) {
                 User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
-                assert(current != null);
+                assert (current != null);
                 Log.d(TAG, "onSuccess: " + current.getUsername());
 
                 List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
                 List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
 
-                current.ownerNewBook(9781260084504L , "Database System Concepts", "Sillberschatz");
+                current.ownerNewBook(9781260084504L, "Database System Concepts", "Sillberschatz");
             }
 
 
@@ -89,7 +89,6 @@ public class HomeScreen extends AppCompatActivity {
         bottomNav.setSelectedItemId(R.id.tab_mybooks);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new MyBooksFragment()).commit();
-
 
 
     }
@@ -109,8 +108,9 @@ public class HomeScreen extends AppCompatActivity {
                             selectedFragment = new SearchFragment();
                             break;
                         case R.id.tab_scan:
-                            //startActivityForResult(new Intent(getApplicationContext(),PostScanActivity.class),1);
-                            startActivityForResult(new Intent(getApplicationContext(),Scanner.class),1);
+                            Intent intent = new Intent(HomeScreen.this, Scanner.class);
+                            intent.putExtra("type", 0);
+                            startActivityForResult(intent, RESULT_OK);
                             break;
                         case R.id.tab_mybooks:
                             selectedFragment = new MyBooksFragment();
@@ -120,7 +120,9 @@ public class HomeScreen extends AppCompatActivity {
                             break;
                     }
 
-                    if (selectedFragment == null) { return false; }
+                    if (selectedFragment == null) {
+                        return false;
+                    }
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
@@ -133,13 +135,12 @@ public class HomeScreen extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == 1) {
-            if (resultCode == RESULT_OK) {
+        switch (requestCode) {
+            case 1:
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
-            }
+
         }
 
 
     }
 }
-

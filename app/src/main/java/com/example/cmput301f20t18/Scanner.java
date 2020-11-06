@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -50,7 +51,7 @@ import java.util.concurrent.Executors;
 public class Scanner extends AppCompatActivity {
 
     private final int REQUEST_CODE_PERMISSIONS = 1001;
-    private final int OPEN_POST = 1;
+    private final int OPEN_POST = 0;
     private final int RETURN_ISBN = 1;
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA"};
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
@@ -58,6 +59,7 @@ public class Scanner extends AppCompatActivity {
     public Button cap;
     private Executor executor = Executors.newSingleThreadExecutor();
     private int mode;
+    String TAG = "SCANNER";
 
 
     @Override
@@ -68,6 +70,7 @@ public class Scanner extends AppCompatActivity {
         cap = (Button) findViewById(R.id.capture);
 
         mode = getIntent().getIntExtra("type", OPEN_POST);
+        Log.d(TAG, "onCreate: ");
 
 
         // determine if the user has given the proper privileges to use the camera
