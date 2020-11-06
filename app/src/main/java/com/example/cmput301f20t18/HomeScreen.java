@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -140,7 +142,5 @@ public class HomeScreen extends AppCompatActivity {
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
 
         }
-
-
     }
 }

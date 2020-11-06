@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <include
         android:id="@+id/include"
         layout="@layout/card_base"
@@ -17,7 +19,7 @@
     <include layout="@layout/component_book_more" />
 
     <Button
-        android:id="@+id/button_view_requests"
+        android:id="@+id/button_confirm_return"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
         android:layout_marginTop="52dp"
@@ -26,9 +28,15 @@
         android:background="@drawable/good_button_background"
         style="?android:attr/borderlessButtonStyle"
         android:fontFamily="@font/poppins"
-        android:text="View requests"
+        android:text="Confirm return"
         android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="@+id/include"
         app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        layout="@layout/component_book_location"/>
+
+
+</FrameLayout>

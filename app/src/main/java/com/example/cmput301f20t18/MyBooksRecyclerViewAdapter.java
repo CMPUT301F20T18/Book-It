@@ -1,9 +1,9 @@
 package com.example.cmput301f20t18;
 
 import android.app.Activity;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.net.wifi.hotspot2.omadm.PpsMoParser;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,9 +16,6 @@ import android.widget.Toast;
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
-
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -103,7 +100,7 @@ public class MyBooksRecyclerViewAdapter extends
                 return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
 
             case Book.STATUS_BORROWED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_lending, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_lending, null));
 
             default: // should never reach this point
                 Log.e(TAG, "onCreateViewHolder: Invalid viewType value");
@@ -138,7 +135,15 @@ public class MyBooksRecyclerViewAdapter extends
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
-                /* Nothing should happen here? Will delete later. */
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Edit/Delete").show();
+                    }
+                });
                 break;
 
             case Book.STATUS_REQUESTED:
@@ -149,6 +154,16 @@ public class MyBooksRecyclerViewAdapter extends
                         /* TODO: Get requests from database and pass to activity. */
                         Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
                         v.getContext().startActivity(intent);
+                    }
+                });
+
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Edit/Delete").show();
                     }
                 });
                 break;
@@ -177,8 +192,8 @@ public class MyBooksRecyclerViewAdapter extends
                 holder.buttonUser.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: open the borrower's profile in a new activity. */
-                        Toast.makeText(context, "*opens user profile* OwO", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
+                        v.getContext().startActivity(intent);
                     }
                 });
 
@@ -189,6 +204,16 @@ public class MyBooksRecyclerViewAdapter extends
                         /* Owner can select a new location if they so please. */
                         Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
                         v.getContext().startActivity(intent);
+                    }
+                });
+
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Cancel pick up/Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Cancel pick up/Edit/Delete").show();
                     }
                 });
                 break;
@@ -216,8 +241,8 @@ public class MyBooksRecyclerViewAdapter extends
                 holder.buttonUser.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: open the borrower's profile in a new activity. */
-                        Toast.makeText(context, "*opens user profile* OwO", Toast.LENGTH_SHORT).show();
+                        Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
+                        v.getContext().startActivity(intent);
                     }
                 });
 
@@ -228,6 +253,16 @@ public class MyBooksRecyclerViewAdapter extends
                         /* Owner can select a new location if they so please. */
                         Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
                         v.getContext().startActivity(intent);
+                    }
+                });
+
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Edit/Delete").show();
                     }
                 });
                 break;
@@ -267,6 +302,7 @@ public class MyBooksRecyclerViewAdapter extends
         Button buttonMap;
         Button buttonUser;
         Button buttonConfirmReturn;
+        Button buttonMore;
 
         /**
          * Class constructor.
@@ -290,9 +326,9 @@ public class MyBooksRecyclerViewAdapter extends
             buttonMap = itemView.findViewById(R.id.button_mybooks_map);
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
+            buttonMore = itemView.findViewById(R.id.button_book_more);
 
         }
-
     }
 
 }
