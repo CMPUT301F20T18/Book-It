@@ -34,5 +34,6 @@
     <string name="picking_up">picking up</string>
     <string name="borrowing">borrowing</string>
     <string name="owner">owner</string>
+    <string name="edit_profile"><u>Edit Account</u></string>
 
 </resources>
