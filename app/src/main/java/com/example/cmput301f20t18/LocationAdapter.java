@@ -17,8 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 /**
- * Custom RecyclerView Adapter for UserLocation objects
- * ** IN PROGRESS **
+ * Custom RecyclerView Adapter for UserLocation objects in ChooseLocationActivity.
  */
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.RequestViewHolder> {
 
