@@ -1,14 +1,19 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -86,9 +91,53 @@ public class MyBooksPendingFragment extends Fragment {
 
         Collections.sort(bookList);
 
-        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList);
+        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList, this);
         recyclerView.setAdapter(myBooksRecyclerViewAdapter);
 
         return view;
+    }
+
+    /**
+     * Handle users scanning books to return / borrow
+     * @param requestCode The request code for the calling activity
+     * @param resultCode The result code from the called activity
+     * @param data The data embedded in the intent
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String isbn_string = data.getStringExtra("ISBN");
+        Long isbn = Long.parseLong(isbn_string);
+        Log.d("FRAGMENT", "Got here!");
+        switch (resultCode) {
+            // borrower scans book to confirm pickup
+            case 0:
+
+                // Change the status of the book the borrower scanned
+                for (int i = 0; i < bookList.size(); i++) {
+                    if (bookList.get(i).getISBN() == isbn) {
+                        bookList.get(i).setStatus(Book.STATUS_BORROWED);
+
+                        // update the same book status in the DB
+                        FirebaseFirestore DB = FirebaseFirestore.getInstance();
+                        CollectionReference books = DB.collection("system").document("System").collection("books");
+                        books.document(Integer.toString(bookList.get(i).getId())).update("status", Book.STATUS_BORROWED);
+                    }
+                }
+
+                // owner scans to confirm return
+            case 1:
+
+                // Change the status of the book the owner scanned
+                for (int i = 0; i < bookList.size(); i++) {
+                    if (bookList.get(i).getISBN() == isbn) {
+                        bookList.get(i).setStatus(Book.STATUS_AVAILABLE);
+
+                        // update the same book status in the DB
+                        FirebaseFirestore DB = FirebaseFirestore.getInstance();
+                        CollectionReference books = DB.collection("system").document("System").collection("books");
+                        books.document(Integer.toString(bookList.get(i).getId())).update("status", Book.STATUS_AVAILABLE);
+                    }
+                }
+        }
+
     }
 }

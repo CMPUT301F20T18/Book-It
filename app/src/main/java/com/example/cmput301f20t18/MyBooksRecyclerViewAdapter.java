@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.firebase.firestore.CollectionReference;
@@ -34,6 +35,7 @@ public class MyBooksRecyclerViewAdapter extends
     private final String TAG = "MyBooksRecViewAdapter";
     private Context context;
     private List<Book> bookList;    // Books to display
+    private Fragment fragment;
 
     /**
      * Class Constructor.
@@ -41,9 +43,10 @@ public class MyBooksRecyclerViewAdapter extends
      * @param context Context to inflate from.
      * @param bookList List of books to display.
      */
-    public MyBooksRecyclerViewAdapter(Context context, List<Book> bookList) {
+    public MyBooksRecyclerViewAdapter(Context context, List<Book> bookList, Fragment fragment) {
         this.context = context;
         this.bookList = bookList;
+        this.fragment = fragment;
     }
 
     /**
@@ -162,9 +165,8 @@ public class MyBooksRecyclerViewAdapter extends
                     public void onClick(View v) {
                         /* TODO: Scanner needs to know that an owner is trying to confirm pick up. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        Activity origin = (Activity) (v.getContext());
-                        origin.startActivityForResult(intent, 0);
-
+                        intent.putExtra("type", 1);
+                        fragment.startActivityForResult(intent, 0);
 
 
 
@@ -203,9 +205,10 @@ public class MyBooksRecyclerViewAdapter extends
                     public void onClick(View v) {
                         /* TODO: Scanner needs to know that an owner is trying to confirm return. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        /* TODO: upon successful scan, book status should be changed to "available"
-                         *   and be updated in firestore. */
+                        Activity origin = (Activity) (v.getContext());
+                        origin.startActivityForResult(intent, 1);
+
+
                     }
                 });
 
@@ -291,28 +294,7 @@ public class MyBooksRecyclerViewAdapter extends
         }
 
     }
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (resultCode) {
-            case 0:
-                int isbn = data.getIntExtra("isbn", 0);
 
-                // Change the status of the book the borrower scanned
-                for (int i = 0; i < bookList.size(); i++) {
-                    if (bookList.get(i).getISBN() == isbn) {
-                        bookList.get(i).setStatus(Book.STATUS_BORROWED);
-
-                        // update the same book status in the DB
-                        FirebaseFirestore DB = FirebaseFirestore.getInstance();
-                        CollectionReference books = DB.collection("system").document("System").collection("books");
-                        books.document(Integer.toString(bookList.get(i).getId())).update("status", Book.STATUS_BORROWED);
-                    }
-                }
-
-            case 1:
-
-        }
-
-    }
 }
 
 
