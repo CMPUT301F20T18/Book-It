@@ -21,13 +21,21 @@ import com.google.android.material.tabs.TabLayout;
 
 public class SearchFragment extends Fragment {
 
+    private Long isbn;
+
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        EditText searchEditText;
+        EditText searchEditText = null;
         Button searchButton;
         ListView searchResultList;
+
+        String isbn = getArguments().getString("ISBN");
+        if (isbn != null) {
+            searchEditText.setText(isbn);
+        }
 
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.search_viewPager);
