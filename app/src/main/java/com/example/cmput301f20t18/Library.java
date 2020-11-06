@@ -36,7 +36,7 @@ public class Library {
     private FirebaseFirestore db = FirebaseFirestore.getInstance();
     private CollectionReference bookCollection = db
             .collection("system")
-            .document("system")
+            .document("System")
             .collection("book");
 
     /**
@@ -44,7 +44,7 @@ public class Library {
      * such that it is ready for future calls
      */
     Library() {
-        bookCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        this.bookCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
                                 @Nullable FirebaseFirestoreException error) {
