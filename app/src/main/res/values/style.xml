@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-<!--        Color banding is very visible in emulator -->
+        <!--        Color banding is very visible in emulator -->
         <item name="android:windowBackground">@drawable/ic_app_background</item>
         <item name="android:buttonStyle">@style/Button</item>
     </style>
