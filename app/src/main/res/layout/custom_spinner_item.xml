@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- I tried building this for a custom spinner_item -->
+<TextView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layoutDirection="ltr"
+    android:id="@android:id/text1"
+    android:textColor="@color/colorOrange"
+    android:fontFamily="@font/poppins_medium"
+    style="@style/spinnerItemStyle"
+    android:singleLine="true"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:ellipsize="marquee"
+    android:paddingStart="2dp"
+    />

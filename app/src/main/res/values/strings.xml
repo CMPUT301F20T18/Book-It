@@ -21,6 +21,8 @@
     <string name="mybooks_available">Available</string>
     <string name="mybooks_pending">Pending pick up</string>
     <string name="mybooks_lending">Lending</string>
+    <string name="search_available">Available</string>
+    <string name="search_show_all">Show All</string>
     <string name="borrowed_header">Borrowed</string>
     <string name="borrowed_requested">Requested</string>
     <string name="borrowed_pending">Ready for pick up</string>
