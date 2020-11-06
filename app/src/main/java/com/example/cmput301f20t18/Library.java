@@ -63,14 +63,6 @@ public class Library {
         });
     }
 
-    private void fillBookLibrary(List<Book> books) {
-        Hashtable<Integer, Book> bookTable = new Hashtable<Integer, Book>();
-        for (Book book : books) {
-            bookTable.put(book.getId(), book);
-        }
-        this.bookLibrary = bookTable;
-    }
-
     /**
      * Adds a book to the book collection
      * within the database

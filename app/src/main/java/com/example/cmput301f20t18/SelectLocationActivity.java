@@ -23,6 +23,12 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * SelectLocationActivity is an Activity which allows the user to
+ * select a location on the map (places a marker at the location they clicked)
+ * display the address of said location (so long as the phone has access to a geocoder)
+ * confirm that this is the correct location and click a button to exit
+ */
 public class SelectLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
@@ -33,15 +39,23 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
     private OnMapClickListener listener;
 
+    /**
+     * Called on creation of the activity
+     * Grabs the address and index of the location from caller
+     * Sets up the confirm button
+     * Sets up the map fragment
+     * @param savedInstanceState Current instance
+     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
 
+        //Grab data from caller
         defaultAddress = getIntent().getParcelableExtra("INPUT_ADDRESS");
         locationIndex = getIntent().getIntExtra("LOCATION_INDEX", -1);
 
+        //Set up confirm button
         findViewById(
                 R.id.confirm_location_selected_button)
                 .setOnClickListener(new ConfirmLocationOnClickListener());
@@ -53,6 +67,13 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         mapFragment.getMapAsync(this);
     }
 
+    /**
+     * Called on map ready
+     * Sets up the map
+     * Zooms the map to the address given by caller
+     * Sets up a listener for map clicks
+     * @param googleMap The map object being interfaced with
+     */
     @Override
     public void onMapReady(GoogleMap googleMap) {
         LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
@@ -65,6 +86,12 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
     }
 
+    /**
+     * This function takes in an address and produces
+     * a string that best describes the address
+     * @param address   The address to be described
+     * @return A String object which describes address
+     */
     private String getAddressString(Address address){
         String addressTitle = "";
         String subThoroughfare = address.getSubThoroughfare();
@@ -86,6 +113,13 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         return addressTitle;
     }
 
+    /**
+     * Function to be called on clicking the confirm
+     * button
+     * Sends data back in the form of
+     * An Address which represents the location clicked on the map
+     * A Location index which is equivalent to the one passed in
+     */
     private void stopActivity() {
         Intent returnIntent = new Intent();
         if (locationIndex == -1){
@@ -101,6 +135,9 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
     }
 
+    /**
+     *
+     */
     private class OnMapClickListener implements GoogleMap.OnMapClickListener{
         Address address = defaultAddress;
 
