@@ -1,7 +1,6 @@
 package com.example.cmput301f20t18;
 
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,147 +12,209 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
 /**
- * Custom RecyclerView Adapter for Book objects
+ * Custom RecyclerView Adapter for Book objects in My Books.
+ *
+ * @see MyBooksAvailableFragment
+ * @see MyBooksPendingFragment
+ * @see MyBooksLendingFragment
  */
-public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder> {
+public class MyBooksRecyclerViewAdapter extends
+        RecyclerView.Adapter<MyBooksRecyclerViewAdapter.BookViewHolder> {
 
-    private final String TAG = "BookAdapter";
+    private final String TAG = "MyBooksRecViewAdapter";
     private Context context;
-    private List<Book> bookList;
+    private List<Book> bookList;    // Books to display
 
-    public BookAdapter(Context context, List<Book> bookList) {
+    /**
+     * Class Constructor.
+     *
+     * @param context Context to inflate from.
+     * @param bookList List of books to display.
+     */
+    public MyBooksRecyclerViewAdapter(Context context, List<Book> bookList) {
         this.context = context;
         this.bookList = bookList;
     }
 
+    /**
+     * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
+     * on the book status.
+     *
+     * @param position Index of Book in bookList.
+     * @return Status of book as an int.
+     * @see #onCreateViewHolder(ViewGroup, int)
+     */
     @Override
     public int getItemViewType(int position) {
 
-        Book book = bookList.get(position);
-
-        int status = book.getStatus();
+        int status = bookList.get(position).getStatus();    // retrieve book status
         switch (status) {
             case Book.STATUS_AVAILABLE: return 0;
             case Book.STATUS_REQUESTED: return 1;
             case Book.STATUS_ACCEPTED: return 2;
             case Book.STATUS_BORROWED: return 3;
         }
-        return -1;
+
+        // should never reach this point
+        Log.e(TAG, "getItemViewType: Invalid book status");
+        return 0;
     }
 
+    /**
+     * Called when RecyclerView needs a new {@link MyBooksRecyclerViewAdapter.BookViewHolder} of the
+     * given type to represent a Book.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an
+     *               adapter position.
+     * @param viewType The view type of the new View, based on the book status.
+     * @return A new BookViewHolder that holds a View of the given view type.
+     * @see MyBooksRecyclerViewAdapter.BookViewHolder
+     * @see #getItemViewType(int)
+     * @see #onBindViewHolder(BookViewHolder, int)
+     */
     @NonNull
     @Override
-    public BookAdapter.BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public MyBooksRecyclerViewAdapter.BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
+        /* viewType holds the status of the Book. The switch assigns the appropriate layout file. */
         switch (viewType) {
             case Book.STATUS_AVAILABLE:
-                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_no_requests, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
+
             case Book.STATUS_REQUESTED:
                 return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_requested, null));
-            case Book.STATUS_ACCEPTED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_pending, null));
-            case Book.STATUS_BORROWED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_lending, null));
-            default: Log.d(TAG, "Error: Book status not found");
-        }
 
-        View view = inflater.inflate(R.layout.card_mybooks_no_requests, null);
-        return new BookViewHolder(view);
+            case Book.STATUS_ACCEPTED:
+                return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
+
+            case Book.STATUS_BORROWED:
+                return new BookViewHolder(inflater.inflate(R.layout.card_lending, null));
+
+            default: // should never reach this point
+                Log.e(TAG, "onCreateViewHolder: Invalid viewType value");
+                return new BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
+        }
     }
 
+    /**
+     * Called by RecyclerView to display the Book at the specified position.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the Book
+     *               at the given position in bookList.
+     * @param position Index of the book in bookList.
+     */
     @Override
     public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
 
         Book book = bookList.get(position);
 
+        /* TODO: Retrieve cover photo from database and assign it to imageView. */
         //holder.imageView.setImageResource(R.drawable.default_cover);
+
         holder.textViewTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
+        /* TODO: Implement delete/edit UI and functionality. */
+        /* TODO: Implement cancel pick up UI and functionality (for "accepted" books) */
+
+        /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
-                //todo
+                /* Nothing should happen here? Will delete later. */
                 break;
-            case Book.STATUS_REQUESTED:
 
-                // User clicks the "View requests" button
+            case Book.STATUS_REQUESTED:
+                /* User clicks the "View requests" button */
                 holder.buttonViewRequests.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /* TODO: Get requests from database and pass to activity. */
                         Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
                         v.getContext().startActivity(intent);
                     }
                 });
                 break;
-            case Book.STATUS_ACCEPTED:
 
-                // User clicks the "Confirm pick up" button
+            case Book.STATUS_ACCEPTED:
+                /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
+                holder.textViewUsername.setText("Username");
+
+                holder.textViewUserDescription.setText(R.string.picking_up);
+
+                /* User clicks the "Confirm pick up" button */
                 holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /* TODO: Scanner needs to know that an owner is trying to confirm pick up. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         v.getContext().startActivity(intent);
-                        //TODO: upon successful scan, book status should be changed to "borrowed"
-                        // and should be updated in firestore
+                        /* TODO: upon successful scan, book status should be changed to "borrowed"
+                        *   and be updated in firestore. */
                     }
                 });
 
-                // User clicks on profile photo
+                /* User clicks on profile photo */
                 holder.buttonUser.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /* TODO: open the borrower's profile in a new activity. */
                         Toast.makeText(context, "*opens user profile* OwO", Toast.LENGTH_SHORT).show();
-                        // TODO: open the users profile in a new activity
                     }
                 });
 
-                // User clicks on map button
+                /* User clicks on map button */
                 holder.buttonMap.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /* Owner can select a new location if they so please. */
                         Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
                         v.getContext().startActivity(intent);
                     }
                 });
                 break;
-            case Book.STATUS_BORROWED:
 
-                // User clicks the "Confirm return" button
+            case Book.STATUS_BORROWED:
+                /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
+                holder.textViewUsername.setText("Username");
+
+                holder.textViewUserDescription.setText(R.string.borrowing);
+
+                /* User clicks the "Confirm return" button */
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /* TODO: Scanner needs to know that an owner is trying to confirm return. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         v.getContext().startActivity(intent);
-                        //TODO: upon successful scan, book status should be changed to "available"
-                        // and should be updated in firestore
+                        /* TODO: upon successful scan, book status should be changed to "available"
+                         *   and be updated in firestore. */
                     }
                 });
 
-                // User clicks on profile photo
+                /* User clicks on profile photo */
                 holder.buttonUser.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /* TODO: open the borrower's profile in a new activity. */
                         Toast.makeText(context, "*opens user profile* OwO", Toast.LENGTH_SHORT).show();
-                        // TODO: open the users profile in a new activity
                     }
                 });
 
-                // User clicks on map button
+                /* User clicks on map button */
                 holder.buttonMap.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        /* Owner can select a new location if they so please. */
                         Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
                         v.getContext().startActivity(intent);
                     }
@@ -162,19 +223,33 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         }
     }
 
+    /**
+     * Returns the number of Books in bookList
+     *
+     * @return number of Books in bookList
+     */
     @Override
     public int getItemCount() {
         return bookList.size();
     }
 
+    /**
+     * Caches Views from layout file.
+     * @see #onBindViewHolder(BookViewHolder, int)
+     */
     public static class BookViewHolder extends RecyclerView.ViewHolder {
+
+        /* Not all layout files will have all of these views, so some may be null.
+        *  The switch in onBindViewHolder() ensures that this is not an issue. */
 
         ImageView imageView;
         TextView textViewTitle;
         TextView textViewAuthor;
         TextView textViewYear;
         TextView textViewISBN;
-        TextView textViewStatus;
+
+        TextView textViewUsername;
+        TextView textViewUserDescription;
 
         Button buttonViewRequests;
         Button buttonConfirmPickUp;
@@ -182,6 +257,10 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
         Button buttonUser;
         Button buttonConfirmReturn;
 
+        /**
+         * Class constructor.
+         * @param itemView Used to retrieve Views from layout file.
+         */
         public BookViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -191,6 +270,9 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             textViewAuthor = itemView.findViewById(R.id.text_book_author);
             textViewYear = itemView.findViewById(R.id.text_book_year);
             textViewISBN = itemView.findViewById(R.id.text_book_isbn);
+
+            textViewUsername = itemView.findViewById(R.id.text_username);
+            textViewUserDescription = itemView.findViewById(R.id.text_user_description);
 
             buttonViewRequests = itemView.findViewById(R.id.button_view_requests);
             buttonConfirmPickUp = itemView.findViewById(R.id.button_confirm_pick_up);

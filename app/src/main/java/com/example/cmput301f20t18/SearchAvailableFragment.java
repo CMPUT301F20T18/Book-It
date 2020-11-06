@@ -3,26 +3,17 @@ package com.example.cmput301f20t18;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-
 /**
  * A simple {@link Fragment} subclass.
- * Use the {@link MyBooksLendingFragment#newInstance} factory method to
+ * Use the {@link SearchAvailableFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyBooksLendingFragment extends Fragment {
-
-    RecyclerView recyclerView;
-    List<Book> bookList;
+public class SearchAvailableFragment extends Fragment {
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -33,7 +24,7 @@ public class MyBooksLendingFragment extends Fragment {
     private String mParam1;
     private String mParam2;
 
-    public MyBooksLendingFragment() {
+    public SearchAvailableFragment() {
         // Required empty public constructor
     }
 
@@ -43,11 +34,11 @@ public class MyBooksLendingFragment extends Fragment {
      *
      * @param param1 Parameter 1.
      * @param param2 Parameter 2.
-     * @return A new instance of fragment MyBooksLendingFragment.
+     * @return A new instance of fragment SearchAvailableFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static MyBooksLendingFragment newInstance(String param1, String param2) {
-        MyBooksLendingFragment fragment = new MyBooksLendingFragment();
+    public static SearchAvailableFragment newInstance(String param1, String param2) {
+        SearchAvailableFragment fragment = new SearchAvailableFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PARAM1, param1);
         args.putString(ARG_PARAM2, param2);
@@ -67,21 +58,7 @@ public class MyBooksLendingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_my_books_lending, container, false);
-
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
-        bookList = new ArrayList<>();
-        bookList.add(new Book("The Color Purple", 9780606005876L, "Alice Walker",
-                420, Book.STATUS_BORROWED, null, 1985));
-
-        Collections.sort(bookList);
-
-        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList);
-        recyclerView.setAdapter(myBooksRecyclerViewAdapter);
-
-        return view;
+        // Inflate the layout for this fragment
+        return inflater.inflate(R.layout.fragment_search_available, container, false);
     }
 }

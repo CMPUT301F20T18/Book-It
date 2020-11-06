@@ -29,7 +29,7 @@ public class MyBooksAddBook extends AppCompatActivity {
     Button done, cancel;
     Toolbar toolbar;
     FirebaseAuth auth;
-    FirebaseFirestore DB;
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
     CollectionReference books;
     CollectionReference users;
 
