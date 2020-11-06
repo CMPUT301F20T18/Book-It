@@ -33,14 +33,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
-
 /**
- * Allows the users to register in the app
+ * Register allows a new user to create an account for our app
+ * Register is launched through the log in activity
+ * Each user must be registered with a minimum of a username, password, address, and email
  * @author Jacob Deinum
  * UI contributions
  * @author Johnathon Gil
+ * @see Login
+ * @see User
  */
-
+>>>>>>> 52cc0140aaf630a53577c69022ce303fa63eaee4
 public class Register extends AppCompatActivity {
 
     EditText username;

@@ -1,7 +1,10 @@
 package com.example.cmput301f20t18;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.Fragment;
 
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
@@ -76,6 +79,14 @@ public class PostScanActivity extends AppCompatActivity {
         searchCopies.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Bundle bundle = new Bundle();
+                bundle.putString("ISBN", passed_isbn);
+                Fragment fragment = new SearchFragment();
+                fragment.setArguments(bundle);
+                // TODO: Implement fragment_container for this activity
+                // getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+
+
 
             }
         });
