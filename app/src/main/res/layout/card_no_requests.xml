@@ -6,6 +6,8 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
+
+
     <include
         android:id="@+id/include"
         layout="@layout/card_base"
@@ -13,6 +15,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <include layout="@layout/component_book_more" />
 
     <Button
         android:id="@+id/button_no_requests"

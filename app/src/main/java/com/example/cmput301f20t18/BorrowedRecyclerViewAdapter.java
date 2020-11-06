@@ -99,7 +99,7 @@ public class BorrowedRecyclerViewAdapter extends
                 return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
 
             case Book.STATUS_BORROWED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_lending, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_lending, null));
 
             default: // should never reach this point
                 Log.e(TAG, "onCreateViewHolder: Invalid viewType value");
@@ -142,8 +142,8 @@ public class BorrowedRecyclerViewAdapter extends
         holder.buttonUser.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* TODO: open the owner's profile in a new activity */
-                Toast.makeText(context, "*opens user profile* OwO", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
+                v.getContext().startActivity(intent);
             }
         });
 
@@ -190,7 +190,6 @@ public class BorrowedRecyclerViewAdapter extends
                 break;
 
             case Book.STATUS_ACCEPTED:
-
                 /* User clicks the "Confirm pick up" button */
                 holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -200,6 +199,16 @@ public class BorrowedRecyclerViewAdapter extends
                         v.getContext().startActivity(intent);
                         /* TODO: upon successful scan, book status should be changed to "borrowed"
                             and should be updated in firestore */
+                    }
+                });
+
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Cancel request */
+                        new android.app.AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Cancel request").show();
                     }
                 });
                 break;
@@ -254,6 +263,7 @@ public class BorrowedRecyclerViewAdapter extends
         Button buttonMap;
         Button buttonUser;
         Button buttonConfirmReturn;
+        Button buttonMore;
 
         /**
          * Class constructor.
@@ -277,6 +287,7 @@ public class BorrowedRecyclerViewAdapter extends
             buttonMap = itemView.findViewById(R.id.button_mybooks_map);
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
+            buttonMore = itemView.findViewById(R.id.button_book_more);
 
         }
     }

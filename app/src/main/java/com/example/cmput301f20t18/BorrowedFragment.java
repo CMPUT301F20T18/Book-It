@@ -63,7 +63,6 @@ public class BorrowedFragment extends Fragment {
         ViewPager viewPager = view.findViewById(R.id.borrowed_viewPager);
 
         BorrowedPageAdapter pageAdapter = new BorrowedPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
-
         viewPager.setAdapter(pageAdapter);
 
     }
