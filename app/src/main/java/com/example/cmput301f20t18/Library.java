@@ -31,14 +31,14 @@ import static java.lang.Integer.parseInt;
  * the books collection of the database
  */
 public class Library {
-    private final FirebaseFirestore db = FirebaseFirestore.getInstance();
-    private final CollectionReference bookCollection = db
-            .collection("system")
-            .document("system")
-            .collection("book");
-
     private Hashtable<Integer, Book> bookLibrary = new Hashtable<>();
 
+    //Initialize database for Library
+    private FirebaseFirestore db = FirebaseFirestore.getInstance();
+    private CollectionReference bookCollection = db
+            .collection("system")
+            .document("System")
+            .collection("book");
 
     /**
      * Serves to construct and initialize the Library
@@ -46,19 +46,19 @@ public class Library {
      */
     Library() {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        bookCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+        this.bookCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
             @Override
             public void onEvent(@Nullable QuerySnapshot queryDocumentSnapshots,
                                 @Nullable FirebaseFirestoreException error) {
-
-                bookLibrary.clear();
-                for (QueryDocumentSnapshot bookDocument : queryDocumentSnapshots){
+                for (QueryDocumentSnapshot bookDocument : queryDocumentSnapshots) {
                     String bookID = bookDocument.getId();
-                    Log.d("LIB_DB", "Current Book ID: " + bookID);
                     Book book = bookDocument.toObject(Book.class);
-                    bookLibrary.put(Integer.parseInt(bookID), book);
 
+                    Log.d("LIB_DB", "Book with ID: " + bookID
+                            + "successfully queried");
+                    bookLibrary.put(Integer.parseInt(bookID), book);
                 }
+
             }
         });
     }
@@ -84,18 +84,17 @@ public class Library {
         db.collection("system")
                 .document("system")
                 .collection("book")
-                .document(Integer.toString(book.getId()))
+                .document(bookID)
                 .set(book)
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Log.d("LIB_DB", "Book with ID: " + bookID
-                                    + "was successfully added");
-                        }
-                        else{
-                            Log.d("LIB_DB", "Book with ID: " + bookID
-                                    + "was not added successfully");
+                        if (task.isSuccessful()) {
+                            Log.d("LIB_DB", "Book with ID: " + bookID +
+                                    "successfully added!");
+                        } else {
+                            Log.d("LIB_DB", "Book with ID: " + bookID +
+                                    "not successfully added");
                         }
                     }
                 });
@@ -119,13 +118,12 @@ public class Library {
                 .addOnCompleteListener(new OnCompleteListener<Void>() {
                     @Override
                     public void onComplete(@NonNull Task<Void> task) {
-                        if (task.isSuccessful()){
-                            Log.d("LIB_DB", "Book with ID: " + bookID
-                                    + "was successfully deleted");
-                        }
-                        else{
-                            Log.d("LIB_DB", "Book with ID: " + bookID
-                                    + "was not deleted successfully");
+                        if (task.isSuccessful()) {
+                            Log.d("LIB_DB", "Book with ID: " + bookID +
+                                    "successfully deleted!");
+                        } else {
+                            Log.d("LIB_DB", "Book with ID: " + bookID +
+                                    "not successfully deleted");
                         }
                     }
                 });
