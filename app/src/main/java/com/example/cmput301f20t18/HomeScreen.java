@@ -68,11 +68,6 @@ public class HomeScreen extends AppCompatActivity {
                 User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
                 assert (current != null);
                 Log.d(TAG, "onSuccess: " + current.getUsername());
-
-                List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
-                List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
-
-                current.ownerNewBook(9781260084504L, "Database System Concepts", "Sillberschatz");
             }
 
 
@@ -132,6 +127,7 @@ public class HomeScreen extends AppCompatActivity {
             };
 
 
+    // handles activity results by sending the result where it needs to go
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
