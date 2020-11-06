@@ -49,6 +49,7 @@ public class SearchFragment extends Fragment {
                 //Currently debug text. Will in the future instantiate the proper object
                 //In order to conduct a search
                 if (selectedOption.equals("Books")){
+                    Library lib = new Library();                    //May replace with User's static lib to avoid instantiating twice
                     Log.d("Search", "Books are neat");
                 }
                 else{
