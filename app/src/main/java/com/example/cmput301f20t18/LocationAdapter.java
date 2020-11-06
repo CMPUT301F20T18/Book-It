@@ -17,8 +17,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import java.util.List;
 
 /**
- * Custom RecyclerView Adapter for UserLocation objects
- * ** IN PROGRESS **
+ * Custom RecyclerView Adapter for UserLocation objects in ChooseLocationActivity.
  */
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.RequestViewHolder> {
 
@@ -53,6 +52,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), SelectLocationActivity.class);
+                intent.putExtra("ADDRESS", location.getAddress());
                 v.getContext().startActivity(intent);
             }
         });

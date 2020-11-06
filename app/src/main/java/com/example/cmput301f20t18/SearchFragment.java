@@ -15,6 +15,9 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
 
 public class SearchFragment extends Fragment {
 
@@ -26,6 +29,12 @@ public class SearchFragment extends Fragment {
         Button searchButton;
         ListView searchResultList;
 
+        TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
+        ViewPager viewPager = view.findViewById(R.id.mybooks_viewPager);
+
+        SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
+
+        viewPager.setAdapter(pageAdapter);
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
 
@@ -45,6 +54,7 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String selectedOption = spinnerListener.getSelected();
                 //Currently debug text. Will in the future instantiate the proper object
                 //In order to conduct a search
