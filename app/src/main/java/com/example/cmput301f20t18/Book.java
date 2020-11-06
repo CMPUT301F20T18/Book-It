@@ -17,7 +17,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    private Bitmap photo;
+    private String photo;
     private int status;
     private User owner;
     private int year;
@@ -179,11 +179,11 @@ public class Book implements Comparable<Book> {
         this.id = id;
     }
 
-    public Bitmap getPhoto() {
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Bitmap photo) {
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 }
