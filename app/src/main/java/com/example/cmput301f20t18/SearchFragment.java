@@ -30,7 +30,7 @@ public class SearchFragment extends Fragment {
         ListView searchResultList;
 
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
-        ViewPager viewPager = view.findViewById(R.id.mybooks_viewPager);
+        ViewPager viewPager = view.findViewById(R.id.search_viewPager);
 
         SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
 
