@@ -43,7 +43,7 @@ import java.util.Objects;
  * @see Login
  * @see User
  */
->>>>>>> 52cc0140aaf630a53577c69022ce303fa63eaee4
+
 public class Register extends AppCompatActivity {
 
     EditText username;

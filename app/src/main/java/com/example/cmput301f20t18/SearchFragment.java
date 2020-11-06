@@ -28,7 +28,6 @@ import com.google.android.material.tabs.TabLayout;
 
 public class SearchFragment extends Fragment {
 
-
     /**
      * Creates the instance of the fragment, adds all the elements of the xml, then returns the view object
      * @param inflater
