@@ -19,7 +19,22 @@ import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
 
+/**
+ * This is a splash screen activity
+ * @author Chase/ Sean
+ * UI contrabutions
+ * @author Johnathon Gil
+ */
+
 public class SearchFragment extends Fragment {
+
+    /**
+     * Creates the instance of the fragment, adds all the elements of the xml, then returns the view object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
 
     @Nullable
     @Override

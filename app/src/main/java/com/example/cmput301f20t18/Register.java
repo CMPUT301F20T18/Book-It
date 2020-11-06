@@ -33,6 +33,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+
+/**
+ * Allows the users to register in the app
+ * @author Jacob Deinum
+ * UI contributions
+ * @author Johnathon Gil
+ */
+
 public class Register extends AppCompatActivity {
 
     EditText username;

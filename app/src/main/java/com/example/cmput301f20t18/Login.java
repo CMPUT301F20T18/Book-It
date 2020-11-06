@@ -22,6 +22,8 @@ import com.google.firebase.auth.FirebaseUser;
 /**
  * Allows the users to login into the app
  * @author Jacob Deinum
+ * UI contributions
+ * @author Johnathon Gil
  */
 public class Login extends AppCompatActivity {
 

@@ -22,6 +22,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+/**
+ * This is a class that creates a new book object through user input
+ * @author  Jacob Deinum
+ * @author Johnathon Gil
+ */
+
 public class MyBooksAddBook extends AppCompatActivity {
 
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
@@ -35,6 +41,23 @@ public class MyBooksAddBook extends AppCompatActivity {
 
 
     //ImageButton addPic;
+
+    /**
+     * This method has the purpose of creating the activity that prompts the user to add information
+     * to be able to add a book of theirs into the collection
+     * Such input asked are title, author, year and ISBN
+     * This class is still under development so their is a case for program crashing
+     * @param  savedInstanceState this creates a state were the content of this class is shown
+     * @see    View
+     * @see    TextView
+     * @see    EditText
+     * @see    Button
+     * @see    Toolbar
+     * @see    FirebaseAuth
+     * @see    FirebaseFirestore
+     * @see    CollectionReference
+     *
+     */
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,9 +84,11 @@ public class MyBooksAddBook extends AppCompatActivity {
         users = DB.collection("system").document("System").collection("users");
 
 
-
-
-
+        /**
+         * This method adds the values of the input into the FireStore database
+         * This is a listner to be able to react to button press that ultimately creates
+         * a book from the user input.
+         */
         // This part is still in development
         done.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -112,6 +137,11 @@ public class MyBooksAddBook extends AppCompatActivity {
 
             }
         });
+
+        /**
+         * This just returns to the MyBook Fragment Activity
+         * This is a listner to be able to react to button press
+         */
 
         cancel.setOnClickListener(new View.OnClickListener() {
             @Override

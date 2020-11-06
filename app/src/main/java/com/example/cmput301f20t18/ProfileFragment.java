@@ -16,6 +16,14 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import java.util.ArrayList;
 import java.util.Collections;
 
+/**
+ * This is a class that creates options for the use of the ISBN
+ * The class is still under development so the elements that appear on screen are mostly visual
+ * with the exception of cancel
+ * @author Johnathon Gil
+ * @author
+ */
+
 public class ProfileFragment extends Fragment {
 
     TextView username, phoneNum, email;
