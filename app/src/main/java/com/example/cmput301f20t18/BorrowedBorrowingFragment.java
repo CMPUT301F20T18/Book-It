@@ -20,7 +20,6 @@ import java.util.List;
  * in Borrowed>Borrowing.
  */
 public class BorrowedBorrowingFragment extends Fragment {
-
     RecyclerView recyclerView;  // recycler that displays list of books
     List<Book> bookList;        // list of books
 
@@ -114,6 +113,5 @@ public class BorrowedBorrowingFragment extends Fragment {
 
         BorrowedRecyclerViewAdapter borrowedAdapter = new BorrowedRecyclerViewAdapter(view.getContext(), bookList);
         recyclerView.setAdapter(borrowedAdapter);
-
     }
 }
