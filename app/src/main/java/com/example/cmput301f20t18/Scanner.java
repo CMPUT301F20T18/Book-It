@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
@@ -46,17 +47,19 @@ import java.util.concurrent.Executors;
 /**
  * This activity implements an ISBN scanner and returns the ISBN calling this activity
  * This activity must be called with startActivityForResult to function properly
- * @author Jacob Deinum
- * @version 1.0
  */
 public class Scanner extends AppCompatActivity {
 
-    private int REQUEST_CODE_PERMISSIONS = 1001;
+    private final int REQUEST_CODE_PERMISSIONS = 1001;
+    private final int OPEN_POST = 0;
+    private final int RETURN_ISBN = 1;
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA"};
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
     public PreviewView previewView;
     public Button cap;
     private Executor executor = Executors.newSingleThreadExecutor();
+    private int mode;
+    String TAG = "SCANNER_debug";
 
 
     @Override
@@ -65,6 +68,9 @@ public class Scanner extends AppCompatActivity {
         setContentView(R.layout.activity_scanner);
         previewView = findViewById(R.id.previewView);
         cap = (Button) findViewById(R.id.capture);
+
+        mode = getIntent().getIntExtra("type", OPEN_POST);
+        Log.d(TAG, "type of scan:" + Integer.toString(mode));
 
 
         // determine if the user has given the proper privileges to use the camera
@@ -211,11 +217,23 @@ public class Scanner extends AppCompatActivity {
                             String rawValue = barcode.getRawValue();
                             int valueType = barcode.getValueType();
                             if (valueType == Barcode.TYPE_ISBN && rawValue != null) {
-                                    Intent intent = new Intent(Scanner.this, PostScanActivity.class);
+                                Intent intent;
+                                if (mode == OPEN_POST) {
+                                    intent = new Intent(Scanner.this, PostScanActivity.class);
+                                    intent.putExtra("ISBN", rawValue);
+                                    setResult(RESULT_OK, intent);
+                                    finish();
+                                    startActivity(intent);
+
+
+                                    }
+                                else {
+                                    intent = new Intent();
                                     intent.putExtra("ISBN", rawValue);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                     return;
+                                }
 
                             }
                         }

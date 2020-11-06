@@ -11,13 +11,16 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.ArrayList;
 
 
 /**
  * User represents any user in our system
- * and contains both functionality for owners and borrowers, but not both have to be used
+ * a user may interact with another user, or a Library object
+ * @see Library
  */
 public class User {
     private String username;
@@ -118,7 +121,7 @@ public class User {
      * @param title  Title of the book to be added
      * @param author Author of the book to be added
      */
-    public void ownerNewBook(int isbn, String title, String author) {
+    public void ownerNewBook(Long isbn, String title, String author) {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
@@ -126,10 +129,16 @@ public class User {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer val = snapshot.getValue(Integer.class);
-                Book book = new Book(title, isbn, author, val, 0, User.this, 1984);
-                lib.addBook(book);
+                Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE, User.this, 1984);
                 owner_book_id.add(val);
                 mRef.setValue(val + 1);
+
+                // add the book to the book collection
+                CollectionReference books;
+                FirebaseFirestore DB = FirebaseFirestore.getInstance();
+                books = DB.collection("system").document("System").collection("books");
+                books.document(Long.toString(val)).set(book);
+
             }
 
             @Override

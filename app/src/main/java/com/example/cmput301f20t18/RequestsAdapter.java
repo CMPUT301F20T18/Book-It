@@ -37,7 +37,7 @@ public class RequestsAdapter extends RecyclerView.Adapter<RequestsAdapter.Reques
 
         LayoutInflater inflater = LayoutInflater.from(context);
 
-        View view = inflater.inflate(R.layout.card_request, null);
+        View view = inflater.inflate(R.layout.card_user_request, null);
         return new RequestViewHolder(view);
     }
 
