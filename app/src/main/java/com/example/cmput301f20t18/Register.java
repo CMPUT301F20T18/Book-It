@@ -72,7 +72,6 @@ public class Register extends AppCompatActivity {
 
 
         register.setOnClickListener(new View.OnClickListener() {
-            // TODO: Add input verification
             @Override
 
 

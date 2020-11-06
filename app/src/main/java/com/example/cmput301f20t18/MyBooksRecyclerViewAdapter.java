@@ -1,7 +1,9 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.net.wifi.hotspot2.omadm.PpsMoParser;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -12,7 +14,11 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -29,6 +35,7 @@ public class MyBooksRecyclerViewAdapter extends
     private final String TAG = "MyBooksRecViewAdapter";
     private Context context;
     private List<Book> bookList;    // Books to display
+    private Fragment fragment;
 
     /**
      * Class Constructor.
@@ -36,9 +43,10 @@ public class MyBooksRecyclerViewAdapter extends
      * @param context Context to inflate from.
      * @param bookList List of books to display.
      */
-    public MyBooksRecyclerViewAdapter(Context context, List<Book> bookList) {
+    public MyBooksRecyclerViewAdapter(Context context, List<Book> bookList, Fragment fragment) {
         this.context = context;
         this.bookList = bookList;
+        this.fragment = fragment;
     }
 
     /**
@@ -157,9 +165,11 @@ public class MyBooksRecyclerViewAdapter extends
                     public void onClick(View v) {
                         /* TODO: Scanner needs to know that an owner is trying to confirm pick up. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        /* TODO: upon successful scan, book status should be changed to "borrowed"
-                        *   and be updated in firestore. */
+                        intent.putExtra("type", 1);
+                        fragment.startActivityForResult(intent, 0);
+
+
+
                     }
                 });
 
@@ -195,9 +205,10 @@ public class MyBooksRecyclerViewAdapter extends
                     public void onClick(View v) {
                         /* TODO: Scanner needs to know that an owner is trying to confirm return. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        /* TODO: upon successful scan, book status should be changed to "available"
-                         *   and be updated in firestore. */
+                        Activity origin = (Activity) (v.getContext());
+                        origin.startActivityForResult(intent, 1);
+
+
                     }
                 });
 
@@ -281,5 +292,9 @@ public class MyBooksRecyclerViewAdapter extends
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
 
         }
+
     }
+
 }
+
+
