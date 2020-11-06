@@ -52,35 +52,27 @@
             android:layout_marginRight="301dp"
             android:src="@drawable/ic_drop_down_icon" />
 
-        <androidx.fragment.app.FragmentContainerView
-            android:id="@+id/fragment_container"
-            android:layout_width="350dp"
-            android:layout_height="wrap_content">
 
-            <EditText
-                android:id="@+id/search_edit_text"
-                android:layout_width="350dp"
-                android:layout_height="wrap_content"
-                android:layout_alignStart="@id/search_spinner"
-                android:layout_gravity="center"
-                android:layout_marginLeft="98dp"
-                android:background="@color/colorWhite"
-                android:hint="Search..."
-                android:paddingLeft="10dp"
-                android:textColor="@color/colorGray2"
-                android:textColorHint="@color/doveGray" />
-
-
-        </androidx.fragment.app.FragmentContainerView>
-
+        <EditText
+            android:id="@+id/search_edit_text"
+            android:layout_width="268dp"
+            android:layout_height="wrap_content"
+            android:layout_alignLeft="@id/search_spinner"
+            android:layout_gravity="center"
+            android:layout_marginLeft="98dp"
+            android:background="@color/colorWhite"
+            android:hint="Search..."
+            android:paddingLeft="10dp"
+            android:textColor="@color/colorGray2"
+            android:textColorHint="@color/doveGray" />
 
         <Button
             android:id="@+id/search_button"
-            android:layout_width="28dp"
+            android:layout_width="27dp"
             android:layout_height="24dp"
-            android:layout_alignLeft="@id/fragment_container"
+            android:layout_alignLeft="@id/search_edit_text"
             android:layout_gravity="center"
-            android:layout_marginLeft="350dp"
+            android:layout_marginLeft="259dp"
             android:background="@drawable/search_button_background" />
 
 

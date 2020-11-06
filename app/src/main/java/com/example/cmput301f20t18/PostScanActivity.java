@@ -84,7 +84,7 @@ public class PostScanActivity extends AppCompatActivity {
                 Fragment fragment = new SearchFragment();
                 fragment.setArguments(bundle);
                 // TODO: Implement fragment_container for this activity
-                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+                //getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
 
 
 

@@ -6,11 +6,24 @@ import android.os.Bundle;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**This class is used to check another users profile
+ * This is a class still under development
+ * @author Johnathon
+ *
+ */
+
 public class CheckProfileActivity extends AppCompatActivity {
 
     TextView username, phoneNum, email;
     ImageView profilePic;
 
+
+    /**
+     * Creates the instance of view and run it
+     * @param savedInstanceState
+     */
+
+    // TODO: Update and add references of the user from the database to the class
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,9 +42,6 @@ public class CheckProfileActivity extends AppCompatActivity {
 
 
         profilePic.setImageResource(R.drawable.user_pic);
-
-
-
 
 
     }

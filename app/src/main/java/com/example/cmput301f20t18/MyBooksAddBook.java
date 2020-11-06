@@ -26,6 +26,10 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * This is a class that creates a new book object through user input
  * @author  Jacob Deinum
  * @author Johnathon Gil
+ * @see    Toolbar
+ * @see    FirebaseAuth
+ * @see    FirebaseFirestore
+ * @see    CollectionReference
  */
 
 public class MyBooksAddBook extends AppCompatActivity {
@@ -48,14 +52,6 @@ public class MyBooksAddBook extends AppCompatActivity {
      * Such input asked are title, author, year and ISBN
      * This class is still under development so their is a case for program crashing
      * @param  savedInstanceState this creates a state were the content of this class is shown
-     * @see    View
-     * @see    TextView
-     * @see    EditText
-     * @see    Button
-     * @see    Toolbar
-     * @see    FirebaseAuth
-     * @see    FirebaseFirestore
-     * @see    CollectionReference
      *
      */
 
@@ -86,7 +82,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         /**
          * This method adds the values of the input into the FireStore database
-         * This is a listner to be able to react to button press that ultimately creates
+         * This is a listener to be able to react to button press that ultimately creates
          * a book from the user input.
          */
         // This part is still in development
@@ -140,7 +136,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         /**
          * This just returns to the MyBook Fragment Activity
-         * This is a listner to be able to react to button press
+         * This is a listener to be able to react to button press
          */
 
         cancel.setOnClickListener(new View.OnClickListener() {
