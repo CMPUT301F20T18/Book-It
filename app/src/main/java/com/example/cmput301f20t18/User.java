@@ -126,7 +126,7 @@ public class User {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer val = snapshot.getValue(Integer.class);
-                Book book = new Book(title, isbn, author, val, 0, User.this, 1984);
+                Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE, User.this, 1984);
                 lib.addBook(book);
                 owner_book_id.add(val);
                 mRef.setValue(val + 1);

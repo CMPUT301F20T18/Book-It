@@ -1,8 +1,10 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.net.wifi.hotspot2.omadm.PpsMoParser;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -16,6 +18,9 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
+
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.util.List;
 
@@ -104,9 +109,12 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        //TODO: upon successful scan, book status should be changed to "borrowed"
-                        // and should be updated in firestore
+                        Activity origin = (Activity) (v.getContext());
+                        origin.startActivityForResult(intent, 0);
+
+
+                        
+
                     }
                 });
 
@@ -199,5 +207,30 @@ public class BookAdapter extends RecyclerView.Adapter<BookAdapter.BookViewHolder
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
 
         }
+
+    }
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (resultCode) {
+            case 0:
+                int isbn = data.getIntExtra("isbn", 0);
+
+                // Change the status of the book the borrower scanned
+                for (int i = 0; i < bookList.size(); i++) {
+                    if (bookList.get(i).getISBN() == isbn) {
+                        bookList.get(i).setStatus(Book.STATUS_BORROWED);
+
+                        // update the same book status in the DB
+                        FirebaseFirestore DB = FirebaseFirestore.getInstance();
+                        CollectionReference books = DB.collection("system").document("System").collection("books");
+                        books.document(Integer.toString(bookList.get(i).getId())).update("status", Book.STATUS_BORROWED);
+                    }
+                }
+
+            case 1:
+
+        }
+
     }
 }
+
+
