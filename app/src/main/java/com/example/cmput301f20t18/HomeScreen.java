@@ -39,6 +39,7 @@ public class HomeScreen extends AppCompatActivity {
     CollectionReference books;
     DocumentReference current_user;
     Library lib;
+    Fragment selectedFragment;
     final String TAG = "HOMESCREEN";
 
 
@@ -60,22 +61,22 @@ public class HomeScreen extends AppCompatActivity {
         Task<QuerySnapshot> retrieve_books = books.get();
         Task<DocumentSnapshot> retrieve_current_user = current_user.get();
 
-        /* phlafoo commented this out because it was causing crash on runtime */
         // successfully got all books and users
-       /*Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+       Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user ).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
             @Override
             public void onSuccess(List<Task<?>> tasks) {
-//                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
-//                assert(current != null);
-//                Log.d(TAG, "onSuccess: " + current.getUsername());
-//
-//                List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
-//                List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
+                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
+                assert(current != null);
+                Log.d(TAG, "onSuccess: " + current.getUsername());
 
+                List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
+                List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
+
+                current.ownerNewBook(9781260084504L , "Database System Concepts", "Sillberschatz");
             }
 
 
-        });*/
+        });
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -98,7 +99,7 @@ public class HomeScreen extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
+                    selectedFragment = null;
 
                     switch (item.getItemId()) {
                         case R.id.tab_borrowed:
@@ -128,21 +129,17 @@ public class HomeScreen extends AppCompatActivity {
                 }
             };
 
-    /*test code*/
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode == 1){
-            if(resultCode == RESULT_OK){
-                String ISBN = "ISBN: ";
-                String rawValue = data.getStringExtra("key");
-                Toast.makeText(getApplicationContext(), ISBN.concat(rawValue), Toast.LENGTH_SHORT).show();
-            }
-            if(resultCode == RESULT_CANCELED){
-                Toast.makeText(getApplicationContext(), "ISBN is not scanned", Toast.LENGTH_SHORT).show();
+        if (requestCode == 1) {
+            if (resultCode == RESULT_OK) {
+                selectedFragment.onActivityResult(requestCode, resultCode, data);
             }
         }
+
+
     }
 }
 

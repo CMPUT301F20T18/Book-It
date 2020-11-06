@@ -79,7 +79,7 @@ public class MyBooksLendingFragment extends Fragment {
 
         Collections.sort(bookList);
 
-        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList);
+        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList, this);
         recyclerView.setAdapter(myBooksRecyclerViewAdapter);
 
         return view;

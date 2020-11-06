@@ -24,7 +24,7 @@ import java.util.List;
  * Use the {@link MyBooksPendingFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class MyBooksPendingFragment extends Fragment {
+public class MyBooksPendingFragment extends Fragment implements fragmentListener {
 
     RecyclerView recyclerView;
     List<Book> bookList;
