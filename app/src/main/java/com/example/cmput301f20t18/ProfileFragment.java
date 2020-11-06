@@ -77,8 +77,6 @@ public class ProfileFragment extends Fragment {
         phoneNum.setText("780 933 8641");
         email.setText("jggil@ualberta.ca");
 
-        profilePic.setImageResource(R.drawable.user_pic);
-
         return view;
     }
 }
