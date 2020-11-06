@@ -35,6 +35,7 @@ public class SearchFragment extends Fragment {
         SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
 
         viewPager.setAdapter(pageAdapter);
+
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
 
@@ -59,6 +60,7 @@ public class SearchFragment extends Fragment {
                 //Currently debug text. Will in the future instantiate the proper object
                 //In order to conduct a search
                 if (selectedOption.equals("Books")){
+                    //Library lib = new Library();
                     Log.d("Search", "Books are neat");
                 }
                 else{

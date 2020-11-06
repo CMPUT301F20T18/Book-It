@@ -1,8 +1,10 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.location.Address;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -10,6 +12,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
@@ -25,11 +28,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
     private Context context;
     private List<UserLocation> locationList;
 
+    private Intent selectLocationIntent;
+    private Activity forDataReturn;
+
     public LocationAdapter(Context context, List<UserLocation> locationList) {
         this.context = context;
         this.locationList = locationList;
     }
-
 
     @NonNull
     @Override
@@ -51,8 +56,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         holder.mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(v.getContext(), SelectLocationActivity.class);
-                v.getContext().startActivity(intent);
+                startSelectLocation(location.getAddress(), position);
             }
         });
 
@@ -86,6 +90,23 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
                 v.getContext().startActivity(intent);
             }
         });
+    }
+
+    private void startSelectLocation(Address address, int index) {
+        selectLocationIntent = new Intent(context, SelectLocationActivity.class);
+        selectLocationIntent.putExtra("INPUT_ADDRESS", address);
+        selectLocationIntent.putExtra("LOCATION_INDEX", index);
+        forDataReturn = (Activity) context;
+        forDataReturn.startActivityForResult(selectLocationIntent,1);
+    }
+
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
+        if (requestCode == 1){
+            int index = data.getIntExtra("LOCATION_INDEX", -1);
+            Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+            locationList.remove(index);
+            locationList.add(index, new UserLocation(address,null));
+        }
     }
 
     @Override

@@ -20,7 +20,6 @@ import java.util.List;
  * in Borrowed>Ready for pick up.
  */
 public class BorrowedPendingFragment extends Fragment {
-
     RecyclerView recyclerView;  // recycler that displays list of books
     List<Book> bookList;        // list of books
 
@@ -79,6 +78,29 @@ public class BorrowedPendingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
+
+        View view = inflater.inflate(R.layout.fragment_borrowed_pending, container, false);
+
+        recyclerView = view.findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(true);
+        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+
+        bookList = new ArrayList<>();
+        bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
+                420, Book.STATUS_ACCEPTED, null, 1995));
+        bookList.add(new Book("To Kill a Mockingbird",9781973907985L, "Harper Lee",
+                421, Book.STATUS_ACCEPTED, null, 1960));
+        bookList.add(new Book("Jane Eyre",9780194241762L, "Charlotte Bronte",
+                422, Book.STATUS_ACCEPTED, null, 1979));
+        bookList.add(new Book("A Passage to India",9780140180763L, "E. M. Forster",
+                423, Book.STATUS_ACCEPTED, null, 1989));
+
+        Collections.sort(bookList);
+
+        BorrowedRecyclerViewAdapter borrowedAdapter = new BorrowedRecyclerViewAdapter(view.getContext(), bookList);
+        recyclerView.setAdapter(borrowedAdapter);
+
+
         return inflater.inflate(R.layout.fragment_borrowed_pending, container, false);
     }
 
