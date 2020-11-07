@@ -1,15 +1,182 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- displayed when on the "Profile" tab -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MyBooksAddBook"
+    android:orientation="vertical">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="Profile Fragment"
-        android:textColor="@color/colorAccent"
-        android:textSize="30sp"
-        android:layout_centerInParent="true"/>
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/profile_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_blank_header"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:paddingLeft="10dp">
+            <TextView
+                android:id="@+id/my_account_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_marginStart="10dp"
+                android:paddingTop="3dp"
+                android:fontFamily="@font/poppins_medium"
+                android:text="My Account"
+                android:textColor="@color/karryText"
+                android:textSize="30sp" />
+            <Button
+                android:id="@+id/sign_out_button"
+                android:layout_width="70dp"
+                android:layout_height="33dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerInParent="true"
+                android:layout_marginEnd="8dp"
+                android:background="@drawable/sign_out_button"
+                android:text="Sign Out"
+                android:textColor="@color/colorOrange"
+                android:textSize="15sp" />
+        </RelativeLayout>
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <FrameLayout
+            android:id="@+id/frame_background"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:background="@color/colorGray2"
+            android:padding="20dp"
+            tools:layout_editor_absoluteX="-1dp"
+            tools:layout_editor_absoluteY="0dp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+
+        </FrameLayout>
+
+        <FrameLayout
+            android:id="@+id/frame_image"
+            android:layout_width="133dp"
+            android:layout_height="141dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_gravity="center_horizontal"
+            android:background="@drawable/circle_outline"
+            android:padding="2dp"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent">
+            <!--Circular Image View-->
+
+            <ImageView
+                android:id="@+id/profile_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:srcCompat="@drawable/default_profile" />
+        </FrameLayout>
+
+        <TextView
+            android:id="@+id/my_user_name"
+            android:layout_width="234dp"
+            android:layout_height="39dp"
+            android:layout_marginStart="20dp"
+            android:layout_marginTop="36dp"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Username"
+            android:textColor="@color/colorBlue"
+            android:textSize="30sp"
+            app:layout_constraintStart_toEndOf="@+id/frame_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <Button
+            android:id="@+id/edit_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:background="@color/transparent"
+            android:fontFamily="@font/poppins"
+            android:text="@string/edit_profile"
+            android:textColor="@color/doveGray"
+            android:textSize="18sp"
+            app:layout_constraintStart_toEndOf="@+id/frame_image"
+            app:layout_constraintTop_toBottomOf="@+id/my_user_name" />
 
 
-</RelativeLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/phone_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:fontFamily="@font/poppins"
+            android:text="Phone"
+            android:textColor="@color/colorOrange"
+            android:textSize="20sp"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:id="@+id/phone_num"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:fontFamily="@font/poppins"
+            android:text="780 986 1873"
+            android:textColor="@color/karryText"
+            android:textSize="20sp"
+            android:layout_alignParentRight="true" />
+
+    </RelativeLayout>
+
+    <View style="@style/Divider.Horizontal"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/email_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:fontFamily="@font/poppins"
+            android:text="Email"
+            android:textColor="@color/colorOrange"
+            android:textSize="20sp"
+            android:layout_alignParentLeft="true"/>
+
+        <TextView
+            android:id="@+id/email"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:padding="15dp"
+            android:fontFamily="@font/poppins"
+            android:text="not_you_average_joe@gmail.com"
+            android:textColor="@color/karryText"
+            android:textSize="15sp"
+            android:layout_alignParentRight="true"/>
+
+    </RelativeLayout>
+
+
+</LinearLayout>

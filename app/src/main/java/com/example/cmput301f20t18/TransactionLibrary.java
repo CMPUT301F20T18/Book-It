@@ -10,15 +10,25 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Hashtable;
 import java.util.List;
 
-
+/**
+ * TransactionLibrary is to be used as an interface between
+ * the program and the database allowing us reduce queries
+ */
 public class TransactionLibrary {
     private Hashtable<Integer, Transaction> transactionLibrary;
 
+    /**
+     * Constructs TransactionLibrary
+     */
     public TransactionLibrary() {
         this.transactionLibrary = new Hashtable<Integer, Transaction>();
         initTransactionLibrary();
     }
 
+    /**
+     * Initializes TransactionLibrary such that it has all the data
+     * locally
+     */
     private void initTransactionLibrary(){
         List<Transaction> transactions = getDataFromDB();
         for (int i=0; i < transactions.size(); i++){
@@ -28,6 +38,10 @@ public class TransactionLibrary {
 
     }
 
+    /**
+     * Grabs all transactions from database
+     * @return The listener holding the data
+     */
     private List<Transaction> getDataFromDB(){
         TransactionLibOnCompleteListener listener = new TransactionLibOnCompleteListener();
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -78,21 +92,6 @@ public class TransactionLibrary {
                 .set(transaction);
     }
 
-    public void updateTransaction(Transaction transaction){
-        updateLocal(transaction);
-        updateDB(transaction);
-    }
-
-    private void updateLocal(Transaction transaction) {
-        transactionLibrary.put(transaction.getID(), transaction);
-    }
-
-    private void updateDB(Transaction transaction){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("transactions");
-
-    }
-
     /**
      * This function allows for one to use the ID of
      * a transaction to get the transaction object
@@ -103,9 +102,17 @@ public class TransactionLibrary {
         return this.transactionLibrary.get(ID);
     }
 
+    /**
+     * Custom listener for retrieving data from the database
+     */
     private class TransactionLibOnCompleteListener implements OnCompleteListener {
         private List<Transaction> items;
 
+        /**
+         * Called on completion of task
+         * Takes data from task and stores it locally
+         * @param task The task being completed
+         */
         @Override
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
@@ -117,6 +124,10 @@ public class TransactionLibrary {
             }
         }
 
+        /**
+         * Returns data retrieved from the database
+         * @return A list of transactions that were retrieved
+         */
         public List<Transaction> returnData(){
             return this.items;
         }

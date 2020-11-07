@@ -7,12 +7,6 @@
          location permissions for the "MyLocation" functionality.
     -->
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
-    <!--
-         The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
-         Google Maps Android API v2, but you must specify either coarse or fine
-         location permissions for the "MyLocation" functionality.
-    -->
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.CAMERA" />
 
     <application
@@ -22,23 +16,8 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".ChooseLocationActivity"></activity>
-        <activity android:name=".ViewRequestsActivity" />
-        <activity
-            android:name=".SplashScreen"
-            android:theme="@style/SplashTheme">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity android:name=".SearchActivity" />
-        <!--
-<activity android:name=".BookSearchActivity" />
-        <activity android:name=".UserProfileActivity" />
-        -->
-        <activity android:name=".HomeScreen" />
+        <activity android:name=".CheckProfileActivity"></activity>
+        <activity android:name=".PostScanActivity" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
              (See the file "res/values/google_maps_api.xml").
@@ -50,6 +29,30 @@
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
+
+        <activity
+            android:name=".SelectLocationActivity"
+            android:label="@string/title_activity_select_location" />
+        <activity android:name=".MyBooksAddBook" />
+        <activity android:name=".ChooseLocationActivity" />
+        <activity android:name=".ViewRequestsActivity" />
+        <activity
+            android:name=".SplashScreen"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <!--
+<activity android:name=".BookSearchActivity" />
+        <activity android:name=".UserProfileActivity" />
+        -->
+        <activity
+            android:name=".HomeScreen"
+            android:windowSoftInputMode="adjustPan" />
+
         <meta-data
             android:name="preloaded_fonts"
             android:resource="@array/preloaded_fonts" />
