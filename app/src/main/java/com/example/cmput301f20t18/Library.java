@@ -12,8 +12,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+
 import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
+
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
@@ -184,11 +186,47 @@ public class Library {
         return outBooks;
     }
     //ToDo
-    /*
-    public ArrayList<Book> searchBookDB(String field, String query){
+/*
+    public List<Book> searchBookDB(String field, String query){
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference searchRef = db.collection("books");
-        Query searchQuery = searchRef.whereEqualTo(field, query);
+        CollectionReference searchRef = db.collection("system")
+                .document("system")
+                .collection("book");
+        final List<Book>[] results = new List[]{null};
+        searchRef.whereArrayContains(field, query).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                QuerySnapshot queryResult = (QuerySnapshot) task.getResult();
+                results[0] = queryResult.toObjects(Book.class);
+
+
+            }
+        });
+        return results[0];
+
     }
-   */
+
+    /**
+     * A complete listener that allows for the retrieval
+     * of data onComplete
+     */
+/*
+    private class BookLibOnCompleteListener implements OnCompleteListener{
+        private List<Book> items;
+
+        @Override
+        public void onComplete(@NonNull Task task) {
+            if (task.isSuccessful()){
+                QuerySnapshot queryResult = (QuerySnapshot) task.getResult();
+                this.items = queryResult.toObjects(Book.class);
+                fillBookLibrary(items);
+            }
+            else{
+                throw new RuntimeException("Database Query Failed");
+            }
+        }
+    }
+    
+ */
 }
+
