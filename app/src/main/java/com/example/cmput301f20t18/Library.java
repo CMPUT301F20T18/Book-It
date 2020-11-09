@@ -210,6 +210,7 @@ public class Library {
      * A complete listener that allows for the retrieval
      * of data onComplete
      */
+/*
     private class BookLibOnCompleteListener implements OnCompleteListener{
         private List<Book> items;
 
@@ -225,5 +226,7 @@ public class Library {
             }
         }
     }
+    
+ */
 }
 
