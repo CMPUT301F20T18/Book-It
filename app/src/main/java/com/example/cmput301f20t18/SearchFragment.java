@@ -59,7 +59,6 @@ public class SearchFragment extends Fragment {
 
         //Set up search button
         searchButton = view.findViewById(R.id.search_button);
-
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
