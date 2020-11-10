@@ -22,7 +22,7 @@ public class ExchangeTransaction extends Transaction{
      * @param ID The ID of the transaction
      * @param status The state the transaction is in (exchange)
      */
-    public ExchangeTransaction(String bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
+    public ExchangeTransaction(User bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
         super(bookOwner, bookBorrower, bookId, ID, status);
         this.bookOwnerScanned = false;
         this.bookBorrowerScanned = false;

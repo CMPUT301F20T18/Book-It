@@ -2,17 +2,30 @@ package com.example.cmput301f20t18;
 
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
+import java.util.List;
 
 
 /**
@@ -27,16 +40,19 @@ public class User {
     private String pickup;
     private String phone;
     private String email;
+    private String profile_picture;
 
-    private Library lib;
+    // debugging
+    private final String TAG = "USER_DEBUG";
 
-    private ArrayList<Integer> owner_book_id;
-    private ArrayList<Transaction> owner_transactions;
-    private ArrayList<Book> owner_books;
+    // database info
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    CollectionReference userRef = DB.collection("system").document("System").collection("users");
+    CollectionReference transRef = DB.collection("system").document("System").collection("transactions");
+    CollectionReference bookRef = DB.collection("system").document("System").collection("books");
 
-    private ArrayList<Integer> borrower_book_id;
-    private ArrayList<Transaction> borrower_transactions;
-    private ArrayList<Book> borrower_books;
+
 
 
     /**
@@ -50,11 +66,11 @@ public class User {
     /**
      * Default constructor for a user, used during registration
      *
-     * @param username
-     * @param appID
-     * @param DB_id
-     * @param email
-     * @param address
+     * @param username THe username of the user
+     * @param appID The appID of the user
+     * @param DB_id The authentication token used by the user
+     * @param email The email used by the user
+     * @param address The users address
      */
     public User(String username, int appID, String DB_id, String email, String address) {
         this.username = username;
@@ -63,82 +79,60 @@ public class User {
         this.email = email;
         this.address = address;
         this.pickup = address;
-
-        lib = null;
-
-        owner_book_id = new ArrayList<Integer>();
-        owner_books = new ArrayList<Book>();
-        owner_transactions = new ArrayList<Transaction>();
-
-        borrower_book_id = new ArrayList<Integer>();
-        borrower_books = new ArrayList<Book>();
-        borrower_transactions = new ArrayList<Transaction>();
-
+        this.phone = null;
+        this.profile_picture = null;
     }
 
 
-    /**
-     * Returns books for users of a particular type
-     * @param type The status of the book to be found
-     * @return list of bookIDs matching the requested status
-     */
-    public ArrayList<Book> ownerGetBooks(int type) {
-        owner_books = lib.getBooks(owner_book_id);
-        ArrayList<Book> filtered = new ArrayList<Book>();
-        for (Book b : owner_books) {
-            if (b.getStatus() == type) {
-                filtered.add(b);
-            }
-        }
 
-
-        return filtered;
-    }
 
     /**
      * Deletes the book with bookID from the owners collection
+     * Deletes the same book from the DB
      * @param bookID The id of the book to delete
      */
     public void ownerDelBook(int bookID) {
-        for (int i = 0; i < owner_books.size(); i++) {
-            if (owner_books.get(i).getId() == bookID) {
-                owner_books.remove(i);
-
-                return;
-            }
-        }
+        // delete the book from the DB
+        bookRef.document(Integer.toString(bookID)).collection("owned_books").document(Integer.toString(bookID)).delete();
     }
+
+
 
 
     /**
      * Adds a new book to the owners list of books
      * Adds the same book to the library DB
-     *
      * @param isbn   ISBN of the book to be added
      * @param title  Title of the book to be added
      * @param author Author of the book to be added
      */
-    public void ownerNewBook(int isbn, String title, String author) {
-
+    public void ownerNewBook(Long isbn, String title, String author, int year) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer val = snapshot.getValue(Integer.class);
-                Book book = new Book(title, isbn, author, val, 0, User.this, 1984);
-                lib.addBook(book);
-                owner_book_id.add(val);
+                userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                        if (task.isSuccessful()) {
+                            User current = task.getResult().toObject(User.class);
+                            Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE,current, year);
+                            bookRef.document(Integer.toString(val)).set(book);
+                            userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(val)).set(book);
+                        }
+                    }
+                });
                 mRef.setValue(val + 1);
             }
 
+            // book ID couldn't be found
             @Override
             public void onCancelled(@NonNull DatabaseError error) {
-
+                Log.e(TAG, "onCancelled: Error finding bookID");
             }
         });
-
-
     }
 
 
@@ -147,31 +141,11 @@ public class User {
      * remove all other request for books with the same book ID
      * @param request The request transaction to accept
      */
-    public void ownerAcceptRequest(RequestTransaction request) {
-
-        // accept the request and replace the Request transaction with
-        // an Exchange transaction
-        Transaction accepted = request.accept();
-        if (accepted instanceof ExchangeTransaction) {
-            ExchangeTransaction new_ex = (ExchangeTransaction) accepted;
-            owner_transactions.remove(request);
-            owner_transactions.add(new_ex);
-        }
+    public void ownerAcceptRequest(Transaction request) {
 
 
-        // deny all other requests with the same bookID?
-        int bookID = request.getBookID();
-        for (int i = 0; i < owner_transactions.size(); i++) {
 
-            // transaction deals with same book and is requested
-            if (owner_transactions.get(i).getBookID() == bookID && owner_transactions.get(i).getStatus() == "requested") {
-                owner_transactions.remove(i);
 
-                // TODO
-                // remove transactions from transaction DB with same bookID and requested status
-                return;
-            }
-        }
     }
 
 
@@ -182,30 +156,16 @@ public class User {
      */
     @RequiresApi(api = Build.VERSION_CODES.N)
     public void ownerDenyRequest(int t_id) {
-        for (int i = 0; i < owner_transactions.size(); i++) {
-            if (owner_transactions.get(i).getID() == t_id) {
-                owner_transactions.remove(i);
-                // TODO: Implement notification for borrower
-            }
-        }
+
     }
 
 
     /**
-     * Let owner signOff on a book, marking the book either as Borrowed or available
+     * Let owner signOff on a book, marking the book available
      * @param bookID The bookID of the book being signed off on
      */
     public void ownerSignOff(int bookID) {
-        for (int i = 0; i < owner_transactions.size(); i++) {
-            if (owner_transactions.get(i).getBookID() == bookID) {
-                Transaction a_trans = owner_transactions.get(i);
-                // scan the book as user??
-                if (a_trans instanceof ExchangeTransaction) {
-                    // TODO: Find way to include user
-                    //((ExchangeTransaction) a_trans).scanned();
-                }
-            }
-        }
+
     }
 
 
@@ -217,30 +177,56 @@ public class User {
      * @param bookID is the id of the book you wish to borrow
      * @return returns a transaction object, containing the borrower request
      */
-    public Transaction borrowerRequestBook(int bookID) {
-        Book requested = lib.getBook(bookID);
-        User owner = requested.getOwner();
-        Transaction request = new RequestTransaction(requested.getOwner().getUsername(), User.this.getUsername(), bookID);
-        borrower_transactions.add(request);
-        return request;
+    public void borrowerRequestBook(int bookID) {
+        FirebaseDatabase db = FirebaseDatabase.getInstance();
+        DatabaseReference mRef = db.getReference().child("max_transaction_id");
+        mRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                if (snapshot.exists()) {
+                    int val = snapshot.getValue(Integer.class);
+
+                    // retrieve the book, owner, and borrower information from the DB
+                    Query book = bookRef.whereEqualTo("id", bookID);
+                    Task<DocumentSnapshot> user = userRef.document(auth.getUid()).get();
+                    Task<QuerySnapshot> current_book = book.get();
+
+
+                    Task<List<Task<?>>> combined = Tasks.whenAllComplete(user, current_book).addOnCompleteListener(new OnCompleteListener<List<Task<?>>>() {
+                        @Override
+                        public void onComplete(@NonNull Task<List<Task<?>>> task) {
+                            User current = user.getResult().toObject(User.class);
+                            List<Book> requested_list = current_book.getResult().toObjects(Book.class);
+                            Book requested = requested_list.get(0);
+
+                            RequestTransaction new_request = new RequestTransaction(requested.getOwner(), current.getUsername(), bookID, val, Book.STATUS_REQUESTED);
+
+                            // update the user transactions
+                            userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(new_request.getID())).set(new_request);
+                            userRef.document(requested.getOwner().getDbID()).collection("owner_transactions").document(Integer.toString(new_request.getID())).set(new_request);
+                        }
+                    });
+                    mRef.setValue(val + 1);
+                }
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+                Log.e(TAG, "onCancelled: Error finding transaction ID");
+            }
+        });
     }
 
 
     /**
      * Pick-up the book, scanning it to mark it as borrowed
-     *
      * @param bookID the ID of the book being picked up
      */
     public void borrowerPickupBook(int bookID) {
-        for (int i = 0; i < borrower_transactions.size(); i++) {
-            if (borrower_transactions.get(i).getBookID() == bookID) {
-                Transaction a_trans = borrower_transactions.get(i);
-                // scan the book as user??
-                if (a_trans instanceof ExchangeTransaction) {
-                    ((ExchangeTransaction) a_trans).scanned(User.this.getUsername());
-                }
-            }
-        }
+
+        // change the status of the book to borrowed
+        Query book_query = bookRef.whereEqualTo("ID", bookID);
+
     }
 
 
@@ -249,21 +235,16 @@ public class User {
      * @param bookID The ID of the book being dropped off
      */
     public void borrowerDropOffBook(int bookID) {
-        for (int i = 0; i < borrower_transactions.size(); i++) {
-            if (borrower_transactions.get(i).getBookID() == bookID) {
-                Transaction a_trans = borrower_transactions.get(i);
-                // scan the book as user??
-                if (a_trans instanceof BorrowTransaction) {
-                    ((BorrowTransaction) a_trans).finish();
-                }
-            }
-        }
+        // change the status of the book to available
+
+
 
     }
 
+
     /**
+     * TODO
      * Let the borrower search for books where the description contains a term
-     * TODO: IMPLEMENT
      * @param term The term to filter for
      * @return A list of integers representing book IDs of the books that matched
      */
@@ -278,56 +259,30 @@ public class User {
      * @param transaction the transaction id
      */
     public void borrowerTransactionAdd(Transaction transaction) {
-        this.borrower_transactions.add(transaction);
+
+
+
     }
+
+    /**
+     * deletes a transaction from a owner transaction list
+     * @param t_id The transaction id of the transaction to remove
+     */
+    public void ownerTransactionDelete(int t_id) {
+
+    }
+
+
+
 
     /**
      * deletes a transaction from a borrower transaction list
      * @param t_id The transaction id of the transaction to remove
      */
-    public void transactionDelete(int t_id, char type) {
-        ArrayList<Transaction> transactions = null;
-        if (type == 'o') {
-            transactions = this.owner_transactions;
-        }
-        else {
-            transactions = borrower_transactions;
-        }
+    public void borrowerTransactionDelete(int t_id) {
 
-        for (int i = 0; i < transactions.size() ; i++) {
-            if (transactions.get(i).getID() == t_id) {
-                transactions.remove(transactions.get(i));
-            }
-        }
 
     }
-
-
-    /**
-     * Materializes all of the users books from their bookID list
-     * Used to speed up application and reduce queries to DB
-     */
-    public void initUserBooks() {
-        this.borrower_books = lib.getBooks(borrower_book_id);
-        this.owner_books = lib.getBooks(owner_book_id);
-    }
-
-    /**
-     * Give library access to the user
-     * @param lib The library
-     */
-    public void setLib(Library lib) {
-        this.lib = lib;
-    }
-
-
-
-
-
-
-
-
-
 
 
 
@@ -395,62 +350,11 @@ public class User {
         this.email = email;
     }
 
-    public Library getLib() {
-        return lib;
+    public String getProfile_picture() {
+        return profile_picture;
     }
 
-    public ArrayList<Transaction> getOwner_transactions() {
-        return owner_transactions;
-    }
-
-
-    public void setOwner_transactions(ArrayList<Transaction> owner_transactions) {
-        this.owner_transactions = owner_transactions;
-    }
-
-    public ArrayList<Integer> getOwner_book_id() {
-        return owner_book_id;
-    }
-
-    public void setOwner_book_id(ArrayList<Integer> owner_book_id) {
-        this.owner_book_id = owner_book_id;
-    }
-
-    public ArrayList<Book> getOwner_books() {
-        return owner_books;
-    }
-
-    public void setOwner_books(ArrayList<Book> owner_books) {
-        this.owner_books = owner_books;
-    }
-
-
-    public ArrayList<Book> borrowerGetBooks() {
-        return this.borrower_books;
-    }
-
-
-    public ArrayList<Transaction> getBorrower_transactions() {
-        return borrower_transactions;
-    }
-
-    public void setBorrower_transactions(ArrayList<Transaction> borrower_transactions) {
-        this.borrower_transactions = borrower_transactions;
-    }
-
-    public ArrayList<Integer> getBorrower_book_id() {
-        return borrower_book_id;
-    }
-
-    public void setBorrower_book_id(ArrayList<Integer> borrower_book_id) {
-        this.borrower_book_id = borrower_book_id;
-    }
-
-    public ArrayList<Book> getBorrower_books() {
-        return borrower_books;
-    }
-
-    public void setBorrower_books(ArrayList<Book> borrower_books) {
-        this.borrower_books = borrower_books;
+    public void setProfile_picture(String profile_picture) {
+        this.profile_picture = profile_picture;
     }
 }

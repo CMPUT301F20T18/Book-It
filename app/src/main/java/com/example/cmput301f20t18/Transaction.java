@@ -19,11 +19,22 @@ import java.util.Map;
  * between users and returning the book to it's original owner
  */
 public abstract class Transaction {
-    private String bookOwner;
+
+
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_REQUESTED = 1;
+    public static final int STATUS_ACCEPTED = 2;
+    public static final int STATUS_BORROWED = 3;
+
+    public static final String TAG = "TRANS_DEBUG";
+
+
+
+    private User bookOwner;
     private String bookBorrower;
     private Integer ID;
     private Integer bookID;
-    private String status;
+    private int status;
 
     //private static TransactionLibrary transactionLib = new TransactionLibrary();
 
@@ -34,7 +45,7 @@ public abstract class Transaction {
      * @param bookBorrower The user who is borrowing the book
      * @param bookID       The id of the book which is being borrowed
      */
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID) {
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         TransactionOnCompleteListener listener = new TransactionOnCompleteListener();
 
@@ -45,7 +56,7 @@ public abstract class Transaction {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
-        this.status = "request";
+        this.status = Book.STATUS_REQUESTED;
         this.ID = listener.returnData();
 
         //this.transactionLib.addTransaction(this);
@@ -64,7 +75,7 @@ public abstract class Transaction {
      *                     (request, exchange, borrow, declined)
      */
     //For use in changing the status of a transaction
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID, Integer ID, String status) {
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status) {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
@@ -94,7 +105,7 @@ public abstract class Transaction {
      *
      * @return status of transaction
      */
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -122,7 +133,7 @@ public abstract class Transaction {
      *
      * @return User who owns the book
      */
-    public String getBookOwner() {
+    public User getBookOwner() {
         return bookOwner;
     }
 

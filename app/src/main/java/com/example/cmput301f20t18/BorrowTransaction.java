@@ -15,7 +15,7 @@ public class BorrowTransaction extends Transaction{
      * @param ID The id of the transaction
      * @param status The state of the transaction (borrow)
      */
-    public BorrowTransaction(String bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
+    public BorrowTransaction(User bookOwner, String bookBorrower, Integer bookId, Integer ID, int status) {
         super(bookOwner, bookBorrower, bookId, ID, status);
     }
 

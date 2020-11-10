@@ -1,19 +1,28 @@
 package com.example.cmput301f20t18;
 
 
+import android.content.Context;
+import android.util.Log;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.gms.tasks.Tasks;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static java.lang.Integer.parseInt;
 
@@ -24,197 +33,116 @@ import static java.lang.Integer.parseInt;
  * the books collection of the database
  */
 public class Library {
-    private Hashtable<Integer, Book> bookLibrary;
+    FirebaseAuth auth;
+    FirebaseFirestore DB;
+    CollectionReference users;
+    CollectionReference books;
+    DocumentReference c_user;
+    private static final String TAG = "LIB_DEBUG";
 
-    /**
-     * Serves to construct and initialize the Library
-     * such that it is ready for future calls
-     */
-    Library() {
-        updateBookLibrary();
+    private static Library mInstance;
+    private HashMap<Integer, Book> bookMap;
+    public ArrayList<Book> bookList;
+    private ArrayList<Transaction> transactionList;
+    private ArrayList<User> userList;
+    private User current_user;
+
+
+    private interface FirestoreCallback {
+        void onCallback(List<Book> books, List<User> users, User current);
     }
 
-    /**
-     * Parses the list returned by getDataFromDB
-     * and stores it in a map which is then assigned
-     * to Libraries bookLibrary
-     */
-    public void updateBookLibrary() {
-        queryDatabase();
+    private void readData(FirestoreCallback callback) {
+        Task<QuerySnapshot> user_q = users.get();
+        Task<QuerySnapshot> books_q = books.get();
+        Task<DocumentSnapshot> c_user_q = c_user.get();
+
+
+        // initialize our lists
+        Tasks.whenAllSuccess(user_q, books_q, c_user_q).addOnCompleteListener(new OnCompleteListener<List<Object>>() {
+            @Override
+            public void onComplete(@NonNull Task<List<Object>> task) {
+                List<Book> temp1 = Objects.requireNonNull(books_q.getResult()).toObjects(Book.class);
+                List<User> temp2 = Objects.requireNonNull(user_q.getResult()).toObjects(User.class);
+                User temp3 = Objects.requireNonNull(c_user_q.getResult()).toObject(User.class);
+
+                Log.d(TAG, "onComplete: " + Integer.toString(temp1.size()));
+                Log.d(TAG, "onComplete: " + Integer.toString(temp2.size()));
+
+                callback.onCallback(temp1, temp2, temp3);
+
+            }
+        });
     }
 
-    /**
-     * Pulls data from the database and stores it in a list
-     * for future parsing
-     * @return returns a list of books constructed from the
-     * data in the database
-     */
-    //TODO: Test this implementation of pulling data to see if it is effective
-    private void queryDatabase(){
-        BookLibOnCompleteListener listener = new BookLibOnCompleteListener();
 
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        Task<QuerySnapshot> queryAttempt = db.collectionGroup("books")
-                .get()
-                .addOnCompleteListener(listener);
+    private Library(Context context) {
+        bookList = new ArrayList<Book>();
+        userList = new ArrayList<User>();
+
+        // retrieve info from the DB
+        auth = FirebaseAuth.getInstance();
+        DB = FirebaseFirestore.getInstance();
+        users = DB.collection("system").document("System").collection("users");
+        books = DB.collection("system").document("System").collection("books");
+        c_user = DB.collection("system").document("System").collection("users").document(auth.getUid());
+
+        readData(new FirestoreCallback() {
+            @Override
+            public void onCallback(List<Book> books, List<User> users, User current) {
+                bookList.addAll(books);
+                userList.addAll(users);
+                current_user = current;
+
+            }
+        });
+
     }
 
-    private void fillBookLibrary(List<Book> books){
-        Hashtable<Integer, Book> bookTable = new Hashtable<Integer, Book>();
-        for (Book book:books){
-            bookTable.put(book.getId(), book);
+
+    private void initLib(List<Book> book_l, List<User>user_l, User user_c) {
+        Log.d(TAG, "onComplete: " + Integer.toString(book_l.size()));
+        Log.d(TAG, "onComplete: " + Integer.toString(user_l.size()));
+
+
+        // add books to our library
+        for (int i = 0 ; i < book_l.size() ; i++) {
+            bookList.add(book_l.get(i));
         }
-        this.bookLibrary = bookTable;
-    }
 
-    /**
-     * Adds a new book both locally and remotely
-     * @param book Book object to be added
-     */
-    public void addBook(Book book){
-        addLocal(book);
-        addDB(book);
-    }
-
-    /**
-     * Adds a book to the local library
-     * @param book Book object to be added
-     */
-    private void addLocal(Book book){
-        this.bookLibrary.put(book.getId(), book);
-    }
-
-    /**
-     * Adds a book to the book collection
-     * within the database
-     * @param book Book object to be added
-     */
-    private void addDB(Book book){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("system")
-                .document("system")
-                .collection("book")
-                .document(Integer.toString(book.getId()))
-                .set(book);
-    }
-
-    /**
-     * Deletes a book both locally and remotely
-     * @param book Book object to be deleted
-     */
-    public void deleteBook(Book book){
-        deleteLocal(book);
-        deleteDB(book);
-    }
-
-    /**
-     * Removes the book from Libraries
-     * bookLibrary
-     * @param book Book object to be deleted
-     */
-    private void deleteLocal(Book book){
-        this.bookLibrary.remove(book);
-    }
-
-    /**
-     * Removes the book from the
-     * books collection of the database
-     * @param book Book object to be deleted
-     */
-    private void deleteDB(Book book){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        db.collection("system")
-                .document("system")
-                .collection("book")
-                .document(Integer.toString(book.getId()))
-                .delete();
-    }
-
-    /**
-     * Grabs a Book object from Library's
-     * bookLibrary given the Book objects
-     * ID
-     * @param ID Integer representing the ID
-     *           of the Book object
-     * @return Book object that corresponds to
-     *         the ID given
-     */
-    public Book getBook(Integer ID){
-        return bookLibrary.get(ID);
-    }
-  
-    /**
-     * Grabs a List of Book objects from Library's
-     * bookLibrary given the Book object
-     * IDs
-     * @param IDs Integer List representing the IDs
-     *           of the Book objects
-     * @return Book object that corresponds to
-     *         the ID given
-     */
-    public ArrayList<Book> getBooks(List<Integer> IDs){
-        ArrayList<Book> books = new ArrayList<>();
-        for (int i = 0; i < IDs.size(); i++){
-            books.add(bookLibrary.get(IDs.get(i)));
-        }
-        return books;
-    }
-    
-    /**
-     * Return a list of books for based on a search performed locally
-     * @param field represents the fields that can be searched
-     * @param query represents the information that we want a mathcing book for             
-     * @return an ArrayList of books that match the search
-     */
-
-    public ArrayList<Book> searchBookLocal(int field, String query){
-        ArrayList<Book> outBooks = new ArrayList<>();
-        for(int key: this.bookLibrary.keySet()){
-            switch(field){
-                case 0:
-                    if (this.bookLibrary.get(key).getAuthor().toUpperCase() == query.toUpperCase()){
-                        outBooks.add(this.bookLibrary.get(key));
-                    }
-                    break;
-                case 1:
-                    if (this.bookLibrary.get(key).getTitle().toUpperCase() == query.toUpperCase()){
-                        outBooks.add(this.bookLibrary.get(key));
-                    }
-                    break;
-                case 2:
-                    if (this.bookLibrary.get(key).getISBN() == Long.parseLong(query)){
-                        outBooks.add(this.bookLibrary.get(key));
-                    }
-                    break;
+        // add users to our library
+        for (int i = 0 ; i < user_l.size() ; i++) {
+            userList.add(user_l.get(i));
+            if (user_l.get(i).getDbID() == auth.getUid()) {
+                current_user = userList.get(i);
             }
         }
-        return outBooks;
-    }
-    //ToDo
-    /*
-    public ArrayList<Book> searchBookDB(String field, String query){
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference searchRef = db.collection("books");
-        Query searchQuery = searchRef.whereEqualTo(field, query);
-    }
-    */
-    /**
-     * A complete listener that allows for the retrieval
-     * of data onComplete
-     */
-    private class BookLibOnCompleteListener implements OnCompleteListener{
-        private List<Book> items;
 
-        @Override
-        public void onComplete(@NonNull Task task) {
-            if (task.isSuccessful()){
-                QuerySnapshot queryResult = (QuerySnapshot) task.getResult();
-                this.items = queryResult.toObjects(Book.class);
-                fillBookLibrary(items);
-            }
-            else{
-                throw new RuntimeException("Database Query Failed");
-            }
+        Log.d(TAG, "onCreate: " + this.bookList.get(0).getAuthor());
+
+
+
+
+    }
+
+
+
+
+
+    // return the instance of our library
+    public static synchronized Library getInstance(Context context) {
+        if (mInstance == null) {
+            mInstance = new Library(context);
         }
+        return mInstance;
+    }
+
+
+    public User getCurrent_user() {
+        return current_user;
+    }
+
+    public void setCurrent_user(User current_user) {
+        this.current_user = current_user;
     }
 }

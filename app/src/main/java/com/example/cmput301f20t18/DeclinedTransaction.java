@@ -14,7 +14,7 @@ public class DeclinedTransaction extends Transaction{
      * @param ID The ID of the transaction
      * @param status The state of the transaction (declined)
      */
-    public DeclinedTransaction(String bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
+    public DeclinedTransaction(User bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
         super(bookOwner, bookBorrower, bookId, ID, status);
     }
 }
