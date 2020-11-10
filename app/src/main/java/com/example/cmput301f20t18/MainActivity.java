@@ -21,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         Intent intent = new Intent(MainActivity.this, Login.class);
+        finish();
         startActivity(intent);
 
         /* Testing bottom navigation menu */
