@@ -20,13 +20,13 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        Intent loginIntent = new Intent(MainActivity.this, Login.class);
-        startActivity(loginIntent);
+        //Intent loginIntent = new Intent(MainActivity.this, Login.class);
+        //startActivity(loginIntent);
 
         /* Testing bottom navigation menu */
 
-//        Intent homeScreenIntent = new Intent(MainActivity.this, HomeScreen.class);
-//        startActivity(homeScreenIntent);
+        Intent homeScreenIntent = new Intent(MainActivity.this, HomeScreen.class);
+        startActivity(homeScreenIntent);
 
         //Intent intent = new Intent(MainActivity.this, SelectLocationActivity.class);
         //startActivity(intent);

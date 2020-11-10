@@ -21,21 +21,36 @@ import java.util.List;
 
 /**
  * Custom RecyclerView Adapter for UserLocation objects in ChooseLocationActivity.
+ *
+ * @see UserLocation
  */
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.RequestViewHolder> {
 
     private final String TAG = "LocationAdapter";
-    private Context context;
-    private List<UserLocation> locationList;
+    private final Context context;
+    private final List<UserLocation> locationList;
 
     private Intent selectLocationIntent;
     private Activity forDataReturn;
 
+    /**
+     * Class constructor
+     * @param context Context to inflate from
+     * @param locationList List of UserLocations
+     */
     public LocationAdapter(Context context, List<UserLocation> locationList) {
         this.context = context;
         this.locationList = locationList;
     }
 
+    /**
+     * Tells the RecyclerView how to represent UserLocation objects.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to
+     *               an adapter position.
+     * @param viewType The view type of the new View.
+     * @return A new ViewHolder that holds the inflated card_location layout.
+     */
     @NonNull
     @Override
     public LocationAdapter.RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -46,13 +61,22 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         return new RequestViewHolder(view);
     }
 
+    /**
+     * Tells the RecyclerView how to display a UserLocation at a specified location.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the
+     *               item at the given position in the data set.
+     * @param position The position in the list
+     */
     @Override
     public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
 
-        UserLocation location = locationList.get(position);
+        UserLocation location = locationList.get(position);     // retrieve position of UserLocation
 
+        // Get the address
         holder.textViewAddress.setText(location.getAddress().getAddressLine(0));
 
+        // User clicks on map button
         holder.mapButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -60,6 +84,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
             }
         });
 
+        // User clicks the delete button
         holder.deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -82,16 +107,23 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
             }
         });
 
+        // User clicks the "select" button
         holder.selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // UPDATE BOOK STATUS TO ACCEPTED
+                /* TODO: Update book status to accepted */
                 Intent intent = new Intent(v.getContext(), HomeScreen.class);
                 v.getContext().startActivity(intent);
             }
         });
     }
 
+    /**
+     * This method is called to pass the address information to SelectLocationActivity
+     *
+     * @param address Address to send to SelectLocationActivity
+     * @param index The position of the UserLocation in the list
+     */
     private void startSelectLocation(Address address, int index) {
         selectLocationIntent = new Intent(context, SelectLocationActivity.class);
         selectLocationIntent.putExtra("INPUT_ADDRESS", address);
@@ -100,6 +132,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         forDataReturn.startActivityForResult(selectLocationIntent,1);
     }
 
+    // TODO: will this be used?
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         if (requestCode == 1){
             int index = data.getIntExtra("LOCATION_INDEX", -1);
@@ -109,11 +142,21 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         }
     }
 
+    /**
+     * Returns the number of UserLocations in the adapter
+     *
+     * @return The number of UserLocations in the adapter
+     */
     @Override
     public int getItemCount() {
         return locationList.size();
     }
 
+    /**
+     * Caches Views from layout
+     *
+     * @see #onBindViewHolder(RequestViewHolder, int)
+     */
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewAddress;
@@ -122,10 +165,16 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         Button selectButton;
         Button mapButton;
 
+        /**
+         * Class constructor.
+         *
+         * @param itemView Used to retrieve Views from layout file.
+         */
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
 
             textViewAddress = itemView.findViewById(R.id.text_address);
+
             mapButton = itemView.findViewById(R.id.button_map);
             deleteButton = itemView.findViewById(R.id.button_delete_location);
             selectButton = itemView.findViewById(R.id.button_select_location);

@@ -16,6 +16,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include layout="@layout/component_book_more" />
+
     <Button
         android:id="@+id/button_confirm_pick_up"
         android:layout_width="wrap_content"

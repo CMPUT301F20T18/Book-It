@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -29,7 +31,11 @@ import java.util.List;
 import java.util.Objects;
 
 /**
- * This class probably needs to be divided up as it has many responsibilities.
+ * Homescreen is the first object a user sees upon signing in, and will contain all the books
+ * borrowed by the user.
+ * Homescreen also manages fragments, and provides a mean for two fragments to interact
+ * @see User
+ * @see Book
  */
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth auth;
@@ -68,11 +74,6 @@ public class HomeScreen extends AppCompatActivity {
                 User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
                 assert (current != null);
                 Log.d(TAG, "onSuccess: " + current.getUsername());
-
-                List<Book> book_results = Objects.requireNonNull(retrieve_books.getResult()).toObjects(Book.class);
-                List<User> user_results = Objects.requireNonNull(retrieve_users.getResult()).toObjects(User.class);
-
-                current.ownerNewBook(9781260084504L, "Database System Concepts", "Sillberschatz");
             }
 
 
@@ -132,6 +133,7 @@ public class HomeScreen extends AppCompatActivity {
             };
 
 
+    // handles activity results by sending the result where it needs to go
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -140,7 +142,5 @@ public class HomeScreen extends AppCompatActivity {
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
 
         }
-
-
     }
 }

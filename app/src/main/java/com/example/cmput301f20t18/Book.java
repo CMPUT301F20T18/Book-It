@@ -5,6 +5,8 @@ import android.graphics.Bitmap;
 
 /**
  * A book object represents a book within our library
+ * Books are stored within our library
+ * @see Library
  */
 public class Book implements Comparable<Book> {
 
@@ -17,7 +19,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    private Bitmap photo;
+    private String photo;
     private int status;
     private User owner;
     private int year;
@@ -40,7 +42,6 @@ public class Book implements Comparable<Book> {
         this.status = status;
         this.owner = owner;
         this.year = year;
-
     }
 
     /**
@@ -171,19 +172,37 @@ public class Book implements Comparable<Book> {
         }
     }
 
+    /**
+     * Set the isbn for a book
+     * @param isbn The new isbn for the book
+     */
     public void setIsbn(long isbn) {
         this.isbn = isbn;
     }
 
+
+    /**
+     * Set book ID to a new ID
+     * @param id the new ID for a book
+     */
     public void setId(int id) {
         this.id = id;
     }
 
-    public Bitmap getPhoto() {
+    /**
+     * Returns the cover picture of a book
+     * @return the String represntation of a cover photo
+     */
+    public String getPhoto() {
         return photo;
     }
 
-    public void setPhoto(Bitmap photo) {
+
+    /**
+     * Set the cover photo for a book
+     * @param photo The string representation of a book
+     */
+    public void setPhoto(String photo) {
         this.photo = photo;
     }
 }
