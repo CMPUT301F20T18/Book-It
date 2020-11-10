@@ -17,25 +17,24 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class SearchFragment extends Fragment {
 
-    private Long isbn;
+    private final String SEARCH_FRAG_TAG = "SEARCH_FRAG";
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        EditText searchEditText = null;
         Button searchButton;
         ListView searchResultList;
-
-        String isbn = getArguments().getString("ISBN");
-        if (isbn != null) {
-            searchEditText.setText(isbn);
-        }
 
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.search_viewPager);
@@ -43,6 +42,9 @@ public class SearchFragment extends Fragment {
         SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
 
         viewPager.setAdapter(pageAdapter);
+
+        //set up edit text
+        final EditText searchEditText = view.findViewById(R.id.search_edit_text);
 
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
@@ -54,29 +56,51 @@ public class SearchFragment extends Fragment {
         searchSpinner.setAdapter(spinnerAdapter);
         searchSpinner.setOnItemSelectedListener(spinnerListener);
 
-        //Set up search bar edit text
-        searchEditText = view.findViewById(R.id.search_edit_text);
-
         //Set up search button
         searchButton = view.findViewById(R.id.search_button);
-        searchButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-                String selectedOption = spinnerListener.getSelected();
-                //Currently debug text. Will in the future instantiate the proper object
-                //In order to conduct a search
-                if (selectedOption.equals("Books")){
-                    Library lib = new Library();                    //May replace with User's static lib to avoid instantiating twice
-                    Log.d("Search", "Books are neat");
-                }
-                else{
-                    Log.d("Search", "Users are cool");
-                }
-            }
-        });
+        searchButton.setOnClickListener(new SearchButtonOnClickListener(searchEditText, spinnerListener));
 
         return view;
+    }
+
+    /**
+     * Search checks to ensure search field is populated
+     * Search then calls a method depending on the selectedOption
+     * @param searchWord String object containing user entered search key
+     * @param selectedOption String object containing current option selected
+     *                       in spinner
+     */
+    //TODO Add various ways to search for the current options (ISBN, author, etc.)
+    //TODO User search has not been touched as of yet (will have similar functionality to bookSearch)
+    private void search(String searchWord, String selectedOption) {
+        if (searchWord != ""){
+            //Currently debug text. Will in the future instantiate the proper object
+            //In order to conduct a search
+            if (selectedOption.equals("Books")){
+                searchBooks(searchWord);
+            }
+            else{
+                Log.d("Search", "Users are cool");
+               //SearchUsers(searchWord);
+            }
+        }
+    }
+
+    /**
+     * searchBooks is called from Search and queries the database for books
+     * @param searchWord String object containing user entered search key
+     */
+    //TODO Populate adapter with query result
+    //TODO Perhaps create multiple functions which do various types of search (ISBN, author, etc.)
+    private void searchBooks(String searchWord) {
+        FirebaseFirestore db = FirebaseFirestore.getInstance();
+        CollectionReference bookCollection = db.collection("System")
+                .document("system")
+                .collection("books");
+        Query query = bookCollection
+                .whereGreaterThanOrEqualTo("title", searchWord)
+                .whereLessThan("title", searchWord);
+        Task<QuerySnapshot> queryTask = query.get();
     }
 
     /**
@@ -108,6 +132,23 @@ public class SearchFragment extends Fragment {
          */
         public String getSelected(){
             return searchOption;
+        }
+    }
+
+    private class SearchButtonOnClickListener implements View.OnClickListener{
+        private EditText searchEditText;
+        private SpinnerOnClickListener spinnerListener;
+
+        SearchButtonOnClickListener(EditText searchEditText, SpinnerOnClickListener spinnerListener){
+            this.searchEditText = searchEditText;
+            this.spinnerListener = spinnerListener;
+        }
+
+        @Override
+        public void onClick(View v) {
+            String searchWord = searchEditText.getText().toString();
+            String selectedOption = spinnerListener.getSelected();
+            search(searchWord, selectedOption);
         }
     }
 }

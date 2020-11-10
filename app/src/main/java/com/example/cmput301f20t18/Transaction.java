@@ -18,7 +18,7 @@ import java.util.Map;
  * requesting books, declining requests, transferring of books
  * between users and returning the book to it's original owner
  */
-public abstract class Transaction {
+public class Transaction {
     private String bookOwner;
     private String bookBorrower;
     private Integer ID;

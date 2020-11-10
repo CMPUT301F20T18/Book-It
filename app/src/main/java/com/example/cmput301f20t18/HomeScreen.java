@@ -4,10 +4,14 @@ package com.example.cmput301f20t18;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
@@ -32,6 +36,9 @@ import java.util.Objects;
  * This class probably needs to be divided up as it has many responsibilities.
  */
 public class HomeScreen extends AppCompatActivity {
+    private int permissionStorageWriteCode = 100;
+    private int permissionStorageReadCode = 101;
+
     FirebaseAuth auth;
     FirebaseFirestore DB;
     CollectionReference system;
@@ -84,6 +91,8 @@ public class HomeScreen extends AppCompatActivity {
         bottomNav.setSelectedItemId(R.id.tab_mybooks);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new MyBooksFragment()).commit();
+
+        checkPermissionExternalData();
 
 
     }
@@ -138,5 +147,20 @@ public class HomeScreen extends AppCompatActivity {
         }
 
 
+    }
+
+    private void checkPermissionExternalData() {
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    permissionStorageWriteCode);
+        }
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    permissionStorageReadCode);
+        }
     }
 }
