@@ -1,6 +1,5 @@
 package com.example.cmput301f20t18;
 
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 
@@ -8,6 +7,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
 import com.google.firebase.auth.FirebaseAuth;
@@ -17,13 +17,11 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -139,9 +137,10 @@ public class User {
     /**
      * accept the request for a book and notify the user it has been accepted
      * remove all other request for books with the same book ID
-     * @param request The request transaction to accept
+     * @param t_id The request transaction ID
      */
-    public void ownerAcceptRequest(Transaction request) {
+    public void ownerAcceptRequest(int t_id) {
+        
 
 
 
@@ -220,25 +219,76 @@ public class User {
 
     /**
      * Pick-up the book, scanning it to mark it as borrowed
+     * Change book status in DB
+     * Change borrower transaction status
+     * Change owner transaction status
      * @param bookID the ID of the book being picked up
      */
     public void borrowerPickupBook(int bookID) {
 
-        // change the status of the book to borrowed
-        Query book_query = bookRef.whereEqualTo("ID", bookID);
+        Query book_query = bookRef.whereEqualTo("ID", bookID).whereEqualTo("status", Book.STATUS_ACCEPTED);
+        Query borrower_trans_query = userRef.document(auth.getUid()).collection("borrower_transactions").whereEqualTo("bookID", bookID).whereEqualTo("status", Book.STATUS_ACCEPTED);
+
+        Task<QuerySnapshot> book_task = book_query.get();
+        Task<QuerySnapshot> trans_task = borrower_trans_query.get();
+
+        Tasks.whenAllComplete(book_task, trans_task).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+            @Override
+            public void onSuccess(List<Task<?>> tasks) {
+                List<Book> book_list = book_task.getResult().toObjects(Book.class);
+                List<Transaction> trans_list = trans_task.getResult().toObjects(Transaction.class);
+                Book found = book_list.get(0); // bookID unique, only returns 1 book
+                Transaction accepted = trans_list.get(0); // only 1 request per book ID should be able to be accepted
+
+                // update the book status in the DB
+                bookRef.document(Integer.toString(found.getId())).update("status", Book.STATUS_BORROWED);
+
+                // update the borrower transaction
+                userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("status", Book.STATUS_BORROWED);
+
+                // update the owner transaction
+                userRef.document(found.getOwner().getDbID()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("status", Book.STATUS_BORROWED);
+
+
+            }
+        });
+
 
     }
 
 
     /**
      * Drop off the book to the owner, scanning it to mark it as returned
+     * Change book status in DB
+     * Change borrower transaction status
+     * Change owner transaction status
      * @param bookID The ID of the book being dropped off
      */
     public void borrowerDropOffBook(int bookID) {
-        // change the status of the book to available
+        Query book_query = bookRef.whereEqualTo("ID", bookID).whereEqualTo("status", Book.STATUS_BORROWED);
+        Query borrower_trans_query = userRef.document(auth.getUid()).collection("borrower_transactions").whereEqualTo("bookID", bookID).whereEqualTo("status", Book.STATUS_BORROWED);
 
+        Task<QuerySnapshot> book_task = book_query.get();
+        Task<QuerySnapshot> trans_task = borrower_trans_query.get();
 
+        Tasks.whenAllComplete(book_task, trans_task).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
+            @Override
+            public void onSuccess(List<Task<?>> tasks) {
+                List<Book> book_list = book_task.getResult().toObjects(Book.class);
+                List<Transaction> trans_list = trans_task.getResult().toObjects(Transaction.class);
+                Book found = book_list.get(0); // bookID unique, only returns 1 book
+                Transaction accepted = trans_list.get(0); // only 1 request per book ID should be able to be accepted
 
+                // update the book status in the DB
+                bookRef.document(Integer.toString(found.getId())).update("status", Book.STATUS_AVAILABLE);
+
+                // update the borrower transaction
+                userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("status", Book.STATUS_AVAILABLE);
+
+                // update the owner transaction
+                userRef.document(found.getOwner().getDbID()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("status", Book.STATUS_AVAILABLE);
+            }
+        });
     }
 
 
@@ -254,35 +304,9 @@ public class User {
 
 
 
-    /**
-     * adds a transaction to a borrowers transaction list
-     * @param transaction the transaction id
-     */
-    public void borrowerTransactionAdd(Transaction transaction) {
 
 
 
-    }
-
-    /**
-     * deletes a transaction from a owner transaction list
-     * @param t_id The transaction id of the transaction to remove
-     */
-    public void ownerTransactionDelete(int t_id) {
-
-    }
-
-
-
-
-    /**
-     * deletes a transaction from a borrower transaction list
-     * @param t_id The transaction id of the transaction to remove
-     */
-    public void borrowerTransactionDelete(int t_id) {
-
-
-    }
 
 
 
@@ -294,9 +318,6 @@ public class User {
     public String getUsername() {
         return username;
     }
-
-
-
 
     public void setUsername(String username) {
         this.username = username;
