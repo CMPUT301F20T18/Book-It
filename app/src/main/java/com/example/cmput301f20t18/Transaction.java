@@ -25,6 +25,8 @@ public abstract class Transaction {
     public static final int STATUS_REQUESTED = 1;
     public static final int STATUS_ACCEPTED = 2;
     public static final int STATUS_BORROWED = 3;
+    public static final int STATUS_RETURNED = 4;
+    public static final int STATUS_DECLINED = 5;
 
     public static final String TAG = "TRANS_DEBUG";
 
@@ -84,17 +86,26 @@ public abstract class Transaction {
     }
 
     /**
+     * Empty constructor used for serialization within firestore
+     */
+    public Transaction() {
+
+    }
+
+    /**
      * This is used to change the status of a transaction
      *
      * @param status The status that transaction should become
      * @return the type of transaction specified by status
      */
-    public Transaction changeStatus(String status) {
-        if (status.equals("exchange")) {
+    public Transaction changeStatus(int status) {
+        if (status == Transaction.STATUS_ACCEPTED) {
             return new ExchangeTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("borrow")) {
+        }
+        else if (status == Transaction.STATUS_BORROWED) {
             return new BorrowTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("declined")) {
+        }
+        else if (status == Transaction.STATUS_DECLINED) {
             return new DeclinedTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
         }
         return this;

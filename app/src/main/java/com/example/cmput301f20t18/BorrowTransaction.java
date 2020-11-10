@@ -25,6 +25,6 @@ public class BorrowTransaction extends Transaction{
      * @return ExchangeTransaction with same ID, bookOwner, bookBorrower and bookID
      */
     public ExchangeTransaction finish(){
-        return (ExchangeTransaction) this.changeStatus("exchange");
+        return (ExchangeTransaction) this.changeStatus(Transaction.STATUS_BORROWED);
     }
 }

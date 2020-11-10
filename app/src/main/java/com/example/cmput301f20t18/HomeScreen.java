@@ -46,7 +46,8 @@ public class HomeScreen extends AppCompatActivity {
 
 
         User current = new User();
-        current.borrowerRequestBook(76);
+        current.ownerAcceptRequest(3);
+
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);

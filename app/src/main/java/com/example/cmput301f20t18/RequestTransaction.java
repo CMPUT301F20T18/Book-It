@@ -21,12 +21,18 @@ public class RequestTransaction extends Transaction{
     }
 
     /**
+     * Empty constructor for firestore
+     */
+    public RequestTransaction() {
+    }
+
+    /**
      * Called when the book owner accepts the request
      * to borrow their book
      * @return ExchangeTransaction with same ID, bookOwner, bookBorrower and bookID
      */
     public ExchangeTransaction accept(){
-       return (ExchangeTransaction) this.changeStatus("exchange");
+       return (ExchangeTransaction) this.changeStatus(Transaction.STATUS_ACCEPTED);
     }
 
     /**
@@ -35,6 +41,6 @@ public class RequestTransaction extends Transaction{
      * @return DeclinedTransaction with same ID, bookOwner, bookBorrower and bookID
      */
     public DeclinedTransaction decline(){
-        return (DeclinedTransaction) this.changeStatus("declined");
+        return (DeclinedTransaction) this.changeStatus(Transaction.STATUS_DECLINED);
     }
 }

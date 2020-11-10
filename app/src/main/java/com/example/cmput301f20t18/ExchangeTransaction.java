@@ -22,7 +22,7 @@ public class ExchangeTransaction extends Transaction{
      * @param ID The ID of the transaction
      * @param status The state the transaction is in (exchange)
      */
-    public ExchangeTransaction(User bookOwner, String bookBorrower, Integer bookId, Integer ID, String status) {
+    public ExchangeTransaction(User bookOwner, String bookBorrower, Integer bookId, Integer ID, int status) {
         super(bookOwner, bookBorrower, bookId, ID, status);
         this.bookOwnerScanned = false;
         this.bookBorrowerScanned = false;
@@ -59,7 +59,7 @@ public class ExchangeTransaction extends Transaction{
      * @return BorrowTransaction with same ID, bookOwner, bookBorrower and bookID
      */
     public BorrowTransaction handOff(){
-        return (BorrowTransaction) this.changeStatus("borrow");
+        return (BorrowTransaction) this.changeStatus(Transaction.STATUS_BORROWED);
     }
 
     /**
