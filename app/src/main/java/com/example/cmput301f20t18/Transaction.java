@@ -185,4 +185,24 @@ public abstract class Transaction {
             return this.ID;
         }
     }
+
+    public void setBookOwner(User bookOwner) {
+        this.bookOwner = bookOwner;
+    }
+
+    public void setBookBorrower(String bookBorrower) {
+        this.bookBorrower = bookBorrower;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public void setBookID(Integer bookID) {
+        this.bookID = bookID;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
 }

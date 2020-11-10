@@ -14,6 +14,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.Query;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -27,6 +34,8 @@ public class MyBooksAvailableFragment extends Fragment {
 
     RecyclerView recyclerView;
     List<Book> bookList;
+    CollectionReference query;
+    FirestoreBookAdapter adapter;
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -36,6 +45,12 @@ public class MyBooksAvailableFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference userRef = DB.collection("system").document("System").collection("users");
+
+
 
     public MyBooksAvailableFragment() {
         // Required empty public constructor
@@ -69,30 +84,42 @@ public class MyBooksAvailableFragment extends Fragment {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+    @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_my_books_available, container, false);
-
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
-        bookList = new ArrayList<>();
-        bookList.add(new Book("The Great Gatsby", 9780684801520L, "F. Scott Fitzgerald",
-                420, Book.STATUS_REQUESTED, null, 1995));
-        bookList.add(new Book("To Kill a Mockingbird", 9781973907985L, "Harper Lee",
-                421, Book.STATUS_AVAILABLE, null, 1960));
-        bookList.add(new Book("Jane Eyre", 9780194241762L, "Charlotte Bronte",
-                422, Book.STATUS_REQUESTED, null, 1979));
-        bookList.add(new Book("A Passage to India", 9780140180763L, "E. M. Forster",
-                423, Book.STATUS_AVAILABLE, null, 1989));
-
-        Collections.sort(bookList);
-
-        BookAdapter bookAdapter = new BookAdapter(view.getContext(), bookList);
-        recyclerView.setAdapter(bookAdapter);
-
+        setUp();
         return view;
+    }
+
+
+    public void setUp() {
+        query = userRef.document(auth.getUid()).collection("books_owned");
+        FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
+                .setQuery(query, Book.class)
+                .build();
+
+        adapter = new FirestoreBookAdapter(options);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 }
