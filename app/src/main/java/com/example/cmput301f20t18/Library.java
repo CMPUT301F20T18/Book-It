@@ -205,7 +205,7 @@ public class Library {
         return results[0];
 
     }
-
+*/
     /**
      * A complete listener that allows for the retrieval
      * of data onComplete

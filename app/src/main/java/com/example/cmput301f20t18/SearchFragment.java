@@ -58,7 +58,7 @@ public class SearchFragment extends Fragment {
 
         SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
 
-        viewPager.setAdapter(pageAdapter);
+        //viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
 
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
