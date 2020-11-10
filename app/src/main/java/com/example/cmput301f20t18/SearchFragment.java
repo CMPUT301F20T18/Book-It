@@ -77,7 +77,7 @@ public class SearchFragment extends Fragment {
             //Currently debug text. Will in the future instantiate the proper object
             //In order to conduct a search
             if (selectedOption.equals("Books")){
-                searchBooks(searchWord);
+                searchBooks(searchWord, new String[]{"title"});         //Initialize here for testing purpose. Will change later
             }
             else{
                 Log.d("Search", "Users are cool");
@@ -90,17 +90,19 @@ public class SearchFragment extends Fragment {
      * searchBooks is called from Search and queries the database for books
      * @param searchWord String object containing user entered search key
      */
-    //TODO Populate adapter with query result
-    //TODO Perhaps create multiple functions which do various types of search (ISBN, author, etc.)
-    private void searchBooks(String searchWord) {
+    //TODO Populate adapter with query results
+    //TODO add parameter String[] searchField which determines what fields to check
+    private void searchBooks(String searchWord, String[] searchFields) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         CollectionReference bookCollection = db.collection("System")
                 .document("system")
                 .collection("books");
-        Query query = bookCollection
-                .whereGreaterThanOrEqualTo("title", searchWord)
-                .whereLessThan("title", searchWord);
-        Task<QuerySnapshot> queryTask = query.get();
+        for (String field : searchFields){
+            Query query = bookCollection
+                    .whereGreaterThanOrEqualTo(field, searchWord)
+                    .whereLessThan(field, searchWord);
+            Task<QuerySnapshot> queryTask = query.get();
+        }
     }
 
     /**
