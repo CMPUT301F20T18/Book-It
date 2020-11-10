@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -11,22 +12,32 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+
+import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
 
-    private final String SEARCH_FRAG_TAG = "SEARCH_FRAG";
+    private final String TAG = "SEARCH_FRAG";
 
     @Nullable
     @Override
@@ -34,7 +45,7 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
-        ListView searchResultList;
+        final ListView searchResultList;
 
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.search_viewPager);
@@ -66,49 +77,68 @@ public class SearchFragment extends Fragment {
     /**
      * Search checks to ensure search field is populated
      * Search then calls a method depending on the selectedOption
-     * @param searchWord String object containing user entered search key
+     *
+     * @param searchWord     String object containing user entered search key
      * @param selectedOption String object containing current option selected
      *                       in spinner
      */
-    //TODO Add various ways to search for the current options (ISBN, author, etc.)
+    //TODO Possibly add options for which fields are queried
     //TODO User search has not been touched as of yet (will have similar functionality to bookSearch)
     private void search(String searchWord, String selectedOption) {
-        if (searchWord != ""){
+        if (searchWord != "") {
             //Currently debug text. Will in the future instantiate the proper object
             //In order to conduct a search
-            if (selectedOption.equals("Books")){
-                searchBooks(searchWord, new String[]{"title"});         //Initialize here for testing purpose. Will change later
-            }
-            else{
+            if (selectedOption.equals("Books")) {
+                searchBooks(searchWord, new String[]{"title"});         //Initialize field here for testing purpose. Will change later
+            } else {
                 Log.d("Search", "Users are cool");
-               //SearchUsers(searchWord);
+                //SearchUsers(searchWord);
             }
         }
     }
 
     /**
      * searchBooks is called from Search and queries the database for books
+     *
      * @param searchWord String object containing user entered search key
      */
     //TODO Populate adapter with query results
     //TODO add parameter String[] searchField which determines what fields to check
     private void searchBooks(String searchWord, String[] searchFields) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        CollectionReference bookCollection = db.collection("System")
-                .document("system")
+        final CollectionReference bookCollection = db.collection("system")
+                .document("System")
                 .collection("books");
-        for (String field : searchFields){
+        bookCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
+                for (QueryDocumentSnapshot snapshot : querySnapshots) {
+                    Log.d(TAG, "Current Book Title: " + snapshot.get("title"));
+                }
+            }
+        });
+        for (String field : searchFields) {
+            Log.d(TAG, "Current Field: " + field);
+            Log.d(TAG, "Search Term: " + searchWord);
             Query query = bookCollection
                     .whereGreaterThanOrEqualTo(field, searchWord)
                     .whereLessThan(field, searchWord);
-            Task<QuerySnapshot> queryTask = query.get();
+            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
+                @Override
+                public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
+                    Log.d(TAG, "Querying!");
+                    for (QueryDocumentSnapshot snapshot : querySnapshots) {
+                        Log.d(TAG, "Current Book: " + snapshot.toString());
+                    }
+                }
+            });
         }
     }
 
     /**
      * An OnClickListener with the ability to return data to the fragment
      */
-    private class SpinnerOnClickListener implements AdapterView.OnItemSelectedListener{
+    private class SpinnerOnClickListener implements AdapterView.OnItemSelectedListener {
         String searchOption = "Books";
 
         /**
@@ -117,7 +147,7 @@ public class SearchFragment extends Fragment {
          */
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-             searchOption = parent.getItemAtPosition(position).toString();
+            searchOption = parent.getItemAtPosition(position).toString();
         }
 
         /**
@@ -130,18 +160,19 @@ public class SearchFragment extends Fragment {
 
         /**
          * Grabs data from the listener
+         *
          * @return The current selected item in listener
          */
-        public String getSelected(){
+        public String getSelected() {
             return searchOption;
         }
     }
 
-    private class SearchButtonOnClickListener implements View.OnClickListener{
+    private class SearchButtonOnClickListener implements View.OnClickListener {
         private EditText searchEditText;
         private SpinnerOnClickListener spinnerListener;
 
-        SearchButtonOnClickListener(EditText searchEditText, SpinnerOnClickListener spinnerListener){
+        SearchButtonOnClickListener(EditText searchEditText, SpinnerOnClickListener spinnerListener) {
             this.searchEditText = searchEditText;
             this.spinnerListener = spinnerListener;
         }
