@@ -1,6 +1,8 @@
 package com.example.cmput301f20t18;
 
+import android.os.Build;
 import android.os.Bundle;
+import android.util.ArraySet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,6 +16,7 @@ import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -26,13 +29,16 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
 /**
  * SearchFragment is a fragment which handles user searching for other users and books
  */
+@RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
 
-    private final String TAG = "SEARCH_FRAG";           //Tag for Log
-
+    private final String TAG = "SEARCH_FRAG";                                       //Tag for Log
+    final ArraySet<Book> bookDataList = new ArraySet<>();
+    final ArraySet<User> userDataList = new ArraySet<>();
 
     /**
      *  onCreateView is called on creation
@@ -49,7 +55,9 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
-        final ListView searchResultList;
+
+        final ListView searchResultList ;
+
 
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.search_viewPager);
@@ -107,6 +115,7 @@ public class SearchFragment extends Fragment {
     //TODO Populate adapter with query results
     //TODO add parameter String[] searchField which determines what fields to check
     private void searchBooks(String searchKey) {
+        bookDataList.clear();
         final QueryBookListener listener = new QueryBookListener();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -127,6 +136,7 @@ public class SearchFragment extends Fragment {
      * @param searchKey
      */
     private void searchUsers(String searchKey){
+        userDataList.clear();
         final QueryUserListener listener = new QueryUserListener();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -135,6 +145,14 @@ public class SearchFragment extends Fragment {
                 .collection("users");
 
         UserQueryHandler.searchByUsername(userCollection, listener, searchKey);
+    }
+
+    private class SearchBookAdapter{
+
+    }
+
+    private class SearchUserAdapter{
+
     }
 
     /**
@@ -381,6 +399,7 @@ public class SearchFragment extends Fragment {
             for (QueryDocumentSnapshot snapshot : querySnapshot) {
                 Book book = snapshot.toObject(Book.class);
                 Log.d(TAG, "Current Book: " + book.getTitle());
+                bookDataList.add(book);
             }
         }
     }
@@ -397,6 +416,7 @@ public class SearchFragment extends Fragment {
             for (QueryDocumentSnapshot snapshot : querySnapshot){
                 User user = snapshot.toObject(User.class);
                 Log.d(TAG, "Current User: " + user.getUsername());
+                userDataList.add(user);
             }
         }
     }
