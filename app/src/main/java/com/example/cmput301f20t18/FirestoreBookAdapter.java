@@ -38,82 +38,82 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
         int status = book.getStatus();
-        switch (status) {
-            case Book.STATUS_AVAILABLE:
-                //todo
-                break;
-            case Book.STATUS_REQUESTED:
-
-                // User clicks the "View requests" button
-                holder.buttonViewRequests.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
-                        v.getContext().startActivity(intent);
-                    }
-                });
-                break;
-            case Book.STATUS_ACCEPTED:
-
-                // User clicks the "Confirm pick up" button
-                holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        //TODO: upon successful scan, book status should be changed to "borrowed"
-                        // and should be updated in firestore
-                    }
-                });
-
-                // User clicks on profile photo
-                holder.buttonUser.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // TODO: open the users profile in a new activity
-                    }
-                });
-
-                // User clicks on map button
-                holder.buttonMap.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
-                        v.getContext().startActivity(intent);
-                    }
-                });
-                break;
-            case Book.STATUS_BORROWED:
-
-                // User clicks the "Confirm return" button
-                holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        //TODO: upon successful scan, book status should be changed to "available"
-                        // and should be updated in firestore
-                    }
-                });
-
-                // User clicks on profile photo
-                holder.buttonUser.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        // TODO: open the users profile in a new activity
-                    }
-                });
-
-                // User clicks on map button
-                holder.buttonMap.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
-                        v.getContext().startActivity(intent);
-                    }
-                });
-                break;
-        }
+//        switch (status) {
+//            case Book.STATUS_AVAILABLE:
+//                //todo
+//                break;
+//            case Book.STATUS_REQUESTED:
+//
+//                // User clicks the "View requests" button
+//                holder.buttonViewRequests.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
+//                        v.getContext().startActivity(intent);
+//                    }
+//                });
+//                break;
+//            case Book.STATUS_ACCEPTED:
+//
+//                // User clicks the "Confirm pick up" button
+//                holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent intent = new Intent(v.getContext(), Scanner.class);
+//                        v.getContext().startActivity(intent);
+//                        //TODO: upon successful scan, book status should be changed to "borrowed"
+//                        // and should be updated in firestore
+//                    }
+//                });
+//
+//                // User clicks on profile photo
+//                holder.buttonUser.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        // TODO: open the users profile in a new activity
+//                    }
+//                });
+//
+//                // User clicks on map button
+//                holder.buttonMap.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+//                        v.getContext().startActivity(intent);
+//                    }
+//                });
+//                break;
+//            case Book.STATUS_BORROWED:
+//
+//                // User clicks the "Confirm return" button
+//                holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent intent = new Intent(v.getContext(), Scanner.class);
+//                        v.getContext().startActivity(intent);
+//                        //TODO: upon successful scan, book status should be changed to "available"
+//                        // and should be updated in firestore
+//                    }
+//                });
+//
+//                // User clicks on profile photo
+//                holder.buttonUser.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        // TODO: open the users profile in a new activity
+//                    }
+//                });
+//
+//                // User clicks on map button
+//                holder.buttonMap.setOnClickListener(new View.OnClickListener() {
+//                    @Override
+//                    public void onClick(View v) {
+//                        Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+//                        v.getContext().startActivity(intent);
+//                    }
+//                });
+//                break;
+//        }
 
 
     }
