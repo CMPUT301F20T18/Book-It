@@ -1,6 +1,5 @@
 package com.example.cmput301f20t18;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -12,19 +11,13 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.Spinner;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -32,8 +25,8 @@ import com.google.firebase.firestore.FirebaseFirestoreException;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.core.QueryListener;
 
-import java.util.ArrayList;
 
 public class SearchFragment extends Fragment {
 
@@ -104,35 +97,34 @@ public class SearchFragment extends Fragment {
      */
     //TODO Populate adapter with query results
     //TODO add parameter String[] searchField which determines what fields to check
-    private void searchBooks(String searchWord, String[] searchFields) {
+    private void searchBooks(String searchKey, String[] searchFields) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
+        QueryListener listener = new QueryListener();
+
         final CollectionReference bookCollection = db.collection("system")
                 .document("System")
                 .collection("books");
-        bookCollection.addSnapshotListener(new EventListener<QuerySnapshot>() {
-            @Override
-            public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
-                for (QueryDocumentSnapshot snapshot : querySnapshots) {
-                    Log.d(TAG, "Current Book Title: " + snapshot.get("title"));
-                }
-            }
-        });
-        for (String field : searchFields) {
-            Log.d(TAG, "Current Field: " + field);
-            Log.d(TAG, "Search Term: " + searchWord);
-            Query query = bookCollection
-                    .whereGreaterThanOrEqualTo(field, searchWord)
-                    .whereLessThan(field, searchWord);
-            query.addSnapshotListener(new EventListener<QuerySnapshot>() {
-                @Override
-                public void onEvent(@Nullable QuerySnapshot querySnapshots, @Nullable FirebaseFirestoreException error) {
-                    Log.d(TAG, "Querying!");
-                    for (QueryDocumentSnapshot snapshot : querySnapshots) {
-                        Log.d(TAG, "Current Book: " + snapshot.toString());
-                    }
-                }
-            });
-        }
+
+        searchBooksByTitle(bookCollection, searchKey);
+
+    }
+
+    private void searchBooksByTitle(CollectionReference bookCollection, String searchKey){
+        final String field = "title";
+        final String specialChar = "\uf8ff";
+
+        QueryListener listener = new QueryListener();
+        Query queryLower = bookCollection
+                .orderBy(field)
+                .startAt(searchKey.toLowerCase())
+                .endAt(searchKey.toLowerCase() + specialChar);
+        queryLower.addSnapshotListener(listener);
+
+        Query queryUpper = bookCollection
+                .orderBy(field)
+                .startAt(searchKey.toUpperCase())
+                .endAt(searchKey.toUpperCase() + specialChar);
+        queryUpper.addSnapshotListener(listener);
     }
 
     /**
@@ -182,6 +174,19 @@ public class SearchFragment extends Fragment {
             String searchWord = searchEditText.getText().toString();
             String selectedOption = spinnerListener.getSelected();
             search(searchWord, selectedOption);
+        }
+    }
+
+    class QueryListener implements EventListener<QuerySnapshot> {
+        private String TAG = "QUERY";
+
+        @Override
+        public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+            Log.d(TAG, "Querying!");
+            for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                Book book = snapshot.toObject(Book.class);
+                Log.d(TAG, "Current Book: " + book.getTitle());
+            }
         }
     }
 }
