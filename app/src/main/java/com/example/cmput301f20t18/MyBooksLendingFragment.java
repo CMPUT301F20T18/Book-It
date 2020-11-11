@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,6 +9,7 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,12 +28,13 @@ import java.util.List;
  * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
  * in My Books>Lending.
  */
-public class MyBooksLendingFragment extends Fragment {
+public class MyBooksLendingFragment extends Fragment implements fragmentListener {
 
     RecyclerView recyclerView;
     List<Book> bookList;
     Query query;
     FirestoreBookAdapter adapter;
+    final static String TAG = "MBLF";
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
 
@@ -130,5 +133,33 @@ public class MyBooksLendingFragment extends Fragment {
         adapter = new FirestoreBookAdapter(options);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
+    }
+
+    /**
+     * Handle users scanning books to return / borrow
+     * @param requestCode The request code for the calling activity
+     * @param resultCode The result code from the called activity
+     * @param data The data embedded in the intent
+     */
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String isbn_string = data.getStringExtra("ISBN");
+        Long isbn = Long.parseLong(isbn_string);
+        int bookID = data.getIntExtra("bookID", 0);
+        switch (resultCode) {
+
+            // change book status to borrowed
+            // change transaction
+            case 0:
+                Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
+                break;
+
+
+            case 1:
+                Log.d(TAG, "1 bookID: " + Integer.toString(bookID));
+                User current = new User();
+                current.ownerSignOff(bookID);
+                break;
+        }
+
     }
 }
