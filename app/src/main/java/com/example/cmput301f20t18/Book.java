@@ -1,6 +1,14 @@
 package com.example.cmput301f20t18;
 
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.os.FileUtils;
+
+import androidx.annotation.RequiresApi;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Base64;
 
 
 /**
@@ -19,7 +27,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    private String photo;
+    private ArrayList<String> photos;
     private int status;
     private User owner;
     private int year;
@@ -191,18 +199,56 @@ public class Book implements Comparable<Book> {
 
     /**
      * Returns the cover picture of a book
-     * @return the String represntation of a cover photo
+     * @return the byte[] represntation of a cover photo
      */
-    public String getPhoto() {
-        return photo;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<byte[]> getPhotos() {
+        ArrayList<byte[]> outPhotos = new ArrayList<byte[]>();
+        for(String photo: this.photos){
+            outPhotos.add(Base64.getDecoder().decode(photo));
+        }
+        return outPhotos;
     }
 
 
     /**
-     * Set the cover photo for a book
-     * @param photo The string representation of a book
+     * Adds a photo to the arrayList of photos the book has, the first one is the cover
+     * @param photoByte The byte representation of a book
      */
-    public void setPhoto(String photo) {
-        this.photo = photo;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addPhoto(byte[] photoByte) {
+
+        String photo = Base64
+                .getEncoder()
+                .encodeToString(photoByte);
+
+        this.photos.add(photo);
     }
+
+    /**
+     * Removes a photo to the arrayList of photos the book has
+     * @param i is the index of the book to be removed
+     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+     */
+
+    public void removePhoto(int i) throws IndexOutOfBoundsException{
+        this.photos.remove(i);
+    }
+
+    /**
+     * Changes which string is at position 0 of the ArrayList this.photos which represents the
+     * cover picture
+     * @param i is the index of the book that is to be the new cover
+     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+     */
+
+    public void setCover(int i) throws IndexOutOfBoundsException{
+        String cover = this.photos.remove(i);
+        ArrayList<String> newCover = new ArrayList<>();
+        newCover.add(cover);
+        newCover.addAll(this.photos);
+        this.photos = newCover;
+    }
+
+
 }
