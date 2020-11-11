@@ -73,66 +73,30 @@ public class MyBooksAddBook extends AppCompatActivity {
         done = findViewById(R.id.done_add_book);
         cancel = findViewById(R.id.return_to_my_books);
 
-        // establish connection to DB
-        auth = FirebaseAuth.getInstance();
-        DB = FirebaseFirestore.getInstance();
-        books = DB.collection("system").document("System").collection("books");
-        users = DB.collection("system").document("System").collection("users");
-
 
         /**
          * This method adds the values of the input into the FireStore database
          * This is a listener to be able to react to button press that ultimately creates
          * a book from the user input.
          */
-        // This part is still in development
+        // TODO add input verification
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                FirebaseDatabase db = FirebaseDatabase.getInstance();
-                DatabaseReference Baseref = db.getReference();
-                DatabaseReference max_book = Baseref.child("max_book_id");
-                max_book.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(@NonNull DataSnapshot snapshot) {
-                        String addTitle = bookTitle.getText().toString();
-                        String addAuthor = author.getText().toString();
-                        int addYear = Integer.parseInt(year.getText().toString());
-                        long addISBN = Long.parseLong(isbn.getText().toString());
+                User current = new User();
 
-                        Task<DocumentSnapshot> current_user = users.document(auth.getUid()).get();
-                        current_user.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                User user = task.getResult().toObject(User.class);
-                                int id = snapshot.getValue(Integer.class);
+                String title = bookTitle.getText().toString();
+                String book_author = author.getText().toString();
+                Long book_isbn = Long.parseLong(isbn.getText().toString());
+                int book_year = Integer.parseInt(year.getText().toString());
 
-                                Book newBook = new Book(addTitle,addISBN,addAuthor,id,Book.STATUS_AVAILABLE,user,addYear);
-                                books.document(Integer.toString(id)).set(newBook);
-
-
-
-                                max_book.setValue(id + 1);
-                            }
-                        });
-
-                    }
-
-                    @Override
-                    public void onCancelled(@NonNull DatabaseError error) {
-
-                    }
-                });
-
-
-
-
-
-
+                current.ownerNewBook(book_isbn, title, book_author, book_year);
                 finish();
 
             }
         });
+
+
 
         /**
          * This just returns to the MyBook Fragment Activity

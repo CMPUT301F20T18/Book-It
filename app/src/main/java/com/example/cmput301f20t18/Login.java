@@ -53,6 +53,7 @@ public class Login extends AppCompatActivity {
         register = (Button) findViewById(R.id.Register);
         login_user = (EditText) findViewById(R.id.username);
         login_password = (EditText) findViewById(R.id.password);
+
         usernameT = (TextView) findViewById(R.id.textView_username);
         passwordT = (TextView) findViewById(R.id.textView_password);
         loginArt = (ImageView) findViewById(R.id.login_image);

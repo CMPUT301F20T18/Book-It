@@ -46,7 +46,7 @@ public class HomeScreen extends AppCompatActivity {
     DocumentReference current_user;
     Library lib;
     Fragment selectedFragment;
-    final String TAG = "HOMESCREEN";
+    final String TAG = "HOMESCREEN_DEBUG";
 
 
     @Override
@@ -54,30 +54,12 @@ public class HomeScreen extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        DB = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-
-        // get all of our collections
-        system = DB.collection("system");
-        users = DB.collection("system").document("System").collection("users");
-        books = DB.collection("system").document("System").collection("books");
-        current_user = DB.collection("system").document("System").collection("users").document(auth.getUid());
-
-        Task<QuerySnapshot> retrieve_users = users.get();
-        Task<QuerySnapshot> retrieve_books = books.get();
-        Task<DocumentSnapshot> retrieve_current_user = current_user.get();
-
-        // successfully got all books and users
-        Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
-            @Override
-            public void onSuccess(List<Task<?>> tasks) {
-                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
-                assert (current != null);
-                Log.d(TAG, "onSuccess: " + current.getUsername());
-            }
 
 
-        });
+        User current = new User();
+        //current.borrowerRequestBook(77);
+        current.ownerAcceptRequest(10);
+
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -137,8 +119,9 @@ public class HomeScreen extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 1:
+        switch (resultCode) {
+            case -1:
+                Log.d(TAG, "Got to activity Result!");
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
 
         }

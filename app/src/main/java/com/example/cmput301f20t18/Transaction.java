@@ -19,11 +19,24 @@ import java.util.Map;
  * between users and returning the book to it's original owner
  */
 public abstract class Transaction {
-    private String bookOwner;
+
+
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_REQUESTED = 1;
+    public static final int STATUS_ACCEPTED = 2;
+    public static final int STATUS_BORROWED = 3;
+    public static final int STATUS_RETURNED = 4;
+    public static final int STATUS_DECLINED = 5;
+
+    public static final String TAG = "TRANS_DEBUG";
+
+
+
+    private User bookOwner;
     private String bookBorrower;
     private Integer ID;
     private Integer bookID;
-    private String status;
+    private int status;
 
     //private static TransactionLibrary transactionLib = new TransactionLibrary();
 
@@ -34,7 +47,7 @@ public abstract class Transaction {
      * @param bookBorrower The user who is borrowing the book
      * @param bookID       The id of the book which is being borrowed
      */
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID) {
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID) {
         FirebaseFirestore db = FirebaseFirestore.getInstance();
         TransactionOnCompleteListener listener = new TransactionOnCompleteListener();
 
@@ -45,7 +58,7 @@ public abstract class Transaction {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
-        this.status = "request";
+        this.status = Book.STATUS_REQUESTED;
         this.ID = listener.returnData();
 
         //this.transactionLib.addTransaction(this);
@@ -64,7 +77,7 @@ public abstract class Transaction {
      *                     (request, exchange, borrow, declined)
      */
     //For use in changing the status of a transaction
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID, Integer ID, String status) {
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status) {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
@@ -73,17 +86,26 @@ public abstract class Transaction {
     }
 
     /**
+     * Empty constructor used for serialization within firestore
+     */
+    public Transaction() {
+
+    }
+
+    /**
      * This is used to change the status of a transaction
      *
      * @param status The status that transaction should become
      * @return the type of transaction specified by status
      */
-    public Transaction changeStatus(String status) {
-        if (status.equals("exchange")) {
+    public Transaction changeStatus(int status) {
+        if (status == Transaction.STATUS_ACCEPTED) {
             return new ExchangeTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("borrow")) {
+        }
+        else if (status == Transaction.STATUS_BORROWED) {
             return new BorrowTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("declined")) {
+        }
+        else if (status == Transaction.STATUS_DECLINED) {
             return new DeclinedTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
         }
         return this;
@@ -94,7 +116,7 @@ public abstract class Transaction {
      *
      * @return status of transaction
      */
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -122,7 +144,7 @@ public abstract class Transaction {
      *
      * @return User who owns the book
      */
-    public String getBookOwner() {
+    public User getBookOwner() {
         return bookOwner;
     }
 
@@ -162,5 +184,25 @@ public abstract class Transaction {
         public Integer returnData() {
             return this.ID;
         }
+    }
+
+    public void setBookOwner(User bookOwner) {
+        this.bookOwner = bookOwner;
+    }
+
+    public void setBookBorrower(String bookBorrower) {
+        this.bookBorrower = bookBorrower;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public void setBookID(Integer bookID) {
+        this.bookID = bookID;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 }
