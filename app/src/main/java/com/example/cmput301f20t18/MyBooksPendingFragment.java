@@ -139,16 +139,19 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
+        int bookID = data.getIntExtra("bookID", 0);
         switch (resultCode) {
 
             // change book status to borrowed
             // change transaction
             case 0:
-                User current = new User();
-
+                break;
 
 
             case 1:
+                User current = new User();
+                current.borrowerPickupBook(bookID);
+
 
 
         }

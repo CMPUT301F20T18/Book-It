@@ -59,6 +59,7 @@ public class Scanner extends AppCompatActivity {
     public Button cap;
     private Executor executor = Executors.newSingleThreadExecutor();
     private int mode;
+    private int bookID;
     String TAG = "SCANNER_debug";
 
 
@@ -70,6 +71,7 @@ public class Scanner extends AppCompatActivity {
         cap = (Button) findViewById(R.id.capture);
 
         mode = getIntent().getIntExtra("type", OPEN_POST);
+        bookID = getIntent().getIntExtra("bookID", 0);
         Log.d(TAG, "type of scan:" + Integer.toString(mode));
 
 
@@ -230,6 +232,7 @@ public class Scanner extends AppCompatActivity {
                                 else {
                                     intent = new Intent();
                                     intent.putExtra("ISBN", rawValue);
+                                    intent.putExtra("bookID", bookID);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                     return;

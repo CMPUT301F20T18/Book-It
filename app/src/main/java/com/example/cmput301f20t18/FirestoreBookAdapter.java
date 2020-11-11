@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
@@ -21,6 +22,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.bookViewHolder> {
     final static String TAG = "FBA_DEBUG";
+    final static int FRAG_PENDING = 1;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See
@@ -145,10 +147,10 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                     public void onClick(View v) {
                         /* TODO: Scanner needs to know that an borrower is trying to confirm pick up. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-
-
-
+                        intent.putExtra("bookID", book.getId());
+                        intent.putExtra("type", 1);
+                        Activity main = (Activity) v.getContext();
+                        main.startActivityForResult(intent, FRAG_PENDING);
                     }
                 });
 
