@@ -61,6 +61,8 @@ public class ProfileFragment extends Fragment {
         return fragment;
     }
 
+
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -84,6 +86,8 @@ public class ProfileFragment extends Fragment {
         username.setText("MysticWolf");
         phoneNum.setText("780 933 8641");
         email.setText("jggil@ualberta.ca");
+
+
 
         return view;
     }
