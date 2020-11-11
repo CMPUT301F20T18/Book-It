@@ -60,7 +60,7 @@ public class Scanner extends AppCompatActivity {
     private Executor executor = Executors.newSingleThreadExecutor();
     private int mode;
     private int bookID;
-    String TAG = "SCANNER_debug";
+    String TAG = "SCANNER_DEBUG";
 
 
     @Override
@@ -233,6 +233,7 @@ public class Scanner extends AppCompatActivity {
                                     intent = new Intent();
                                     intent.putExtra("ISBN", rawValue);
                                     intent.putExtra("bookID", bookID);
+                                    Log.d(TAG, "bookID | ISBN" +bookID + " " + rawValue);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                     return;

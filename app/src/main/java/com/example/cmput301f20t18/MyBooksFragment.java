@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,7 +22,9 @@ import com.google.android.material.tabs.TabLayout;
  * A {@link Fragment} subclass that is responsible for the page the user sees when in the
  * "My Books" section.
  */
-public class MyBooksFragment extends Fragment {
+public class MyBooksFragment extends Fragment implements fragmentListener {
+    final static String TAG = "MBF";
+
 
     /**
      * Instantiates view. The documentation recommends only inflating the layout here and doing
@@ -58,9 +61,9 @@ public class MyBooksFragment extends Fragment {
         toolbar.setTitle(getResources().getText(R.string.mybooks_header));
 
         /* This is not being used right now but could be later */
-        //TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
-        //TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);
-        //TabItem tabLending = view.findViewById(R.id.tab_mybooks_lending);
+        TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
+        TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);
+        TabItem tabLending = view.findViewById(R.id.tab_mybooks_lending);
 
         TabLayout tabLayout = view.findViewById(R.id.mybooks_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.mybooks_viewPager);
@@ -79,4 +82,35 @@ public class MyBooksFragment extends Fragment {
             }
         });
     }
+
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String isbn_string = data.getStringExtra("ISBN");
+        Long isbn = Long.parseLong(isbn_string);
+        int bookID = data.getIntExtra("bookID", 0);
+        Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
+
+        User current = new User();
+
+        switch (requestCode) {
+
+            // change book status to borrowed
+            // change transaction
+
+            case 0:
+                Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
+                break;
+
+
+            case 1:
+                Log.d(TAG, "1 bookID: " + Integer.toString(bookID));
+                current.ownerSignOff(bookID);
+                break;
+
+            case 2:
+                current.ownerConfirmPickup(0);
+                break;
+        }
+
+    }
+
 }

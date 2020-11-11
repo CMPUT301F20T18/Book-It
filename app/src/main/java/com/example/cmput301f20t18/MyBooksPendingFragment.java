@@ -140,7 +140,7 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
         int bookID = data.getIntExtra("bookID", 0);
-        switch (resultCode) {
+        switch (requestCode) {
 
             // change book status to borrowed
             // change transaction
@@ -150,10 +150,7 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
 
             case 1:
                 User current = new User();
-                current.borrowerPickupBook(bookID);
-
-
-
+                current.ownerSignOff(bookID);
         }
 
     }

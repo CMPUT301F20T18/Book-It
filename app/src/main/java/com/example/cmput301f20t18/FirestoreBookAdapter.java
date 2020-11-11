@@ -22,7 +22,9 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.bookViewHolder> {
     final static String TAG = "FBA_DEBUG";
-    final static int FRAG_PENDING = 1;
+    final static int FRAG_PENDING = 2;
+    final static int FRAG_LENDING = 1;
+
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See
@@ -150,8 +152,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         Activity main = (Activity) v.getContext();
-                        main.startActivityForResult(intent, FRAG_PENDING);
-                    }
+                        main.startActivityForResult(intent, FRAG_PENDING);                    }
                 });
 
                 /* User clicks the 3 dots "more" button */
@@ -173,9 +174,11 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                     public void onClick(View v) {
                         /* TODO: Scanner needs to know that a borrower is trying to confirm return. */
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        /* TODO: upon successful scan, book status should be changed to "available"
-                         *   and be updated in firestore. */
+                        intent.putExtra("bookID", book.getId());
+                        intent.putExtra("type", 1);
+                        Activity main = (Activity) v.getContext();
+                        main.startActivityForResult(intent, FRAG_LENDING);
+
                     }
                 });
                 break;

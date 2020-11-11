@@ -46,7 +46,7 @@ public class HomeScreen extends AppCompatActivity {
     DocumentReference current_user;
     Library lib;
     Fragment selectedFragment;
-    final String TAG = "HOMESCREEN";
+    final String TAG = "HOMESCREEN_DEBUG";
 
 
     @Override
@@ -57,6 +57,8 @@ public class HomeScreen extends AppCompatActivity {
 
 
         User current = new User();
+        //current.borrowerRequestBook(77);
+        current.ownerAcceptRequest(10);
 
 
         //* Bottom navigation menu *//*
@@ -119,6 +121,7 @@ public class HomeScreen extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode) {
             case 1:
+                Log.d(TAG, "Got to activity Result!");
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
 
         }
