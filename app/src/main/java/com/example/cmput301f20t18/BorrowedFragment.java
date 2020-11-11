@@ -1,6 +1,8 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,7 +20,8 @@ import com.google.android.material.tabs.TabLayout;
  * A {@link Fragment} subclass that is responsible for the page the user sees when in the
  * "Borrowed" section.
  */
-public class BorrowedFragment extends Fragment {
+public class BorrowedFragment extends Fragment implements fragmentListener {
+    private final static String TAG = "BF_DEBUG";
 
     /**
      * Instantiates view. The documentation recommends only inflating the layout here and doing
@@ -55,15 +58,43 @@ public class BorrowedFragment extends Fragment {
         toolbar.setTitle(getResources().getText(R.string.borrowed_header));
 
         /* This is not being used right now but could be later */
-//        TabItem tabRequested = view.findViewById(R.id.tab_borrowed_requested);
-//        TabItem tabPending = view.findViewById(R.id.tab_borrowed_pending);
-//        TabItem tabBorrowing = view.findViewById(R.id.tab_borrowed_borrowing);
+        TabItem tabRequested = view.findViewById(R.id.tab_borrowed_requested);
+        TabItem tabPending = view.findViewById(R.id.tab_borrowed_pending);
+        TabItem tabBorrowing = view.findViewById(R.id.tab_borrowed_borrowing);
         
         TabLayout tabLayout = view.findViewById(R.id.borrowed_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.borrowed_viewPager);
 
         BorrowedPageAdapter pageAdapter = new BorrowedPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
         viewPager.setAdapter(pageAdapter);
+
+    }
+
+
+    // take appropriate action from result
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String isbn_string = data.getStringExtra("ISBN");
+        Long isbn = Long.parseLong(isbn_string);
+        int bookID = data.getIntExtra("bookID", 0);
+        User current = new User();
+
+        switch (requestCode) {
+
+            case 0:
+                Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
+                break;
+
+
+            case 1:
+                Log.d(TAG, "1 bookID: " + Integer.toString(bookID));
+                current.borrowerPickupBook(bookID);
+                break;
+
+            case 2:
+                Log.d(TAG, "2 bookID: " + Integer.toString(bookID));
+                current.borrowerDropOffBook(bookID);
+                break;
+        }
 
     }
 }
