@@ -147,7 +147,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                 holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: Scanner needs to know that an borrower is trying to confirm pick up. */
+                        // TODO: implement ISBN check
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
@@ -172,7 +172,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: Scanner needs to know that a borrower is trying to confirm return. */
+                        // TODO: implement ISBN check
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);

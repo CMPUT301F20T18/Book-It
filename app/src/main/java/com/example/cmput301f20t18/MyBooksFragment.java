@@ -107,7 +107,8 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
                 break;
 
             case 2:
-                current.ownerConfirmPickup(0);
+                Log.d(TAG, "2 bookID: " + Integer.toString(bookID));
+                current.ownerConfirmPickup(bookID);
                 break;
         }
 

@@ -119,8 +119,8 @@ public class HomeScreen extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 1:
+        switch (resultCode) {
+            case -1:
                 Log.d(TAG, "Got to activity Result!");
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
 

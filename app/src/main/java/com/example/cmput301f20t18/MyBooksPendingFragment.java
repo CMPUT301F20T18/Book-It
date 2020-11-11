@@ -28,7 +28,7 @@ import java.util.List;
  * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
  * in My Books>Pending.
  */
-public class MyBooksPendingFragment extends Fragment implements fragmentListener {
+public class MyBooksPendingFragment extends Fragment {
 
     RecyclerView recyclerView;
     List<Book> bookList;
@@ -130,28 +130,5 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
-    /**
-     * Handle users scanning books to return / borrow
-     * @param requestCode The request code for the calling activity
-     * @param resultCode The result code from the called activity
-     * @param data The data embedded in the intent
-     */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String isbn_string = data.getStringExtra("ISBN");
-        Long isbn = Long.parseLong(isbn_string);
-        int bookID = data.getIntExtra("bookID", 0);
-        switch (requestCode) {
 
-            // change book status to borrowed
-            // change transaction
-            case 0:
-                break;
-
-
-            case 1:
-                User current = new User();
-                current.ownerSignOff(bookID);
-        }
-
-    }
 }
