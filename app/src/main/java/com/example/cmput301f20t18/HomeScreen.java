@@ -10,7 +10,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -28,6 +30,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+/**
+ * Homescreen is the first object a user sees upon signing in, and will contain all the books
+ * borrowed by the user.
+ * Homescreen also manages fragments, and provides a mean for two fragments to interact
+ * @see User
+ * @see Book
+ */
 public class HomeScreen extends AppCompatActivity {
     FirebaseAuth auth;
     FirebaseFirestore DB;
@@ -35,6 +44,8 @@ public class HomeScreen extends AppCompatActivity {
     CollectionReference users;
     CollectionReference books;
     DocumentReference current_user;
+    Library lib;
+    Fragment selectedFragment;
     final String TAG = "HOMESCREEN";
 
 
@@ -66,7 +77,6 @@ public class HomeScreen extends AppCompatActivity {
                 new MyBooksFragment()).commit();
 
 
-
     }
 
     // Not in onCreate() to avoid clutter but idk
@@ -74,7 +84,7 @@ public class HomeScreen extends AppCompatActivity {
             new BottomNavigationView.OnNavigationItemSelectedListener() {
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                    Fragment selectedFragment = null;
+                    selectedFragment = null;
 
                     switch (item.getItemId()) {
                         case R.id.tab_borrowed:
@@ -84,7 +94,9 @@ public class HomeScreen extends AppCompatActivity {
                             selectedFragment = new SearchFragment();
                             break;
                         case R.id.tab_scan:
-                            startActivityForResult(new Intent(getApplicationContext(),Scanner.class),1);
+                            Intent intent = new Intent(HomeScreen.this, Scanner.class);
+                            intent.putExtra("type", 0);
+                            startActivityForResult(intent, RESULT_OK);
                             break;
                         case R.id.tab_mybooks:
                             selectedFragment = new MyBooksFragment();
@@ -94,7 +106,9 @@ public class HomeScreen extends AppCompatActivity {
                             break;
                     }
 
-                    if (selectedFragment == null) { return false; }
+                    if (selectedFragment == null) {
+                        return false;
+                    }
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                             selectedFragment).commit();
@@ -103,21 +117,15 @@ public class HomeScreen extends AppCompatActivity {
                 }
             };
 
-    /*test code*/
+
+    // handles activity results by sending the result where it needs to go
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case 1:
+                selectedFragment.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode == 1){
-            if(resultCode == RESULT_OK){
-                String ISBN = "ISBN: ";
-                String rawValue = data.getStringExtra("key");
-                Toast.makeText(getApplicationContext(), ISBN.concat(rawValue), Toast.LENGTH_SHORT).show();
-            }
-            if(resultCode == RESULT_CANCELED){
-                Toast.makeText(getApplicationContext(), "ISBN is not scanned", Toast.LENGTH_SHORT).show();
-            }
         }
     }
 }
-

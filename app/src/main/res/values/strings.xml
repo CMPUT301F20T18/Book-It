@@ -21,6 +21,8 @@
     <string name="mybooks_available">Available</string>
     <string name="mybooks_pending">Pending pick up</string>
     <string name="mybooks_lending">Lending</string>
+    <string name="search_available">Available</string>
+    <string name="search_show_all">Show All</string>
     <string name="borrowed_header">Borrowed</string>
     <string name="borrowed_requested">Requested</string>
     <string name="borrowed_pending">Ready for pick up</string>
@@ -29,5 +31,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="view_requests_header">Requests</string>
     <string name="choose_location_header">Choose location</string>
+    <string name="picking_up">picking up</string>
+    <string name="borrowing">borrowing</string>
+    <string name="owner">owner</string>
+    <string name="edit_profile"><u>Edit Account</u></string>
 
 </resources>

@@ -8,7 +8,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-//NOT DONE
 public class ExchangeTransactionTest {
     private ExchangeTransaction mockExchangeTransaction(){
         return new RequestTransaction("Owner", "Borrower", 10).accept();

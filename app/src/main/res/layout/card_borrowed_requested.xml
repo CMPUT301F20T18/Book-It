@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical">
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content">
 
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
     <include
         android:id="@+id/include"
         layout="@layout/card_base"
@@ -15,19 +17,23 @@
         app:layout_constraintTop_toTopOf="parent" />
 
     <Button
-        android:id="@+id/button_no_requests"
+        android:id="@+id/button_cancel_request"
         android:layout_width="wrap_content"
         android:layout_height="33dp"
         android:layout_marginTop="52dp"
         android:layout_marginEnd="11dp"
-        android:background="@drawable/gray_button_background"
+        android:paddingHorizontal="10dp"
+        android:background="@drawable/bad_button_background"
         style="?android:attr/borderlessButtonStyle"
         android:fontFamily="@font/poppins"
-        android:text="No requests"
-        android:textColor="@color/colorGray2"
-        android:paddingHorizontal="14dp"
-        android:paddingTop="2dp"
+        android:text="Cancel Request"
+        android:textColor="@color/colorOrange"
         app:layout_constraintEnd_toEndOf="@+id/include"
         app:layout_constraintTop_toTopOf="parent" />
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <include
+        layout="@layout/component_book_location"/>
+
+</FrameLayout>

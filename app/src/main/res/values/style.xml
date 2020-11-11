@@ -5,7 +5,7 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
-<!--        Color banding is very visible in emulator -->
+        <!--        Color banding is very visible in emulator -->
         <item name="android:windowBackground">@drawable/ic_app_background</item>
         <item name="android:buttonStyle">@style/Button</item>
     </style>
@@ -27,6 +27,12 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">1dp</item>
 
+    </style>
+
+    <style name="spinnerItemStyle" parent="android:Widget.TextView.SpinnerItem">
+    </style>
+
+    <style name="spinnerDropDownItemStyle" parent="android:TextAppearance.Widget.TextView.SpinnerItem">
     </style>
 
 </resources>

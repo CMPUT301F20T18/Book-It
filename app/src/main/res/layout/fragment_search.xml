@@ -1,29 +1,115 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- displayed when on the "Search" tab -->
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:layout_width="match_parent" android:layout_height="match_parent">
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="670dp"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
+
+    <androidx.appcompat.widget.Toolbar
+        android:id="@+id/search_toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/ic_blank_header"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="?attr/actionBarTheme"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+        app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+    </FrameLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp"
+        android:orientation="horizontal"
+        android:background="@color/colorGray2">
+
 
         <Spinner
             android:id="@+id/search_spinner"
-            android:layout_width="match_parent"
-            android:layout_height="39dp"></Spinner>
+            android:layout_width="98dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:background="@drawable/spinner_background"
+            android:gravity="center"
+            android:spinnerMode="dropdown" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_gravity="center"
+            android:layout_marginRight="301dp"
+            android:src="@drawable/ic_drop_down_icon" />
+
 
         <EditText
             android:id="@+id/search_edit_text"
-            android:layout_width="match_parent"
+            android:layout_width="268dp"
             android:layout_height="wrap_content"
-            ></EditText>
+            android:layout_alignLeft="@id/search_spinner"
+            android:layout_gravity="center"
+            android:layout_marginLeft="98dp"
+            android:background="@color/colorWhite"
+            android:hint="Search..."
+            android:paddingLeft="10dp"
+            android:textColor="@color/colorGray2"
+            android:textColorHint="@color/doveGray" />
 
         <Button
             android:id="@+id/search_button"
+            android:layout_width="27dp"
+            android:layout_height="24dp"
+            android:layout_alignLeft="@id/search_edit_text"
+            android:layout_gravity="center"
+            android:layout_marginLeft="259dp"
+            android:background="@drawable/search_button_background" />
+
+
+    </RelativeLayout>
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <androidx.viewpager.widget.ViewPager
+            android:id="@+id/search_viewPager"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"></Button>
-    </LinearLayout>
+            android:layout_height="wrap_content">
+            <com.google.android.material.tabs.TabLayout
+                android:id="@+id/search_tab_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:tabGravity="fill"
+                app:tabIndicatorGravity="bottom"
+                android:background="@drawable/ic_navigation_bar_2"
+                app:tabSelectedTextColor="@color/colorOrange"
+                app:tabTextColor="@color/colorAccent"
+                app:tabIndicatorColor="@color/colorOrange"
+                >
+
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tab_search_available"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+                <com.google.android.material.tabs.TabItem
+                    android:id="@+id/tab_search_show_all"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content" />
+
+            </com.google.android.material.tabs.TabLayout>
+        </androidx.viewpager.widget.ViewPager>
+
+    </FrameLayout>
 
 
-</RelativeLayout>
+</LinearLayout>

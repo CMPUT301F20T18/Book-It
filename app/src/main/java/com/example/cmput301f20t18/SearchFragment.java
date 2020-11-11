@@ -15,16 +15,50 @@ import android.widget.Spinner;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
+import androidx.viewpager.widget.ViewPager;
+
+import com.google.android.material.tabs.TabLayout;
+
+/**
+ * This is a splash screen activity
+ * @author Chase/ Sean
+ * UI contrabutions
+ * @author Johnathon Gil
+ */
 
 public class SearchFragment extends Fragment {
+
+    /**
+     * Creates the instance of the fragment, adds all the elements of the xml, then returns the view object
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return view
+     */
+
+    private Long isbn;
+
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        EditText searchEditText;
+        EditText searchEditText = null;
         Button searchButton;
         ListView searchResultList;
+
+        String isbn = getArguments().getString("ISBN");
+        if (isbn != null) {
+            searchEditText.setText(isbn);
+        }
+
+        TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
+        ViewPager viewPager = view.findViewById(R.id.search_viewPager);
+
+        SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
+
+        viewPager.setAdapter(pageAdapter);
 
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
@@ -45,10 +79,12 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
                 String selectedOption = spinnerListener.getSelected();
                 //Currently debug text. Will in the future instantiate the proper object
                 //In order to conduct a search
                 if (selectedOption.equals("Books")){
+                    Library lib = new Library();                    //May replace with User's static lib to avoid instantiating twice
                     Log.d("Search", "Books are neat");
                 }
                 else{
