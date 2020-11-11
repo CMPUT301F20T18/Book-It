@@ -14,8 +14,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -29,6 +32,8 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
 
     RecyclerView recyclerView;
     List<Book> bookList;
+    Query query;
+    FirestoreBookAdapter adapter;
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
 
@@ -40,6 +45,11 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference userRef = DB.collection("system").document("System").collection("users");
+
 
     public MyBooksPendingFragment() {
         // Required empty public constructor
@@ -85,44 +95,41 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_books_pending, container, false);
-    }
-
-    /**
-     * Populates bookList and sets up adapter to display the list.
-     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has
-     * returned, but before any saved state has been restored in to the view.
-     *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
-
+        View view = inflater.inflate(R.layout.fragment_my_books_available, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+        setUp();
+        return view;    }
 
-        // hardcoded some books
-        bookList = new ArrayList<>();
-        bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
-                420, Book.STATUS_ACCEPTED, null, 1995));
-        bookList.add(new Book("To Kill a Mockingbird",9781973907985L, "Harper Lee",
-                421, Book.STATUS_ACCEPTED, null, 1960));
-        bookList.add(new Book("Jane Eyre",9780194241762L, "Charlotte Bronte",
-                422, Book.STATUS_ACCEPTED, null, 1979));
-        bookList.add(new Book("A Passage to India",9780140180763L, "E. M. Forster",
-                423, Book.STATUS_ACCEPTED, null, 1989));
 
-        Collections.sort(bookList);
 
-        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList, this);
-        recyclerView.setAdapter(myBooksRecyclerViewAdapter);
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+
 
     }
 
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+    public void setUp() {
+        query = userRef.document(auth.getUid()).collection("books_owned").whereEqualTo("status", Book.STATUS_ACCEPTED);
+        FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
+                .setQuery(query, Book.class)
+                .build();
+
+        adapter = new FirestoreBookAdapter(options);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
     /**
      * Handle users scanning books to return / borrow
      * @param requestCode The request code for the calling activity
@@ -132,37 +139,18 @@ public class MyBooksPendingFragment extends Fragment implements fragmentListener
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
-        Log.d("FRAGMENT", "Got here!");
         switch (resultCode) {
-            // borrower scans book to confirm pickup
+
+            // change book status to borrowed
+            // change transaction
             case 0:
+                User current = new User();
 
-                // Change the status of the book the borrower scanned
-                for (int i = 0; i < bookList.size(); i++) {
-                    if (bookList.get(i).getISBN() == isbn) {
-                        bookList.get(i).setStatus(Book.STATUS_BORROWED);
 
-                        // update the same book status in the DB
-                        FirebaseFirestore DB = FirebaseFirestore.getInstance();
-                        CollectionReference books = DB.collection("system").document("System").collection("books");
-                        books.document(Integer.toString(bookList.get(i).getId())).update("status", Book.STATUS_BORROWED);
-                    }
-                }
 
-                // owner scans to confirm return
             case 1:
 
-                // Change the status of the book the owner scanned
-                for (int i = 0; i < bookList.size(); i++) {
-                    if (bookList.get(i).getISBN() == isbn) {
-                        bookList.get(i).setStatus(Book.STATUS_AVAILABLE);
 
-                        // update the same book status in the DB
-                        FirebaseFirestore DB = FirebaseFirestore.getInstance();
-                        CollectionReference books = DB.collection("system").document("System").collection("books");
-                        books.document(Integer.toString(bookList.get(i).getId())).update("status", Book.STATUS_AVAILABLE);
-                    }
-                }
         }
 
     }

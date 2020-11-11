@@ -20,9 +20,9 @@ import android.widget.Toast;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.Query;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -36,7 +36,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
     RecyclerView recyclerView;
     List<Book> bookList;
-    CollectionReference query;
+    Query query;
     FirestoreBookAdapter adapter;
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
@@ -127,7 +127,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
 
     public void setUp() {
-        query = userRef.document(auth.getUid()).collection("books_owned");
+        query = userRef.document(auth.getUid()).collection("books_owned").whereEqualTo("status", Book.STATUS_AVAILABLE);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();

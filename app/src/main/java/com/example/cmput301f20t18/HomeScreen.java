@@ -57,11 +57,6 @@ public class HomeScreen extends AppCompatActivity {
 
 
         User current = new User();
-        // current.borrowerRequestBook(77);
-        // current.ownerAcceptRequest(4);
-        // current.borrowerPickupBook(77);
-        // current.ownerSignOff(77);
-
 
 
         //* Bottom navigation menu *//*
