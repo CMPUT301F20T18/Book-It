@@ -85,12 +85,12 @@ public class Login extends AppCompatActivity {
 
                                     // start new activity with current user
                                     Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                                    finish();
                                     startActivityForResult(intent, 0);
-                                }
-                                else {
+                                } else {
                                     // If sign in fails, display a message to the user.
-                                    FirebaseAuthException e = (FirebaseAuthException)task.getException();
-                                    Toast.makeText(Login.this, "Wrong username or password!" , Toast.LENGTH_SHORT).show();
+                                    FirebaseAuthException e = (FirebaseAuthException) task.getException();
+                                    Toast.makeText(Login.this, "Wrong username or password!", Toast.LENGTH_SHORT).show();
 
                                 }
                             }
@@ -109,18 +109,8 @@ public class Login extends AppCompatActivity {
         });
 
 
-
     }
 
-// TODO: IMPLEMENT ONSTART
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        FirebaseUser current_user = mAuth.getCurrentUser();
-//
-//        // start the Homescreen, get all the users books later
-//        Intent intent = new Intent(getBaseContext(), HomeScreen.class);
-//        startActivityForResult(intent, 0);
-//    }
 }
+
+
