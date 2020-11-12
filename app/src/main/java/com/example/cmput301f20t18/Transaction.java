@@ -18,7 +18,7 @@ import java.util.Map;
  * requesting books, declining requests, transferring of books
  * between users and returning the book to it's original owner
  */
-public abstract class Transaction {
+public class Transaction {
 
 
     public static final int STATUS_AVAILABLE = 0;
@@ -37,32 +37,8 @@ public abstract class Transaction {
     private Integer ID;
     private Integer bookID;
     private int status;
-
-    //private static TransactionLibrary transactionLib = new TransactionLibrary();
-
-    /**
-     * This is used to create a new object of type transaction
-     *
-     * @param bookOwner    The user who owns the book
-     * @param bookBorrower The user who is borrowing the book
-     * @param bookID       The id of the book which is being borrowed
-     */
-    public Transaction(User bookOwner, String bookBorrower, Integer bookID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        TransactionOnCompleteListener listener = new TransactionOnCompleteListener();
-
-        Task transactionMax = db.collection("MAX")
-                .document("transaction")
-                .get()
-                .addOnCompleteListener(listener);
-        this.bookOwner = bookOwner;
-        this.bookBorrower = bookBorrower;
-        this.bookID = bookID;
-        this.status = Book.STATUS_REQUESTED;
-        this.ID = listener.returnData();
-
-        //this.transactionLib.addTransaction(this);
-    }
+    private int ownerFlag;
+    private int borrowerFlag;
 
     /**
      * This is the constructor used to change the status of
@@ -83,6 +59,9 @@ public abstract class Transaction {
         this.bookID = bookID;
         this.ID = ID;
         this.status = status;
+        this.ownerFlag = 0;
+        this.borrowerFlag = 0;
+
     }
 
     /**
@@ -90,25 +69,6 @@ public abstract class Transaction {
      */
     public Transaction() {
 
-    }
-
-    /**
-     * This is used to change the status of a transaction
-     *
-     * @param status The status that transaction should become
-     * @return the type of transaction specified by status
-     */
-    public Transaction changeStatus(int status) {
-        if (status == Transaction.STATUS_ACCEPTED) {
-            return new ExchangeTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        }
-        else if (status == Transaction.STATUS_BORROWED) {
-            return new BorrowTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        }
-        else if (status == Transaction.STATUS_DECLINED) {
-            return new DeclinedTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        }
-        return this;
     }
 
     /**
@@ -158,34 +118,6 @@ public abstract class Transaction {
         return bookBorrower;
     }
 
-    private class TransactionOnCompleteListener implements OnCompleteListener {
-        Integer ID;
-
-
-        @Override
-        public void onComplete(@NonNull Task task) {
-            if (task.isSuccessful()) {
-                DocumentSnapshot queryResult = (DocumentSnapshot) task.getResult();
-                Map<String, Object> data = queryResult.getData();
-                this.ID = (Integer) data.get("transaction");
-                this.updateDB();
-            } else {
-                throw new RuntimeException("Database query failed");
-            }
-        }
-
-        public void updateDB(){
-            FirebaseFirestore.getInstance()
-                    .collection("MAX")
-                    .document("transaction")
-                    .set(this.ID+1);
-        }
-
-        public Integer returnData() {
-            return this.ID;
-        }
-    }
-
     public void setBookOwner(User bookOwner) {
         this.bookOwner = bookOwner;
     }
@@ -204,5 +136,21 @@ public abstract class Transaction {
 
     public void setStatus(int status) {
         this.status = status;
+    }
+
+    public int getOwnerFlag() {
+        return ownerFlag;
+    }
+
+    public void setOwnerFlag(int ownerFlag) {
+        this.ownerFlag = ownerFlag;
+    }
+
+    public int getBorrowerFlag() {
+        return borrowerFlag;
+    }
+
+    public void setBorrowerFlag(int borrowerFlag) {
+        this.borrowerFlag = borrowerFlag;
     }
 }

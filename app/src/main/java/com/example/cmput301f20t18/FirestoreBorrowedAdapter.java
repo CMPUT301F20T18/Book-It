@@ -20,10 +20,10 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.bookViewHolder> {
+public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.bookViewHolderBorrowed> {
     final static String TAG = "FBA_DEBUG";
-    final static int FRAG_PENDING = 2;
-    final static int FRAG_LENDING = 1;
+    final static int FRAG_PICKUP = 2;
+    final static int FRAG_RETURN = 1;
 
 
     /**
@@ -32,9 +32,11 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
      *
      * @param options
      */
-    public FirestoreBookAdapter(FirestoreRecyclerOptions options) {
+    public FirestoreBorrowedAdapter(FirestoreRecyclerOptions options) {
         super(options);
     }
+
+
 
 
     @Override
@@ -48,6 +50,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
 
             case Book.STATUS_BORROWED:
                 return Book.STATUS_BORROWED;
+
             case Book.STATUS_ACCEPTED:
                 return Book.STATUS_ACCEPTED;
         }
@@ -56,15 +59,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
 
 
     @Override
-    protected void onBindViewHolder(bookViewHolder holder, int i, Book book) {
-
-        //holder.imageView.setImageResource(R.drawable.default_cover);
-        holder.textViewTitle.setText(book.getTitle());
-        holder.textViewAuthor.setText(book.getAuthor());
-        holder.textViewYear.setText(String.valueOf(book.getYear()));
-        holder.textViewISBN.setText(String.valueOf(book.getISBN()));
-
-
+    protected void onBindViewHolder(FirestoreBorrowedAdapter.bookViewHolderBorrowed holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
         //holder.imageView.setImageResource(R.drawable.default_cover);
 
@@ -93,12 +88,11 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                     v.getContext().startActivity(intent);
                 }
             });
-        }catch (Exception e){};
+        } catch (Exception e) {}
 
 
-
-        /* User clicks on map button. This button is in all three tabs. */
         try {
+            /* User clicks on map button. This button is in all three tabs. */
             holder.buttonMap.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -106,19 +100,39 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                     /* TODO: make activity that displays pick up location to borrower */
                 }
             });
-        } catch (Exception e){};
-
-
+        } catch (Exception e) {}
 
         /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
-                  break;
-
-            case Book.STATUS_REQUESTED:
+                /* Books in Borrowed section should never have status "available" */
+                Log.e(TAG, "onBindViewHolder: \"Available\" status not allowed in borrowed section.");
                 break;
 
+            case Book.STATUS_REQUESTED:
+                /* User clicks the "Cancel request" button */
+                holder.buttonCancelRequest.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        AlertDialog dialog = (new AlertDialog.Builder(v.getContext())
+                                .setTitle("Cancel request")
+                                .setMessage("Are you sure you want to cancel your request?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        /* TODO: Actually cancel request */
+                                    }
+                                })
+                                .setNegativeButton("No", null)).show();
+
+                        Button buttonPositive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
+                        buttonPositive.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                        Button buttonNegative = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
+                        buttonNegative.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                    }
+                });
+                break;
 
             case Book.STATUS_ACCEPTED:
                 /* User clicks the "Confirm pick up" button */
@@ -130,7 +144,8 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         Activity main = (Activity) v.getContext();
-                        main.startActivityForResult(intent, FRAG_PENDING);                    }
+                        main.startActivityForResult(intent, FRAG_PICKUP);
+                    }
                 });
 
                 /* User clicks the 3 dots "more" button */
@@ -150,51 +165,48 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: implement ISBN check
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         Activity main = (Activity) v.getContext();
-                        main.startActivityForResult(intent, FRAG_LENDING);
+                        main.startActivityForResult(intent, FRAG_RETURN);
+
+
 
                     }
                 });
                 break;
         }
-
-
     }
+
+
 
 
     @NonNull
     @Override
-    public bookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
+    public bookViewHolderBorrowed onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         Log.d(TAG, "viewType: : " + Integer.toString(viewType));
 
         switch (viewType) {
             case Book.STATUS_AVAILABLE:
                 Log.d(TAG, "onCreateViewHolder: Got to available!!");
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_no_requests, null));
             case Book.STATUS_REQUESTED:
                 Log.d(TAG, "onCreateViewHolder: Got to requested!");
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_mybooks_requested, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_borrowed_requested, null));
             case Book.STATUS_ACCEPTED:
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_pending, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_pending, null));
             case Book.STATUS_BORROWED:
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_mybooks_lending, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_borrowed_lending, null));
             default: Log.d(TAG, "Error: Book status not found");
         }
 
         return null;
-
     }
 
 
-    public class bookViewHolder extends RecyclerView.ViewHolder {
-        /* Not all layout files will have all of these views, so some may be null.
-         *  The switch in onBindViewHolder() ensures that this is not an issue. */
+    public class bookViewHolderBorrowed extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView textViewTitle;
@@ -213,7 +225,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         Button buttonMore;
 
 
-        public bookViewHolder(@NonNull View itemView) {
+        public bookViewHolderBorrowed(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view);
@@ -237,4 +249,3 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
     }
 
 }
-

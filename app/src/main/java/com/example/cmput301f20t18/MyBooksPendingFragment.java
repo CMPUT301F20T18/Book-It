@@ -48,7 +48,7 @@ public class MyBooksPendingFragment extends Fragment {
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference userRef = DB.collection("system").document("System").collection("users");
+    CollectionReference userRef = DB.collection("users");
 
 
     public MyBooksPendingFragment() {

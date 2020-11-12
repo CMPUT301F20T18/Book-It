@@ -14,7 +14,6 @@ import java.util.Base64;
 /**
  * A book object represents a book within our library
  * Books are stored within our library
- * @see Library
  */
 public class Book implements Comparable<Book> {
 
@@ -50,6 +49,7 @@ public class Book implements Comparable<Book> {
         this.status = status;
         this.owner = owner;
         this.year = year;
+        this.photos = new ArrayList<String>();
     }
 
     /**
@@ -124,13 +124,6 @@ public class Book implements Comparable<Book> {
         this.status = status;
     }
 
-    /**
-     * Set the library of the book
-     * @param newLibrary The library to associate the book to
-     */
-    public static void setLibrary(Library newLibrary){
-        //library = newLibrary;
-    }
 
     /**
      * get the owner of the book object
@@ -251,4 +244,7 @@ public class Book implements Comparable<Book> {
     }
 
 
+    public void setPhotos(ArrayList<String> photos) {
+        this.photos = photos;
+    }
 }

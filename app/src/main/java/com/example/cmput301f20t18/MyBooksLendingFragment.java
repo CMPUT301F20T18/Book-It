@@ -49,7 +49,7 @@ public class MyBooksLendingFragment extends Fragment implements fragmentListener
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference userRef = DB.collection("system").document("System").collection("users");
+    CollectionReference userRef = DB.collection("users");
 
 
 

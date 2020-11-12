@@ -78,12 +78,16 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
             @Override
             public void onClick(View v) {
                 Intent addIntent = new Intent(getContext(),MyBooksAddBook.class);
-                startActivityForResult(addIntent,1);
+                startActivityForResult(addIntent,0);
             }
         });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            return;
+        }
+
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
         int bookID = data.getIntExtra("bookID", 0);
