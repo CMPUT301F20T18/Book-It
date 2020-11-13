@@ -478,20 +478,20 @@ public class User {
     }
 
     public void borrowerCancelRequest(int t_id) {
-
-        // delete the request for the borrower
-        userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(t_id)).delete();
-
-        // delete the global transaction
-        transRef.document(Integer.toString(t_id)).delete();
-
         // get the book Owner
         transRef.whereEqualTo("id", t_id).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
+                    Log.d(TAG, "t_id: " + t_id);
                     List<Transaction> trans_list = task.getResult().toObjects(Transaction.class);
                     Transaction request = trans_list.get(0);
+
+                    // delete the request for the borrower
+                    userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(t_id)).delete();
+
+                    // delete the global transaction
+                    transRef.document(Integer.toString(t_id)).delete();
 
                     // delete the request for the owner
                     userRef.document(request.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(t_id)).delete();
@@ -500,17 +500,18 @@ public class User {
                     userRef.document(request.getBookOwner().getDbID()).collection("owner_transactions").whereEqualTo("bookID", request.getBookID()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                if (task.getResult().toObjects(Transaction.class).size() == 0) {
+                                    // that was the last request for this book
+                                    userRef.document(request.getBookOwner().getDbID()).collection("owner_books").document(Integer.toString(request.getBookID())).update("status", Book.STATUS_AVAILABLE);
+                                }
+                            }
 
                         }
                     });
-
-
-
-
                 }
             }
         });
-
     }
 
 
