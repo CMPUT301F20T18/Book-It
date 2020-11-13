@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -37,6 +38,7 @@ public class MyBooksAddBook extends AppCompatActivity {
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
+    ImageButton addPhoto;
     Toolbar toolbar;
     FirebaseAuth auth;
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
@@ -72,6 +74,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         done = findViewById(R.id.done_add_book);
         cancel = findViewById(R.id.return_to_my_books);
+        addPhoto = findViewById(R.id.add_image_button);
 
         // establish connection to DB
         auth = FirebaseAuth.getInstance();
@@ -143,6 +146,13 @@ public class MyBooksAddBook extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 finish();
+            }
+        });
+
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                
             }
         });
 
