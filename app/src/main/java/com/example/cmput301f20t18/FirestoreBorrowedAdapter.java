@@ -128,6 +128,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                                     public void onClick(DialogInterface dialog, int which) {
                                         // find the transaction associated with this book for the current user
                                         User current = new User();
+                                        Log.d(TAG, "onClick: " + book.getId());
                                         current.borrowerCancelRequest(book.getId());
 
                                     }
@@ -147,10 +148,14 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: implement ISBN check
+                        Log.d(TAG, " bookID: " + book.getId());
+                        Log.d(TAG, " book ISBN:  " + book.getISBN());
+
+
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
+                        intent.putExtra("eISBN", book.getISBN());
                         Activity main = (Activity) v.getContext();
                         main.startActivityForResult(intent, FRAG_PICKUP);
                     }
@@ -173,9 +178,13 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
+                        Log.d(TAG, " bookID: " + book.getId());
+                        Log.d(TAG, " book ISBN:  " + book.getISBN());
+
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
+                        intent.putExtra("eISBN", book.getISBN());
                         Activity main = (Activity) v.getContext();
                         main.startActivityForResult(intent, FRAG_RETURN);
 

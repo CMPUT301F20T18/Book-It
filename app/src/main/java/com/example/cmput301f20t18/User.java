@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -375,20 +376,32 @@ public class User {
                         public void onComplete(@NonNull Task<List<Task<?>>> task) {
                             User current = user.getResult().toObject(User.class);
                             List<Book> requested_list = current_book.getResult().toObjects(Book.class);
-
-
                             Book requested = requested_list.get(0);
 
-                            Transaction new_request = new Transaction(requested.getOwner(), current.getUsername(), bookID, val, Book.STATUS_REQUESTED);
+                            // determine if the borrower has already requested the book
+                            userRef.document(requested.getOwner().getDbID()).collection("owner_transactions").whereEqualTo("bookID", bookID).whereEqualTo("bookBorrower", current.getUsername()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                @Override
+                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                    if (task.isSuccessful()) {
+                                        List<Transaction> list = task.getResult().toObjects(Transaction.class);
+                                        if (list.size() == 0) {
+                                            Transaction new_request = new Transaction(requested.getOwner(), current.getUsername(), bookID, val, Book.STATUS_REQUESTED);
 
-                            // update the user transactions
-                            userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(new_request.getID())).set(new_request);
-                            userRef.document(requested.getOwner().getDbID()).collection("owner_transactions").document(Integer.toString(new_request.getID())).set(new_request);
-                            transRef.document(Integer.toString(val)).set(new_request);
+                                            // update the user transactions
+                                            userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(new_request.getID())).set(new_request);
+                                            userRef.document(requested.getOwner().getDbID()).collection("owner_transactions").document(Integer.toString(new_request.getID())).set(new_request);
+                                            transRef.document(Integer.toString(val)).set(new_request);
 
-                            // update the user book references
-                            userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(new_request.getBookID())).set(new_request);
-                            userRef.document(requested.getOwner().getDbID()).collection("books_owned").document(Integer.toString(requested.getId())).update("status", Book.STATUS_REQUESTED);
+                                            // update the user book references
+                                            userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(new_request.getBookID())).set(new_request);
+                                            userRef.document(requested.getOwner().getDbID()).collection("books_owned").document(Integer.toString(requested.getId())).update("status", Book.STATUS_REQUESTED);
+                                        }
+                                        else {
+                                            Log.d(TAG, "Borrower " + current.getUsername() + " has already requested book " + requested.getId());
+                                        }
+                                    }
+                                }
+                            });
                         }
                     });
                     mRef.setValue(val + 1);
@@ -496,6 +509,13 @@ public class User {
                     // delete the request for the owner
                     userRef.document(request.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(t_id)).delete();
 
+
+
+
+
+                    // delete the borrower book reference
+                    userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(request.getBookID())).delete();
+
                     // determine if this was the last request for the book
                     userRef.document(request.getBookOwner().getDbID()).collection("owner_transactions").whereEqualTo("bookID", request.getBookID()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -503,12 +523,15 @@ public class User {
                             if (task.isSuccessful()) {
                                 if (task.getResult().toObjects(Transaction.class).size() == 0) {
                                     // that was the last request for this book
-                                    userRef.document(request.getBookOwner().getDbID()).collection("owner_books").document(Integer.toString(request.getBookID())).update("status", Book.STATUS_AVAILABLE);
+                                    // change its status to available
+                                    userRef.document(request.getBookOwner().getDbID()).collection("books_owned").document(Integer.toString(request.getBookID())).update("status", Book.STATUS_AVAILABLE);
                                 }
                             }
 
                         }
                     });
+
+
                 }
             }
         });

@@ -60,6 +60,7 @@ public class Scanner extends AppCompatActivity {
     private Executor executor = Executors.newSingleThreadExecutor();
     private int mode;
     private int bookID;
+    private Long expected_isbn;
     String TAG = "SCANNER_DEBUG";
 
 
@@ -72,7 +73,10 @@ public class Scanner extends AppCompatActivity {
 
         mode = getIntent().getIntExtra("type", OPEN_POST);
         bookID = getIntent().getIntExtra("bookID", 0);
+        expected_isbn = getIntent().getLongExtra("eISBN", 0);
+
         Log.d(TAG, "type of scan:" + Integer.toString(mode));
+        Log.d(TAG, "Expected ISBN " + expected_isbn);
 
 
         // determine if the user has given the proper privileges to use the camera
@@ -233,7 +237,7 @@ public class Scanner extends AppCompatActivity {
                                     intent = new Intent();
                                     intent.putExtra("ISBN", rawValue);
                                     intent.putExtra("bookID", bookID);
-                                    Log.d(TAG, "bookID | ISBN" +bookID + " " + rawValue);
+                                    intent.putExtra("eISBN", expected_isbn);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                     return;

@@ -125,10 +125,13 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                 holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: implement ISBN check
+                        Log.d(TAG, " bookID: " + book.getId());
+                        Log.d(TAG, " book ISBN:  " + book.getISBN());
+
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
+                        intent.putExtra("eISBN", book.getISBN());
                         Activity main = (Activity) v.getContext();
                         main.startActivityForResult(intent, FRAG_PENDING);                    }
                 });
@@ -150,10 +153,13 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: implement ISBN check
+                        Log.d(TAG, " bookID: " + book.getId());
+                        Log.d(TAG, " book ISBN:  " + book.getISBN());
+
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
+                        intent.putExtra("eISBN", book.getISBN());
                         Activity main = (Activity) v.getContext();
                         main.startActivityForResult(intent, FRAG_LENDING);
 
