@@ -27,7 +27,6 @@ import java.util.List;
  */
 public class BorrowedPendingFragment extends Fragment {
     RecyclerView recyclerView;
-    List<Book> bookList;
     Query query;
     FirestoreBorrowedAdapter adapter;
 

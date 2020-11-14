@@ -359,7 +359,9 @@ public class User {
 
                                     // update the book status in the DB
                                     bookRef.document(Integer.toString(book.getId())).update("status", Book.STATUS_AVAILABLE);
-                                    userRef.document(auth.getUid()).collection("books_requested").document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_AVAILABLE);
+                                    userRef.document(auth.getUid()).collection("books_requested").document(Integer.toString(accepted.getBookID())).delete();
+                                    userRef.document(accepted.getBookOwner().getDbID()).collection("books_owned").document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_AVAILABLE);
+
 
 
                                     // delete the borrower transaction
@@ -430,7 +432,7 @@ public class User {
                                     if (task.isSuccessful()) {
                                         List<Transaction> list = task.getResult().toObjects(Transaction.class);
                                         if (list.size() == 0) {
-                                            Transaction new_request = new Transaction(requested.getOwner(), current.getUsername(), bookID, val, Book.STATUS_REQUESTED, requested.getCover());
+                                            Transaction new_request = new Transaction(requested.getOwner(), current.getUsername(), bookID, val, Book.STATUS_REQUESTED);
 
                                             // update the user transactions
                                             userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(new_request.getID())).set(new_request);
@@ -438,7 +440,7 @@ public class User {
                                             transRef.document(Integer.toString(val)).set(new_request);
 
                                             // update the user book references
-                                            userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(new_request.getBookID())).set(new_request);
+                                            userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(new_request.getBookID())).set(requested);
                                             userRef.document(requested.getOwner().getDbID()).collection("books_owned").document(Integer.toString(requested.getId())).update("status", Book.STATUS_REQUESTED);
                                         }
                                         else {
@@ -462,22 +464,24 @@ public class User {
 
 
 
-    public void borrowerDropOffBook(int t_id) {
+    public void borrowerDropOffBook(int bookID) {
 
 
-        DocumentReference trans = userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(t_id));
-        Task<DocumentSnapshot> trans_task = trans.get();
-        trans_task.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        Query trans = userRef.document(auth.getUid()).collection("borrower_transactions").whereEqualTo("bookID", bookID);
+        Task<QuerySnapshot> trans_task = trans.get();
+        trans_task.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Transaction accepted = task.getResult().toObject(Transaction.class);
+                    Transaction accepted = task.getResult().toObjects(Transaction.class).get(0);
 
                     if (accepted.getOwnerFlag() == 2) {
 
                         // update the book status in the DB
                         bookRef.document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_AVAILABLE);
                         userRef.document(auth.getUid()).collection("books_requested").document(Integer.toString(accepted.getBookID())).delete();
+                        userRef.document(accepted.getBookOwner().getDbID()).collection("books_owned").document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_AVAILABLE);
+
 
 
                         // update the borrower transaction
@@ -499,29 +503,32 @@ public class User {
                         transRef.document(Integer.toString(accepted.getID())).update("borrowerFlag", 2);
                     }
                 }
+
             }
         });
-    }
+            }
 
 
-    public void borrowerPickupBook(int t_id) {
+    public void borrowerPickupBook(int bookID) {
 
 
-        DocumentReference trans = userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(t_id));
-        Task<DocumentSnapshot> trans_task = trans.get();
-        trans_task.addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+        Query trans = userRef.document(auth.getUid()).collection("borrower_transactions").whereEqualTo("bookID", bookID);
+        Task<QuerySnapshot> book_list = trans.get();
+        book_list.addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
-            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    Transaction accepted = task.getResult().toObject(Transaction.class);
+                    List<Transaction> accepted_list = task.getResult().toObjects(Transaction.class);
+                    Transaction accepted = accepted_list.get(0);
 
                     if (accepted.getOwnerFlag() == 1) {
 
 
-
                         // update the book status in the DB
                         bookRef.document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_BORROWED);
-                        userRef.document(auth.getUid()).collection("books_requested").document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_BORROWED);
+                        userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_BORROWED);
+                        userRef.document(accepted.getBookOwner().getDbID()).collection("books_owned").document(Integer.toString(accepted.getBookID())).update("status", Book.STATUS_BORROWED);
+
 
 
                         // update the borrower transaction
@@ -534,6 +541,12 @@ public class User {
 
                         // update the global transaction
                         transRef.document(Integer.toString(accepted.getID())).update("status", Book.STATUS_BORROWED);
+
+                        // update the borrower flag
+                        userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("borrowerFlag", 1);
+                        userRef.document(accepted.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("borrowerFlag", 1);
+                        transRef.document(Integer.toString(accepted.getID())).update("borrowerFlag", 1);
+
 
 
                     }
@@ -675,4 +688,5 @@ public class User {
     public void setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
     }
+
 }

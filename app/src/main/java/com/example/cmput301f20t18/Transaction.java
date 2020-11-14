@@ -32,7 +32,6 @@ public class Transaction {
     public static final String TAG = "TRANS_DEBUG";
 
 
-
     private User bookOwner;
     private String bookBorrower;
     private Integer ID;
@@ -55,7 +54,7 @@ public class Transaction {
      *                     (request, exchange, borrow, declined)
      */
     //For use in changing the status of a transaction
-    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status, String cover_photo) {
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status) {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
@@ -63,7 +62,6 @@ public class Transaction {
         this.status = status;
         this.ownerFlag = 0;
         this.borrowerFlag = 0;
-        this.cover_photo = cover_photo;
 
     }
 
@@ -157,11 +155,5 @@ public class Transaction {
         this.borrowerFlag = borrowerFlag;
     }
 
-    public String getCover_photo() {
-        return cover_photo;
-    }
 
-    public void setCover_photo(String cover_photo) {
-        this.cover_photo = cover_photo;
-    }
 }

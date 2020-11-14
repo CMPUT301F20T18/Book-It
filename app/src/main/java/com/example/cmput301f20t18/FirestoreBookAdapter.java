@@ -21,7 +21,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.bookViewHolder> {
-    final static String TAG = "FBA_DEBUG";
+    final static String TAG = "FBA_DEBUG_OWNED";
     final static int FRAG_PENDING = 2;
     final static int FRAG_LENDING = 1;
 

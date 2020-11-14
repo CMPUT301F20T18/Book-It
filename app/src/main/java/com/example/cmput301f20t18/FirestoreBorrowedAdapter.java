@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.bookViewHolderBorrowed> {
-    final static String TAG = "FBA_DEBUG";
+    final static String TAG = "FBA_DEBUG_BORROWED";
     final static int FRAG_PICKUP = 2;
     final static int FRAG_RETURN = 1;
 
@@ -78,8 +78,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         try {
             /* These two TextViews will be null if the book status is "Available" */
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-            holder.textViewUsername.setText("Username");
-            holder.textViewUserDescription.setText(R.string.owner);
+            holder.textViewUserDescription.setText(book.getOwner().getUsername());
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
