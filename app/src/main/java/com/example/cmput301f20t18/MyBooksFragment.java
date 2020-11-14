@@ -78,17 +78,24 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
             @Override
             public void onClick(View v) {
                 Intent addIntent = new Intent(getContext(),MyBooksAddBook.class);
-                startActivityForResult(addIntent,1);
+                startActivityForResult(addIntent,0);
             }
         });
     }
 
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            return;
+        }
+
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
         int bookID = data.getIntExtra("bookID", 0);
-        Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
+        Long expected_isbn = data.getLongExtra("eISBN", 0);
 
+        Log.d(TAG, "bookID: " + Integer.toString(bookID));
+        Log.d(TAG, "ISBN: " + isbn);
+        Log.d(TAG, "Expected ISBN: " + expected_isbn);
         User current = new User();
 
         switch (requestCode) {
@@ -97,18 +104,28 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
             // change transaction
 
             case 0:
-                Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
                 break;
 
 
             case 1:
-                Log.d(TAG, "1 bookID: " + Integer.toString(bookID));
-                current.ownerSignOff(bookID);
+                if (expected_isbn != isbn) {
+                    current.ownerSignOff(bookID);
+                }
+                else {
+                    // TODO: implement popup stating wrong back returned
+                    Log.d(TAG, "Wrong book pickup!");
+                }
                 break;
 
             case 2:
-                Log.d(TAG, "2 bookID: " + Integer.toString(bookID));
-                current.ownerConfirmPickup(bookID);
+
+                if (expected_isbn != isbn) {
+                    current.ownerConfirmPickup(bookID);
+                }
+                else {
+                    // TODO: implement popup stating wrong back returned
+                    Log.d(TAG, "Wrong book pickup!");
+                }
                 break;
         }
 

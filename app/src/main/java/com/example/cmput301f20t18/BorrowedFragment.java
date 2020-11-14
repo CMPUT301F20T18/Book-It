@@ -76,23 +76,42 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
         int bookID = data.getIntExtra("bookID", 0);
+        Long expected_isbn = data.getLongExtra("eISBN", 0);
+
+        Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
+        Log.d(TAG, "ISBN: " + isbn);
+        Log.d(TAG, "Expected ISBN: " + expected_isbn);
+
+
         User current = new User();
 
         switch (requestCode) {
 
             case 0:
-                Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
                 break;
 
 
             case 1:
-                Log.d(TAG, "1 bookID: " + Integer.toString(bookID));
-                current.borrowerPickupBook(bookID);
+
+                if (expected_isbn != isbn) {
+                    current.borrowerDropOffBook(bookID);
+                }
+                else {
+                    // TODO: Implement popup stating that the wrong book was returned
+                    Log.d(TAG, "Wrong book pickup!");
+
+
+                }
                 break;
 
             case 2:
-                Log.d(TAG, "2 bookID: " + Integer.toString(bookID));
-                current.borrowerDropOffBook(bookID);
+                if (expected_isbn != isbn) {
+                    current.borrowerPickupBook(bookID);
+                }
+                else {
+                    // TODO: Implement popup stating that the wrong book was returned
+                    Log.d(TAG, "Wrong book pickup!");
+                }
                 break;
         }
 

@@ -38,12 +38,6 @@ public class MyBooksAddBook extends AppCompatActivity {
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
     Toolbar toolbar;
-    FirebaseAuth auth;
-    FirebaseFirestore DB = FirebaseFirestore.getInstance();
-    CollectionReference books;
-    CollectionReference users;
-
-
     //ImageButton addPic;
 
     /**

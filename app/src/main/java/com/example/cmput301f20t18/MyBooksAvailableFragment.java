@@ -52,7 +52,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference userRef = DB.collection("system").document("System").collection("users");
+    CollectionReference userRef = DB.collection("users");
 
 
 
@@ -127,7 +127,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
 
     public void setUp() {
-        query = userRef.document(auth.getUid()).collection("books_owned").whereEqualTo("status", Book.STATUS_AVAILABLE);
+        query = userRef.document(auth.getUid()).collection("books_owned").whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE ).whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();

@@ -40,6 +40,8 @@ android {
         }
     }
 
+
+
 }
 
 dependencies {
@@ -89,3 +91,5 @@ dependencies {
     implementation 'com.google.firebase:firebase-auth'
     implementation 'com.google.firebase:firebase-firestore'
     implementation 'com.firebaseui:firebase-ui-firestore:6.1.0'}
+
+
