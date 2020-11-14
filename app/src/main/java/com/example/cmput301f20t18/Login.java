@@ -89,7 +89,7 @@ public class Login extends AppCompatActivity {
                                 }
                                 else {
                                     // If sign in fails, display a message to the user.
-                                    FirebaseAuthException e = (FirebaseAuthException)task.getException();
+                                    FirebaseAuthException e = (FirebaseAuthException) task.getException();
                                     Toast.makeText(Login.this, "Wrong username or password!" , Toast.LENGTH_SHORT).show();
 
                                 }
