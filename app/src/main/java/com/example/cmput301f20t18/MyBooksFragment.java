@@ -108,7 +108,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
 
 
             case 1:
-                if (expected_isbn == isbn) {
+                if (expected_isbn != isbn) {
                     current.ownerSignOff(bookID);
                 }
                 else {
@@ -119,7 +119,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
 
             case 2:
 
-                if (expected_isbn == isbn) {
+                if (expected_isbn != isbn) {
                     current.ownerConfirmPickup(bookID);
                 }
                 else {

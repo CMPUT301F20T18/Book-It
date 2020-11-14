@@ -93,8 +93,8 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
 
             case 1:
 
-                if (expected_isbn == isbn) {
-                    current.borrowerPickupBook(bookID);
+                if (expected_isbn != isbn) {
+                    current.borrowerDropOffBook(bookID);
                 }
                 else {
                     // TODO: Implement popup stating that the wrong book was returned
@@ -105,8 +105,8 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
                 break;
 
             case 2:
-                if (expected_isbn == isbn) {
-                    current.borrowerDropOffBook(bookID);
+                if (expected_isbn != isbn) {
+                    current.borrowerPickupBook(bookID);
                 }
                 else {
                     // TODO: Implement popup stating that the wrong book was returned

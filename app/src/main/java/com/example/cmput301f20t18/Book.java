@@ -247,4 +247,11 @@ public class Book implements Comparable<Book> {
     public void setPhotos(ArrayList<String> photos) {
         this.photos = photos;
     }
+
+
+    public String getCover() {
+        return this.photos.get(0);
+    }
+    
+
 }

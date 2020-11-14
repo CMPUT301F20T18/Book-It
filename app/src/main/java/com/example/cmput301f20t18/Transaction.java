@@ -10,6 +10,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -39,6 +40,7 @@ public class Transaction {
     private int status;
     private int ownerFlag;
     private int borrowerFlag;
+    private String cover_photo;
 
     /**
      * This is the constructor used to change the status of
@@ -53,7 +55,7 @@ public class Transaction {
      *                     (request, exchange, borrow, declined)
      */
     //For use in changing the status of a transaction
-    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status) {
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status, String cover_photo) {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
@@ -61,6 +63,7 @@ public class Transaction {
         this.status = status;
         this.ownerFlag = 0;
         this.borrowerFlag = 0;
+        this.cover_photo = cover_photo;
 
     }
 
@@ -152,5 +155,13 @@ public class Transaction {
 
     public void setBorrowerFlag(int borrowerFlag) {
         this.borrowerFlag = borrowerFlag;
+    }
+
+    public String getCover_photo() {
+        return cover_photo;
+    }
+
+    public void setCover_photo(String cover_photo) {
+        this.cover_photo = cover_photo;
     }
 }
