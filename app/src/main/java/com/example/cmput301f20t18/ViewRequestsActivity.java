@@ -27,13 +27,5 @@ public class ViewRequestsActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
         toolbar.setTitle(getResources().getText(R.string.view_requests_header));
 
-        userList = new ArrayList<User>();
-        userList.add(new User("phlafoo", 12345, "dbID1", "phlafoo@gmail.com", "Abbey Road"));
-        userList.add(new User("MysticWolf", 23456, "dbID2", "mystic@gmail.com", "Drury Lane"));
-        userList.add(new User("Solomon", 34567, "dbID3", "sol@gmail.com", "Sesame Street"));
-
-        RequestsAdapter requestsAdapter = new RequestsAdapter(this, userList);
-        recyclerView.setAdapter(requestsAdapter);
-
     }
 }
