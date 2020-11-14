@@ -186,9 +186,6 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                         intent.putExtra("eISBN", book.getISBN());
                         Activity main = (Activity) v.getContext();
                         main.startActivityForResult(intent, FRAG_RETURN);
-
-
-
                     }
                 });
                 break;
