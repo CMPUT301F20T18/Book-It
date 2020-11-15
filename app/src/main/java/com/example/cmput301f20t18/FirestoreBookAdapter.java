@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.app.Activity;
 import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,8 +11,10 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -25,12 +28,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
  * @see MyBooksPendingFragment
  * @see MyBooksLendingFragment
  */
-public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.BookViewHolder> {
+public class FirestoreBookAdapter
+        extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.BookViewHolder>
+         {
     final static String TAG = "FBA_DEBUG_OWNED";
     final static int VIEW_REQUESTS = 3;
     final static int FRAG_PENDING = 2;
     final static int FRAG_LENDING = 1;
 
+    private Context context;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See
@@ -38,8 +44,9 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
      *
      * @param options
      */
-    public FirestoreBookAdapter(FirestoreRecyclerOptions options) {
+    public FirestoreBookAdapter(FirestoreRecyclerOptions options, Context context) {
         super(options);
+        this.context = context;
     }
 
     /**
@@ -96,19 +103,22 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
             }
         };
 
+        /* User clicks the 3 dots "more" button */
+        holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: Change to book.getId()
+                CustomBottomSheetDialog bottomSheet =
+                        new CustomBottomSheetDialog(true, book.getStatus());
+                bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
+                        "customBottomSheet");
+            }
+        });
+
         /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
-                /* User clicks the 3 dots "more" button */
-                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /* TODO: create custom context menu for Edit/Delete */
-                        new AlertDialog.Builder(v.getContext())
-                                .setTitle("TODO: Edit/Delete").show();
-                    }
-                });
                 break;
 
             case Book.STATUS_REQUESTED:
@@ -122,21 +132,12 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                         main.startActivity(intent);
                     }
                 });
-
-                /* User clicks the 3 dots "more" button */
-                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /* TODO: create custom context menu for Edit/Delete */
-                        new AlertDialog.Builder(v.getContext())
-                                .setTitle("TODO: Edit/Delete").show();
-                    }
-                });
                 break;
 
             case Book.STATUS_ACCEPTED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-                holder.textViewUsername.setText(book.getOwner().getUsername());
+                holder.textViewUsername.setText("USERNAME");
+                //holder.textViewUsername.setText(book.getOwner().getUsername());
                 holder.textViewUserDescription.setText(R.string.picking_up);
 
                 /* User clicks the "Confirm pick up" button */
@@ -156,16 +157,6 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
 
                 holder.buttonUser.setOnClickListener(openProfileListener);
                 holder.buttonMap.setOnClickListener(openMapListener);
-
-                /* User clicks the 3 dots "more" button */
-                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /* TODO: create custom context menu for Cancel pick up/Edit/Delete */
-                        new AlertDialog.Builder(v.getContext())
-                                .setTitle("TODO: Cancel pick up/Edit/Delete").show();
-                    }
-                });
                 break;
 
             case Book.STATUS_BORROWED:
@@ -192,16 +183,6 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
 
                 holder.buttonUser.setOnClickListener(openProfileListener);
                 holder.buttonMap.setOnClickListener(openMapListener);
-
-                /* User clicks the 3 dots "more" button */
-                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        /* TODO: create custom context menu for Edit/Delete */
-                        new AlertDialog.Builder(v.getContext())
-                                .setTitle("TODO: Edit/Delete").show();
-                    }
-                });
                 break;
         }
 
@@ -246,6 +227,8 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
 
     }
 
+
+
     /**
      * Caches Views from layout file.
      * @see #onBindViewHolder(BookViewHolder, int, Book)
@@ -270,7 +253,6 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         Button buttonUser;
         Button buttonConfirmReturn;
         Button buttonMore;
-        Button requests;
 
         /**
          * Class constructor.
