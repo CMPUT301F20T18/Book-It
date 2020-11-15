@@ -26,7 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * This is a class that creates a new book object through user input
  * @author  Jacob Deinum
  * @author Johnathon Gil
- * @author Chase Warwick (Added check for empty fields)
+ * @author Chase Warwick (Minor bug fix: Check for empty field)
  * @see    Toolbar
  * @see    FirebaseAuth
  * @see    FirebaseFirestore
