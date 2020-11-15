@@ -20,6 +20,11 @@ import java.util.Map;
  * between users and returning the book to it's original owner
  */
 public class Transaction {
+    private String bookOwner;
+    private String bookBorrower;
+    private Integer ID;
+    private Integer bookID;
+    private String status;
 
 
     public static final int STATUS_AVAILABLE = 0;

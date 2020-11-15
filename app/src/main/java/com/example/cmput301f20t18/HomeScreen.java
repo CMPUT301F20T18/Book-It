@@ -5,10 +5,14 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -42,6 +46,16 @@ import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
  * @see Book
  */
 public class HomeScreen extends AppCompatActivity {
+    private int permissionStorageWriteCode = 100;
+    private int permissionStorageReadCode = 101;
+
+    FirebaseAuth auth;
+    FirebaseFirestore DB;
+    CollectionReference system;
+    CollectionReference users;
+    CollectionReference books;
+    DocumentReference current_user;
+    Library lib;
     Fragment selectedFragment;
     final String TAG = "HOMESCREEN_DEBUG";
 
@@ -72,6 +86,8 @@ public class HomeScreen extends AppCompatActivity {
         bottomNav.setSelectedItemId(R.id.tab_mybooks);
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new MyBooksFragment()).commit();
+
+        checkPermissionExternalData();
 
 
     }
@@ -123,6 +139,21 @@ public class HomeScreen extends AppCompatActivity {
             case RESULT_OK:
                 Log.d(TAG, "Got to activity Result!");
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
+
+    private void checkPermissionExternalData() {
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    permissionStorageWriteCode);
+        }
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    permissionStorageReadCode);
         }
     }
 }
