@@ -23,6 +23,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.Calendar;
+
 /**
  * This is a class that creates a new book object through user input
  * @author  Jacob Deinum
@@ -201,7 +203,7 @@ class CheckBookValidity{
      */
     private static boolean checkYear(String bookYear){
         final int MIN_VAL = 0;
-        final int MAX_VAL = 2147483647;
+        final int MAX_VAL = Calendar.getInstance().get(Calendar.YEAR);
         int yearNum = -1;
 
         try{
