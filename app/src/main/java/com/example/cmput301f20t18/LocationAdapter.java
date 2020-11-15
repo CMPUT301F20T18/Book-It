@@ -132,7 +132,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         forDataReturn.startActivityForResult(selectLocationIntent,1);
     }
 
-    // TODO: will this be used?
+    // TODO: will this be used? ->
+    //  We need to pull data from select activity. So if not this way then some other way
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data){
         if (requestCode == 1){
             int index = data.getIntExtra("LOCATION_INDEX", -1);
