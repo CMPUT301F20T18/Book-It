@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -162,9 +163,11 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 holder.buttonMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: create custom context menu for Cancel request */
-                        new android.app.AlertDialog.Builder(v.getContext())
-                                .setTitle("TODO: Cancel request").show();
+                        // TODO: Change to book.getId()
+                        CustomBottomSheetDialog bottomSheet =
+                                new CustomBottomSheetDialog(false, book.getStatus());
+                        bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
+                                "customBottomSheet");
                     }
                 });
                 break;

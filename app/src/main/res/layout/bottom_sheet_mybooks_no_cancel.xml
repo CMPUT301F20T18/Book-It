@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGray2">
+
+    <Button
+        android:id="@+id/button_edit_book"
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:background="@drawable/bad_button_background"
+        android:fontFamily="@font/poppins"
+        android:text="Edit"
+        android:textColor="@color/colorOrange"
+        android:layout_marginHorizontal="11dp"
+        android:layout_marginTop="11dp"
+        />
+
+    <Button
+        android:id="@+id/button_delete_book"
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:background="@drawable/bad_button_background"
+        android:fontFamily="@font/poppins"
+        android:text="Delete"
+        android:textColor="@color/colorOrange"
+        android:layout_margin="11dp"
+        />
+
+</LinearLayout>
