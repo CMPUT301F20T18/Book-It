@@ -419,6 +419,99 @@ public class User {
     }
 
 
+
+    void ownerEditBook(String title, String author, long ISBN, int bookID, int year){
+
+        // update global book
+        bookRef.document(Integer.toString(bookID)).update("title", title, "author", author, "isbn", ISBN, "year", year);
+
+        // update owned book
+        userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(bookID)).update("title", title, "author", author, "isbn", ISBN, "year", year);
+
+        // TODO: update books requested?
+    }
+
+
+    void ownerCancelPickup(int bookID) {
+
+        // get the transaction associated with this pickup
+        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Transaction request = task.getResult().toObjects(Transaction.class).get(0);
+
+                    // get the borrower information
+                    userRef.whereEqualTo("username", request.getBookBorrower()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                User borrower = task.getResult().toObjects(User.class).get(0);
+
+
+                                // delete the global transaction
+                                transRef.document(Integer.toString(request.getID())).delete();
+
+                                // delete the owner transaction
+                                userRef.document(auth.getUid()).collection("owner_transactions").document(Integer.toString(request.getID())).delete();
+
+                                // delete the borrower transaction
+                                userRef.document(borrower.getDbID()).collection("owner_transactions").document(Integer.toString(request.getID())).delete();
+
+                                // update the global book reference
+                                bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
+
+                                // update the borrower book reference
+                                userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
+                            }
+                        }
+                    });
+                }
+            }
+        });
+    }
+
+    void borrowerCancelPickup(int bookID) {
+
+        // get the transaction
+        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Transaction request = task.getResult().toObjects(Transaction.class).get(0);
+
+                    // delete the global transaction
+                    transRef.document(Integer.toString(request.getID())).delete();
+
+                    // delete the borrower transaction
+                    userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(request.getID())).delete();
+
+                    // delete the borrower transaction
+                    userRef.document(request.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(request.getID())).delete();
+
+                    // update the global book reference
+                    bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
+
+                    // update the borrower book reference
+                    userRef.document(request.getBookOwner().getDbID()).collection("books_owned").document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
+
+                }
+            }
+        });
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
     /**
      * Request a book from a book owner
      * Add the request to borrower transaction list
