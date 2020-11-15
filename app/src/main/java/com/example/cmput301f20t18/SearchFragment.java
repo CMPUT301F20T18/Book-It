@@ -41,8 +41,7 @@ import java.util.ArrayList;
  * @author Johnathon Gil
  */
 //TODO: Add a listview to the UI and an adapter which can display search results for both
-//      User and Book (Specifically either one that can take in an array set or if that is not
-//      possible one that takes in a list and let Chase know to update searchFrag as appropriate)
+//      User and Book
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
 
