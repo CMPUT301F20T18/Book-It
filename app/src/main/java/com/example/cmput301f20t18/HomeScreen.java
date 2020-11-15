@@ -32,6 +32,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
+
 /**
  * Homescreen is the first object a user sees upon signing in, and will contain all the books
  * borrowed by the user.
@@ -53,7 +55,7 @@ public class HomeScreen extends AppCompatActivity {
 
 
         User current = new User();
-        //current.borrowerRequestBook(94);
+        // current.borrowerRequestBook(94);
         // current.ownerAcceptRequest(60);
         // current.ownerAcceptRequest(59);
 
@@ -121,7 +123,6 @@ public class HomeScreen extends AppCompatActivity {
             case RESULT_OK:
                 Log.d(TAG, "Got to activity Result!");
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
-
         }
     }
 }
