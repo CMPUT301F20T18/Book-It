@@ -1,6 +1,6 @@
 package com.example.cmput301f20t18;
 
-import android.content.Context;
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.util.Log;
@@ -10,104 +10,51 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
-import java.util.List;
+import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 /**
  * Custom RecyclerView Adapter for Book objects in Borrowed books.
  *
+ * @see FirestoreRecyclerAdapter
  * @see BorrowedRequestedFragment
  * @see BorrowedPendingFragment
  * @see BorrowedBorrowingFragment
- *
- * @deprecated Use {@link FirestoreBookAdapter} instead
  */
-@Deprecated
-public class BorrowedRecyclerViewAdapter extends
-        RecyclerView.Adapter<BorrowedRecyclerViewAdapter.BookViewHolder> {
+public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.BookViewHolder> {
+    final static String TAG = "FBA_DEBUG_BORROWED";
+    final static int FRAG_PICKUP = 2;
+    final static int FRAG_RETURN = 1;
 
-    private final String TAG = "BorrowedRecViewAdapter";
-    private Context context;
-    private List<Book> bookList;    // Books to display
 
     /**
-     * Class Constructor.
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See
+     * {@link FirestoreRecyclerOptions} for configuration options.
      *
-     * @param context Context to inflate from.
-     * @param bookList List of books to display.
+     * @param options
      */
-    public BorrowedRecyclerViewAdapter(Context context, List<Book> bookList) {
-        this.context = context;
-        this.bookList = bookList;
+    public FirestoreBorrowedAdapter(FirestoreRecyclerOptions options) {
+        super(options);
     }
 
     /**
      * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
      * on the book status.
      *
-     * @param position Index of Book in bookList.
+     * @param position Position of Book in list.
      * @return Status of book as an int.
      * @see #onCreateViewHolder(ViewGroup, int)
      */
     @Override
     public int getItemViewType(int position) {
-
-        int status = bookList.get(position).getStatus();    // retrieve book status
-        switch (status) {
-            case Book.STATUS_AVAILABLE: return 0;
-            case Book.STATUS_REQUESTED: return 1;
-            case Book.STATUS_ACCEPTED: return 2;
-            case Book.STATUS_BORROWED: return 3;
-        }
-
-        // should never reach this point
-        Log.e(TAG, "getItemViewType: Invalid book status");
-        return 0;
-    }
-
-    /**
-     * Called when RecyclerView needs a new {@link BorrowedRecyclerViewAdapter.BookViewHolder} of the
-     * given type to represent a Book.
-     *
-     * @param parent The ViewGroup into which the new View will be added after it is bound to an
-     *               adapter position.
-     * @param viewType The view type of the new View, based on the book status.
-     * @return A new BookViewHolder that holds a View of the given view type.
-     * @see BorrowedRecyclerViewAdapter.BookViewHolder
-     * @see #getItemViewType(int)
-     * @see #onBindViewHolder(BookViewHolder, int)
-     */
-    @NonNull
-    @Override
-    public BorrowedRecyclerViewAdapter.BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        LayoutInflater inflater = LayoutInflater.from(context);
-
-        /* viewType holds the status of the Book. The switch assigns the appropriate layout file. */
-        switch (viewType) {
-            case Book.STATUS_AVAILABLE: // Book status should not be available here
-                Log.e(TAG, "onCreateViewHolder: \"Available\" status not allowed in borrowed section.");
-                return new BorrowedRecyclerViewAdapter.BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
-
-            case Book.STATUS_REQUESTED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_requested, null));
-
-            case Book.STATUS_ACCEPTED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
-
-            case Book.STATUS_BORROWED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_lending, null));
-
-            default: // should never reach this point
-                Log.e(TAG, "onCreateViewHolder: Invalid viewType value");
-                return new BorrowedRecyclerViewAdapter.BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
-        }
+        return getItem(position).getStatus();
     }
 
     /**
@@ -115,13 +62,11 @@ public class BorrowedRecyclerViewAdapter extends
      *
      * @param holder The ViewHolder which should be updated to represent the contents of the Book
      *               at the given position in bookList.
-     * @param position Index of the book in bookList.
+     * @param i position of book in list.
+     * @param book Book to display.
      */
     @Override
-    public void onBindViewHolder(@NonNull BookViewHolder holder, int position) {
-
-        Book book = bookList.get(position);
-
+    protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
         //holder.imageView.setImageResource(R.drawable.default_cover);
 
@@ -135,30 +80,30 @@ public class BorrowedRecyclerViewAdapter extends
         try {
             /* These two TextViews will be null if the book status is "Available" */
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-            holder.textViewUsername.setText("Username");
+            holder.textViewUsername.setText(book.getOwner().getUsername());
             holder.textViewUserDescription.setText(R.string.owner);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
 
-        /* User clicks on profile photo. This button is in all three tabs. */
-        holder.buttonUser.setOnClickListener(new View.OnClickListener() {
+        // This is used to open up a user's profile when clicking on their profile photo
+        View.OnClickListener openProfileListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                /* TODO: Pass which user profile to show to CheckProfileActivity */
                 Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
                 v.getContext().startActivity(intent);
             }
-        });
+        };
 
-        /* User clicks on map button. This button is in all three tabs. */
-        holder.buttonMap.setOnClickListener(new View.OnClickListener() {
+        // This is used to view the pick up location when clicking the map button
+        View.OnClickListener openMapListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 /* Are we allowing the borrower to see the location before being accepted? */
                 /* TODO: make activity that displays pick up location to borrower */
-                Toast.makeText(context, "*View pick up location*", Toast.LENGTH_SHORT).show();
             }
-        });
+        };
 
         /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
@@ -179,7 +124,11 @@ public class BorrowedRecyclerViewAdapter extends
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
                                     @Override
                                     public void onClick(DialogInterface dialog, int which) {
-                                        /* TODO: Actually cancel request */
+                                        // find the transaction associated with this book for the current user
+                                        User current = new User();
+                                        Log.d(TAG, "onClick: " + book.getId());
+                                        current.borrowerCancelRequest(book.getId());
+
                                     }
                                 })
                                 .setNegativeButton("No", null)).show();
@@ -197,11 +146,16 @@ public class BorrowedRecyclerViewAdapter extends
                 holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: Scanner needs to know that an borrower is trying to confirm pick up. */
+                        Log.d(TAG, " bookID: " + book.getId());
+                        Log.d(TAG, " book ISBN:  " + book.getISBN());
+
+
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        /* TODO: upon successful scan, book status should be changed to "borrowed"
-                            and should be updated in firestore */
+                        intent.putExtra("bookID", book.getId());
+                        intent.putExtra("type", 1);
+                        intent.putExtra("eISBN", book.getISBN());
+                        Activity main = (Activity) v.getContext();
+                        main.startActivityForResult(intent, FRAG_PICKUP);
                     }
                 });
 
@@ -209,9 +163,11 @@ public class BorrowedRecyclerViewAdapter extends
                 holder.buttonMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: create custom context menu for Cancel request */
-                        new android.app.AlertDialog.Builder(v.getContext())
-                                .setTitle("TODO: Cancel request").show();
+                        // TODO: Change to book.getId()
+                        CustomBottomSheetDialog bottomSheet =
+                                new CustomBottomSheetDialog(false, book.getStatus());
+                        bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
+                                "customBottomSheet");
                     }
                 });
                 break;
@@ -222,11 +178,15 @@ public class BorrowedRecyclerViewAdapter extends
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: Scanner needs to know that a borrower is trying to confirm return. */
+                        Log.d(TAG, " bookID: " + book.getId());
+                        Log.d(TAG, " book ISBN:  " + book.getISBN());
+
                         Intent intent = new Intent(v.getContext(), Scanner.class);
-                        v.getContext().startActivity(intent);
-                        /* TODO: upon successful scan, book status should be changed to "available"
-                         *   and be updated in firestore. */
+                        intent.putExtra("bookID", book.getId());
+                        intent.putExtra("type", 1);
+                        intent.putExtra("eISBN", book.getISBN());
+                        Activity main = (Activity) v.getContext();
+                        main.startActivityForResult(intent, FRAG_RETURN);
                     }
                 });
                 break;
@@ -234,23 +194,47 @@ public class BorrowedRecyclerViewAdapter extends
     }
 
     /**
-     * Returns the number of Books in bookList
+     * Called when RecyclerView needs a new {@link FirestoreBookAdapter.BookViewHolder} of the
+     * given type to represent a Book.
      *
-     * @return number of Books in bookList
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an
+     *               adapter position.
+     * @param viewType The view type of the new View, based on the book status.
+     * @return A new BookViewHolder that holds a View of the given view type.
+     * @see FirestoreBookAdapter.BookViewHolder
+     * @see #getItemViewType(int)
+     * @see #onBindViewHolder(FirestoreBorrowedAdapter.BookViewHolder, int, Book)
      */
+    @NonNull
     @Override
-    public int getItemCount() {
-        return bookList.size();
+    public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        LayoutInflater inflater = LayoutInflater.from(parent.getContext());
+        Log.d(TAG, "viewType: : " + Integer.toString(viewType));
+
+        switch (viewType) {
+            case Book.STATUS_AVAILABLE:
+                Log.d(TAG, "onCreateViewHolder: Got to available!!");
+                return new BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
+            case Book.STATUS_REQUESTED:
+                Log.d(TAG, "onCreateViewHolder: Got to requested!");
+                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_requested, null));
+            case Book.STATUS_ACCEPTED:
+                return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
+            case Book.STATUS_BORROWED:
+                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_lending, null));
+            default: Log.d(TAG, "Error: Book status not found");
+        }
+
+        return null;
     }
 
     /**
      * Caches Views from layout file.
-     * @see #onBindViewHolder(BookViewHolder, int)
+     * @see #onBindViewHolder(FirestoreBorrowedAdapter.BookViewHolder, int, Book)
      */
-    public static class BookViewHolder extends RecyclerView.ViewHolder {
-
+    public class BookViewHolder extends RecyclerView.ViewHolder {
         /* Not all layout files will have all of these views, so some may be null.
-        *  The switch in onBindViewHolder() ensures that this is not an issue. */
+         * The switch in onBindViewHolder() ensures that this is not an issue. */
 
         ImageView imageView;
         TextView textViewTitle;
@@ -270,6 +254,7 @@ public class BorrowedRecyclerViewAdapter extends
 
         /**
          * Class constructor.
+         *
          * @param itemView Used to retrieve Views from layout file.
          */
         public BookViewHolder(@NonNull View itemView) {
@@ -291,7 +276,8 @@ public class BorrowedRecyclerViewAdapter extends
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
             buttonMore = itemView.findViewById(R.id.button_book_more);
-
         }
+
     }
+
 }

@@ -3,11 +3,19 @@ package com.example.cmput301f20t18;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.ContextMenu;
@@ -30,6 +38,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
+
 /**
  * Homescreen is the first object a user sees upon signing in, and will contain all the books
  * borrowed by the user.
@@ -37,7 +47,11 @@ import java.util.Objects;
  * @see User
  * @see Book
  */
-public class HomeScreen extends AppCompatActivity {
+
+public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDialog.BottomSheetListener{
+    private int permissionStorageWriteCode = 100;
+    private int permissionStorageReadCode = 101;
+
     FirebaseAuth auth;
     FirebaseFirestore DB;
     CollectionReference system;
@@ -46,38 +60,23 @@ public class HomeScreen extends AppCompatActivity {
     DocumentReference current_user;
     Library lib;
     Fragment selectedFragment;
-    final String TAG = "HOMESCREEN";
+    final String TAG = "HOMESCREEN_DEBUG";
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        DB = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-
-        // get all of our collections
-        system = DB.collection("system");
-        users = DB.collection("system").document("System").collection("users");
-        books = DB.collection("system").document("System").collection("books");
-        current_user = DB.collection("system").document("System").collection("users").document(auth.getUid());
-
-        Task<QuerySnapshot> retrieve_users = users.get();
-        Task<QuerySnapshot> retrieve_books = books.get();
-        Task<DocumentSnapshot> retrieve_current_user = current_user.get();
-
-        // successfully got all books and users
-        Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
-            @Override
-            public void onSuccess(List<Task<?>> tasks) {
-                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
-                assert (current != null);
-                Log.d(TAG, "onSuccess: " + current.getUsername());
-            }
 
 
-        });
+        User current = new User();
+        // current.borrowerRequestBook(94);
+        // current.ownerAcceptRequest(60);
+        // current.ownerAcceptRequest(59);
+
+
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -91,12 +90,15 @@ public class HomeScreen extends AppCompatActivity {
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new MyBooksFragment()).commit();
 
+        checkPermissionExternalData();
+
 
     }
 
     // Not in onCreate() to avoid clutter but idk
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M) // This is because of SearchFragment
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     selectedFragment = null;
@@ -133,14 +135,98 @@ public class HomeScreen extends AppCompatActivity {
             };
 
 
+    @Override
+    public void onButtonClick(int button, int status) {
+        AlertDialog dialog;
+        switch (button) {
+            case CustomBottomSheetDialog.CANCEL_BUTTON:
+                dialog = new AlertDialog.Builder(HomeScreen.this)
+                        .setTitle("Cancel pick up")
+                        .setMessage("Are you sure you want to cancel this pick up?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: cancel pick up (owner or borrower can do this).
+                            }
+                        })
+                        .setNegativeButton("Back", null)
+                        .show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                break;
+
+            case CustomBottomSheetDialog.EDIT_BUTTON:
+                // TODO: Make activity for editing book details.
+                Toast.makeText(getApplicationContext(), "edit clicked", Toast.LENGTH_SHORT).show();
+                break;
+
+            case CustomBottomSheetDialog.DELETE_BUTTON:
+                String alertMessage = "";
+                switch (status) {
+                    case Book.STATUS_AVAILABLE:
+                        alertMessage = "Are you sure you want to delete this book?";
+                        break;
+
+                    case Book.STATUS_REQUESTED:
+                        alertMessage = "Deleting this book will decline all requests.\n" +
+                                "Are you sure you want to delete this book?";
+                        break;
+
+                    case Book.STATUS_ACCEPTED:
+                        alertMessage = "Deleting this book will cancel the pick up.\n" +
+                                "Are you sure you want to delete this book?";
+                        break;
+                    case Book.STATUS_BORROWED:
+                        alertMessage = "This book is currently being borrowed.\n" +
+                                "Are you sure you want to delete this book?";
+                        break;
+                }
+                dialog = new AlertDialog.Builder(HomeScreen.this)
+                        .setTitle("Delete book")
+                        .setMessage(alertMessage)
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: delete book
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                break;
+            default:
+                Log.e(TAG, "onButtonClick: Invalid button ID");
+        }
+    }
+
     // handles activity results by sending the result where it needs to go
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 1:
+        switch (resultCode) {
+            case RESULT_OK:
+                Log.d(TAG, "Got to activity Result!");
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
+    private void checkPermissionExternalData() {
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.WRITE_EXTERNAL_STORAGE},
+                    permissionStorageWriteCode);
+        }
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
+                    permissionStorageReadCode);
         }
     }
 }

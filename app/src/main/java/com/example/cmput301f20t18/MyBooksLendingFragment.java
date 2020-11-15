@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -8,9 +9,16 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -20,10 +28,13 @@ import java.util.List;
  * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
  * in My Books>Lending.
  */
-public class MyBooksLendingFragment extends Fragment {
+public class MyBooksLendingFragment extends Fragment implements fragmentListener {
 
     RecyclerView recyclerView;
     List<Book> bookList;
+    Query query;
+    FirestoreBookAdapter adapter;
+    final static String TAG = "MBLF";
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
 
@@ -35,6 +46,12 @@ public class MyBooksLendingFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference userRef = DB.collection("users");
+
+
 
     public MyBooksLendingFragment() {
         // Required empty public constructor
@@ -80,35 +97,69 @@ public class MyBooksLendingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_books_lending, container, false);
+        View view = inflater.inflate(R.layout.fragment_my_books_available, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        setUp();
+        return view;
+    }
+
+
+
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+
+
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+    public void setUp() {
+        query = userRef.document(auth.getUid()).collection("books_owned").whereEqualTo("status", Book.STATUS_BORROWED);
+        FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
+                .setQuery(query, Book.class)
+                .build();
+
+        adapter = new FirestoreBookAdapter(options, getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 
     /**
-     * Populates bookList and sets up adapter to display the list.
-     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has
-     * returned, but before any saved state has been restored in to the view.
-     *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
+     * Handle users scanning books to return / borrow
+     * @param requestCode The request code for the calling activity
+     * @param resultCode The result code from the called activity
+     * @param data The data embedded in the intent
      */
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String isbn_string = data.getStringExtra("ISBN");
+        Long isbn = Long.parseLong(isbn_string);
+        int bookID = data.getIntExtra("bookID", 0);
+        switch (resultCode) {
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+            // change book status to borrowed
+            // change transaction
+            case 0:
+                Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
+                break;
 
-        // hardcoded some books
-        bookList = new ArrayList<>();
-        bookList.add(new Book("The Color Purple", 9780606005876L, "Alice Walker",
-                420, Book.STATUS_BORROWED, null, 1985));
 
-        Collections.sort(bookList);
-
-        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList, this);
-        recyclerView.setAdapter(myBooksRecyclerViewAdapter);
+            case 1:
+                Log.d(TAG, "1 bookID: " + Integer.toString(bookID));
+                User current = new User();
+                current.ownerSignOff(bookID);
+                break;
+        }
 
     }
 }
