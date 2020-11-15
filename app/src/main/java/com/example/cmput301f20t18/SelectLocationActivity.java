@@ -28,6 +28,11 @@ import java.util.Locale;
  * select a location on the map (places a marker at the location they clicked)
  * display the address of said location (so long as the phone has access to a geocoder)
  * confirm that this is the correct location and click a button to exit
+ *
+ * functionality
+ * @author Chase Warwick
+ * UI
+ * @author
  */
 public class SelectLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
