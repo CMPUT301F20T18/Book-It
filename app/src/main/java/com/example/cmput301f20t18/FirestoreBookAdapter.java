@@ -1,7 +1,7 @@
 package com.example.cmput301f20t18;
 
 import android.app.Activity;
-import android.content.DialogInterface;
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -10,17 +10,22 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.bookViewHolder> {
+/**
+ * Custom RecyclerView Adapter for Book objects in My Books.
+ *
+ * @see FirestoreRecyclerAdapter
+ * @see MyBooksAvailableFragment
+ * @see MyBooksPendingFragment
+ * @see MyBooksLendingFragment
+ */
+public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.BookViewHolder> {
     final static String TAG = "FBA_DEBUG_OWNED";
     final static int VIEW_REQUESTS = 3;
     final static int FRAG_PENDING = 2;
@@ -37,35 +42,29 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         super(options);
     }
 
-
+    /**
+     * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
+     * on the book status.
+     *
+     * @param position Position of Book in list.
+     * @return Status of book as an int.
+     * @see #onCreateViewHolder(ViewGroup, int)
+     */
     @Override
     public int getItemViewType(int position) {
-        switch (getItem(position).getStatus()) {
-            case Book.STATUS_AVAILABLE:
-                return Book.STATUS_AVAILABLE;
-
-            case Book.STATUS_REQUESTED:
-                return Book.STATUS_REQUESTED;
-
-            case Book.STATUS_BORROWED:
-                return Book.STATUS_BORROWED;
-            case Book.STATUS_ACCEPTED:
-                return Book.STATUS_ACCEPTED;
-        }
-        return 0;
+        return getItem(position).getStatus();
     }
 
-
+    /**
+     * Called by RecyclerView to display the Book at the specified position.
+     *
+     * @param holder The ViewHolder which should be updated to represent the contents of the Book
+     *               at the given position in bookList.
+     * @param i position of book in list.
+     * @param book Book to display.
+     */
     @Override
-    protected void onBindViewHolder(bookViewHolder holder, int i, Book book) {
-
-        //holder.imageView.setImageResource(R.drawable.default_cover);
-        holder.textViewTitle.setText(book.getTitle());
-        holder.textViewAuthor.setText(book.getAuthor());
-        holder.textViewYear.setText(String.valueOf(book.getYear()));
-        holder.textViewISBN.setText(String.valueOf(book.getISBN()));
-
-
+    protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
         //holder.imageView.setImageResource(R.drawable.default_cover);
 
@@ -74,51 +73,47 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
+        /* TODO: Implement delete/edit UI and functionality. */
         /* TODO: Implement cancel pick up UI and functionality (for "accepted" books) */
 
-        try {
-            /* These two TextViews will be null if the book status is "Available" */
-            /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-            holder.textViewUsername.setText("Username");
-            holder.textViewUserDescription.setText(R.string.owner);
-        } catch (Exception e) {
-            Log.e(TAG, e.toString());
-        }
+        // This is used to open up a user's profile when clicking on their profile photo
+        View.OnClickListener openProfileListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* TODO: Pass which user profile to show to CheckProfileActivity */
+                Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
+                v.getContext().startActivity(intent);
+            }
+        };
 
-        try {
-            /* User clicks on profile photo. This button is in all three tabs. */
-            holder.buttonUser.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
-                    v.getContext().startActivity(intent);
-                }
-            });
-        }catch (Exception e){};
-
-
-
-        /* User clicks on map button. This button is in all three tabs. */
-        try {
-            holder.buttonMap.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    /* Are we allowing the borrower to see the location before being accepted? */
-                    /* TODO: make activity that displays pick up location to borrower */
-                }
-            });
-        } catch (Exception e){};
-
-
+        // This is used to open the location selection activity when clicking on the map icon
+        View.OnClickListener openMapListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                /* Owner can select a new location if they so please. */
+                Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                v.getContext().startActivity(intent);
+            }
+        };
 
         /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
-                  break;
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Edit/Delete").show();
+                    }
+                });
+                break;
 
             case Book.STATUS_REQUESTED:
-                holder.requests.setOnClickListener(new View.OnClickListener() {
+                /* User clicks the "View requests" button */
+                holder.buttonViewRequests.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
@@ -127,10 +122,23 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                         main.startActivity(intent);
                     }
                 });
+
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Edit/Delete").show();
+                    }
+                });
                 break;
 
-
             case Book.STATUS_ACCEPTED:
+                /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
+                holder.textViewUsername.setText(book.getOwner().getUsername());
+                holder.textViewUserDescription.setText(R.string.picking_up);
+
                 /* User clicks the "Confirm pick up" button */
                 holder.buttonConfirmPickUp.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -146,18 +154,24 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                         main.startActivityForResult(intent, FRAG_PENDING);                    }
                 });
 
+                holder.buttonUser.setOnClickListener(openProfileListener);
+                holder.buttonMap.setOnClickListener(openMapListener);
+
                 /* User clicks the 3 dots "more" button */
                 holder.buttonMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        /* TODO: create custom context menu for Cancel request */
-                        new android.app.AlertDialog.Builder(v.getContext())
-                                .setTitle("TODO: Cancel request").show();
+                        /* TODO: create custom context menu for Cancel pick up/Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Cancel pick up/Edit/Delete").show();
                     }
                 });
                 break;
 
             case Book.STATUS_BORROWED:
+                /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
+                holder.textViewUsername.setText(book.getOwner().getUsername());
+                holder.textViewUserDescription.setText(R.string.borrowing);
 
                 /* User clicks the "Confirm return" button */
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
@@ -175,31 +189,56 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
 
                     }
                 });
+
+                holder.buttonUser.setOnClickListener(openProfileListener);
+                holder.buttonMap.setOnClickListener(openMapListener);
+
+                /* User clicks the 3 dots "more" button */
+                holder.buttonMore.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        /* TODO: create custom context menu for Edit/Delete */
+                        new AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Edit/Delete").show();
+                    }
+                });
                 break;
         }
 
 
     }
 
-
+    /**
+     * Called when RecyclerView needs a new {@link FirestoreBookAdapter.BookViewHolder} of the
+     * given type to represent a Book.
+     *
+     * @param parent The ViewGroup into which the new View will be added after it is bound to an
+     *               adapter position.
+     * @param viewType The view type of the new View, based on the book status.
+     * @return A new BookViewHolder that holds a View of the given view type.
+     * @see FirestoreBookAdapter.BookViewHolder
+     * @see #getItemViewType(int)
+     * @see #onBindViewHolder(FirestoreBookAdapter.BookViewHolder, int, Book)
+     */
     @NonNull
     @Override
-    public bookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         Log.d(TAG, "viewType: : " + Integer.toString(viewType));
 
+        /* viewType holds the status of the Book. The switch assigns the appropriate layout file. */
         switch (viewType) {
             case Book.STATUS_AVAILABLE:
                 Log.d(TAG, "onCreateViewHolder: Got to available!!");
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
             case Book.STATUS_REQUESTED:
                 Log.d(TAG, "onCreateViewHolder: Got to requested!");
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_mybooks_requested, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_requested, null));
             case Book.STATUS_ACCEPTED:
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_pending, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
             case Book.STATUS_BORROWED:
-                return new FirestoreBookAdapter.bookViewHolder(inflater.inflate(R.layout.card_mybooks_lending, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_lending, null));
             default: Log.d(TAG, "Error: Book status not found");
         }
 
@@ -207,10 +246,13 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
 
     }
 
-
-    public class bookViewHolder extends RecyclerView.ViewHolder {
-        /* Not all layout files will have all of these views, so some may be null.
-         *  The switch in onBindViewHolder() ensures that this is not an issue. */
+    /**
+     * Caches Views from layout file.
+     * @see #onBindViewHolder(BookViewHolder, int, Book)
+     */
+    public class BookViewHolder extends RecyclerView.ViewHolder {
+         /* Not all layout files will have all of these views, so some may be null.
+          * The switch in onBindViewHolder() ensures that this is not an issue. */
 
         ImageView imageView;
         TextView textViewTitle;
@@ -221,6 +263,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         TextView textViewUsername;
         TextView textViewUserDescription;
 
+        Button buttonViewRequests;
         Button buttonCancelRequest;
         Button buttonConfirmPickUp;
         Button buttonMap;
@@ -229,8 +272,12 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         Button buttonMore;
         Button requests;
 
-
-        public bookViewHolder(@NonNull View itemView) {
+        /**
+         * Class constructor.
+         *
+         * @param itemView Used to retrieve Views from layout file.
+         */
+        public BookViewHolder(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view);
@@ -243,13 +290,13 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
             textViewUsername = itemView.findViewById(R.id.text_username);
             textViewUserDescription = itemView.findViewById(R.id.text_user_description);
 
+            buttonViewRequests = itemView.findViewById(R.id.button_view_requests);
             buttonCancelRequest = itemView.findViewById(R.id.button_cancel_request);
             buttonConfirmPickUp = itemView.findViewById(R.id.button_confirm_pick_up);
             buttonMap = itemView.findViewById(R.id.button_mybooks_map);
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
             buttonMore = itemView.findViewById(R.id.button_book_more);
-            requests = itemView.findViewById(R.id.button_view_requests);
         }
 
     }

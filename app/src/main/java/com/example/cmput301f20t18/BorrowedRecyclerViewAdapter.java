@@ -25,7 +25,10 @@ import java.util.List;
  * @see BorrowedRequestedFragment
  * @see BorrowedPendingFragment
  * @see BorrowedBorrowingFragment
+ *
+ * @deprecated Use {@link FirestoreBookAdapter} instead
  */
+@Deprecated
 public class BorrowedRecyclerViewAdapter extends
         RecyclerView.Adapter<BorrowedRecyclerViewAdapter.BookViewHolder> {
 
