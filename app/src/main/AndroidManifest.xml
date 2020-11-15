@@ -51,7 +51,9 @@
 <activity android:name=".BookSearchActivity" />
         <activity android:name=".UserProfileActivity" />
         -->
-        <activity android:name=".HomeScreen" />
+        <activity
+            android:name=".HomeScreen"
+            android:windowSoftInputMode="adjustPan" />
 
         <meta-data
             android:name="preloaded_fonts"

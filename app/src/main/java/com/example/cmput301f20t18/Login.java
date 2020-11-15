@@ -17,12 +17,18 @@ import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * Allows the users to login into the app
+ * Allows the users to sign in / register for the application
  * @author Jacob Deinum
- */
+ * UI contributions
+ * @author Johnathon Gil
+ * @see Register
+ * @see User
+ * */
+
 public class Login extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
@@ -47,6 +53,7 @@ public class Login extends AppCompatActivity {
         register = (Button) findViewById(R.id.Register);
         login_user = (EditText) findViewById(R.id.username);
         login_password = (EditText) findViewById(R.id.password);
+
         usernameT = (TextView) findViewById(R.id.textView_username);
         passwordT = (TextView) findViewById(R.id.textView_password);
         loginArt = (ImageView) findViewById(R.id.login_image);
@@ -78,13 +85,12 @@ public class Login extends AppCompatActivity {
 
                                     // start new activity with current user
                                     Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                                    finish();
                                     startActivityForResult(intent, 0);
-                                }
-                                else {
+                                } else {
                                     // If sign in fails, display a message to the user.
-                                    Toast.makeText(Login.this, "Authentication failed.",
-                                            Toast.LENGTH_SHORT).show();
-
+                                    FirebaseAuthException e = (FirebaseAuthException) task.getException();
+                                    Toast.makeText(Login.this, "Wrong username or password!", Toast.LENGTH_SHORT).show();
                                 }
                             }
                         });
@@ -102,18 +108,8 @@ public class Login extends AppCompatActivity {
         });
 
 
-
     }
 
-// TODO: IMPLEMENT ONSTART
-
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        FirebaseUser current_user = mAuth.getCurrentUser();
-//
-//        // start the Homescreen, get all the users books later
-//        Intent intent = new Intent(getBaseContext(), HomeScreen.class);
-//        startActivityForResult(intent, 0);
-//    }
 }
+
+

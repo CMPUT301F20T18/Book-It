@@ -14,6 +14,8 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <include layout="@layout/component_book_more" />
+
     <Button
         android:id="@+id/button_view_requests"
         android:layout_width="wrap_content"

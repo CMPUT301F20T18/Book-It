@@ -10,6 +10,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.Map;
 
 /**
@@ -25,31 +26,25 @@ public class Transaction {
     private Integer bookID;
     private String status;
 
-    //private static TransactionLibrary transactionLib = new TransactionLibrary();
 
-    /**
-     * This is used to create a new object of type transaction
-     *
-     * @param bookOwner    The user who owns the book
-     * @param bookBorrower The user who is borrowing the book
-     * @param bookID       The id of the book which is being borrowed
-     */
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        TransactionOnCompleteListener listener = new TransactionOnCompleteListener();
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_REQUESTED = 1;
+    public static final int STATUS_ACCEPTED = 2;
+    public static final int STATUS_BORROWED = 3;
+    public static final int STATUS_RETURNED = 4;
+    public static final int STATUS_DECLINED = 5;
 
-        Task transactionMax = db.collection("MAX")
-                .document("transaction")
-                .get()
-                .addOnCompleteListener(listener);
-        this.bookOwner = bookOwner;
-        this.bookBorrower = bookBorrower;
-        this.bookID = bookID;
-        this.status = "request";
-        this.ID = listener.returnData();
+    public static final String TAG = "TRANS_DEBUG";
 
-        //this.transactionLib.addTransaction(this);
-    }
+
+    private User bookOwner;
+    private String bookBorrower;
+    private Integer ID;
+    private Integer bookID;
+    private int status;
+    private int ownerFlag;
+    private int borrowerFlag;
+    private String cover_photo;
 
     /**
      * This is the constructor used to change the status of
@@ -64,29 +59,22 @@ public class Transaction {
      *                     (request, exchange, borrow, declined)
      */
     //For use in changing the status of a transaction
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID, Integer ID, String status) {
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status) {
         this.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
         this.ID = ID;
         this.status = status;
+        this.ownerFlag = 0;
+        this.borrowerFlag = 0;
+
     }
 
     /**
-     * This is used to change the status of a transaction
-     *
-     * @param status The status that transaction should become
-     * @return the type of transaction specified by status
+     * Empty constructor used for serialization within firestore
      */
-    public Transaction changeStatus(String status) {
-        if (status.equals("exchange")) {
-            return new ExchangeTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("borrow")) {
-            return new BorrowTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("declined")) {
-            return new DeclinedTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        }
-        return this;
+    public Transaction() {
+
     }
 
     /**
@@ -94,7 +82,7 @@ public class Transaction {
      *
      * @return status of transaction
      */
-    public String getStatus() {
+    public int getStatus() {
         return status;
     }
 
@@ -122,7 +110,7 @@ public class Transaction {
      *
      * @return User who owns the book
      */
-    public String getBookOwner() {
+    public User getBookOwner() {
         return bookOwner;
     }
 
@@ -136,31 +124,41 @@ public class Transaction {
         return bookBorrower;
     }
 
-    private class TransactionOnCompleteListener implements OnCompleteListener {
-        Integer ID;
-
-
-        @Override
-        public void onComplete(@NonNull Task task) {
-            if (task.isSuccessful()) {
-                DocumentSnapshot queryResult = (DocumentSnapshot) task.getResult();
-                Map<String, Object> data = queryResult.getData();
-                this.ID = (Integer) data.get("transaction");
-                this.updateDB();
-            } else {
-                throw new RuntimeException("Database query failed");
-            }
-        }
-
-        public void updateDB(){
-            FirebaseFirestore.getInstance()
-                    .collection("MAX")
-                    .document("transaction")
-                    .set(this.ID+1);
-        }
-
-        public Integer returnData() {
-            return this.ID;
-        }
+    public void setBookOwner(User bookOwner) {
+        this.bookOwner = bookOwner;
     }
+
+    public void setBookBorrower(String bookBorrower) {
+        this.bookBorrower = bookBorrower;
+    }
+
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+    public void setBookID(Integer bookID) {
+        this.bookID = bookID;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    public int getOwnerFlag() {
+        return ownerFlag;
+    }
+
+    public void setOwnerFlag(int ownerFlag) {
+        this.ownerFlag = ownerFlag;
+    }
+
+    public int getBorrowerFlag() {
+        return borrowerFlag;
+    }
+
+    public void setBorrowerFlag(int borrowerFlag) {
+        this.borrowerFlag = borrowerFlag;
+    }
+
+
 }

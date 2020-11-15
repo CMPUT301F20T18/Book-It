@@ -46,6 +46,11 @@ public class SearchAvailableFragment extends Fragment {
         return fragment;
     }
 
+    /**
+     * Creates the activity
+     * @param savedInstanceState
+     */
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,6 +59,14 @@ public class SearchAvailableFragment extends Fragment {
             mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
+
+    /**
+     * This creates the fragment view and returns the view
+     * @param inflater
+     * @param container
+     * @param savedInstanceState
+     * @return
+     */
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,

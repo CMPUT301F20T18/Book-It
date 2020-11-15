@@ -23,18 +23,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
         //get permission for storing and reading data to system
 
         Intent loginIntent = new Intent(MainActivity.this, Login.class);
         startActivity(loginIntent);
+        Intent intent = new Intent(MainActivity.this, Login.class);
 
         /* Testing bottom navigation menu */
 
-//        Intent homeScreenIntent = new Intent(MainActivity.this, HomeScreen.class);
-//        startActivity(homeScreenIntent);
+//        Intent intent = new Intent(MainActivity.this, HomeScreen.class);
+//        startActivity(intent);
 
-        //Intent intent = new Intent(MainActivity.this, SelectLocationActivity.class);
-        //startActivity(intent);
+
+
     }
 }

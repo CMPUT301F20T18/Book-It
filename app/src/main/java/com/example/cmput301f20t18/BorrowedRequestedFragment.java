@@ -12,6 +12,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
+
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -21,8 +27,13 @@ import java.util.List;
  * in Borrowed>Ready for pick up.
  */
 public class BorrowedRequestedFragment extends Fragment {
-    RecyclerView recyclerView;  // recycler that displays list of books
-    List<Book> bookList;        // list of books
+    RecyclerView recyclerView;
+    Query query;
+    FirestoreBorrowedAdapter adapter;
+
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference userRef = DB.collection("users");
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
 
@@ -79,62 +90,44 @@ public class BorrowedRequestedFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-
         View view = inflater.inflate(R.layout.fragment_borrowed_requested, container, false);
-
         recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
-
-        bookList = new ArrayList<>();
-        bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
-                420, Book.STATUS_REQUESTED, null, 1995));
-        bookList.add(new Book("To Kill a Mockingbird",9781973907985L, "Harper Lee",
-                421, Book.STATUS_REQUESTED, null, 1960));
-        bookList.add(new Book("Jane Eyre",9780194241762L, "Charlotte Bronte",
-                422, Book.STATUS_REQUESTED, null, 1979));
-        bookList.add(new Book("A Passage to India",9780140180763L, "E. M. Forster",
-                423, Book.STATUS_REQUESTED, null, 1989));
-
-        Collections.sort(bookList);
-
-        BorrowedRecyclerViewAdapter borrowedAdapter = new BorrowedRecyclerViewAdapter(view.getContext(), bookList);
-        recyclerView.setAdapter(borrowedAdapter);
-
+        setUp();
         return view;
+
+
     }
 
-    /**
-     * Populates bookList and sets up adapter to display the list.
-     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has
-     * returned, but before any saved state has been restored in to the view.
-     *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
+    public void setUp() {
+        query = userRef.document(auth.getUid()).collection("requested_books").whereEqualTo("status", Book.STATUS_REQUESTED);
+        FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
+                .setQuery(query, Book.class)
+                .build();
+
+        adapter = new FirestoreBorrowedAdapter(options);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+
+
+
     @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
 
-        //hardcoded some books
-        bookList = new ArrayList<>();
-        bookList.add(new Book("The Great Gatsby",9780684801520L, "F. Scott Fitzgerald",
-                420, Book.STATUS_REQUESTED, null, 1995));
-        bookList.add(new Book("To Kill a Mockingbird",9781973907985L, "Harper Lee",
-                421, Book.STATUS_REQUESTED, null, 1960));
-        bookList.add(new Book("Jane Eyre",9780194241762L, "Charlotte Bronte",
-                422, Book.STATUS_REQUESTED, null, 1979));
-        bookList.add(new Book("A Passage to India",9780140180763L, "E. M. Forster",
-                423, Book.STATUS_REQUESTED, null, 1989));
-
-        Collections.sort(bookList);
-
-        BorrowedRecyclerViewAdapter borrowedAdapter = new BorrowedRecyclerViewAdapter(view.getContext(), bookList);
-        recyclerView.setAdapter(borrowedAdapter);
     }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+
 }

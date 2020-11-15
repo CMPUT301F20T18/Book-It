@@ -1,10 +1,19 @@
 package com.example.cmput301f20t18;
 
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.os.FileUtils;
+
+import androidx.annotation.RequiresApi;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.Base64;
 
 
 /**
  * A book object represents a book within our library
+ * Books are stored within our library
  */
 public class Book implements Comparable<Book> {
 
@@ -17,7 +26,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    private Bitmap photo;
+    //private ArrayList<String> photos;
     private int status;
     private User owner;
     private int year;
@@ -40,7 +49,7 @@ public class Book implements Comparable<Book> {
         this.status = status;
         this.owner = owner;
         this.year = year;
-
+        //this.photos = new ArrayList<String>();
     }
 
     /**
@@ -115,13 +124,6 @@ public class Book implements Comparable<Book> {
         this.status = status;
     }
 
-    /**
-     * Set the library of the book
-     * @param newLibrary The library to associate the book to
-     */
-    public static void setLibrary(Library newLibrary){
-        //library = newLibrary;
-    }
 
     /**
      * get the owner of the book object
@@ -171,19 +173,90 @@ public class Book implements Comparable<Book> {
         }
     }
 
+    /**
+     * Set the isbn for a book
+     * @param isbn The new isbn for the book
+     */
     public void setIsbn(long isbn) {
         this.isbn = isbn;
     }
 
+
+    /**
+     * Set book ID to a new ID
+     * @param id the new ID for a book
+     */
     public void setId(int id) {
         this.id = id;
     }
 
-    public Bitmap getPhoto() {
-        return photo;
-    }
 
-    public void setPhoto(Bitmap photo) {
-        this.photo = photo;
-    }
+    // deinum commented this out, results the app to crash
+//    /**
+//     * Returns the cover picture of a book
+//     * @return the byte[] represntation of a cover photo
+//     */
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public ArrayList<byte[]> retrievePhotos() {
+//        ArrayList<byte[]> outPhotos = new ArrayList<byte[]>();
+//        for(String photo: this.photos){
+//            outPhotos.add(Base64.getDecoder().decode(photo));
+//        }
+//        return outPhotos;
+//    }
+//
+//
+//    /**
+//     * Adds a photo to the arrayList of photos the book has, the first one is the cover
+//     * @param photoByte The byte representation of a book
+//     */
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public void addPhoto(byte[] photoByte) {
+//
+//        String photo = Base64
+//                .getEncoder()
+//                .encodeToString(photoByte);
+//
+//        this.photos.add(photo);
+//    }
+//
+//    /**
+//     * Removes a photo to the arrayList of photos the book has
+//     * @param i is the index of the book to be removed
+//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+//     */
+//
+//    public void removePhoto(int i) {
+//        this.photos.remove(i);
+//    }
+//
+//    /**
+//     * Changes which string is at position 0 of the ArrayList this.photos which represents the
+//     * cover picture
+//     * @param i is the index of the book that is to be the new cover
+//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+//     */
+//
+//    public void setCover(int i) {
+//        String cover = this.photos.remove(i);
+//        ArrayList<String> newCover = new ArrayList<>();
+//        newCover.add(cover);
+//        newCover.addAll(this.photos);
+//        this.photos = newCover;
+//    }
+//
+//
+//    public void setPhotos(ArrayList<String> photos) {
+//        this.photos = photos;
+//    }
+//
+//
+//    public String getCover() {
+//        return this.photos.get(0);
+//    }
+//
+//
+//    public ArrayList<String> getPhotos() {
+//        return photos;
+//    }
 }

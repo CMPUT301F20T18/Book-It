@@ -33,6 +33,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Objects;
 
+/**
+ * Register allows a new user to create an account for our app
+ * Register is launched through the log in activity
+ * Each user must be registered with a minimum of a username, password, address, and email
+ * @author Jacob Deinum
+ * UI contributions
+ * @author Johnathon Gil
+ * @see Login
+ * @see User
+ */
+
 public class Register extends AppCompatActivity {
 
     EditText username;
@@ -68,7 +79,7 @@ public class Register extends AppCompatActivity {
 
 
         DB = FirebaseFirestore.getInstance();
-        system = DB.collection("system");
+        system = DB.collection("users");
 
 
         register.setOnClickListener(new View.OnClickListener() {
@@ -122,7 +133,7 @@ public class Register extends AppCompatActivity {
                                                         Integer val = snapshot.getValue(Integer.class);
                                                         // add the user to the collection
                                                         User person = new User(new_username, val, mAuth.getUid(), new_email, new_address);
-                                                        system.document("System").collection("users").document(user.getUid()).set(person);
+                                                        system.document(user.getUid()).set(person);
 
 
 

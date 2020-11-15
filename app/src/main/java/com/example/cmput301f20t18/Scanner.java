@@ -59,7 +59,9 @@ public class Scanner extends AppCompatActivity {
     public Button cap;
     private Executor executor = Executors.newSingleThreadExecutor();
     private int mode;
-    String TAG = "SCANNER_debug";
+    private int bookID;
+    private Long expected_isbn;
+    String TAG = "SCANNER_DEBUG";
 
 
     @Override
@@ -70,7 +72,11 @@ public class Scanner extends AppCompatActivity {
         cap = (Button) findViewById(R.id.capture);
 
         mode = getIntent().getIntExtra("type", OPEN_POST);
+        bookID = getIntent().getIntExtra("bookID", 0);
+        expected_isbn = getIntent().getLongExtra("eISBN", 0);
+
         Log.d(TAG, "type of scan:" + Integer.toString(mode));
+        Log.d(TAG, "Expected ISBN " + expected_isbn);
 
 
         // determine if the user has given the proper privileges to use the camera
@@ -230,6 +236,8 @@ public class Scanner extends AppCompatActivity {
                                 else {
                                     intent = new Intent();
                                     intent.putExtra("ISBN", rawValue);
+                                    intent.putExtra("bookID", bookID);
+                                    intent.putExtra("eISBN", expected_isbn);
                                     setResult(RESULT_OK, intent);
                                     finish();
                                     return;

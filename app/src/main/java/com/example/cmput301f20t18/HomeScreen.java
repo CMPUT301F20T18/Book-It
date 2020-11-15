@@ -3,6 +3,7 @@ package com.example.cmput301f20t18;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
@@ -12,9 +13,12 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.Manifest;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnSuccessListener;
@@ -32,8 +36,14 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
+
 /**
- * This class probably needs to be divided up as it has many responsibilities.
+ * Homescreen is the first object a user sees upon signing in, and will contain all the books
+ * borrowed by the user.
+ * Homescreen also manages fragments, and provides a mean for two fragments to interact
+ * @see User
+ * @see Book
  */
 public class HomeScreen extends AppCompatActivity {
     private int permissionStorageWriteCode = 100;
@@ -47,38 +57,23 @@ public class HomeScreen extends AppCompatActivity {
     DocumentReference current_user;
     Library lib;
     Fragment selectedFragment;
-    final String TAG = "HOMESCREEN";
+    final String TAG = "HOMESCREEN_DEBUG";
 
 
+    @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
-        DB = FirebaseFirestore.getInstance();
-        auth = FirebaseAuth.getInstance();
-
-        // get all of our collections
-        system = DB.collection("system");
-        users = DB.collection("system").document("System").collection("users");
-        books = DB.collection("system").document("System").collection("books");
-        current_user = DB.collection("system").document("System").collection("users").document(auth.getUid());
-
-        Task<QuerySnapshot> retrieve_users = users.get();
-        Task<QuerySnapshot> retrieve_books = books.get();
-        Task<DocumentSnapshot> retrieve_current_user = current_user.get();
-
-        // successfully got all books and users
-        Task<List<Task<?>>> combined = Tasks.whenAllComplete(retrieve_books, retrieve_users, retrieve_current_user).addOnSuccessListener(new OnSuccessListener<List<Task<?>>>() {
-            @Override
-            public void onSuccess(List<Task<?>> tasks) {
-                User current = Objects.requireNonNull(retrieve_current_user.getResult()).toObject(User.class);
-                assert (current != null);
-                Log.d(TAG, "onSuccess: " + current.getUsername());
-            }
 
 
-        });
+        User current = new User();
+        // current.borrowerRequestBook(94);
+        // current.ownerAcceptRequest(60);
+        // current.ownerAcceptRequest(59);
+
+
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
@@ -140,13 +135,11 @@ public class HomeScreen extends AppCompatActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        switch (requestCode) {
-            case 1:
+        switch (resultCode) {
+            case RESULT_OK:
+                Log.d(TAG, "Got to activity Result!");
                 selectedFragment.onActivityResult(requestCode, resultCode, data);
-
         }
-
-
     }
 
     private void checkPermissionExternalData() {

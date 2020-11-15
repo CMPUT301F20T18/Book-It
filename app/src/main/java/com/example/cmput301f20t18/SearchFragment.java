@@ -29,9 +29,12 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
-
 /**
  * SearchFragment is a fragment which handles user searching for other users and books
+ * Functionality
+ * @author Chase Warwick
+ * UI contrabutions
+ * @author Johnathon Gil
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
@@ -61,7 +64,7 @@ public class SearchFragment extends Fragment {
 
         SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
 
-        viewPager.setAdapter(pageAdapter);
+        //viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
 
         //set up edit text
         final EditText searchEditText = view.findViewById(R.id.search_edit_text);
@@ -79,7 +82,6 @@ public class SearchFragment extends Fragment {
         //Set up search button
         searchButton = view.findViewById(R.id.search_button);
         searchButton.setOnClickListener(new SearchButtonOnClickListener(searchEditText, spinnerListener));
-
         return view;
     }
 
