@@ -31,6 +31,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+
 /**
  * SearchFragment is a fragment which handles user searching for other users and books
  * Functionality
@@ -45,8 +47,8 @@ import com.google.firebase.firestore.QuerySnapshot;
 public class SearchFragment extends Fragment {
 
     private final String TAG = "SEARCH_FRAG";                                       //Tag for Log
-    final ArraySet<Book> bookDataList = new ArraySet<>();
-    final ArraySet<User> userDataList = new ArraySet<>();
+    final ArrayList<Book> bookDataList = new ArrayList();
+    final ArrayList<User> userDataList = new ArrayList();
 
     /**
      *  onCreateView is called on creation
@@ -431,9 +433,17 @@ public class SearchFragment extends Fragment {
         @Override
         public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
             for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                boolean add = true;
                 Book book = snapshot.toObject(Book.class);
                 Log.d(TAG, "Current Book: " + book.getTitle());
-                bookDataList.add(book);
+                for (Book bookContained : bookDataList){
+                    if (book.getId() == bookContained.getId()){
+                        add = false;
+                    }
+                }
+                if (add) {
+                    bookDataList.add(book);
+                }
             }
         }
     }
@@ -448,9 +458,17 @@ public class SearchFragment extends Fragment {
         @Override
         public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
             for (QueryDocumentSnapshot snapshot : querySnapshot){
+                boolean add = true;
                 User user = snapshot.toObject(User.class);
                 Log.d(TAG, "Current User: " + user.getUsername());
-                userDataList.add(user);
+                for (User userContained : userDataList){
+                    if (user.getDbID().equals(userContained.getDbID())){
+                        add = false;
+                    }
+                }
+                if (add){
+                    userDataList.add(user);
+                }
             }
         }
     }
