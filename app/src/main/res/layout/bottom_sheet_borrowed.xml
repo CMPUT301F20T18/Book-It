@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical" android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/colorGray2">
+
+    <Button
+        android:id="@+id/button_cancel_pick_up"
+        android:layout_width="match_parent"
+        android:layout_height="33dp"
+        android:background="@drawable/good_button_background"
+        android:fontFamily="@font/poppins"
+        android:text="Cancel pick up"
+        android:textColor="@color/colorAccent"
+        android:layout_margin="11dp"
+        />
+
+</LinearLayout>

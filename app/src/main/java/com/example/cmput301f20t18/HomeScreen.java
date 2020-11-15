@@ -11,6 +11,8 @@ import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -45,7 +47,8 @@ import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
  * @see User
  * @see Book
  */
-public class HomeScreen extends AppCompatActivity {
+
+public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDialog.BottomSheetListener{
     private int permissionStorageWriteCode = 100;
     private int permissionStorageReadCode = 101;
 
@@ -95,6 +98,7 @@ public class HomeScreen extends AppCompatActivity {
     // Not in onCreate() to avoid clutter but idk
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
+                @RequiresApi(api = Build.VERSION_CODES.M) // This is because of SearchFragment
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     selectedFragment = null;
@@ -130,6 +134,75 @@ public class HomeScreen extends AppCompatActivity {
                 }
             };
 
+
+    @Override
+    public void onButtonClick(int button, int status) {
+        AlertDialog dialog;
+        switch (button) {
+            case CustomBottomSheetDialog.CANCEL_BUTTON:
+                dialog = new AlertDialog.Builder(HomeScreen.this)
+                        .setTitle("Cancel pick up")
+                        .setMessage("Are you sure you want to cancel this pick up?")
+                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: cancel pick up (owner or borrower can do this).
+                            }
+                        })
+                        .setNegativeButton("Back", null)
+                        .show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                break;
+
+            case CustomBottomSheetDialog.EDIT_BUTTON:
+                // TODO: Make activity for editing book details.
+                Toast.makeText(getApplicationContext(), "edit clicked", Toast.LENGTH_SHORT).show();
+                break;
+
+            case CustomBottomSheetDialog.DELETE_BUTTON:
+                String alertMessage = "";
+                switch (status) {
+                    case Book.STATUS_AVAILABLE:
+                        alertMessage = "Are you sure you want to delete this book?";
+                        break;
+
+                    case Book.STATUS_REQUESTED:
+                        alertMessage = "Deleting this book will decline all requests.\n" +
+                                "Are you sure you want to delete this book?";
+                        break;
+
+                    case Book.STATUS_ACCEPTED:
+                        alertMessage = "Deleting this book will cancel the pick up.\n" +
+                                "Are you sure you want to delete this book?";
+                        break;
+                    case Book.STATUS_BORROWED:
+                        alertMessage = "This book is currently being borrowed.\n" +
+                                "Are you sure you want to delete this book?";
+                        break;
+                }
+                dialog = new AlertDialog.Builder(HomeScreen.this)
+                        .setTitle("Delete book")
+                        .setMessage(alertMessage)
+                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: delete book
+                            }
+                        })
+                        .setNegativeButton("Cancel", null)
+                        .show();
+                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                break;
+            default:
+                Log.e(TAG, "onButtonClick: Invalid button ID");
+        }
+    }
 
     // handles activity results by sending the result where it needs to go
     @Override
