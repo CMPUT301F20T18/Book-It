@@ -26,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * This is a class that creates a new book object through user input
  * @author  Jacob Deinum
  * @author Johnathon Gil
+ * @author Chase Warwick (Added check for empty fields)
  * @see    Toolbar
  * @see    FirebaseAuth
  * @see    FirebaseFirestore
@@ -79,14 +80,17 @@ public class MyBooksAddBook extends AppCompatActivity {
             public void onClick(View v) {
                 User current = new User();
 
-                String title = bookTitle.getText().toString();
+                String book_title = bookTitle.getText().toString();
                 String book_author = author.getText().toString();
-                Long book_isbn = Long.parseLong(isbn.getText().toString());
-                int book_year = Integer.parseInt(year.getText().toString());
+                String book_isbn = isbn.getText().toString();
+                String book_year = year.getText().toString();
 
-                current.ownerNewBook(book_isbn, title, book_author, book_year);
+                if (!book_title.equals("") && !book_author.equals("") && !book_isbn.equals("") && !book_year.equals("")){
+                    Long isbn = Long.parseLong(book_isbn);
+                    Integer year = Integer.parseInt(book_year);
+                    current.ownerNewBook(isbn, book_title, book_author, year);
+                }
                 finish();
-
             }
         });
 
