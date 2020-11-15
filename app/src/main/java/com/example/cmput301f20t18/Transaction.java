@@ -20,13 +20,6 @@ import java.util.Map;
  * between users and returning the book to it's original owner
  */
 public class Transaction {
-    private String bookOwner;
-    private String bookBorrower;
-    private Integer ID;
-    private Integer bookID;
-    private String status;
-
-
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_REQUESTED = 1;
     public static final int STATUS_ACCEPTED = 2;
@@ -60,7 +53,7 @@ public class Transaction {
      */
     //For use in changing the status of a transaction
     public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status) {
-        this.bookOwner = bookOwner;
+        //WWthis.bookOwner = bookOwner;
         this.bookBorrower = bookBorrower;
         this.bookID = bookID;
         this.ID = ID;
@@ -125,7 +118,7 @@ public class Transaction {
     }
 
     public void setBookOwner(User bookOwner) {
-        this.bookOwner = bookOwner;
+        //this.bookOwner = bookOwner;
     }
 
     public void setBookBorrower(String bookBorrower) {
