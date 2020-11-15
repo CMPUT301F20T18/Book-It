@@ -56,9 +56,6 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
 
-        final ListView searchResultList ;
-
-
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.search_viewPager);
 
@@ -96,8 +93,6 @@ public class SearchFragment extends Fragment {
      */
     private void search(String searchWord, String selectedOption) {
         if (searchWord != "") {
-            //Currently debug text. Will in the future instantiate the proper object
-            //In order to conduct a search
             if (selectedOption.equals("Books")) {
                 searchBooks(searchWord);
             } else {
