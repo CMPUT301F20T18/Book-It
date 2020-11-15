@@ -39,9 +39,6 @@ android {
             showStandardStreams true
         }
     }
-
-
-
 }
 
 dependencies {

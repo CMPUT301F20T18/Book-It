@@ -22,6 +22,7 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
 public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.bookViewHolder> {
     final static String TAG = "FBA_DEBUG_OWNED";
+    final static int VIEW_REQUESTS = 3;
     final static int FRAG_PENDING = 2;
     final static int FRAG_LENDING = 1;
 
@@ -117,6 +118,15 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
                   break;
 
             case Book.STATUS_REQUESTED:
+                holder.requests.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(v.getContext(), ViewRequestsActivity.class);
+                        intent.putExtra("bookID", book.getId());
+                        Activity main = (Activity) v.getContext();
+                        main.startActivity(intent);
+                    }
+                });
                 break;
 
 
@@ -217,6 +227,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
         Button buttonUser;
         Button buttonConfirmReturn;
         Button buttonMore;
+        Button requests;
 
 
         public bookViewHolder(@NonNull View itemView) {
@@ -238,6 +249,7 @@ public class FirestoreBookAdapter extends FirestoreRecyclerAdapter<Book, Firesto
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
             buttonMore = itemView.findViewById(R.id.button_book_more);
+            requests = itemView.findViewById(R.id.button_view_requests);
         }
 
     }
