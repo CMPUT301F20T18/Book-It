@@ -87,20 +87,6 @@ public class User {
 
 
 
-
-    /**
-     * Deletes the book with bookID from the owners collection
-     * Deletes the same book from the DB
-     * @param bookID The id of the book to delete
-     */
-    public void ownerDelBook(int bookID) {
-        // delete the book from the DB
-        bookRef.document(Integer.toString(bookID)).collection("owned_books").document(Integer.toString(bookID)).delete();
-    }
-
-
-
-
     /**
      * Adds a new book to the owners list of books
      * Adds the same book to the library DB
@@ -138,6 +124,11 @@ public class User {
     }
 
 
+
+
+
+
+
     /**
      * accept the request for a book and notify the user it has been accepted
      * remove all other request for books with the same book ID
@@ -151,8 +142,8 @@ public class User {
 
                 // get the accepted transaction
                 if (task.isSuccessful()) {
+
                     Transaction req = Objects.requireNonNull(task.getResult()).toObject(Transaction.class);
-                    assert req != null;
                     int bookID = req.getBookID();
                     String book_borrower = req.getBookBorrower();
                     Log.d(TAG, "onComplete: BookID =" + Integer.toString(bookID));
@@ -538,12 +529,11 @@ public class User {
 
                     }
 
-                    else {
-                        // update the borrower flag
-                        userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("borrowerFlag", 2);
-                        userRef.document(accepted.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("borrowerFlag", 2);
-                        transRef.document(Integer.toString(accepted.getID())).update("borrowerFlag", 2);
-                    }
+
+                    // update the borrower flag
+                    userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("borrowerFlag", 2);
+                    userRef.document(accepted.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("borrowerFlag", 2);
+                    transRef.document(Integer.toString(accepted.getID())).update("borrowerFlag", 1);
                 }
             }
         });
