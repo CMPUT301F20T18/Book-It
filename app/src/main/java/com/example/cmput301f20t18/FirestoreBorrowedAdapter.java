@@ -80,7 +80,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         try {
             /* These two TextViews will be null if the book status is "Available" */
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-            holder.textViewUsername.setText(book.getOwner().getUsername());
+            holder.textViewUsername.setText(book.getOwner_username());
             holder.textViewUserDescription.setText(R.string.owner);
         } catch (Exception e) {
             Log.e(TAG, e.toString());

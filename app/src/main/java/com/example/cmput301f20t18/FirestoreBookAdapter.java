@@ -161,7 +161,7 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_BORROWED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-                holder.textViewUsername.setText(book.getOwner().getUsername());
+                holder.textViewUsername.setText(book.getOwner_username());
                 holder.textViewUserDescription.setText(R.string.borrowing);
 
                 /* User clicks the "Confirm return" button */

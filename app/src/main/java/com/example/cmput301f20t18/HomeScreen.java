@@ -52,13 +52,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
     private int permissionStorageWriteCode = 100;
     private int permissionStorageReadCode = 101;
 
-    FirebaseAuth auth;
-    FirebaseFirestore DB;
-    CollectionReference system;
-    CollectionReference users;
-    CollectionReference books;
-    DocumentReference current_user;
-    Library lib;
+
     Fragment selectedFragment;
     final String TAG = "HOMESCREEN_DEBUG";
 
@@ -72,7 +66,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
 
         User current = new User();
-        // current.borrowerRequestBook(94);
+        // current.borrowerRequestBook(108);
         // current.ownerAcceptRequest(60);
         // current.ownerAcceptRequest(59);
 

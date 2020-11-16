@@ -28,7 +28,8 @@ public class Book implements Comparable<Book> {
     private int id;
     //private ArrayList<String> photos;
     private int status;
-    private User owner;
+    private String owner_username;
+    private String owner_dbID;
     private int year;
 
     //private static Library library = new Library();
@@ -41,13 +42,14 @@ public class Book implements Comparable<Book> {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, long isbn, String author, int id, int status, User owner, int year) {
+    public Book(String title, long isbn, String author, int id, int status, String owner, int year, String owner_dbID, String owner_username) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
         this.id = id;
         this.status = status;
-        this.owner = owner;
+        this.owner_username = owner_username;
+        this.owner_dbID = owner_dbID;
         this.year = year;
         //this.photos = new ArrayList<String>();
     }
@@ -129,16 +131,16 @@ public class Book implements Comparable<Book> {
      * get the owner of the book object
      * @return User object representing the owner
      */
-    public User getOwner() {
-        return owner;
+    public String getOwner() {
+        return owner_username;
     }
 
     /**
      * Set the owner of a book
      * @param owner The new owner of the book
      */
-    public void setOwner(User owner) {
-        this.owner = owner;
+    public void setOwner(String owner) {
+        this.owner_username = owner;
     }
 
     /**
@@ -259,4 +261,21 @@ public class Book implements Comparable<Book> {
 //    public ArrayList<String> getPhotos() {
 //        return photos;
 //    }
+
+
+    public String getOwner_username() {
+        return owner_username;
+    }
+
+    public void setOwner_username(String owner_username) {
+        this.owner_username = owner_username;
+    }
+
+    public String getOwner_dbID() {
+        return owner_dbID;
+    }
+
+    public void setOwner_dbID(String owner_dbID) {
+        this.owner_dbID = owner_dbID;
+    }
 }
