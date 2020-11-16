@@ -27,7 +27,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference userRef = DB.collection("users");
+    CollectionReference transRef = DB.collection("transactions");
 
 
     @Override
@@ -45,7 +45,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
     }
 
     public void setUp() {
-        query = userRef.document(auth.getUid()).collection("owner_transactions").whereEqualTo("status", Transaction.STATUS_REQUESTED).whereEqualTo("bookID", bookID);
+        query = transRef.whereEqualTo("owner_dbID", auth.getUid()).whereEqualTo("status", Transaction.STATUS_REQUESTED);
         FirestoreRecyclerOptions<Transaction> options = new FirestoreRecyclerOptions.Builder<Transaction>()
                 .setQuery(query, Transaction.class)
                 .build();

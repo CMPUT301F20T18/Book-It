@@ -26,12 +26,12 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    //private ArrayList<String> photos;
+    // private ArrayList<String> photos;
     private int status;
-    private User owner;
+    private String owner_username;
+    private String owner_dbID;
     private int year;
 
-    //private static Library library = new Library();
 
     /**
      * A book in our system
@@ -41,15 +41,17 @@ public class Book implements Comparable<Book> {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, long isbn, String author, int id, int status, User owner, int year) {
+    public Book(String title, long isbn, String author, int id, int status, String owner, int year, String owner_dbID, String owner_username) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
         this.id = id;
         this.status = status;
-        this.owner = owner;
+        this.owner_username = owner_username;
+        this.owner_dbID = owner_dbID;
         this.year = year;
         //this.photos = new ArrayList<String>();
+
     }
 
     /**
@@ -129,16 +131,24 @@ public class Book implements Comparable<Book> {
      * get the owner of the book object
      * @return User object representing the owner
      */
-    public User getOwner() {
-        return owner;
+    public String getOwner_username() {
+        return owner_username;
     }
 
-    /**
-     * Set the owner of a book
-     * @param owner The new owner of the book
-     */
-    public void setOwner(User owner) {
-        this.owner = owner;
+
+
+
+    public String getOwner_dbID() {
+        return owner_dbID;
+    }
+
+
+    public void setOwner_username(String owner_username) {
+        this.owner_username = owner_username;
+    }
+
+    public void setOwner_dbID(String owner_dbID) {
+        this.owner_dbID = owner_dbID;
     }
 
     /**
@@ -191,11 +201,9 @@ public class Book implements Comparable<Book> {
     }
 
 
-    // deinum commented this out, results the app to crash
-//    /**
-//     * Returns the cover picture of a book
-//     * @return the byte[] represntation of a cover photo
-//     */
+    /* Returns the cover picture of a book
+     * @return the byte[] represntation of a cover photo
+     */
 //    @RequiresApi(api = Build.VERSION_CODES.O)
 //    public ArrayList<byte[]> retrievePhotos() {
 //        ArrayList<byte[]> outPhotos = new ArrayList<byte[]>();
@@ -205,7 +213,7 @@ public class Book implements Comparable<Book> {
 //        return outPhotos;
 //    }
 //
-//
+
 //    /**
 //     * Adds a photo to the arrayList of photos the book has, the first one is the cover
 //     * @param photoByte The byte representation of a book
@@ -216,7 +224,6 @@ public class Book implements Comparable<Book> {
 //        String photo = Base64
 //                .getEncoder()
 //                .encodeToString(photoByte);
-//
 //        this.photos.add(photo);
 //    }
 //

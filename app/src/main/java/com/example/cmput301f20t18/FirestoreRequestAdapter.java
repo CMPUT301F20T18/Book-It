@@ -34,7 +34,7 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
 
     @Override
     protected void onBindViewHolder(@NonNull FirestoreRequestAdapter.requestViewHolder holder, int position, @NonNull Transaction transaction) {
-        holder.borrower_name.setText(transaction.getBookBorrower());
+        holder.borrower_name.setText(transaction.getBorrower_username());
 
         // hits the accept button
         holder.accept_button.setOnClickListener(new View.OnClickListener() {

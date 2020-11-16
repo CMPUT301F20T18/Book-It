@@ -4,15 +4,17 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.ArraySet;
 import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.inputmethod.EditorInfo;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -36,6 +38,9 @@ import com.google.firebase.firestore.QuerySnapshot;
  * UI contrabutions
  * @author Johnathon Gil
  */
+//TODO: Add a listview to the UI and an adapter which can display search results for both
+//      User and Book (Specifically either one that can take in an array set or if that is not
+//      possible one that takes in a list and let Chase know to update searchFrag as appropriate)
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
 
@@ -66,9 +71,6 @@ public class SearchFragment extends Fragment {
 
         //viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
 
-        //set up edit text
-        final EditText searchEditText = view.findViewById(R.id.search_edit_text);
-
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
 
@@ -79,9 +81,15 @@ public class SearchFragment extends Fragment {
         searchSpinner.setAdapter(spinnerAdapter);
         searchSpinner.setOnItemSelectedListener(spinnerListener);
 
+        //set up edit text
+        final EditText searchEditText = view.findViewById(R.id.search_edit_text);
+        searchEditText.setOnEditorActionListener(
+                new SearchEditTextOnActionListener(searchEditText, spinnerListener));
+
         //Set up search button
         searchButton = view.findViewById(R.id.search_button);
-        searchButton.setOnClickListener(new SearchButtonOnClickListener(searchEditText, spinnerListener));
+        searchButton.setOnClickListener(
+                new SearchButtonOnClickListener(searchEditText, spinnerListener));
         return view;
     }
 
@@ -117,9 +125,7 @@ public class SearchFragment extends Fragment {
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
-        final CollectionReference collection = db.collection("system")
-                .document("System")
-                .collection("books");
+        final CollectionReference collection = db.collection("books");
 
         BookQueryHandler.searchByTitle(collection, listener, searchKey);
         BookQueryHandler.searchByAuthor(collection, listener, searchKey);
@@ -137,19 +143,9 @@ public class SearchFragment extends Fragment {
         final QueryUserListener listener = new QueryUserListener();
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
-        final CollectionReference userCollection = db.collection("system")
-                .document("System")
-                .collection("users");
+        final CollectionReference userCollection = db.collection("users");
 
         UserQueryHandler.searchByUsername(userCollection, listener, searchKey);
-    }
-
-    private class SearchBookAdapter{
-
-    }
-
-    private class SearchUserAdapter{
-
     }
 
     /**
@@ -222,6 +218,42 @@ public class SearchFragment extends Fragment {
             String searchWord = searchEditText.getText().toString();
             String selectedOption = spinnerListener.getSearchOption();
             search(searchWord, selectedOption);
+        }
+    }
+
+    private class SearchEditTextOnActionListener implements TextView.OnEditorActionListener{
+        private EditText searchEditText;
+        private SpinnerOnClickListener spinnerListener;
+
+        /**
+         * Creates an instance of the listener
+         * @param searchEditText EditText for the search bar
+         * @param spinnerListener SpinnerOnClickListener for getting selected search option
+         */
+        SearchEditTextOnActionListener(EditText searchEditText,
+                                       SpinnerOnClickListener spinnerListener){
+            this.searchEditText = searchEditText;
+            this.spinnerListener = spinnerListener;
+        }
+
+        /**
+         * Called on doing an action within the editor
+         * Checks if the action was a search button click and if so calls search function
+         * @param v TextView object
+         * @param actionId int representing action taken
+         * @param event KeyEvent
+         * @return Boolean demonstrating whether the action was handled or not
+         */
+        @Override
+        public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
+            boolean handled = false;
+            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+                String searchWord = searchEditText.getText().toString();
+                String selectedOption = spinnerListener.getSearchOption();
+                search(searchWord, selectedOption);
+                handled = true;
+            }
+            return handled;
         }
     }
 
@@ -327,6 +359,11 @@ public class SearchFragment extends Fragment {
             final String field = "author";
 
             QueryHandler.queryByString(collection, listener, field, searchKey);
+        }
+        //TODO After restructuring of DB, make this work
+        static void searchByOwnerUsername(CollectionReference collection,
+                                          QueryBookListener listener, String searchKey){
+            final String field = "owner";
         }
 
         /**

@@ -109,7 +109,7 @@ public class FirestoreBookAdapter
             public void onClick(View v) {
                 // TODO: Change to book.getId()
                 CustomBottomSheetDialog bottomSheet =
-                        new CustomBottomSheetDialog(true, book.getStatus());
+                        new CustomBottomSheetDialog(true, book.getStatus(), book.getId());
                 bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
                         "customBottomSheet");
             }
@@ -161,7 +161,7 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_BORROWED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-                holder.textViewUsername.setText(book.getOwner().getUsername());
+                holder.textViewUsername.setText(book.getOwner_username());
                 holder.textViewUserDescription.setText(R.string.borrowing);
 
                 /* User clicks the "Confirm return" button */

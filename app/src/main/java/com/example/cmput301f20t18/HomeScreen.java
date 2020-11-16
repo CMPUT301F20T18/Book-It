@@ -52,13 +52,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
     private int permissionStorageWriteCode = 100;
     private int permissionStorageReadCode = 101;
 
-    FirebaseAuth auth;
-    FirebaseFirestore DB;
-    CollectionReference system;
-    CollectionReference users;
-    CollectionReference books;
-    DocumentReference current_user;
-    Library lib;
+
     Fragment selectedFragment;
     final String TAG = "HOMESCREEN_DEBUG";
 
@@ -72,9 +66,9 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
 
         User current = new User();
-        // current.borrowerRequestBook(94);
-        // current.ownerAcceptRequest(60);
-        // current.ownerAcceptRequest(59);
+        current.borrowerRequestBook(124);
+
+
 
 
 
@@ -136,26 +130,48 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
 
     @Override
-    public void onButtonClick(int button, int status) {
+    public void onButtonClick(int button, int status, int bookID, boolean owner) {
         AlertDialog dialog;
+        User current = new User();
         switch (button) {
             case CustomBottomSheetDialog.CANCEL_BUTTON:
-                dialog = new AlertDialog.Builder(HomeScreen.this)
-                        .setTitle("Cancel pick up")
-                        .setMessage("Are you sure you want to cancel this pick up?")
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // TODO: cancel pick up (owner or borrower can do this).
-                            }
-                        })
-                        .setNegativeButton("Back", null)
-                        .show();
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
-                break;
+
+                if (owner) {
+                    dialog = new AlertDialog.Builder(HomeScreen.this)
+                            .setTitle("Cancel pick up")
+                            .setMessage("Are you sure you want to cancel this pick up?")
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    current.ownerCancelPickup(bookID);
+                                }
+                            })
+                            .setNegativeButton("Back", null)
+                            .show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                }
+                else {
+                    dialog = new AlertDialog.Builder(HomeScreen.this)
+                            .setTitle("Cancel pick up")
+                            .setMessage("Are you sure you want to cancel this pick up?")
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    current.borrowerCancelRequest(bookID);
+                                }
+                            })
+                            .setNegativeButton("Back", null)
+                            .show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                }
+                    break;
+
 
             case CustomBottomSheetDialog.EDIT_BUTTON:
                 // TODO: Make activity for editing book details.
@@ -189,7 +205,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // TODO: delete book
+                                current.ownerDeleteBook(bookID);
                             }
                         })
                         .setNegativeButton("Cancel", null)
