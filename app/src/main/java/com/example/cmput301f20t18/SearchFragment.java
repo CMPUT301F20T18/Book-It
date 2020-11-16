@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.content.Context;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.ArraySet;
@@ -13,6 +14,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -40,14 +43,24 @@ import java.util.ArrayList;
  * UI contrabutions
  * @author Johnathon Gil
  */
-//TODO: Add a listview to the UI and an adapter which can display search results for both
-//      User and Book
+/*
+ *TODO: Chase added a listview to fragment_search.xml because view.findViewById was not working when
+ *      he put it in fragment_searchavailiable and fragment_search_show_all. This needs to be fixed
+ *      for the tabs to appear but for now search works and returns results! NOTE: NOTIFY CHASE UPON
+ *      FIXING UI! Also if you could grab the view and assign it to SearchResultList
+ *      I would appreciate it, thanks!
+ */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
-
     private final String TAG = "SEARCH_FRAG";                                       //Tag for Log
+
     final ArrayList<Book> bookDataList = new ArrayList();
     final ArrayList<User> userDataList = new ArrayList();
+
+    SearchFragBookAdapter bookAdapter;
+    SearchFragUserAdapter userAdapter;
+
+    ListView SearchResultList;
 
     /**
      *  onCreateView is called on creation
@@ -64,6 +77,10 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
+
+
+        bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
+        userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
 
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.search_viewPager);
@@ -91,6 +108,8 @@ public class SearchFragment extends Fragment {
         searchButton = view.findViewById(R.id.search_button);
         searchButton.setOnClickListener(
                 new SearchButtonOnClickListener(searchEditText, spinnerListener));
+
+        SearchResultList = view.findViewById(R.id.search_result_list);
         return view;
     }
 
@@ -105,9 +124,13 @@ public class SearchFragment extends Fragment {
     private void search(String searchWord, String selectedOption) {
         if (searchWord != "") {
             if (selectedOption.equals("Books")) {
+                SearchResultList.setAdapter(bookAdapter);
                 searchBooks(searchWord);
+                bookAdapter.notifyDataSetChanged();
             } else {
+                SearchResultList.setAdapter(userAdapter);
                 searchUsers(searchWord);
+                userAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -471,4 +494,66 @@ public class SearchFragment extends Fragment {
             }
         }
     }
+    class SearchFragBookAdapter extends ArrayAdapter<Book>{
+        private ArrayList<Book> books;
+        private Context context;
+
+        public SearchFragBookAdapter(Context context, ArrayList<Book> books){
+            super(context, 0, books);
+            this.books = books;
+            this.context = context;
+        }
+
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
+            View view = convertView;
+
+            if(view == null){
+                view = LayoutInflater.from(context).inflate(R.layout.card_base, parent, false);
+            }
+
+            Book book = books.get(position);
+
+            TextView bookTitle = view.findViewById(R.id.text_book_title);
+            TextView bookAuthor = view.findViewById(R.id.text_book_author);
+            TextView bookISBN = view.findViewById(R.id.text_book_isbn);
+            TextView bookYear = view.findViewById(R.id.text_book_year);
+            //TODO: Once we can decode image string implement
+            //ImageView bookImage = view.findViewById(R.id.image_view);
+            //bookImage.setImage(book.getImage())
+            bookTitle.setText(book.getTitle());
+            bookAuthor.setText(book.getAuthor());
+            bookISBN.setText(Long.toString(book.getISBN()));
+            bookYear.setText(Integer.toString(book.getYear()));
+
+            return view;
+        }
+    }
+
+    class SearchFragUserAdapter extends ArrayAdapter<User>{
+        private ArrayList<User> users;
+        private Context context;
+
+        public SearchFragUserAdapter(Context context, ArrayList<User> users){
+            super(context, 0, users);
+            this.users = users;
+            this.context = context;
+        }
+
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent){
+            View view = convertView;
+
+            if(view == null){
+                view = LayoutInflater.from(context).inflate(R.layout.card_user_search, parent, false);
+            }
+
+            User user = users.get(position);
+
+            TextView userName = view.findViewById(R.id.text_username);
+            userName.setText(user.getUsername());
+
+            return view;
+        }
+    }
 }
+
+
