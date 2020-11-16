@@ -143,18 +143,8 @@ public class User {
                 // get the accepted transaction
                 if (task.isSuccessful()) {
 
-                    Transaction req = Objects.requireNonNull(task.getResult()).toObject(Transaction.class);
-                    int bookID = req.getBookID();
-                    String book_borrower = req.getBookBorrower();
-                    Log.d(TAG, "onComplete: BookID =" + Integer.toString(bookID));
-
-                    // change the status of that transaction to accepted
-                    userRef.document(auth.getUid()).collection("owner_transactions").document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
-
-
-                    // change the status of the book to accepted
-                    userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(bookID)).update("status", Transaction.STATUS_ACCEPTED);
-                    bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_ACCEPTED);
+                    Transaction transaction = Objects.requireNonNull(task.getResult()).toObject(Transaction.class);
+                    int bookID = transaction.getBookID();
 
                     // decline all other request with the same bookID
                     Query trans_query = userRef.document(Objects.requireNonNull(auth.getUid())).collection("owner_transactions").whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_REQUESTED);
@@ -165,28 +155,19 @@ public class User {
                                 List<Transaction> req_list= Objects.requireNonNull(task.getResult()).toObjects(Transaction.class);
 
 
-                                // change the status of the borrower transaction
-                                Query borrower = userRef.whereEqualTo("username", book_borrower);
-                                borrower.get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                    @Override
-                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                        if (task.isSuccessful()) {
-                                            List<User> borrower_list = task.getResult().toObjects(User.class);
-                                            String borrower_dbID = borrower_list.get(0).getDbID();
-                                            userRef.document(borrower_dbID).collection("borrower_transactions").document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
-                                            userRef.document(borrower_dbID).collection("requested_books").document(Integer.toString(bookID)).update("status", Book.STATUS_ACCEPTED);
-                                            transRef.document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
+                                // update our book lists
+                                //userRef.document(transaction.getBorrower_dbID()).collection("borrower_transactions").document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
+                                userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).update("status", Book.STATUS_ACCEPTED);
+                                transRef.document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
 
-                                            // change the other requests to declines
-                                            for (int i = 0 ; i < req_list.size() ; i++) {
-                                                Log.d(TAG, "onComplete: TransactionID: " + req_list.get(i).getID());
-                                                userRef.document(Objects.requireNonNull(auth.getUid())).collection("owner_transactions").document(Integer.toString(req_list.get(i).getID())).delete();
-                                                userRef.document(borrower_dbID).collection("borrower_transactions").document(Integer.toString(req_list.get(i).getID())).delete();
-                                            }
 
-                                        }
-                                    }
-                                });
+                                // delete the other requests to delete
+                                for (int i = 0 ; i < req_list.size() ; i++) {
+                                    Log.d(TAG, "onComplete: TransactionID: " + req_list.get(i).getID());
+                                    // userRef.document(Objects.requireNonNull(auth.getUid())).collection("owner_transactions").document(Integer.toString(req_list.get(i).getID())).delete();
+                                    // userRef.document(transaction.getBorrower_dbID()).collection("borrower_transactions").document(Integer.toString(req_list.get(i).getID())).delete();
+                                    transRef.document(Integer.toString(req_list.get(i).getID())).delete();
+                                }
                             }
                         }
                     });
@@ -218,52 +199,33 @@ public class User {
                 Transaction accepted = trans_list.get(0); // only 1 request per book ID should be able to be accepted
 
 
+                if (accepted.getBorrowerFlag() == 1) {
+
+                    // change the status of that transaction to borrowed
+                    userRef.document(auth.getUid()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("status", Transaction.STATUS_BORROWED);
 
 
-                // update all the files
-                userRef.whereEqualTo("username", accepted.getBookBorrower()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                    @Override
-                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                        if (task.isSuccessful()) {
-                            List<User> borrow_list = task.getResult().toObjects(User.class);
-                            User borrower = borrow_list.get(0);
+                    // change the status of the book to borrowed
+                    userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(bookID)).update("status", Transaction.STATUS_BORROWED);
+                    bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_BORROWED);
 
-                            Log.d(TAG, "ownerConfirmPickup - borrowerFlag: " + accepted.getBorrowerFlag());
-
-                            if (accepted.getBorrowerFlag() == 1) {
-
-                                // change the status of that transaction to borrowed
-                                userRef.document(auth.getUid()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("status", Transaction.STATUS_BORROWED);
-
-
-                                // change the status of the book to borrowed
-                                userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(bookID)).update("status", Transaction.STATUS_BORROWED);
-                                bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_BORROWED);
-
-                                userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
-                                userRef.document(accepted.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
-                                transRef.document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
+                    userRef.document(auth.getUid()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
+                    userRef.document(accepted.getBookOwner().getDbID()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
+                    transRef.document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
 
 
 
-                                userRef.document(borrower.getDbID()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("status", Transaction.STATUS_BORROWED);
-                                userRef.document(borrower.getDbID()).collection("books_requested").document(Integer.toString(accepted.getBookID())).update("status", Transaction.STATUS_BORROWED);
-                                transRef.document(Integer.toString(accepted.getID())).update("status", Transaction.STATUS_BORROWED);
-                            }
+                    userRef.document(borrower.getDbID()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("status", Transaction.STATUS_BORROWED);
+                    userRef.document(borrower.getDbID()).collection("books_requested").document(Integer.toString(accepted.getBookID())).update("status", Transaction.STATUS_BORROWED);
+                    transRef.document(Integer.toString(accepted.getID())).update("status", Transaction.STATUS_BORROWED);
+                }
 
 
-                            else {
-                                userRef.document(auth.getUid()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
-                                userRef.document(borrower.getDbID()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
-                                transRef.document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
-                            }
-
-                        }
-
-                    }
-                });
-
-
+                else {
+                    userRef.document(auth.getUid()).collection("owner_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
+                    userRef.document(borrower.getDbID()).collection("borrower_transactions").document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
+                    transRef.document(Integer.toString(accepted.getID())).update("ownerFlag", 1);
+                }
             }
         });
     }
