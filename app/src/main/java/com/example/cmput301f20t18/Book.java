@@ -26,7 +26,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    //private ArrayList<String> photos;
+    private ArrayList<String> photos;
     private int status;
     private String owner_username;
     private String owner_dbID;
@@ -51,7 +51,8 @@ public class Book implements Comparable<Book> {
         this.owner_username = owner_username;
         this.owner_dbID = owner_dbID;
         this.year = year;
-        //this.photos = new ArrayList<String>();
+        this.photos = new ArrayList<String>();
+
     }
 
     /**
@@ -191,91 +192,69 @@ public class Book implements Comparable<Book> {
     public void setId(int id) {
         this.id = id;
     }
-
-
-    // deinum commented this out, results the app to crash
-//    /**
-//     * Returns the cover picture of a book
-//     * @return the byte[] represntation of a cover photo
-//     */
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    public ArrayList<byte[]> retrievePhotos() {
-//        ArrayList<byte[]> outPhotos = new ArrayList<byte[]>();
-//        for(String photo: this.photos){
-//            outPhotos.add(Base64.getDecoder().decode(photo));
-//        }
-//        return outPhotos;
-//    }
-//
-//
-//    /**
-//     * Adds a photo to the arrayList of photos the book has, the first one is the cover
-//     * @param photoByte The byte representation of a book
-//     */
-//    @RequiresApi(api = Build.VERSION_CODES.O)
-//    public void addPhoto(byte[] photoByte) {
-//
-//        String photo = Base64
-//                .getEncoder()
-//                .encodeToString(photoByte);
-//
-//        this.photos.add(photo);
-//    }
-//
-//    /**
-//     * Removes a photo to the arrayList of photos the book has
-//     * @param i is the index of the book to be removed
-//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
-//     */
-//
-//    public void removePhoto(int i) {
-//        this.photos.remove(i);
-//    }
-//
-//    /**
-//     * Changes which string is at position 0 of the ArrayList this.photos which represents the
-//     * cover picture
-//     * @param i is the index of the book that is to be the new cover
-//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
-//     */
-//
-//    public void setCover(int i) {
-//        String cover = this.photos.remove(i);
-//        ArrayList<String> newCover = new ArrayList<>();
-//        newCover.add(cover);
-//        newCover.addAll(this.photos);
-//        this.photos = newCover;
-//    }
-//
-//
-//    public void setPhotos(ArrayList<String> photos) {
-//        this.photos = photos;
-//    }
-//
-//
-//    public String getCover() {
-//        return this.photos.get(0);
-//    }
-//
-//
-//    public ArrayList<String> getPhotos() {
-//        return photos;
-//    }
-
-
-    public String getOwner_username() {
-        return owner_username;
+    /* Returns the cover picture of a book
+     * @return the byte[] represntation of a cover photo
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<byte[]> retrievePhotos() {
+        ArrayList<byte[]> outPhotos = new ArrayList<byte[]>();
+        for(String photo: this.photos){
+            outPhotos.add(Base64.getDecoder().decode(photo));
+        }
+        return outPhotos;
     }
 
-    public void setOwner_username(String owner_username) {
-        this.owner_username = owner_username;
+
+    /**
+     * Adds a photo to the arrayList of photos the book has, the first one is the cover
+     * @param photoByte The byte representation of a book
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public void addPhoto(byte[] photoByte) {
+
+        String photo = Base64
+                .getEncoder()
+                .encodeToString(photoByte);
+        this.photos.add(photo);
     }
 
-    public String getOwner_dbID() {
-        return owner_dbID;
+    /**
+     * Removes a photo to the arrayList of photos the book has
+     * @param i is the index of the book to be removed
+     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+     */
+
+    public void removePhoto(int i) {
+        this.photos.remove(i);
     }
 
-    public void setOwner_dbID(String owner_dbID) {
-        this.owner_dbID = owner_dbID;
+    /**
+     * Changes which string is at position 0 of the ArrayList this.photos which represents the
+     * cover picture
+     * @param i is the index of the book that is to be the new cover
+     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+     */
+
+    public void setCover(int i) {
+        String cover = this.photos.remove(i);
+        ArrayList<String> newCover = new ArrayList<>();
+        newCover.add(cover);
+        newCover.addAll(this.photos);
+        this.photos = newCover;
+    }
+
+
+    public void setPhotos(ArrayList<String> photos) {
+        this.photos = photos;
+    }
+
+
+    public String getCover() {
+        return this.photos.get(0);
+    }
+
+
+    public ArrayList<String> getPhotos() {
+        return photos;
     }
 }

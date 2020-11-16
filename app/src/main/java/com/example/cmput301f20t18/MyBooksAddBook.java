@@ -1,12 +1,20 @@
 package com.example.cmput301f20t18;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -21,6 +29,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.net.URI;
 
 /**
  * This is a class that creates a new book object through user input
@@ -37,8 +47,10 @@ public class MyBooksAddBook extends AppCompatActivity {
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
+    ImageButton addPhoto;
     Toolbar toolbar;
-    //ImageButton addPic;
+    ImageButton addPic;
+    private static final int RESULT_LOAD_IMAGE = 1;
 
     /**
      * This method has the purpose of creating the activity that prompts the user to add information
@@ -66,6 +78,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         done = findViewById(R.id.done_add_book);
         cancel = findViewById(R.id.return_to_my_books);
+        addPhoto = findViewById(R.id.add_image_button);
 
 
         /**
@@ -104,6 +117,35 @@ public class MyBooksAddBook extends AppCompatActivity {
             }
         });
 
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent pickPicture = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
+            }
+        });
+
 
     }
+    //Work in progress
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case RESULT_LOAD_IMAGE:
+                if(requestCode == RESULT_OK){
+                    Uri image = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(image, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int colIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String picturePath = cursor.getString(colIndex);
+                    cursor.close();
+                    addPhoto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                    addPhoto.refreshDrawableState();
+                }
+    }
+}
+
 }
