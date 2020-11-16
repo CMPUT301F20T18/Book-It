@@ -453,7 +453,7 @@ public class User {
 
                                     // borrower has requested, don't let them request again
                                     else {
-                                        Log.d(TAG, "Error: Borrower: " + getUsername() + " has already requested book: " + bookID);
+                                        Log.d(TAG, "Error: Borrower has already requested book: " + bookID);
                                     }
                                 }
 
