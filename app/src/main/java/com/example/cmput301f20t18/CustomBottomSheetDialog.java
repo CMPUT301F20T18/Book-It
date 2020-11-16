@@ -22,11 +22,13 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
 
     private BottomSheetListener mListener;
     private boolean owner;
-    private int status; //bookId
+    private int status;
+    private int bookID;
 
-    public CustomBottomSheetDialog(boolean owner, int status) {
+    public CustomBottomSheetDialog(boolean owner, int status, int bookID) {
         this.owner = owner;
         this.status = status;
+        this.bookID = bookID;
     }
 
     @Nullable
@@ -52,10 +54,12 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
 
         try {
             buttonCancel = view.findViewById(R.id.button_cancel_pick_up);
+
+            // owner wants to cancel the pickup
             buttonCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onButtonClick(CANCEL_BUTTON, status);
+                    mListener.onButtonClick(CANCEL_BUTTON, status, bookID, owner);
                     dismiss();
                 }
             });
@@ -65,18 +69,21 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
             buttonEdit = view.findViewById(R.id.button_edit_book);
             buttonDelete = view.findViewById(R.id.button_delete_book);
 
+            // owner wants to edit the book
             buttonEdit.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onButtonClick(EDIT_BUTTON, status);
+                    mListener.onButtonClick(EDIT_BUTTON, status, bookID, owner);
                     dismiss();
                 }
             });
 
+
+            // deletes the book from the owners collection
             buttonDelete.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    mListener.onButtonClick(DELETE_BUTTON, status);
+                    mListener.onButtonClick(DELETE_BUTTON, status, bookID, owner);
                     dismiss();
                 }
             });
@@ -91,7 +98,7 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
     }
 
     public interface BottomSheetListener {
-        void onButtonClick(int button, int status);
+        void onButtonClick(int button, int status, int bookID, boolean owner);
     }
 
     @Override

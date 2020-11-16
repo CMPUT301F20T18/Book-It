@@ -165,7 +165,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                     public void onClick(View v) {
                         // TODO: Change to book.getId()
                         CustomBottomSheetDialog bottomSheet =
-                                new CustomBottomSheetDialog(false, book.getStatus());
+                                new CustomBottomSheetDialog(false, book.getStatus(), book.getId());
                         bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
                                 "customBottomSheet");
                     }

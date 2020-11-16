@@ -109,7 +109,7 @@ public class FirestoreBookAdapter
             public void onClick(View v) {
                 // TODO: Change to book.getId()
                 CustomBottomSheetDialog bottomSheet =
-                        new CustomBottomSheetDialog(true, book.getStatus());
+                        new CustomBottomSheetDialog(true, book.getStatus(), book.getId());
                 bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
                         "customBottomSheet");
             }

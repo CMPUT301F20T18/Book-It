@@ -179,7 +179,8 @@ public class Register extends AppCompatActivity {
                                                 mAuth.signInWithEmailAndPassword(new_email, new_password);
 
                                                 // start new activity with current user
-                                                Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                                finish();
                                                 startActivityForResult(intent, 0);
                                             }
                                             else {
