@@ -7,7 +7,7 @@ import androidx.annotation.RequiresApi;
 import java.util.Base64;
 
 public class byteStringExchange {
-
+    
     /**
      * Converts a byte representing a photo to a String
      * @param photo The byte[] object representation of a photo
