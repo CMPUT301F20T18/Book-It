@@ -135,6 +135,9 @@ public class User {
                     // update the user book
                     userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_ACCEPTED);
 
+                    // update the global book
+                    bookRef.document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_ACCEPTED);
+
                     // delete any other requests for the same book
                     transRef.whereEqualTo("bookID", transaction.getBookID()).whereEqualTo("status",Book.STATUS_REQUESTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
@@ -257,7 +260,7 @@ public class User {
      * @param bookID The bookID of the book being signed off on
      */
     public void ownerSignOff(int bookID) {
-        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_BORROWED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
@@ -434,6 +437,7 @@ public class User {
                                                             // add the book to the borrowers requested list
                                                             book.setStatus(Book.STATUS_REQUESTED);
                                                             userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(bookID)).set(book);
+                                                            bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_REQUESTED);
                                                         }
 
                                                         else {
@@ -490,7 +494,7 @@ public class User {
 
                         // update the book status in the DB
                         bookRef.document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_AVAILABLE);
-                        userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_AVAILABLE);
+                        userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
 
                         // delete the global transaction
                         transRef.document(Integer.toString(transaction.getID())).delete();

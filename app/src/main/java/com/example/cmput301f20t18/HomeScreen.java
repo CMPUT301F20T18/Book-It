@@ -67,8 +67,6 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
         User current = new User();
         // current.borrowerRequestBook(108);
-        // current.ownerAcceptRequest(60);
-        // current.ownerAcceptRequest(59);
 
 
 
