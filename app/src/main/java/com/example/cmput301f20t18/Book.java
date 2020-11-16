@@ -26,7 +26,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    private ArrayList<String> photos;
+    //private ArrayList<String> photos;
     private int status;
     private User owner;
     private int year;
@@ -49,7 +49,7 @@ public class Book implements Comparable<Book> {
         this.status = status;
         this.owner = owner;
         this.year = year;
-        this.photos = new ArrayList<String>();
+        // this.photos = new ArrayList<String>();
     }
 
     /**
@@ -190,9 +190,9 @@ public class Book implements Comparable<Book> {
         this.id = id;
     }
 
-    /**
-     * Returns the cover picture of a book
-     * @return the byte[] represntation of a cover photo
+//    /**
+//     * Returns the cover picture of a book
+//     * @return the byte[] represntation of a cover photo
 //     */
 //    @RequiresApi(api = Build.VERSION_CODES.O)
 //    public ArrayList<byte[]> getPhotos() {
