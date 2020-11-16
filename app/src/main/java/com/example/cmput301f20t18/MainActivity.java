@@ -28,13 +28,8 @@ public class MainActivity extends AppCompatActivity {
         Intent loginIntent = new Intent(MainActivity.this, Login.class);
         startActivity(loginIntent);
         Intent intent = new Intent(MainActivity.this, Login.class);
-
-        /* Testing bottom navigation menu */
-
-//        Intent intent = new Intent(MainActivity.this, HomeScreen.class);
-//        startActivity(intent);
-
-
-
     }
 }
+
+
+
