@@ -48,7 +48,7 @@ public class MyBooksPendingFragment extends Fragment {
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference userRef = DB.collection("users");
+    CollectionReference bookRef = DB.collection("books");
 
 
     public MyBooksPendingFragment() {
@@ -121,7 +121,7 @@ public class MyBooksPendingFragment extends Fragment {
     }
 
     public void setUp() {
-        query = userRef.document(auth.getUid()).collection("books_owned").whereEqualTo("status", Book.STATUS_ACCEPTED);
+        query = bookRef.whereEqualTo("owner_dbID", auth.getUid()).whereEqualTo("status", Book.STATUS_ACCEPTED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();
