@@ -20,45 +20,51 @@ import java.util.Map;
  * between users and returning the book to it's original owner
  */
 public class Transaction {
+
+
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_REQUESTED = 1;
     public static final int STATUS_ACCEPTED = 2;
     public static final int STATUS_BORROWED = 3;
-
+    public static final int STATUS_RETURNED = 4;
+    public static final int STATUS_DECLINED = 5;
 
     public static final String TAG = "TRANS_DEBUG";
 
 
-    // Transaction information
+
+    private User bookOwner;
+    private String bookBorrower;
     private Integer ID;
+    private Integer bookID;
+    private int status;
     private int ownerFlag;
     private int borrowerFlag;
-    private int status;
-
-
-    // book info
-    private Integer bookID;
     private String cover_photo;
 
-
-    // users info
-    private String borrower_username;
-    private String owner_username;
-    private String borrower_dbID;
-    private String owner_dbID;
-
-
-    public Transaction(Integer ID, Integer bookID, String cover_photo, String borrower_username, String owner_username, String borrower_dbID, String owner_dbID) {
-        this.ID = ID;
+    /**
+     * This is the constructor used to change the status of
+     * a transaction
+     *
+     * @param bookOwner    The user who owns the book
+     * @param bookBorrower The user who is borrowing the book
+     * @param bookID       The id of the book being borrowed
+     * @param ID           The id of the transaction
+     *                     (assigned on creation)
+     * @param status       The current state of the book
+     *                     (request, exchange, borrow, declined)
+     */
+    //For use in changing the status of a transaction
+    public Transaction(User bookOwner, String bookBorrower, Integer bookID, Integer ID, int status, String cover_photo) {
+        this.bookOwner = bookOwner;
+        this.bookBorrower = bookBorrower;
         this.bookID = bookID;
-        this.cover_photo = cover_photo;
-        this.borrower_username = borrower_username;
-        this.owner_username = owner_username;
-        this.borrower_dbID = borrower_dbID;
-        this.owner_dbID = owner_dbID;
-        this.borrowerFlag = 0;
+        this.ID = ID;
+        this.status = status;
         this.ownerFlag = 0;
-        this.status = Transaction.STATUS_REQUESTED;
+        this.borrowerFlag = 0;
+        this.cover_photo = cover_photo;
+
     }
 
     /**
@@ -68,17 +74,71 @@ public class Transaction {
 
     }
 
+    /**
+     * Used to get the status of a transaction
+     *
+     * @return status of transaction
+     */
+    public int getStatus() {
+        return status;
+    }
 
-    // getters and setters start here
-
-
-
+    /**
+     * Used to get the ID of a transaction
+     *
+     * @return ID of transaction
+     */
     public Integer getID() {
         return ID;
     }
 
+    /**
+     * Used to get the ID of the
+     * book being borrowed
+     *
+     * @return ID of Book
+     */
+    public Integer getBookID() {
+        return bookID;
+    }
+
+    /**
+     * Used to get the User who owns the book
+     *
+     * @return User who owns the book
+     */
+    public User getBookOwner() {
+        return bookOwner;
+    }
+
+    /**
+     * Used to get the User who is borrowing
+     * or would like to borrow the book
+     *
+     * @return User who is borrowing the book
+     */
+    public String getBookBorrower() {
+        return bookBorrower;
+    }
+
+    public void setBookOwner(User bookOwner) {
+        this.bookOwner = bookOwner;
+    }
+
+    public void setBookBorrower(String bookBorrower) {
+        this.bookBorrower = bookBorrower;
+    }
+
     public void setID(Integer ID) {
         this.ID = ID;
+    }
+
+    public void setBookID(Integer bookID) {
+        this.bookID = bookID;
+    }
+
+    public void setStatus(int status) {
+        this.status = status;
     }
 
     public int getOwnerFlag() {
@@ -97,59 +157,11 @@ public class Transaction {
         this.borrowerFlag = borrowerFlag;
     }
 
-    public int getStatus() {
-        return status;
-    }
-
-    public void setStatus(int status) {
-        this.status = status;
-    }
-
-    public Integer getBookID() {
-        return bookID;
-    }
-
-    public void setBookID(Integer bookID) {
-        this.bookID = bookID;
-    }
-
     public String getCover_photo() {
         return cover_photo;
     }
 
     public void setCover_photo(String cover_photo) {
         this.cover_photo = cover_photo;
-    }
-
-    public String getBorrower_username() {
-        return borrower_username;
-    }
-
-    public void setBorrower_username(String borrower_username) {
-        this.borrower_username = borrower_username;
-    }
-
-    public String getOwner_username() {
-        return owner_username;
-    }
-
-    public void setOwner_username(String owner_username) {
-        this.owner_username = owner_username;
-    }
-
-    public String getBorrower_dbID() {
-        return borrower_dbID;
-    }
-
-    public void setBorrower_dbID(String borrower_dbID) {
-        this.borrower_dbID = borrower_dbID;
-    }
-
-    public String getOwner_dbID() {
-        return owner_dbID;
-    }
-
-    public void setOwner_dbID(String owner_dbID) {
-        this.owner_dbID = owner_dbID;
     }
 }

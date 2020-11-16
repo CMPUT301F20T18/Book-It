@@ -25,10 +25,7 @@ import java.util.List;
  * @see MyBooksAvailableFragment
  * @see MyBooksPendingFragment
  * @see MyBooksLendingFragment
- *
- * @deprecated Use {@link FirestoreBookAdapter} instead
  */
-@Deprecated
 public class MyBooksRecyclerViewAdapter extends
         RecyclerView.Adapter<MyBooksRecyclerViewAdapter.BookViewHolder> {
 
@@ -131,7 +128,7 @@ public class MyBooksRecyclerViewAdapter extends
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
-
+        /* TODO: Implement delete/edit UI and functionality. */
         /* TODO: Implement cancel pick up UI and functionality (for "accepted" books) */
 
         /* holder will be updated differently depending on Book status. */

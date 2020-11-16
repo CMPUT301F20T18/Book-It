@@ -10,26 +10,23 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AlertDialog;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
-/**
- * Custom RecyclerView Adapter for Book objects in Borrowed books.
- *
- * @see FirestoreRecyclerAdapter
- * @see BorrowedRequestedFragment
- * @see BorrowedPendingFragment
- * @see BorrowedBorrowingFragment
- */
-public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.BookViewHolder> {
-    final static String TAG = "FBA_DEBUG_BORROWED";
+public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.bookViewHolderBorrowed> {
+    final static String TAG = "FBA_DEBUG";
     final static int FRAG_PICKUP = 2;
     final static int FRAG_RETURN = 1;
 
@@ -44,29 +41,30 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         super(options);
     }
 
-    /**
-     * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
-     * on the book status.
-     *
-     * @param position Position of Book in list.
-     * @return Status of book as an int.
-     * @see #onCreateViewHolder(ViewGroup, int)
-     */
+
+
+
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).getStatus();
+        switch (getItem(position).getStatus()) {
+            case Book.STATUS_AVAILABLE:
+                return Book.STATUS_AVAILABLE;
+
+            case Book.STATUS_REQUESTED:
+                return Book.STATUS_REQUESTED;
+
+            case Book.STATUS_BORROWED:
+                return Book.STATUS_BORROWED;
+
+            case Book.STATUS_ACCEPTED:
+                return Book.STATUS_ACCEPTED;
+        }
+        return 0;
     }
 
-    /**
-     * Called by RecyclerView to display the Book at the specified position.
-     *
-     * @param holder The ViewHolder which should be updated to represent the contents of the Book
-     *               at the given position in bookList.
-     * @param i position of book in list.
-     * @param book Book to display.
-     */
+
     @Override
-    protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
+    protected void onBindViewHolder(FirestoreBorrowedAdapter.bookViewHolderBorrowed holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
         //holder.imageView.setImageResource(R.drawable.default_cover);
 
@@ -80,30 +78,34 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         try {
             /* These two TextViews will be null if the book status is "Available" */
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-            holder.textViewUsername.setText(book.getOwner_username());
+            holder.textViewUsername.setText("Username");
             holder.textViewUserDescription.setText(R.string.owner);
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
 
-        // This is used to open up a user's profile when clicking on their profile photo
-        View.OnClickListener openProfileListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /* TODO: Pass which user profile to show to CheckProfileActivity */
-                Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
-                v.getContext().startActivity(intent);
-            }
-        };
+        try {
+            /* User clicks on profile photo. This button is in all three tabs. */
+            holder.buttonUser.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
+                    v.getContext().startActivity(intent);
+                }
+            });
+        } catch (Exception e) {}
 
-        // This is used to view the pick up location when clicking the map button
-        View.OnClickListener openMapListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /* Are we allowing the borrower to see the location before being accepted? */
-                /* TODO: make activity that displays pick up location to borrower */
-            }
-        };
+
+        try {
+            /* User clicks on map button. This button is in all three tabs. */
+            holder.buttonMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    /* Are we allowing the borrower to see the location before being accepted? */
+                    /* TODO: make activity that displays pick up location to borrower */
+                }
+            });
+        } catch (Exception e) {}
 
         /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
@@ -163,11 +165,9 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 holder.buttonMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: Change to book.getId()
-                        CustomBottomSheetDialog bottomSheet =
-                                new CustomBottomSheetDialog(false, book.getStatus());
-                        bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
-                                "customBottomSheet");
+                        /* TODO: create custom context menu for Cancel request */
+                        new android.app.AlertDialog.Builder(v.getContext())
+                                .setTitle("TODO: Cancel request").show();
                     }
                 });
                 break;
@@ -187,54 +187,43 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                         intent.putExtra("eISBN", book.getISBN());
                         Activity main = (Activity) v.getContext();
                         main.startActivityForResult(intent, FRAG_RETURN);
+
+
+
                     }
                 });
                 break;
         }
     }
 
-    /**
-     * Called when RecyclerView needs a new {@link FirestoreBookAdapter.BookViewHolder} of the
-     * given type to represent a Book.
-     *
-     * @param parent The ViewGroup into which the new View will be added after it is bound to an
-     *               adapter position.
-     * @param viewType The view type of the new View, based on the book status.
-     * @return A new BookViewHolder that holds a View of the given view type.
-     * @see FirestoreBookAdapter.BookViewHolder
-     * @see #getItemViewType(int)
-     * @see #onBindViewHolder(FirestoreBorrowedAdapter.BookViewHolder, int, Book)
-     */
+
+
+
     @NonNull
     @Override
-    public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+    public bookViewHolderBorrowed onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
         Log.d(TAG, "viewType: : " + Integer.toString(viewType));
 
         switch (viewType) {
             case Book.STATUS_AVAILABLE:
                 Log.d(TAG, "onCreateViewHolder: Got to available!!");
-                return new BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_no_requests, null));
             case Book.STATUS_REQUESTED:
                 Log.d(TAG, "onCreateViewHolder: Got to requested!");
-                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_requested, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_borrowed_requested, null));
             case Book.STATUS_ACCEPTED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_pending, null));
             case Book.STATUS_BORROWED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_lending, null));
+                return new FirestoreBorrowedAdapter.bookViewHolderBorrowed(inflater.inflate(R.layout.card_borrowed_lending, null));
             default: Log.d(TAG, "Error: Book status not found");
         }
 
         return null;
     }
 
-    /**
-     * Caches Views from layout file.
-     * @see #onBindViewHolder(FirestoreBorrowedAdapter.BookViewHolder, int, Book)
-     */
-    public class BookViewHolder extends RecyclerView.ViewHolder {
-        /* Not all layout files will have all of these views, so some may be null.
-         * The switch in onBindViewHolder() ensures that this is not an issue. */
+
+    public class bookViewHolderBorrowed extends RecyclerView.ViewHolder {
 
         ImageView imageView;
         TextView textViewTitle;
@@ -252,12 +241,8 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         Button buttonConfirmReturn;
         Button buttonMore;
 
-        /**
-         * Class constructor.
-         *
-         * @param itemView Used to retrieve Views from layout file.
-         */
-        public BookViewHolder(@NonNull View itemView) {
+
+        public bookViewHolderBorrowed(@NonNull View itemView) {
             super(itemView);
 
             imageView = itemView.findViewById(R.id.image_view);
