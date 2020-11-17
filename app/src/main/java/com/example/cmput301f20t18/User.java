@@ -82,13 +82,20 @@ public class User {
      * @param title The title of the new book
      * @param author The author of the new book
      * @param year The year the new book was released
-     * @param bytes
      */
 
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
+
+
+        Log.d(TAG, "onClick: Title " + title);
+        Log.d(TAG, "onClick: Author " + author);
+        Log.d(TAG, "onClick: ISBN " + isbn );
+        Log.d(TAG, "onClick: Year " + year);
+
+
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
