@@ -82,8 +82,11 @@ public class User {
      * @param title The title of the new book
      * @param author The author of the new book
      * @param year The year the new book was released
+     * @param bytes
      */
+
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
+
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
