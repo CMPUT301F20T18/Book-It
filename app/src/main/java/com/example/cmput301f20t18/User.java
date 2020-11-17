@@ -190,7 +190,7 @@ public class User {
 
                     // change the status of the book to borrowed
                     bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_BORROWED);
-                    userRef.document(transaction.getBorrower_dbID()).collection("books_requested").document(Integer.toString(transaction.getBookID())).update("status", Transaction.STATUS_BORROWED);
+                    userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).update("status", Transaction.STATUS_BORROWED);
 
                 }
 
