@@ -1,6 +1,12 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -26,8 +32,8 @@ import java.util.Collections;
 
 public class ProfileFragment extends Fragment {
 
-    TextView username, phoneNum, email;
-    Button editAccount, signOut;
+    TextView username, phoneNum, email, editAccount;
+    Button signOut;
     ImageView profilePic;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -78,8 +84,32 @@ public class ProfileFragment extends Fragment {
         username = (TextView) view.findViewById(R.id.my_user_name);
         phoneNum = (TextView) view.findViewById(R.id.phone_num);
         email = (TextView) view.findViewById(R.id.email);
+        editAccount = (TextView) view.findViewById(R.id.edit_profile);
 
         profilePic = (ImageView) view.findViewById(R.id.profile_pic);
+
+        String text = "Edit Account";
+
+        SpannableString  editProf = new SpannableString(text);
+
+        ClickableSpan redirect = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+
+                Intent editIntent = new Intent(getContext(),EditProfile.class);
+                startActivity(editIntent);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.doveGray));
+            }
+        };
+
+        editProf.setSpan(redirect,0,7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        editAccount.setText(editProf);
+        editAccount.setMovementMethod(LinkMovementMethod.getInstance());
 
         username.setText("MysticWolf");
         phoneNum.setText("780 933 8641");
