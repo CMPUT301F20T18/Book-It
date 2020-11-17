@@ -4,6 +4,7 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@android:id/text1"
     android:textColor="@color/colorOrange"
+    android:background="@color/colorGray2"
     android:fontFamily="@font/poppins_medium"
     style="@style/spinnerDropDownItemStyle"
     android:layout_width="match_parent"

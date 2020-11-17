@@ -103,13 +103,12 @@
             app:layout_constraintStart_toEndOf="@+id/frame_image"
             app:layout_constraintTop_toTopOf="parent" />
 
-        <Button
+        <TextView
             android:id="@+id/edit_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
-            android:background="@color/transparent"
             android:fontFamily="@font/poppins"
             android:text="@string/edit_profile"
             android:textColor="@color/doveGray"

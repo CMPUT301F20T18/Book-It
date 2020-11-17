@@ -20,6 +20,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
 
+        <activity android:name=".EditProfile"></activity>
+
         <activity android:name=".CheckProfileActivity" />
         <activity android:name=".PostScanActivity" />
         <!--

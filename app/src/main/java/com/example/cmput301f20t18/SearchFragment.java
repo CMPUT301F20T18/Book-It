@@ -94,8 +94,8 @@ public class SearchFragment extends Fragment {
 
         Spinner searchSpinner = view.findViewById(R.id.search_spinner);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(view.getContext(),
-                R.array.search_spinner_array, android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.search_spinner_array, R.layout.custom_spinner_item);
+        spinnerAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         searchSpinner.setAdapter(spinnerAdapter);
         searchSpinner.setOnItemSelectedListener(spinnerListener);
 
@@ -508,7 +508,8 @@ public class SearchFragment extends Fragment {
             View view = convertView;
 
             if(view == null){
-                view = LayoutInflater.from(context).inflate(R.layout.card_base, parent, false);
+                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_available,
+                        parent, false);
             }
 
             Book book = books.get(position);
@@ -520,12 +521,31 @@ public class SearchFragment extends Fragment {
             //TODO: Once we can decode image string implement
             //ImageView bookImage = view.findViewById(R.id.image_view);
             //bookImage.setImage(book.getImage())
+            Button requestBook = view.findViewById(R.id.button_request);
+
+
             bookTitle.setText(book.getTitle());
             bookAuthor.setText(book.getAuthor());
             bookISBN.setText(Long.toString(book.getISBN()));
             bookYear.setText(Integer.toString(book.getYear()));
 
+            requestBook.setOnClickListener(new requestBookButtonListener(book));
+
             return view;
+        }
+
+        private class requestBookButtonListener implements View.OnClickListener {
+            private Book book;
+            public requestBookButtonListener(Book book) {
+                this.book = book;
+            }
+            @Override
+            public void onClick(View v) {
+                User current = new User();
+                Log.d(TAG, "User is attempting to request " + book.getTitle()
+                        + " from user " + book.getOwner_username());
+                current.borrowerRequestBook(book.getId());
+            }
         }
     }
 

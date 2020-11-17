@@ -100,6 +100,12 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
     }
 
+    @Override
+    public void onBackPressed()
+    {
+
+    }
+
     // Not in onCreate() to avoid clutter but idk
     private BottomNavigationView.OnNavigationItemSelectedListener navListener =
             new BottomNavigationView.OnNavigationItemSelectedListener() {
