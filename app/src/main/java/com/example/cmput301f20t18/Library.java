@@ -118,16 +118,10 @@ public class Library {
             }
         }
 
+
         Log.d(TAG, "onCreate: " + this.bookList.get(0).getAuthor());
 
-
-
-
     }
-
-
-
-
 
     // return the instance of our library
     public static synchronized Library getInstance(Context context) {
@@ -146,3 +140,4 @@ public class Library {
         this.current_user = current_user;
     }
 }
+

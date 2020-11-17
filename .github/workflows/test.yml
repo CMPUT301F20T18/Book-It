@@ -5,12 +5,17 @@ on:
     branches:
       - dev
       - master
+      - part4_dev
 
   pull_request:
     branches:
       - dev
       - master
       - part4_dev
+<<<<<<< .merge_file_a20688
+=======
+
+>>>>>>> .merge_file_a27792
 
 
 
