@@ -1,6 +1,7 @@
 package com.example.cmput301f20t18;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +23,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.io.ByteArrayOutputStream;
@@ -45,10 +50,21 @@ public class MyBooksAddBook extends AppCompatActivity {
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
     ImageButton addPhoto;
+
     ArrayList<Bitmap> photos;
 
     Toolbar toolbar;
+    ImageButton addPic;
     private static final int RESULT_LOAD_IMAGE = 1;
+    public static final int EDIT_BOOK = 10;
+    public static final int ADD_BOOK = 11;
+    private final static String TAG = "MBAB_DEBUG";
+    private int type;
+    private int bookID;
+
+    FirebaseFirestore DB;
+
+
 
     /**
      * This method has the purpose of creating the activity that prompts the user to add information
@@ -62,7 +78,18 @@ public class MyBooksAddBook extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_books_add_book);
+
+        DB = FirebaseFirestore.getInstance();
+
+
+        type = getIntent().getIntExtra("type", 0);
+        bookID = getIntent().getIntExtra("bookID", 0);
+        if (type == ADD_BOOK) {
+            setContentView(R.layout.activity_my_books_add_book);
+        }
+        else if ( type == EDIT_BOOK) {
+            setContentView(R.layout.activity_edit_books);
+        }
 
         labelAuthor = findViewById(R.id.author_prompt);
         labelTitle = findViewById(R.id.book_title_prompt);
@@ -77,6 +104,28 @@ public class MyBooksAddBook extends AppCompatActivity {
         done = findViewById(R.id.done_add_book);
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
+
+        if (type == EDIT_BOOK) {
+            DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    Book book = task.getResult().toObject(Book.class);
+                    bookTitle.setText(book.getTitle());
+                    author.setText(book.getAuthor());
+                    year.setText(Integer.toString(book.getYear()));
+                    isbn.setText(Long.toString(book.getISBN()));
+                }
+
+                else {
+                    Log.d(TAG, "MyBooksAddBook - Error querying for book");
+                }
+
+            });
+
+        }
+
+
+
+
 
 
         /**
@@ -95,16 +144,25 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_isbn = isbn.getText().toString();
                 String book_year = year.getText().toString();
 
-                if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
-                    Long isbn = Long.parseLong(book_isbn);
-                    Integer year = Integer.parseInt(book_year);
-                    ArrayList<Byte[]> bytes = new ArrayList<>();
-                    for(Bitmap photo: photos){
-                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
-                        photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
-                        byte[] byteArray = stream.toByteArray();
-                    }
-                    current.ownerNewBook(isbn, book_title, book_author, year, bytes);
+
+                // debug info
+                Log.d(TAG, "onClick: Title " + book_title);
+                Log.d(TAG, "onClick: Author " + book_author);
+                Log.d(TAG, "onClick: ISBN " + book_isbn );
+                Log.d(TAG, "onClick: Year " + book_year);
+                Log.d(TAG, "onClick: bookID " + bookID);
+                Log.d(TAG, "onClick: Type of Add " + type);
+
+                Long isbn = Long.parseLong(book_isbn);
+                Integer year = Integer.parseInt(book_year);
+                if (type == ADD_BOOK) {
+             
+                    if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
+                        current.ownerNewBook(isbn, book_title, book_author, year, byteArray);
+                    }                }
+                else if (type == EDIT_BOOK) {
+                    current.ownerEditBook(book_title, book_author, isbn, bookID, year);
+
                 }
                 finish();
             }

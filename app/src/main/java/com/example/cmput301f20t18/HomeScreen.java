@@ -59,6 +59,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
     final String TAG = "HOMESCREEN_DEBUG";
 
 
+
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -191,8 +192,10 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
 
             case CustomBottomSheetDialog.EDIT_BUTTON:
-                // TODO: Make activity for editing book details.
-                Toast.makeText(getApplicationContext(), "edit clicked", Toast.LENGTH_SHORT).show();
+                Intent intent = new Intent(getApplicationContext(), MyBooksAddBook.class);
+                intent.putExtra("bookID", bookID);
+                intent.putExtra("type", MyBooksAddBook.EDIT_BOOK);
+                startActivityForResult(intent, 5);
                 break;
 
             case CustomBottomSheetDialog.DELETE_BUTTON:
