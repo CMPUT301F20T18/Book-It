@@ -170,7 +170,12 @@ public class MyBooksAddBook extends AppCompatActivity {
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
 
                         Log.d(TAG, "Validity check passed");
-                        current.ownerNewBook(isbn, book_title, book_author, year, null);
+                        ArrayList<String> photoStrings = new ArrayList<>();
+                        for (Bitmap photo: photos){
+                            photoStrings
+                                    .add(photoAdapter.bitmapToString(photo));
+                        }
+                        current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
                     }
                 }
 

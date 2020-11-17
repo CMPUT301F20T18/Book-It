@@ -249,7 +249,7 @@ public class Book implements Comparable<Book> {
      * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
      */
 
-    public void setCover(int i) {
+    public void choseCover(int i) {
         String cover = this.photos.remove(i);
         ArrayList<String> newCover = new ArrayList<>();
         newCover.add(cover);
@@ -267,7 +267,7 @@ public class Book implements Comparable<Book> {
     }
 
 
-    public String getCover() {
+    public String retrieveCover() {
         String cover = null;
         if (this.photos.size() > 0) {
             cover = this.photos.get(0);

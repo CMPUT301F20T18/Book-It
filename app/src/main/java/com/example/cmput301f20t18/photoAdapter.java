@@ -28,7 +28,7 @@ public class photoAdapter {
      * @param photo The String object representation of a photo
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public byte[] stringToByte(String photo){
+    public static byte[] stringToByte(String photo){
         return Base64.getDecoder().decode(photo);
     }
 
