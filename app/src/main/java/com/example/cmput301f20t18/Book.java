@@ -238,43 +238,48 @@ public class Book implements Comparable<Book> {
      * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
      */
 
-//    public void removePhoto(int i) {
-//        this.photos.remove(i);
-//    }
-//
-//    /**
-//     * Changes which string is at position 0 of the ArrayList this.photos which represents the
-//     * cover picture
-//     * @param i is the index of the book that is to be the new cover
-//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
-//     */
-//
-//    public void setCover(int i) {
-//        String cover = this.photos.remove(i);
-//        ArrayList<String> newCover = new ArrayList<>();
-//        newCover.add(cover);
-//        newCover.addAll(this.photos);
-//        this.photos = newCover;
-//    }
-//
-//
-//    public void setPhotos(ArrayList<String> photos) {
-//        this.photos = photos;
-//    }
-//
-//
-//    public String getCover() {
-//        String cover = null;
-//        if (this.photos.size() > 0) {
-//            cover = this.photos.get(0);
-//        }
-//        return cover;
-//    }
-//
-//
-//    public ArrayList<String> getPhotos() {
-//        return photos;
-//    }
+    public void removePhoto(int i) {
+        this.photos.remove(i);
+    }
+
+    /**
+     * Changes which string is at position 0 of the ArrayList this.photos which represents the
+     * cover picture
+     * @param i is the index of the book that is to be the new cover
+     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+     */
+
+    public void choseCover(int i) {
+        String cover = this.photos.remove(i);
+        ArrayList<String> newCover = new ArrayList<>();
+        newCover.add(cover);
+        newCover.addAll(this.photos);
+        this.photos = newCover;
+    }
+
+
+    public void setPhotos(ArrayList<String> photos) {
+        this.photos = photos;
+    }
+
+    public boolean hasPhotos(){
+        return photos.isEmpty() == false;
+    }
+
+
+    public String retrieveCover() {
+        String cover = null;
+        if (this.photos.size() > 0) {
+            cover = this.photos.get(0);
+        }
+        return cover;
+    }
+
+
+    public ArrayList<String> getPhotos() {
+        return photos;
+    }
+
 
 
 

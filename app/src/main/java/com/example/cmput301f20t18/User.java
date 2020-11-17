@@ -82,6 +82,8 @@ public class User {
      * @param title The title of the new book
      * @param author The author of the new book
      * @param year The year the new book was released
+     * @param photos The photos of the book in String form
+
      */
 
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
@@ -104,6 +106,7 @@ public class User {
                     if (task.isSuccessful()) {
                         User current = Objects.requireNonNull(task.getResult()).toObject(User.class);
                         Log.d(TAG, "user dbID " + current.getDbID());
+                        Log.d(TAG, "Number of Photos " + photos.size());
                         Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE, current.getDbID() , year, auth.getUid(), current.getUsername(), photos);
                         bookRef.document(Integer.toString(val)).set(book);
                     }

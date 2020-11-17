@@ -3,6 +3,7 @@ package com.example.cmput301f20t18;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
@@ -11,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -116,6 +118,8 @@ public class MyBooksAddBook extends AppCompatActivity {
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
 
+        photos = new ArrayList<>();
+
         if (type == EDIT_BOOK) {
             DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()) {
@@ -151,6 +155,7 @@ public class MyBooksAddBook extends AppCompatActivity {
          * a book from the user input.
          */
         done.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 User current = new User();
@@ -159,6 +164,11 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_author = author.getText().toString();
                 String book_isbn = isbn.getText().toString();
                 String book_year = year.getText().toString();
+
+                ArrayList<String> stringPhotos = new ArrayList<>();
+                for (Bitmap bmp : photos){
+                    stringPhotos.add(photoAdapter.bitmapToString(bmp));
+                }
 
 
                 // debug info
@@ -174,10 +184,17 @@ public class MyBooksAddBook extends AppCompatActivity {
                 if (type == ADD_BOOK) {
              
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
+
                         Log.d(TAG, "Validity check passed");
-                        current.ownerNewBook(isbn, book_title, book_author, year, null);
+                        ArrayList<String> photoStrings = new ArrayList<>();
+                        for (Bitmap photo: photos){
+                            photoStrings
+                                    .add(photoAdapter.bitmapToString(photo));
+                        }
+                        current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
                     }
                 }
+
                 else if (type == EDIT_BOOK) {
                     current.ownerEditBook(book_title, book_author, isbn, bookID, year);
 
@@ -225,21 +242,9 @@ public class MyBooksAddBook extends AppCompatActivity {
                     cursor.close();
                     Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
-                    int width = bitmap.getWidth();
-                    int height = bitmap.getHeight();
-
-                    float scaleWidth = ((float) addPhoto.getWidth()) / width;
-                    float scaleHeight = ((float) addPhoto.getHeight()) / height;
-
-                    Matrix matrix = new Matrix();
-                    matrix.postScale(scaleWidth, scaleHeight);
-
-                    Bitmap finalMap = Bitmap
-                            .createBitmap(bitmap, 0, 0, width, height, matrix, false)
-                            .copy(Bitmap.Config.ARGB_8888, true);
-                    bitmap.recycle();
-                    photos.add(finalMap);
-                    addPhoto.setImageBitmap(finalMap);
+                    Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) addPhoto.getWidth(), (float) addPhoto.getHeight());
+                    photos.add(outMap);
+                    addPhoto.setImageBitmap(outMap);
                 }
         }
     }
