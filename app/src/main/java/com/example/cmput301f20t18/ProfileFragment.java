@@ -107,7 +107,7 @@ public class ProfileFragment extends Fragment {
             }
         };
 
-        editProf.setSpan(redirect,0,7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        editProf.setSpan(redirect,0,12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         editAccount.setText(editProf);
         editAccount.setMovementMethod(LinkMovementMethod.getInstance());
 
