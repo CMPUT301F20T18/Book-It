@@ -158,7 +158,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                 if (type == ADD_BOOK) {
              
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
-                        current.ownerNewBook(isbn, book_title, book_author, year, byteArray);
+                        current.ownerNewBook(isbn, book_title, book_author, year, null);
                     }                }
                 else if (type == EDIT_BOOK) {
                     current.ownerEditBook(book_title, book_author, isbn, bookID, year);
