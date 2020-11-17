@@ -49,6 +49,7 @@ public class FirestoreBookAdapter
         this.context = context;
     }
 
+
     /**
      * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
      * on the book status.

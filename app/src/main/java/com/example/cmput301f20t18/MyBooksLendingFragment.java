@@ -130,7 +130,7 @@ public class MyBooksLendingFragment extends Fragment implements fragmentListener
                 .setQuery(query, Book.class)
                 .build();
 
-        adapter = new FirestoreBookAdapter(options);
+        adapter = new FirestoreBookAdapter(options, this.getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
