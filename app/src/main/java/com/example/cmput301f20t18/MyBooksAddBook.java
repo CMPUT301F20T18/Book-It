@@ -6,14 +6,18 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
@@ -38,8 +42,8 @@ public class MyBooksAddBook extends AppCompatActivity {
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
     ImageButton addPhoto;
+    ImageView cover;
     Toolbar toolbar;
-    ImageButton addPic;
     private static final int RESULT_LOAD_IMAGE = 1;
 
     /**
@@ -125,7 +129,7 @@ public class MyBooksAddBook extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case RESULT_LOAD_IMAGE:
-                if(requestCode == RESULT_OK){
+                if(resultCode == RESULT_OK){
                     Uri image = data.getData();
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
                     Cursor cursor = getContentResolver().query(image, filePathColumn, null, null, null);
@@ -133,8 +137,21 @@ public class MyBooksAddBook extends AppCompatActivity {
                     int colIndex = cursor.getColumnIndex(filePathColumn[0]);
                     String picturePath = cursor.getString(colIndex);
                     cursor.close();
-                    addPhoto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-                    addPhoto.refreshDrawableState();
+                    Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+
+                    int width = bitmap.getWidth();
+                    int height = bitmap.getHeight();
+
+                    float scaleWidth = ((float) addPhoto.getWidth()) / width;
+                    float scaleHeight = ((float) addPhoto.getHeight()) / height;
+
+                    Matrix matrix = new Matrix();
+                    matrix.postScale(scaleWidth, scaleHeight);
+
+                    Bitmap finalMap = Bitmap
+                            .createBitmap(bitmap, 0, 0, width, height, matrix, false)
+                            .copy(Bitmap.Config.ARGB_8888, true);
+                    addPhoto.setImageBitmap(finalMap);
                 }
         }
     }
