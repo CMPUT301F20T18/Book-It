@@ -285,7 +285,7 @@ class CheckBookValidity {
      */
     private static boolean checkISBN(String bookISBN) {
         boolean valid = true;
-        final long MIN_VAL = 1000000000000L;
+        final long MIN_VAL = 10000000L;
         final long MAX_VAL = 9999999999999L;
 
         Long isbnNum = -1L;
