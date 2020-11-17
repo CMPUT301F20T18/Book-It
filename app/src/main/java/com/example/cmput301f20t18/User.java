@@ -82,13 +82,20 @@ public class User {
      * @param title The title of the new book
      * @param author The author of the new book
      * @param year The year the new book was released
-     * @param bytes
      */
 
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
+
+
+        Log.d(TAG, "onClick: Title " + title);
+        Log.d(TAG, "onClick: Author " + author);
+        Log.d(TAG, "onClick: ISBN " + isbn );
+        Log.d(TAG, "onClick: Year " + year);
+
+
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
@@ -183,7 +190,7 @@ public class User {
 
                     // change the status of the book to borrowed
                     bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_BORROWED);
-                    userRef.document(transaction.getBorrower_dbID()).collection("books_requested").document(Integer.toString(transaction.getBookID())).update("status", Transaction.STATUS_BORROWED);
+                    userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).update("status", Transaction.STATUS_BORROWED);
 
                 }
 
