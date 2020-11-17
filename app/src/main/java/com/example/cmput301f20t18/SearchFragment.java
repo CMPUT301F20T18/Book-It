@@ -526,23 +526,29 @@ public class SearchFragment extends Fragment {
             //ImageView bookImage = view.findViewById(R.id.image_view);
             //bookImage.setImage(book.getImage())
             Button requestBook = view.findViewById(R.id.button_request);
+            Button bookRequested = view.findViewById(R.id.deactivate_request);
 
+            requestBook.setVisibility(View.VISIBLE);
+            bookRequested.setVisibility(View.GONE);
 
             bookTitle.setText(book.getTitle());
             bookAuthor.setText(book.getAuthor());
             bookISBN.setText(Long.toString(book.getISBN()));
             bookYear.setText(Integer.toString(book.getYear()));
 
-            requestBook.setOnClickListener(new requestBookButtonListener(book));
+            requestBook.setOnClickListener(new requestBookButtonListener(book,requestBook,bookRequested));
 
             return view;
         }
 
         private class requestBookButtonListener implements View.OnClickListener {
             private Book book;
+            private Button active, unactive;
 
-            public requestBookButtonListener(Book book) {
+            public requestBookButtonListener(Book book, Button active, Button unactive) {
                 this.book = book;
+                this.active = active;
+                this.unactive = unactive;
             }
 
             @Override
@@ -551,6 +557,8 @@ public class SearchFragment extends Fragment {
                 Log.d(TAG, "User is attempting to request " + book.getTitle()
                         + " from user " + book.getOwner_username());
                 current.borrowerRequestBook(book.getId());
+                active.setVisibility(View.GONE);
+                unactive.setVisibility(View.VISIBLE);
             }
         }
     }
