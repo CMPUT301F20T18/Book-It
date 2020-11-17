@@ -127,7 +127,6 @@ public class MyBooksAddBook extends AppCompatActivity {
          * This is a listener to be able to react to button press that ultimately creates
          * a book from the user input.
          */
-        // TODO add input verification
         done.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
