@@ -59,9 +59,12 @@ public class MyBooksAddBook extends AppCompatActivity {
     private static final int RESULT_LOAD_IMAGE = 1;
     public static final int EDIT_BOOK = 10;
     public static final int ADD_BOOK = 11;
+    public static final int ADD_SCAN = 12;
+
     private final static String TAG = "MBAB_DEBUG";
     private int type;
     private int bookID;
+    private long passed_isbn;
 
     FirebaseFirestore DB;
 
@@ -85,7 +88,14 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         type = getIntent().getIntExtra("type", 0);
         bookID = getIntent().getIntExtra("bookID", 0);
-        if (type == ADD_BOOK) {
+        Long passed_isbn = getIntent().getLongExtra("filled_isbn", 0);
+
+
+        Log.d(TAG, "onCreate: type " + type);
+        Log.d(TAG, "onCreate: bookID " + bookID);
+        Log.d(TAG, "onCreate: isbn " + passed_isbn);
+
+        if (type == ADD_BOOK || type == ADD_SCAN)  {
             setContentView(R.layout.activity_my_books_add_book);
         }
         else if ( type == EDIT_BOOK) {
@@ -124,6 +134,12 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         }
 
+        if (type == ADD_SCAN) {
+            isbn.setText(Long.toString(passed_isbn));
+        }
+
+
+
 
 
 
@@ -155,7 +171,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
                 Long isbn = Long.parseLong(book_isbn);
                 Integer year = Integer.parseInt(book_year);
-                if (type == ADD_BOOK) {
+                if (type == ADD_BOOK || type == ADD_SCAN) {
              
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
                         Log.d(TAG, "Validity check passed");
@@ -287,7 +303,7 @@ class CheckBookValidity {
      */
     private static boolean checkISBN(String bookISBN) {
         boolean valid = true;
-        final long MIN_VAL = 1000000000000L;
+        final long MIN_VAL = 10000000L;
         final long MAX_VAL = 9999999999999L;
 
         Long isbnNum = -1L;
