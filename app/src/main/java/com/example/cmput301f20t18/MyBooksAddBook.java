@@ -51,6 +51,15 @@ public class MyBooksAddBook extends AppCompatActivity {
     Toolbar toolbar;
     ImageButton addPic;
     private static final int RESULT_LOAD_IMAGE = 1;
+    public static final int EDIT_BOOK = 10;
+    public static final int ADD_BOOK = 11;
+    private final static String TAG = "MBAB_DEBUG";
+    private int type;
+    private int bookID;
+
+    FirebaseFirestore DB;
+
+
 
     /**
      * This method has the purpose of creating the activity that prompts the user to add information
@@ -64,7 +73,18 @@ public class MyBooksAddBook extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_books_add_book);
+
+        DB = FirebaseFirestore.getInstance();
+
+
+        type = getIntent().getIntExtra("type", 0);
+        bookID = getIntent().getIntExtra("bookID", 0);
+        if (type == ADD_BOOK) {
+            setContentView(R.layout.activity_my_books_add_book);
+        }
+        else if ( type == EDIT_BOOK) {
+            setContentView(R.layout.activity_edit_books);
+        }
 
         labelAuthor = findViewById(R.id.author_prompt);
         labelTitle = findViewById(R.id.book_title_prompt);
@@ -79,6 +99,31 @@ public class MyBooksAddBook extends AppCompatActivity {
         done = findViewById(R.id.done_add_book);
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
+
+        if (type == EDIT_BOOK) {
+            DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                @Override
+                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                    if(task.isSuccessful()) {
+                        Book book = task.getResult().toObject(Book.class);
+                        bookTitle.setText(book.getTitle());
+                        author.setText(book.getAuthor());
+                        year.setText(Integer.toString(book.getYear()));
+                        isbn.setText(Long.toString(book.getISBN()));
+                    }
+
+                    else {
+                        Log.d(TAG, "MyBooksAddBook - Error querying for book");
+                    }
+
+                }
+            });
+
+        }
+
+
+
+
 
 
         /**
@@ -97,7 +142,20 @@ public class MyBooksAddBook extends AppCompatActivity {
                 Long book_isbn = Long.parseLong(isbn.getText().toString());
                 int book_year = Integer.parseInt(year.getText().toString());
 
-                current.ownerNewBook(book_isbn, title, book_author, book_year);
+                // debug info
+                Log.d(TAG, "onClick: Title " + title);
+                Log.d(TAG, "onClick: Author " + book_author);
+                Log.d(TAG, "onClick: ISBN " + book_isbn );
+                Log.d(TAG, "onClick: Year " + book_year);
+                Log.d(TAG, "onClick: bookID " + bookID);
+                Log.d(TAG, "onClick: Type of Add " + type);
+
+                if (type == ADD_BOOK) {
+                    current.ownerNewBook(book_isbn, title, book_author, book_year, null);
+                }
+                else if (type == EDIT_BOOK) {
+                    current.ownerEditBook(title, book_author, book_isbn, bookID, book_year);
+                }
                 finish();
 
             }

@@ -78,6 +78,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
             @Override
             public void onClick(View v) {
                 Intent addIntent = new Intent(getContext(),MyBooksAddBook.class);
+                addIntent.putExtra("type", MyBooksAddBook.ADD_BOOK);
                 startActivityForResult(addIntent,0);
             }
         });

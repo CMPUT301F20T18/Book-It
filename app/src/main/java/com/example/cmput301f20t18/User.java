@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -82,7 +83,7 @@ public class User {
      * @param author The author of the new book
      * @param year The year the new book was released
      */
-    public void ownerNewBook(Long isbn, String title, String author, int year) {
+    public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -93,7 +94,7 @@ public class User {
                     if (task.isSuccessful()) {
                         User current = Objects.requireNonNull(task.getResult()).toObject(User.class);
                         Log.d(TAG, "user dbID " + current.getDbID());
-                        Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE, current.getDbID() , year, auth.getUid(), current.getUsername());
+                        Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE, current.getDbID() , year, auth.getUid(), current.getUsername(), photos);
                         bookRef.document(Integer.toString(val)).set(book);
                     }
 
@@ -290,14 +291,17 @@ public class User {
      */
     void ownerEditBook(String title, String author, long ISBN, int bookID, int year){
 
+        Log.d(TAG, "onClick: Title " + title);
+        Log.d(TAG, "onClick: Author " + author);
+        Log.d(TAG, "onClick: ISBN " + ISBN );
+        Log.d(TAG, "onClick: Year " + year);
+        Log.d(TAG, "onClick: bookID " + bookID);
+
         // update global book
         bookRef.document(Integer.toString(bookID)).update("title", title, "author", author, "isbn", ISBN, "year", year);
-
-        // update owned book
-        userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(bookID)).update("title", title, "author", author, "isbn", ISBN, "year", year);
-
-        // TODO: update books requested?
     }
+
+
 
 
     /**
@@ -401,7 +405,7 @@ public class User {
      * Add the request to borrower transaction list
      * @param bookID is the id of the book you wish to borrow
      */
-    public void borrowerRequestBook(int bookID) {
+    public synchronized void borrowerRequestBook(int bookID) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_transaction_id");
 
@@ -433,6 +437,12 @@ public class User {
                                             if (task1.isSuccessful()) {
                                                 User borrower = task1.getResult().toObject(User.class);
 
+                                                // can't borrow your own book
+                                                if (book.getOwner_dbID() == auth.getUid()) {
+                                                    Log.d(TAG, "onDataChange: Cant request your own book!");
+                                                    return;
+                                                }
+
                                                 // create a new transaction
                                                 Transaction request = new Transaction(val, bookID, null, borrower.getUsername(), book.getOwner_username(), auth.getUid(), book.getOwner_dbID());
 
@@ -443,6 +453,12 @@ public class User {
                                                 book.setStatus(Book.STATUS_REQUESTED);
                                                 userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(bookID)).set(book);
                                                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_REQUESTED);
+
+                                                // notify the owner
+                                                Notification notification = new Notification(borrower.getUsername(), book.getOwner_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
+                                                notification.prepareMessage();
+                                                notification.sendNotification();
+
                                             }
 
                                             else {
