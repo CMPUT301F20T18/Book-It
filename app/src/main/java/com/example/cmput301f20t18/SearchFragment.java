@@ -1,7 +1,10 @@
 package com.example.cmput301f20t18;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.renderscript.ScriptGroup;
 import android.util.ArraySet;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -9,10 +12,13 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.EditorInfo;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -31,6 +37,8 @@ import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+
 /**
  * SearchFragment is a fragment which handles user searching for other users and books
  * Functionality
@@ -38,19 +46,24 @@ import com.google.firebase.firestore.QuerySnapshot;
  * UI contrabutions
  * @author Johnathon Gil
  */
-//TODO: Add a listview to the UI and an adapter which can display search results for both
-//      User and Book (Specifically either one that can take in an array set or if that is not
-//      possible one that takes in a list and let Chase know to update searchFrag as appropriate)
+/*
+ *Note: Chase added a listview to fragment_search.xml because the results wouldn't display otherwise
+ */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
-
     private final String TAG = "SEARCH_FRAG";                                       //Tag for Log
-    final ArraySet<Book> bookDataList = new ArraySet<>();
-    final ArraySet<User> userDataList = new ArraySet<>();
+
+    final ArrayList<Book> bookDataList = new ArrayList();
+    final ArrayList<User> userDataList = new ArrayList();
+
+    SearchFragBookAdapter bookAdapter;
+    SearchFragUserAdapter userAdapter;
+
+    ListView SearchResultList;
 
     /**
-     *  onCreateView is called on creation
-     *  It initializes various UI elements (Button, TabLayout, ViewPager, EditText, etc.)
+     * onCreateView is called on creation
+     * It initializes various UI elements (Button, TabLayout, ViewPager, EditText, etc.)
      *
      * @param inflater
      * @param container
@@ -64,6 +77,10 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
 
+
+        bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
+        userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
+
         TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.search_viewPager);
 
@@ -76,8 +93,8 @@ public class SearchFragment extends Fragment {
 
         Spinner searchSpinner = view.findViewById(R.id.search_spinner);
         ArrayAdapter<CharSequence> spinnerAdapter = ArrayAdapter.createFromResource(view.getContext(),
-                R.array.search_spinner_array, android.R.layout.simple_spinner_item);
-        spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+                R.array.search_spinner_array, R.layout.custom_spinner_item);
+        spinnerAdapter.setDropDownViewResource(R.layout.custom_spinner_dropdown_item);
         searchSpinner.setAdapter(spinnerAdapter);
         searchSpinner.setOnItemSelectedListener(spinnerListener);
 
@@ -90,6 +107,8 @@ public class SearchFragment extends Fragment {
         searchButton = view.findViewById(R.id.search_button);
         searchButton.setOnClickListener(
                 new SearchButtonOnClickListener(searchEditText, spinnerListener));
+
+        SearchResultList = view.findViewById(R.id.search_result_list);
         return view;
     }
 
@@ -104,8 +123,10 @@ public class SearchFragment extends Fragment {
     private void search(String searchWord, String selectedOption) {
         if (searchWord != "") {
             if (selectedOption.equals("Books")) {
+                SearchResultList.setAdapter(bookAdapter);
                 searchBooks(searchWord);
             } else {
+                SearchResultList.setAdapter(userAdapter);
                 searchUsers(searchWord);
             }
         }
@@ -131,14 +152,16 @@ public class SearchFragment extends Fragment {
         BookQueryHandler.searchByAuthor(collection, listener, searchKey);
         BookQueryHandler.searchByISBN(collection, listener, searchKey);
         BookQueryHandler.searchByYear(collection, listener, searchKey);
+        bookAdapter.notifyDataSetChanged();
     }
 
     /**
      * searchUsers is called from Search and calls various methods which query the database for
      * users
+     *
      * @param searchKey
      */
-    private void searchUsers(String searchKey){
+    private void searchUsers(String searchKey) {
         userDataList.clear();
         final QueryUserListener listener = new QueryUserListener();
 
@@ -146,6 +169,7 @@ public class SearchFragment extends Fragment {
         final CollectionReference userCollection = db.collection("users");
 
         UserQueryHandler.searchByUsername(userCollection, listener, searchKey);
+        userAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -174,15 +198,17 @@ public class SearchFragment extends Fragment {
         /**
          * setSearchOption is called from onItemSelected
          * Changes searchOption to the value selected
+         *
          * @param selected
          */
-        private void setSearchOption(String selected){
+        private void setSearchOption(String selected) {
             this.searchOption = selected;
         }
 
         /**
          * getSearchOption gets the currently selected item of
          * the spinner
+         *
          * @return The current selected item in listener
          */
         public String getSearchOption() {
@@ -199,7 +225,8 @@ public class SearchFragment extends Fragment {
 
         /**
          * Creates an instance of the listener
-         * @param searchEditText A EditText object which contains the user entered search key
+         *
+         * @param searchEditText  A EditText object which contains the user entered search key
          * @param spinnerListener A SpinnerOnClickListener with the ability to provide the currently
          *                        selected option
          */
@@ -211,6 +238,7 @@ public class SearchFragment extends Fragment {
         /**
          * onClick is called when the button is clicked
          * It calls a method which conducts a search of the database
+         *
          * @param v A View object
          */
         @Override
@@ -221,17 +249,18 @@ public class SearchFragment extends Fragment {
         }
     }
 
-    private class SearchEditTextOnActionListener implements TextView.OnEditorActionListener{
+    private class SearchEditTextOnActionListener implements TextView.OnEditorActionListener {
         private EditText searchEditText;
         private SpinnerOnClickListener spinnerListener;
 
         /**
          * Creates an instance of the listener
-         * @param searchEditText EditText for the search bar
+         *
+         * @param searchEditText  EditText for the search bar
          * @param spinnerListener SpinnerOnClickListener for getting selected search option
          */
         SearchEditTextOnActionListener(EditText searchEditText,
-                                       SpinnerOnClickListener spinnerListener){
+                                       SpinnerOnClickListener spinnerListener) {
             this.searchEditText = searchEditText;
             this.spinnerListener = spinnerListener;
         }
@@ -239,17 +268,21 @@ public class SearchFragment extends Fragment {
         /**
          * Called on doing an action within the editor
          * Checks if the action was a search button click and if so calls search function
-         * @param v TextView object
+         *
+         * @param v        TextView object
          * @param actionId int representing action taken
-         * @param event KeyEvent
+         * @param event    KeyEvent
          * @return Boolean demonstrating whether the action was handled or not
          */
         @Override
         public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
             boolean handled = false;
-            if (actionId == EditorInfo.IME_ACTION_SEARCH){
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
                 String searchWord = searchEditText.getText().toString();
                 String selectedOption = spinnerListener.getSearchOption();
+                InputMethodManager imm = (InputMethodManager) v.getContext()
+                        .getSystemService(Context.INPUT_METHOD_SERVICE);
+                imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
                 search(searchWord, selectedOption);
                 handled = true;
             }
@@ -260,7 +293,7 @@ public class SearchFragment extends Fragment {
     /**
      * QueryHandler handles search queries by the user
      */
-    private static class QueryHandler{
+    private static class QueryHandler {
         private static String TAG = "SEARCH_FRAG";      //Tag for Log
 
         /**
@@ -269,14 +302,14 @@ public class SearchFragment extends Fragment {
          * any entry in the database which is similar to the string provided
          *
          * @param collection A CollectionReference object referring to the collection being queried
-         * @param listener A EventListener for QuerySnapshots which manipulates data returned by
-         *                 the query
-         * @param field A String object containing the field being queried
-         * @param searchKey A String object containing the key to be searched for
+         * @param listener   A EventListener for QuerySnapshots which manipulates data returned by
+         *                   the query
+         * @param field      A String object containing the field being queried
+         * @param searchKey  A String object containing the key to be searched for
          */
         static void queryByString(CollectionReference collection,
-                                   EventListener<QuerySnapshot> listener,
-                                   String field, String searchKey){
+                                  EventListener<QuerySnapshot> listener,
+                                  String field, String searchKey) {
             Log.d(TAG, "Field: " + field);
 
             final String specialChar = "\uf8ff";
@@ -301,23 +334,22 @@ public class SearchFragment extends Fragment {
          * In the case where the key is not parsable into a string an error will be caught
          * and logged
          *
-         * @param collection A CollectionReference object referring to the collection being queried
-         * @param listener A EventListener for QuerySnapshots which manipulates data returned by
-         *                 the query
-         * @param field A String object containing the field being queried
+         * @param collection      A CollectionReference object referring to the collection being queried
+         * @param listener        A EventListener for QuerySnapshots which manipulates data returned by
+         *                        the query
+         * @param field           A String object containing the field being queried
          * @param searchKeyString A String object containing the key to be searched for
          */
         static void queryByNumberEqual(CollectionReference collection,
                                        EventListener<QuerySnapshot> listener,
-                                       String field, String searchKeyString){
+                                       String field, String searchKeyString) {
             Log.d(TAG, "Field: " + field);
-            try{
+            try {
                 Long searchKey = Long.parseLong(searchKeyString);
                 Query query = collection
                         .whereEqualTo(field, searchKey);
                 query.addSnapshotListener(listener);
-            }
-            catch (NumberFormatException numberFormatException){
+            } catch (NumberFormatException numberFormatException) {
                 Log.e(TAG, "String entered is not able to be parsed as a number");
             }
         }
@@ -327,19 +359,19 @@ public class SearchFragment extends Fragment {
      * BookQueryHandler handles search queries by the user for books by making calls to
      * QueryHandler
      */
-    private static class BookQueryHandler{
+    private static class BookQueryHandler {
 
         /**
          * Searches the database for any books whose title is similar to the key provided by the
          * user
          *
          * @param collection A CollectionReference object referring to the collection being queried
-         * @param listener A EventListener for QuerySnapshots which manipulates data returned by
-         *                 the query
-         * @param searchKey A String object containing the key to be searched for
+         * @param listener   A EventListener for QuerySnapshots which manipulates data returned by
+         *                   the query
+         * @param searchKey  A String object containing the key to be searched for
          */
         static void searchByTitle(CollectionReference collection, QueryBookListener listener,
-                                  String searchKey){
+                                  String searchKey) {
             final String field = "title";
 
             QueryHandler.queryByString(collection, listener, field, searchKey);
@@ -350,19 +382,20 @@ public class SearchFragment extends Fragment {
          * user
          *
          * @param collection A CollectionReference object referring to the collection being queried
-         * @param listener A EventListener for QuerySnapshots which manipulates data returned by
-         *                 the query
-         * @param searchKey A String object containing the key to be searched for
+         * @param listener   A EventListener for QuerySnapshots which manipulates data returned by
+         *                   the query
+         * @param searchKey  A String object containing the key to be searched for
          */
         static void searchByAuthor(CollectionReference collection, QueryBookListener listener,
-                                   String searchKey){
+                                   String searchKey) {
             final String field = "author";
 
             QueryHandler.queryByString(collection, listener, field, searchKey);
         }
+
         //TODO After restructuring of DB, make this work
         static void searchByOwnerUsername(CollectionReference collection,
-                                          QueryBookListener listener, String searchKey){
+                                          QueryBookListener listener, String searchKey) {
             final String field = "owner";
         }
 
@@ -371,12 +404,12 @@ public class SearchFragment extends Fragment {
          * user
          *
          * @param collection A CollectionReference object referring to the collection being queried
-         * @param listener A EventListener for QuerySnapshots which manipulates data returned by
-         *                 the query
-         * @param searchKey A String object containing the key to be searched for
+         * @param listener   A EventListener for QuerySnapshots which manipulates data returned by
+         *                   the query
+         * @param searchKey  A String object containing the key to be searched for
          */
         static void searchByISBN(CollectionReference collection, QueryBookListener listener,
-                                 String searchKey){
+                                 String searchKey) {
             final String field = "isbn";
 
             QueryHandler.queryByNumberEqual(collection, listener, field, searchKey);
@@ -387,12 +420,12 @@ public class SearchFragment extends Fragment {
          * by the user
          *
          * @param collection A CollectionReference object referring to the collection being queried
-         * @param listener A EventListener for QuerySnapshots which manipulates data returned by
-         *                 the query
-         * @param searchKey A String object containing the key to be searched for
+         * @param listener   A EventListener for QuerySnapshots which manipulates data returned by
+         *                   the query
+         * @param searchKey  A String object containing the key to be searched for
          */
         static void searchByYear(CollectionReference collection, QueryBookListener listener,
-                                 String searchKey){
+                                 String searchKey) {
             final String field = "year";
 
             QueryHandler.queryByNumberEqual(collection, listener, field, searchKey);
@@ -403,18 +436,18 @@ public class SearchFragment extends Fragment {
      * UserQueryHandler handles search queries by the user for users by making calls to
      * QueryHandler
      */
-    private static class UserQueryHandler{
+    private static class UserQueryHandler {
 
         /**
          * Searches the database for any users whose username is similar to the key provided by the
          * user
          *
          * @param collection A CollectionReference object referring to the collection being queried
-         * @param listener A EventListener for QuerySnapshots which manipulates data returned by
-         *                 the query
-         * @param searchKey A String object containing the key to be searched for
+         * @param listener   A EventListener for QuerySnapshots which manipulates data returned by
+         *                   the query
+         * @param searchKey  A String object containing the key to be searched for
          */
-        static void searchByUsername(CollectionReference collection, QueryUserListener listener, String searchKey){
+        static void searchByUsername(CollectionReference collection, QueryUserListener listener, String searchKey) {
             final String field = "username";
 
             QueryHandler.queryByString(collection, listener, field, searchKey);
@@ -431,9 +464,17 @@ public class SearchFragment extends Fragment {
         @Override
         public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
             for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                boolean add = true;
                 Book book = snapshot.toObject(Book.class);
                 Log.d(TAG, "Current Book: " + book.getTitle());
-                bookDataList.add(book);
+                for (Book bookContained : bookDataList) {
+                    if (book.getId() == bookContained.getId()) {
+                        add = false;
+                    }
+                }
+                if (add) {
+                    bookDataList.add(book);
+                }
             }
         }
     }
@@ -442,16 +483,132 @@ public class SearchFragment extends Fragment {
      * QueryUserListener is an EventListener which handles data gotten from a query to the
      * users collection
      */
-    class QueryUserListener implements EventListener<QuerySnapshot>{
+    class QueryUserListener implements EventListener<QuerySnapshot> {
         private String TAG = "SEARCH_FRAG";
 
         @Override
         public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
-            for (QueryDocumentSnapshot snapshot : querySnapshot){
+            for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                boolean add = true;
                 User user = snapshot.toObject(User.class);
                 Log.d(TAG, "Current User: " + user.getUsername());
-                userDataList.add(user);
+                for (User userContained : userDataList) {
+                    if (user.getDbID().equals(userContained.getDbID())) {
+                        add = false;
+                    }
+                }
+                if (add) {
+                    userDataList.add(user);
+                }
+            }
+        }
+    }
+
+    class SearchFragBookAdapter extends ArrayAdapter<Book> {
+        private ArrayList<Book> books;
+        private Context context;
+
+        public SearchFragBookAdapter(Context context, ArrayList<Book> books) {
+            super(context, 0, books);
+            this.books = books;
+            this.context = context;
+        }
+
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            View view = convertView;
+
+            if (view == null) {
+                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_available,
+                        parent, false);
+            }
+
+            Book book = books.get(position);
+
+            TextView bookTitle = view.findViewById(R.id.text_book_title);
+            TextView bookAuthor = view.findViewById(R.id.text_book_author);
+            TextView bookISBN = view.findViewById(R.id.text_book_isbn);
+            TextView bookYear = view.findViewById(R.id.text_book_year);
+            //TODO: Once we can decode image string implement
+            //ImageView bookImage = view.findViewById(R.id.image_view);
+            //bookImage.setImage(book.getImage())
+            Button requestBook = view.findViewById(R.id.button_request);
+
+
+            bookTitle.setText(book.getTitle());
+            bookAuthor.setText(book.getAuthor());
+            bookISBN.setText(Long.toString(book.getISBN()));
+            bookYear.setText(Integer.toString(book.getYear()));
+
+            requestBook.setOnClickListener(new requestBookButtonListener(book));
+
+            return view;
+        }
+
+        private class requestBookButtonListener implements View.OnClickListener {
+            private Book book;
+
+            public requestBookButtonListener(Book book) {
+                this.book = book;
+            }
+
+            @Override
+            public void onClick(View v) {
+                User current = new User();
+                Log.d(TAG, "User is attempting to request " + book.getTitle()
+                        + " from user " + book.getOwner_username());
+                current.borrowerRequestBook(book.getId());
+            }
+        }
+    }
+
+    class SearchFragUserAdapter extends ArrayAdapter<User> {
+        private ArrayList<User> users;
+        private Context context;
+
+        public SearchFragUserAdapter(Context context, ArrayList<User> users) {
+            super(context, 0, users);
+            this.users = users;
+            this.context = context;
+        }
+
+        public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
+            View view = convertView;
+
+            if (view == null) {
+                view = LayoutInflater.from(context).inflate(R.layout.card_user_search, parent, false);
+            }
+
+            User user = users.get(position);
+
+            TextView userName = view.findViewById(R.id.text_username);
+            Button viewProfile = view.findViewById(R.id.button_view_profile);
+
+            userName.setText(user.getUsername());
+            viewProfile.setOnClickListener(new ViewProfileButtonListener(user));
+
+            return view;
+        }
+
+        //TODO Add profile picture to intent
+        private class ViewProfileButtonListener implements View.OnClickListener {
+            private User user;
+
+            public ViewProfileButtonListener(User user) {
+                this.user = user;
+            }
+
+            @Override
+            public void onClick(View v) {
+                Intent viewProfileIntent = new Intent(v.getContext(), CheckProfileActivity.class);
+                viewProfileIntent.putExtra("USERNAME", user.getUsername());
+                viewProfileIntent.putExtra("PHONE", user.getPhone());
+                viewProfileIntent.putExtra("EMAIL", user.getEmail());
+                //viewProfileIntent.putExtra("PICTURE", user.getPicture());
+
+                startActivity(viewProfileIntent);
             }
         }
     }
 }
+
+

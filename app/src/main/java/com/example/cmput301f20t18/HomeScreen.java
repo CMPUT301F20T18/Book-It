@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.android.gms.tasks.Tasks;
@@ -33,6 +34,7 @@ import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.messaging.FirebaseMessaging;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,13 +54,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
     private int permissionStorageWriteCode = 100;
     private int permissionStorageReadCode = 101;
 
-    FirebaseAuth auth;
-    FirebaseFirestore DB;
-    CollectionReference system;
-    CollectionReference users;
-    CollectionReference books;
-    DocumentReference current_user;
-    Library lib;
+
     Fragment selectedFragment;
     final String TAG = "HOMESCREEN_DEBUG";
 
@@ -69,12 +65,21 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_screen);
 
+        // update the users instanceToken
+        FirebaseFirestore DB = FirebaseFirestore.getInstance();
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+            @Override
+            public void onComplete(@NonNull Task<String> task) {
+                if (task.isSuccessful()) {
+                    String token = task.getResult();
+                    DB.collection("users").document(auth.getUid()).update("instanceToken", token);
 
 
-        User current = new User();
-        // current.borrowerRequestBook(94);
-        // current.ownerAcceptRequest(60);
-        // current.ownerAcceptRequest(59);
+                }
+            }
+        });
+
 
 
 
@@ -92,6 +97,12 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
         checkPermissionExternalData();
 
+
+    }
+
+    @Override
+    public void onBackPressed()
+    {
 
     }
 
@@ -136,26 +147,48 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
 
     @Override
-    public void onButtonClick(int button, int status) {
+    public void onButtonClick(int button, int status, int bookID, boolean owner) {
         AlertDialog dialog;
+        User current = new User();
         switch (button) {
             case CustomBottomSheetDialog.CANCEL_BUTTON:
-                dialog = new AlertDialog.Builder(HomeScreen.this)
-                        .setTitle("Cancel pick up")
-                        .setMessage("Are you sure you want to cancel this pick up?")
-                        .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                // TODO: cancel pick up (owner or borrower can do this).
-                            }
-                        })
-                        .setNegativeButton("Back", null)
-                        .show();
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
-                break;
+
+                if (owner) {
+                    dialog = new AlertDialog.Builder(HomeScreen.this)
+                            .setTitle("Cancel pick up")
+                            .setMessage("Are you sure you want to cancel this pick up?")
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    current.ownerCancelPickup(bookID);
+                                }
+                            })
+                            .setNegativeButton("Back", null)
+                            .show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                }
+                else {
+                    dialog = new AlertDialog.Builder(HomeScreen.this)
+                            .setTitle("Cancel pick up")
+                            .setMessage("Are you sure you want to cancel this pick up?")
+                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    current.borrowerCancelRequest(bookID);
+                                }
+                            })
+                            .setNegativeButton("Back", null)
+                            .show();
+                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                            .getColor(R.color.colorPrimaryDark));
+                }
+                    break;
+
 
             case CustomBottomSheetDialog.EDIT_BUTTON:
                 // TODO: Make activity for editing book details.
@@ -189,7 +222,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // TODO: delete book
+                                current.ownerDeleteBook(bookID);
                             }
                         })
                         .setNegativeButton("Cancel", null)

@@ -80,8 +80,8 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         try {
             /* These two TextViews will be null if the book status is "Available" */
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-            holder.textViewUsername.setText(book.getOwner().getUsername());
-            holder.textViewUserDescription.setText(R.string.owner);
+            holder.textViewUsername.setText(book.getOwner_username());
+            holder.textViewUserDescription.setText("");
         } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
@@ -165,7 +165,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                     public void onClick(View v) {
                         // TODO: Change to book.getId()
                         CustomBottomSheetDialog bottomSheet =
-                                new CustomBottomSheetDialog(false, book.getStatus());
+                                new CustomBottomSheetDialog(false, book.getStatus(), book.getId());
                         bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
                                 "customBottomSheet");
                     }
