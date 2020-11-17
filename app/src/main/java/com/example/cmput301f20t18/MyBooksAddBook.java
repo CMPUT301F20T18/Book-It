@@ -1,26 +1,26 @@
 package com.example.cmput301f20t18;
 
-import androidx.annotation.NonNull;
+
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.database.DataSnapshot;
-import com.google.firebase.database.DatabaseError;
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import java.util.Calendar;
 
 /**
  * This is a class that creates a new book object through user input
@@ -37,8 +37,10 @@ public class MyBooksAddBook extends AppCompatActivity {
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
+    ImageButton addPhoto;
     Toolbar toolbar;
-    //ImageButton addPic;
+    ImageButton addPic;
+    private static final int RESULT_LOAD_IMAGE = 1;
 
     /**
      * This method has the purpose of creating the activity that prompts the user to add information
@@ -66,6 +68,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         done = findViewById(R.id.done_add_book);
         cancel = findViewById(R.id.return_to_my_books);
+        addPhoto = findViewById(R.id.add_image_button);
 
 
         /**
@@ -79,14 +82,17 @@ public class MyBooksAddBook extends AppCompatActivity {
             public void onClick(View v) {
                 User current = new User();
 
-                String title = bookTitle.getText().toString();
+                String book_title = bookTitle.getText().toString();
                 String book_author = author.getText().toString();
-                Long book_isbn = Long.parseLong(isbn.getText().toString());
-                int book_year = Integer.parseInt(year.getText().toString());
+                String book_isbn = isbn.getText().toString();
+                String book_year = year.getText().toString();
 
-                current.ownerNewBook(book_isbn, title, book_author, book_year);
+                if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
+                    Long isbn = Long.parseLong(book_isbn);
+                    Integer year = Integer.parseInt(book_year);
+                    current.ownerNewBook(isbn, book_title, book_author, year);
+                }
                 finish();
-
             }
         });
 
@@ -104,6 +110,185 @@ public class MyBooksAddBook extends AppCompatActivity {
             }
         });
 
+        addPhoto.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent pickPicture = new Intent(Intent.ACTION_PICK,
+                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
+            }
+        });
+    }
+    //Work in progress
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode){
+            case RESULT_LOAD_IMAGE:
+                if(requestCode == RESULT_OK){
+                    Uri image = data.getData();
+                    String[] filePathColumn = {MediaStore.Images.Media.DATA};
+                    Cursor cursor = getContentResolver().query(image, filePathColumn, null, null, null);
+                    cursor.moveToFirst();
+                    int colIndex = cursor.getColumnIndex(filePathColumn[0]);
+                    String picturePath = cursor.getString(colIndex);
+                    cursor.close();
+                    addPhoto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
+                    addPhoto.refreshDrawableState();
+                }
+        }
+    }
+}
+/**
+ * CheckBookValidity is a static class which can be used to check if user input will generate
+ * a valid book
+ * @author Chase Warwick
+ */
+class CheckBookValidity {
+    /**
+     * bookValid is a method which takes in EditText objects and passed them to other methods
+     * which evaluate if the text contained within each EditText object is a valid input
+     *
+     * @param bookTitle  String object containing the book title
+     * @param bookAuthor String object containing the book author
+     * @param bookISBN   String object containing the book ISBN
+     * @param bookYear   String object containing the book's date of publish
+     * @return boolean object representing whether the text contained within each EditText
+     * will create a valid Book object
+     */
+    public static boolean bookValid(String bookTitle, String bookAuthor, String bookISBN,
+                                    String bookYear) {
+        return CheckBookValidity.checkTitle(bookTitle)
+                && CheckBookValidity.checkAuthor(bookAuthor)
+                && CheckBookValidity.checkISBN(bookISBN)
+                && CheckBookValidity.checkYear(bookYear);
+    }
 
+    /**
+     * checkTitle takes in an EditText object, reads the text contained within it,
+     * then checks if the text is a valid title for a Book object
+     *
+     * @param bookTitle String object containing the book title
+     * @return boolean object representing whether the text contained within the EditText is a
+     * valid title for a Book object
+     */
+    private static boolean checkTitle(String bookTitle) {
+        return CheckInput.checkNonempty(bookTitle);
+    }
+
+    /**
+     * checkAuthor takes in an EditText object, reads the text contained within it,
+     * then checks if the text is a valid author for a Book object
+     *
+     * @param bookAuthor String object containing the book author
+     * @return boolean object representing whether the text contained within the EditText is a
+     * valid author for a Book object
+     */
+    private static boolean checkAuthor(String bookAuthor) {
+        return CheckInput.checkNonempty(bookAuthor);
+    }
+
+    /**
+     * checkISBN takes in an EditText object, reads the text contained within it,
+     * then checks if the text is a valid ISBN for a Book object
+     *
+     * @param bookISBN String object containing the book ISBN
+     * @return boolean object representing whether the text contained within the EditText is a
+     * valid ISBN for a Book object
+     */
+    private static boolean checkISBN(String bookISBN) {
+        boolean valid = true;
+        final long MIN_VAL = 1000000000000L;
+        final long MAX_VAL = 9999999999999L;
+
+        Long isbnNum = -1L;
+
+        try {
+            isbnNum = Long.parseLong(bookISBN);
+        } catch (NumberFormatException numberFormat) {
+            return false;
+        }
+
+        try {
+            if (!CheckInput.checkWithinRange(isbnNum, MIN_VAL, MAX_VAL)) {
+                throw new CheckInput.OutOfRangeException("ISBN is out of possible range");
+            }
+        } catch (CheckInput.OutOfRangeException outOfRange) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * checkYear takes in an EditText object, reads the text contained within it,
+     * then checks if the text is a valid publish date for a Book object
+     *
+     * @param bookYear String object containing the book's date of publish
+     * @return boolean object representing whether the text contained within the EditText is a
+     * valid publish date for a Book object
+     */
+    private static boolean checkYear(String bookYear) {
+        final int MIN_VAL = 0;
+        final int MAX_VAL = Calendar.getInstance().get(Calendar.YEAR);
+        int yearNum = -1;
+
+        try {
+            yearNum = Integer.parseInt(bookYear);
+        } catch (NumberFormatException numberFormat) {
+            return false;
+        }
+
+        try {
+            if (!CheckInput.checkWithinRange(yearNum, MIN_VAL, MAX_VAL)) {
+                throw new CheckInput.OutOfRangeException("Year is out of possible range");
+            }
+        } catch (CheckInput.OutOfRangeException outOfRange) {
+            return false;
+        }
+
+        return true;
+    }
+
+    /**
+     * CheckInput is a static class which can be used to check if user input is valid in various
+     * ways
+     */
+    private static class CheckInput {
+        /**
+         * checkNonempty is a method which can be used to determine if a string is nonempty
+         *
+         * @param string String object to be checked
+         * @return boolean object representing whether the string is nonempty
+         */
+        private static boolean checkNonempty(String string) {
+            return !string.equals("");
+        }
+
+        /**
+         * checkWithinRange is an overloaded method which determines if a Number object
+         * is within a set range
+         *
+         * @param number Number object containing the number to be checked
+         * @param minVal Number object containing the minimum value for number
+         * @param maxVal Number object containing the maximum value for number
+         * @return boolean object representing whether the number is within the range or not
+         */
+        private static boolean checkWithinRange(int number, int minVal, int maxVal) {
+            return number >= minVal && number <= maxVal;
+        }
+
+        private static boolean checkWithinRange(long number, long minVal, long maxVal) {
+            return number >= minVal && number <= maxVal;
+        }
+
+        /**
+         * A custom exception to throw when user input is outside of set range
+         */
+        private static class OutOfRangeException extends Exception {
+            OutOfRangeException(String errorMessage) {
+                super(errorMessage);
+            }
+        }
     }
 }

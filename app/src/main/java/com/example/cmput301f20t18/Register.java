@@ -150,7 +150,8 @@ public class Register extends AppCompatActivity {
 
 
                                                 // start new activity with current user
-                                                Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                                finish();
                                                 startActivityForResult(intent, 0);
                                             }
                                             else {

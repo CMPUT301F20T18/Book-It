@@ -24,6 +24,7 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
+
     </FrameLayout>
 
     <RelativeLayout
@@ -79,6 +80,10 @@
 
 
     </RelativeLayout>
+    <ListView
+        android:id="@+id/search_result_list"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"></ListView>
 
     <FrameLayout
         android:layout_width="match_parent"
