@@ -262,6 +262,10 @@ public class Book implements Comparable<Book> {
         this.photos = photos;
     }
 
+    public boolean hasPhotos(){
+        return photos.isEmpty() == false;
+    }
+
 
     public String getCover() {
         String cover = null;

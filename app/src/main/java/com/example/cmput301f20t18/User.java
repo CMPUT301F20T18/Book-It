@@ -82,6 +82,8 @@ public class User {
      * @param title The title of the new book
      * @param author The author of the new book
      * @param year The year the new book was released
+     * @param photos The photos of the book in String form
+
      */
 
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
