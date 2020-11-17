@@ -29,6 +29,9 @@ import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -47,6 +50,9 @@ public class MyBooksAddBook extends AppCompatActivity {
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
     ImageButton addPhoto;
+
+    ArrayList<Bitmap> photos;
+
     Toolbar toolbar;
     ImageButton addPic;
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -138,6 +144,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_isbn = isbn.getText().toString();
                 String book_year = year.getText().toString();
 
+
                 // debug info
                 Log.d(TAG, "onClick: Title " + book_title);
                 Log.d(TAG, "onClick: Author " + book_author);
@@ -149,11 +156,13 @@ public class MyBooksAddBook extends AppCompatActivity {
                 Long isbn = Long.parseLong(book_isbn);
                 Integer year = Integer.parseInt(book_year);
                 if (type == ADD_BOOK) {
+             
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
-                        current.ownerNewBook(isbn, book_title, book_author, year, null);
+                        current.ownerNewBook(isbn, book_title, book_author, year, byteArray);
                     }                }
                 else if (type == EDIT_BOOK) {
                     current.ownerEditBook(book_title, book_author, isbn, bookID, year);
+
                 }
                 finish();
             }
@@ -210,6 +219,8 @@ public class MyBooksAddBook extends AppCompatActivity {
                     Bitmap finalMap = Bitmap
                             .createBitmap(bitmap, 0, 0, width, height, matrix, false)
                             .copy(Bitmap.Config.ARGB_8888, true);
+                    bitmap.recycle();
+                    photos.add(finalMap);
                     addPhoto.setImageBitmap(finalMap);
                 }
         }
