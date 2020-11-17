@@ -1,6 +1,7 @@
 package com.example.cmput301f20t18;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -13,6 +14,7 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -21,8 +23,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import java.util.Calendar;
 
@@ -95,22 +100,19 @@ public class MyBooksAddBook extends AppCompatActivity {
         addPhoto = findViewById(R.id.add_image_button);
 
         if (type == EDIT_BOOK) {
-            DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                @Override
-                public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                    if(task.isSuccessful()) {
-                        Book book = task.getResult().toObject(Book.class);
-                        bookTitle.setText(book.getTitle());
-                        author.setText(book.getAuthor());
-                        year.setText(Integer.toString(book.getYear()));
-                        isbn.setText(Long.toString(book.getISBN()));
-                    }
-
-                    else {
-                        Log.d(TAG, "MyBooksAddBook - Error querying for book");
-                    }
-
+            DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    Book book = task.getResult().toObject(Book.class);
+                    bookTitle.setText(book.getTitle());
+                    author.setText(book.getAuthor());
+                    year.setText(Integer.toString(book.getYear()));
+                    isbn.setText(Long.toString(book.getISBN()));
                 }
+
+                else {
+                    Log.d(TAG, "MyBooksAddBook - Error querying for book");
+                }
+
             });
 
         }
@@ -137,21 +139,21 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_year = year.getText().toString();
 
                 // debug info
-                Log.d(TAG, "onClick: Title " + title);
+                Log.d(TAG, "onClick: Title " + book_title);
                 Log.d(TAG, "onClick: Author " + book_author);
                 Log.d(TAG, "onClick: ISBN " + book_isbn );
                 Log.d(TAG, "onClick: Year " + book_year);
                 Log.d(TAG, "onClick: bookID " + bookID);
                 Log.d(TAG, "onClick: Type of Add " + type);
 
+                Long isbn = Long.parseLong(book_isbn);
+                Integer year = Integer.parseInt(book_year);
                 if (type == ADD_BOOK) {
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
-                        Long isbn = Long.parseLong(book_isbn);
-                        Integer year = Integer.parseInt(book_year);
-                        current.ownerNewBook(isbn, book_title, book_author, year);
+                        current.ownerNewBook(isbn, book_title, book_author, year, null);
                     }                }
                 else if (type == EDIT_BOOK) {
-                    current.ownerEditBook(title, book_author, book_isbn, bookID, book_year);
+                    current.ownerEditBook(book_title, book_author, isbn, bookID, year);
                 }
                 finish();
             }
