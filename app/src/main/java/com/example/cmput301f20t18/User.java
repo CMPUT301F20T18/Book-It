@@ -15,6 +15,7 @@ import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -81,8 +82,9 @@ public class User {
      * @param title The title of the new book
      * @param author The author of the new book
      * @param year The year the new book was released
+     * @param bytes
      */
-    public void ownerNewBook(Long isbn, String title, String author, int year) {
+    public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<Byte[]> bytes) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {

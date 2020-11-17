@@ -24,6 +24,9 @@ import androidx.appcompat.widget.Toolbar;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -42,7 +45,8 @@ public class MyBooksAddBook extends AppCompatActivity {
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
     ImageButton addPhoto;
-    ImageView cover;
+    ArrayList<Bitmap> photos;
+
     Toolbar toolbar;
     private static final int RESULT_LOAD_IMAGE = 1;
 
@@ -94,7 +98,13 @@ public class MyBooksAddBook extends AppCompatActivity {
                 if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
                     Long isbn = Long.parseLong(book_isbn);
                     Integer year = Integer.parseInt(book_year);
-                    current.ownerNewBook(isbn, book_title, book_author, year);
+                    ArrayList<Byte[]> bytes = new ArrayList<>();
+                    for(Bitmap photo: photos){
+                        ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                        photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                        byte[] byteArray = stream.toByteArray();
+                    }
+                    current.ownerNewBook(isbn, book_title, book_author, year, bytes);
                 }
                 finish();
             }
@@ -151,6 +161,8 @@ public class MyBooksAddBook extends AppCompatActivity {
                     Bitmap finalMap = Bitmap
                             .createBitmap(bitmap, 0, 0, width, height, matrix, false)
                             .copy(Bitmap.Config.ARGB_8888, true);
+                    bitmap.recycle();
+                    photos.add(finalMap);
                     addPhoto.setImageBitmap(finalMap);
                 }
         }
