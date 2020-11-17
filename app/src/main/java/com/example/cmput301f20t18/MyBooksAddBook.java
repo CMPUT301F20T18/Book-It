@@ -35,6 +35,7 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 
 import java.net.URI;
+import java.util.ArrayList;
 
 /**
  * This is a class that creates a new book object through user input
@@ -52,7 +53,7 @@ public class MyBooksAddBook extends AppCompatActivity {
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
     ImageButton addPhoto;
-    ImageView cover;
+    ArrayList<Bitmap> photos = new ArrayList<>();
     Toolbar toolbar;
     private static final int RESULT_LOAD_IMAGE = 1;
 
@@ -101,7 +102,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                 Long book_isbn = Long.parseLong(isbn.getText().toString());
                 int book_year = Integer.parseInt(year.getText().toString());
 
-                current.ownerNewBook(book_isbn, title, book_author, book_year);
+                current.ownerNewBook(book_isbn, title, book_author, book_year, photos);
                 finish();
 
             }
@@ -160,6 +161,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     Bitmap finalMap = Bitmap
                             .createBitmap(bitmap, 0, 0, width, height, matrix, false)
                             .copy(Bitmap.Config.ARGB_8888, true);
+                    photos.add(finalMap);
                     addPhoto.setImageBitmap(finalMap);
                 }
     }

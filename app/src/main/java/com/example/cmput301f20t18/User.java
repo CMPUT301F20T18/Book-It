@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
 import android.widget.Toast;
@@ -25,6 +26,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
@@ -107,8 +109,9 @@ public class User {
      * @param isbn   ISBN of the book to be added
      * @param title  Title of the book to be added
      * @param author Author of the book to be added
+     * @param photos
      */
-    public void ownerNewBook(Long isbn, String title, String author, int year) {
+    public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<Bitmap> photos) {
         FirebaseDatabase db = FirebaseDatabase.getInstance();
         DatabaseReference mRef = db.getReference().child("max_book_id");
         mRef.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -116,11 +119,19 @@ public class User {
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 Integer val = snapshot.getValue(Integer.class);
                 userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
                     @Override
                     public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                         if (task.isSuccessful()) {
                             User current = Objects.requireNonNull(task.getResult()).toObject(User.class);
                             Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE,current, year);
+                            for (Bitmap photo: photos){
+                                ByteArrayOutputStream stream = new ByteArrayOutputStream();
+                                photo.compress(Bitmap.CompressFormat.PNG, 100, stream);
+                                byte[] byteArray = stream.toByteArray();
+                                book.addPhoto(byteArray);
+                                photo.recycle();
+                            }
                             bookRef.document(Integer.toString(val)).set(book);
                             userRef.document(auth.getUid()).collection("books_owned").document(Integer.toString(val)).set(book);
                         }
