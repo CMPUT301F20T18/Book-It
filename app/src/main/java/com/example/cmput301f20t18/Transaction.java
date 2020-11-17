@@ -18,6 +18,8 @@ import java.util.Map;
  * interactions that two people can have within the app
  * requesting books, declining requests, transferring of books
  * between users and returning the book to it's original owner
+ *
+ * Note:
  */
 public class Transaction {
     public static final int STATUS_AVAILABLE = 0;
