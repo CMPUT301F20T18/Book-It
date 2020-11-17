@@ -1,12 +1,15 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.fragment.app.Fragment;
 
 import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
@@ -26,6 +29,7 @@ public class PostScanActivity extends AppCompatActivity {
     TextView ISBN, noBooksMB, noBooksB;
     Button searchCopies, addBook, backButton;
     String passed_isbn;
+    private final static String TAG = "PSA_DEBUG";
 
     /**
      * This method has the purpose of creating the activity that supplies the options after a scan has been made.
@@ -43,6 +47,8 @@ public class PostScanActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_post_scan);
         passed_isbn = getIntent().getStringExtra("ISBN");
+
+        Log.d(TAG, "onCreate: ISBN =  " + passed_isbn);
 
 
 
@@ -77,6 +83,7 @@ public class PostScanActivity extends AppCompatActivity {
          * This is a listner to be able to react to button press
          */
         searchCopies.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
                 Bundle bundle = new Bundle();
@@ -98,6 +105,13 @@ public class PostScanActivity extends AppCompatActivity {
         addBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), MyBooksAddBook.class);
+                Log.d(TAG, "ONLeave: ISBN =  " + passed_isbn);
+
+                intent.putExtra("filled_isbn", Long.parseLong(passed_isbn));
+                intent.putExtra("type", MyBooksAddBook.ADD_SCAN);
+                startActivityForResult(intent, 5);
+
 
             }
         });
