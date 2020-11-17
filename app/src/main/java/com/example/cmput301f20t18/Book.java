@@ -29,7 +29,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    private ArrayList<String> photos;
+//    private ArrayList<String> photos;
     private int status;
     private String owner_username;
     private String owner_dbID;
@@ -53,7 +53,7 @@ public class Book implements Comparable<Book> {
         this.owner_username = owner_username;
         this.owner_dbID = owner_dbID;
         this.year = year;
-        this.photos = photos;
+//        this.photos = photos;
 
     }
 
@@ -209,28 +209,28 @@ public class Book implements Comparable<Book> {
      * We use blobs instead of byte [] so firebase can properly serialize the object
      * Must convert back to bytes once retrieved
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<Blob> retrievePhotos() {
-        ArrayList<Blob> outPhotos = new ArrayList<Blob>();
-        for(String photo: this.photos){
-            outPhotos.add(Blob.fromBytes(Base64.getDecoder().decode(photo)));
-        }
-        return outPhotos;
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public ArrayList<Blob> retrievePhotos() {
+//        ArrayList<Blob> outPhotos = new ArrayList<Blob>();
+//        for(String photo: this.photos){
+//            outPhotos.add(Blob.fromBytes(Base64.getDecoder().decode(photo)));
+//        }
+//        return outPhotos;
+//    }
 
 
     /**
      * Adds a photo to the arrayList of photos the book has, the first one is the cover
      * @param photoByte The byte representation of a book
      */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addPhoto(byte[] photoByte) {
-
-        String photo = Base64
-                .getEncoder()
-                .encodeToString(photoByte);
-        this.photos.add(photo);
-    }
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public void addPhoto(byte[] photoByte) {
+//
+//        String photo = Base64
+//                .getEncoder()
+//                .encodeToString(photoByte);
+//        this.photos.add(photo);
+//    }
 
     /**
      * Removes a photo to the arrayList of photos the book has
@@ -279,6 +279,7 @@ public class Book implements Comparable<Book> {
     public ArrayList<String> getPhotos() {
         return photos;
     }
+
 
 
 
