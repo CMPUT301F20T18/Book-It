@@ -42,9 +42,9 @@ public class MainActivity extends AppCompatActivity {
 //                    DB.collection("users").document(auth.getUid()).update("instanceToken", token);
 //
 //
-//                    // start the main Activity
-//                    Intent loginIntent = new Intent(MainActivity.this, Login.class);
-//                    startActivity(loginIntent);
+                    // start the main Activity
+                    Intent loginIntent = new Intent(MainActivity.this, Login.class);
+                    startActivity(loginIntent);
 //
 //                }
 //            }
