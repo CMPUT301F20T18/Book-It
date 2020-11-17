@@ -171,7 +171,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
                 Long isbn = Long.parseLong(book_isbn);
                 Integer year = Integer.parseInt(book_year);
-                if (type == ADD_BOOK || type == ADD_SCAN) {
+                if (type == ADD_BOOK) {
              
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
                         Log.d(TAG, "Validity check passed");
