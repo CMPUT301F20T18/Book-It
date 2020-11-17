@@ -1,6 +1,12 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
 import android.os.Bundle;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,6 +19,14 @@ import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+
 import java.util.ArrayList;
 import java.util.Collections;
 
@@ -21,13 +35,13 @@ import java.util.Collections;
  * The class is still under development so the elements that appear on screen are mostly visual
  * with the exception of cancel
  * @author Johnathon Gil
- * @author
+ * @author Chase Warwick (class UserQueryTaskCompleteListener and function updateUserInfo)
  */
 
 public class ProfileFragment extends Fragment {
 
-    TextView username, phoneNum, email;
-    Button editAccount, signOut;
+    TextView username, phoneNum, email, editAccount;
+    Button signOut;
     ImageView profilePic;
 
     // TODO: Rename parameter arguments, choose names that match
@@ -75,16 +89,83 @@ public class ProfileFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
-        username = (TextView) view.findViewById(R.id.my_user_name);
-        phoneNum = (TextView) view.findViewById(R.id.phone_num);
-        email = (TextView) view.findViewById(R.id.email);
+        editAccount = (TextView) view.findViewById(R.id.edit_profile);
 
-        profilePic = (ImageView) view.findViewById(R.id.profile_pic);
+        final String editAccountText = "Edit Account";
 
-        username.setText("MysticWolf");
-        phoneNum.setText("780 933 8641");
-        email.setText("jggil@ualberta.ca");
+        SpannableString  editProf = new SpannableString(editAccountText);
+
+        ClickableSpan redirect = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+
+                Intent editIntent = new Intent(getContext(),EditProfile.class);
+                startActivity(editIntent);
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.doveGray));
+            }
+        };
+
+        editProf.setSpan(redirect,0,12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        editAccount.setText(editProf);
+        editAccount.setMovementMethod(LinkMovementMethod.getInstance());
+
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        Task<DocumentSnapshot> currentUser = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(auth.getUid())
+                .get()
+                .addOnCompleteListener(new UserQueryTaskCompleteListener(view));
 
         return view;
     }
+
+    /**
+     * updateUserData is called after the query to the db for user information is complete
+     * and updates the fields filling them with the data recieved
+     *
+     * @author Chase Warwick
+     * @param user The user currently using the app!
+     */
+    private void updateUserData(User user, View view) {
+        username = (TextView) view.findViewById(R.id.my_user_name);
+        phoneNum = (TextView) view.findViewById(R.id.phone_num);
+        email = (TextView) view.findViewById(R.id.email);
+        profilePic = (ImageView) view.findViewById(R.id.profile_pic);
+
+        username.setText(user.getUsername());
+        phoneNum.setText(user.getPhone());
+        email.setText(user.getEmail());
+
+    }
+
+    /**
+     * UserQueryTaskCompleteListener waits for the task of getting user snapshot to complete
+     * before calling a function to update user information
+     * @author Chase Warwick
+     * TODO: Currently crashes if user repeatedly clicks profile button (not sure what that's about)
+     * TODO: Add profile picture functionality (Should be easy just need db to have it)
+     */
+    private class UserQueryTaskCompleteListener implements OnCompleteListener{
+        private View view;
+
+        UserQueryTaskCompleteListener(View view){
+            this.view = view;
+        }
+
+        @Override
+        public void onComplete(@NonNull Task task) {
+            if (task.isSuccessful()){
+                DocumentSnapshot UserDocument = (DocumentSnapshot) task.getResult();
+                User user = UserDocument.toObject(User.class);
+                updateUserData(user, view);
+            }
+        }
+    }
+
+
 }
