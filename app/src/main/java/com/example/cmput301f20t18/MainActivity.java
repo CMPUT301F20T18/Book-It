@@ -32,23 +32,23 @@ public class MainActivity extends AppCompatActivity {
 
 
         // update the users instanceToken
-        FirebaseFirestore DB = FirebaseFirestore.getInstance();
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
-            @Override
-            public void onComplete(@NonNull Task<String> task) {
-                if (task.isSuccessful()) {
-                    String token = task.getResult();
-                    DB.collection("users").document(auth.getUid()).update("instanceToken", token);
-
-
-                    // start the main Activity
-                    Intent loginIntent = new Intent(MainActivity.this, Login.class);
-                    startActivity(loginIntent);
-
-                }
-            }
-        });
+//        FirebaseFirestore DB = FirebaseFirestore.getInstance();
+//        FirebaseAuth auth = FirebaseAuth.getInstance();
+//        FirebaseMessaging.getInstance().getToken().addOnCompleteListener(new OnCompleteListener<String>() {
+//            @Override
+//            public void onComplete(@NonNull Task<String> task) {
+//                if (task.isSuccessful()) {
+//                    String token = task.getResult();
+//                    DB.collection("users").document(auth.getUid()).update("instanceToken", token);
+//
+//
+//                    // start the main Activity
+//                    Intent loginIntent = new Intent(MainActivity.this, Login.class);
+//                    startActivity(loginIntent);
+//
+//                }
+//            }
+//        });
     }
 }
 
