@@ -25,6 +25,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -77,6 +78,10 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
 
+        // Setting the header title. This may be done in XML instead
+        Toolbar toolbar = view.findViewById(R.id.search_toolbar);
+        //toolbar.setTitle(getResources().getText(R.string.mybooks_header));
+        toolbar.setTitle("Search");
 
         bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
