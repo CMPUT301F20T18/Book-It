@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -29,6 +26,7 @@ import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -76,7 +74,6 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
-
 
         bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
@@ -481,7 +478,8 @@ public class SearchFragment extends Fragment {
         private String TAG = "SEARCH_FRAG";
 
         @Override
-        public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+        public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                            @Nullable FirebaseFirestoreException error) {
             for (QueryDocumentSnapshot snapshot : querySnapshot) {
                 boolean add = true;
                 User user = snapshot.toObject(User.class);
@@ -501,22 +499,42 @@ public class SearchFragment extends Fragment {
     class SearchFragBookAdapter extends ArrayAdapter<Book> {
         private ArrayList<Book> books;
         private Context context;
+        private ArrayList<Transaction> transactionDataList = new ArrayList<>();
 
         public SearchFragBookAdapter(Context context, ArrayList<Book> books) {
             super(context, 0, books);
             this.books = books;
             this.context = context;
+
+            String user = FirebaseAuth.getInstance().getUid();
+            Query transactionQuery = FirebaseFirestore.getInstance()
+                    .collection("transactions")
+                    .whereEqualTo("borrower_dbID", FirebaseAuth.getInstance().getUid());
+            transactionQuery.addSnapshotListener(new QueryTransactionListener(this));
+
         }
 
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View view = convertView;
+            View view;
 
-            if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_available,
+            Book book = books.get(position);
+
+            boolean requested = false;
+            int bookID = book.getId();
+            for (Transaction transaction : transactionDataList) {
+                if (transaction.getBookID() == bookID) {
+                    requested = true;
+                }
+            }
+
+            if (requested) {
+                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_requested,
+                        parent, false);
+            } else {
+                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_request,
                         parent, false);
             }
 
-            Book book = books.get(position);
 
             TextView bookTitle = view.findViewById(R.id.text_book_title);
             TextView bookAuthor = view.findViewById(R.id.text_book_author);
@@ -553,7 +571,29 @@ public class SearchFragment extends Fragment {
                 current.borrowerRequestBook(book.getId());
             }
         }
+
+        private class QueryTransactionListener implements EventListener<QuerySnapshot> {
+            final String TAG = "SEARCH_FRAG";
+            final SearchFragBookAdapter adapter;
+
+            public QueryTransactionListener(SearchFragBookAdapter adapter){
+                this.adapter = adapter;
+            }
+
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                                @Nullable FirebaseFirestoreException error) {
+                for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                    Transaction transaction = snapshot.toObject(Transaction.class);
+                    Log.d(TAG, "Current Transaction: " + transaction.getID());
+                    transactionDataList.add(transaction);
+                    adapter.notifyDataSetChanged();
+                }
+            }
+        }
     }
+
+
 
     class SearchFragUserAdapter extends ArrayAdapter<User> {
         private ArrayList<User> users;

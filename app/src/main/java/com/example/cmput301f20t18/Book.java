@@ -29,7 +29,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-//    private ArrayList<String> photos;
+    private ArrayList<String> photos;
     private int status;
     private String owner_username;
     private String owner_dbID;
@@ -53,7 +53,7 @@ public class Book implements Comparable<Book> {
         this.owner_username = owner_username;
         this.owner_dbID = owner_dbID;
         this.year = year;
-//        this.photos = photos;
+        this.photos = photos;
 
     }
 
