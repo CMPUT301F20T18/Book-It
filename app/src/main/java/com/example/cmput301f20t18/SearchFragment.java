@@ -316,15 +316,9 @@ public class SearchFragment extends Fragment {
 
             Query queryLower = collection
                     .orderBy(field)
-                    .startAt(searchKey.toLowerCase())
-                    .endAt(searchKey.toLowerCase() + specialChar);
+                    .startAt(searchKey)
+                    .endAt(searchKey + specialChar);
             queryLower.addSnapshotListener(listener);
-
-            Query queryUpper = collection
-                    .orderBy(field)
-                    .startAt(searchKey.toUpperCase())
-                    .endAt(searchKey.toUpperCase() + specialChar);
-            queryUpper.addSnapshotListener(listener);
         }
 
         /**

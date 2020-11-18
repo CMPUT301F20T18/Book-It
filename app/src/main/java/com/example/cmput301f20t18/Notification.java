@@ -123,9 +123,5 @@ public class Notification {
                 }
             }
         });
-
-
     }
-
-
 }
