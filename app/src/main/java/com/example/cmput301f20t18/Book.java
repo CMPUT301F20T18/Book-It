@@ -29,7 +29,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-//    private ArrayList<String> photos;
+    private ArrayList<String> photos;
     private int status;
     private String owner_username;
     private String owner_dbID;
