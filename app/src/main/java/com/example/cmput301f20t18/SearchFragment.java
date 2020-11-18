@@ -80,7 +80,7 @@ public class SearchFragment extends Fragment {
         Toolbar toolbar = view.findViewById(R.id.search_toolbar);
         //toolbar.setTitle(getResources().getText(R.string.mybooks_header));
         toolbar.setTitle("Search");
-        
+
         bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
 
@@ -566,10 +566,6 @@ public class SearchFragment extends Fragment {
             //ImageView bookImage = view.findViewById(R.id.image_view);
             //bookImage.setImage(book.getImage())
             Button requestBook = view.findViewById(R.id.button_request);
-            Button bookRequested = view.findViewById(R.id.deactivate_request);
-
-            requestBook.setVisibility(View.VISIBLE);
-            bookRequested.setVisibility(View.GONE);
 
             bookTitle.setText(book.getTitle());
             bookAuthor.setText(book.getAuthor());
