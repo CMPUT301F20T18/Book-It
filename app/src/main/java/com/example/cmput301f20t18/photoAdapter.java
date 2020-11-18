@@ -10,10 +10,14 @@ import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Base64;
 
+/**
+ * A class used to reformat variable representing photos into different types
+ */
+
 public class photoAdapter {
     
     /**
-     * Converts a byte representing a photo to a String
+     * Converts a byte array representing a photo to a String
      * @param photo The byte[] object representation of a photo
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -24,7 +28,7 @@ public class photoAdapter {
     }
 
     /**
-     * Converts a String representing a photo to a byte[]
+     * Converts a String representing a photo to a byte array
      * @param photo The String object representation of a photo
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -32,6 +36,10 @@ public class photoAdapter {
         return Base64.getDecoder().decode(photo);
     }
 
+    /**
+     * Converts a Bitmap representing a photo to a byte array
+     * @param bitmap The Bitmap object representation of a photo
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public static String bitmapToString(Bitmap bitmap){
         ByteArrayOutputStream stream = new ByteArrayOutputStream();
@@ -41,6 +49,12 @@ public class photoAdapter {
 
     }
 
+    /**
+     * Takes in a Bitmap and rescales it with a new height and width. Also makes it mutable.
+     * @param bitmap The Bitmap object representation of a photo
+     * @param newWidth The new width of the Bitmap
+     * @param newHeight The new height of the Bitmap
+     */
     public static Bitmap scaleBitmap(Bitmap bitmap, float newWidth, float newHeight){
         int width = bitmap.getWidth();
         int height = bitmap.getHeight();

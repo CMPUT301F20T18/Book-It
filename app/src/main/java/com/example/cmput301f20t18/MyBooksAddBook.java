@@ -41,6 +41,7 @@ import java.util.Calendar;
  * This is a class that creates a new book object through user input
  * @author  Jacob Deinum
  * @author Johnathon Gil
+ * @author Sean Butler
  * @see    Toolbar
  * @see    FirebaseAuth
  * @see    FirebaseFirestore
@@ -201,6 +202,11 @@ public class MyBooksAddBook extends AppCompatActivity {
             }
         });
 
+        /**
+         * This method asks for the user to select an image from file to upload
+         * The first image uploaded is the cover, while the others are extras
+         * At the moment, the addPhoto button changes to match the last image uploaded
+         */
         addPhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -210,6 +216,7 @@ public class MyBooksAddBook extends AppCompatActivity {
             }
         });
     }
+
     //Work in progress
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {

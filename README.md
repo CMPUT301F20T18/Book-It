@@ -9,6 +9,7 @@ https://stackoverflow.com/questions/920306/sending-data-back-to-the-main-activit
 Sources used for srbutler:
 https://www.baeldung.com/java-base64-image-string
 https://www.youtube.com/watch?v=fVQIOq_lD9U&ab_channel=TihomirRAdeff
+https://stackoverflow.com/questions/7620401/how-to-convert-byte-array-to-bitmap
 
 JavaDocs located under Doc within project
 
