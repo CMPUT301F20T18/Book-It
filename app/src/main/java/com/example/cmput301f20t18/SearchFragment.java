@@ -22,6 +22,7 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
@@ -75,6 +76,11 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
 
+        // Setting the header title. This may be done in XML instead
+        Toolbar toolbar = view.findViewById(R.id.search_toolbar);
+        //toolbar.setTitle(getResources().getText(R.string.mybooks_header));
+        toolbar.setTitle("Search");
+
         bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
 
@@ -83,7 +89,7 @@ public class SearchFragment extends Fragment {
 
         SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
 
-        //viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
+        viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
 
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
@@ -560,7 +566,10 @@ public class SearchFragment extends Fragment {
             //ImageView bookImage = view.findViewById(R.id.image_view);
             //bookImage.setImage(book.getImage())
             Button requestBook = view.findViewById(R.id.button_request);
+            Button bookRequested = view.findViewById(R.id.deactivate_request);
 
+            requestBook.setVisibility(View.VISIBLE);
+            bookRequested.setVisibility(View.GONE);
 
             bookTitle.setText(book.getTitle());
             bookAuthor.setText(book.getAuthor());
