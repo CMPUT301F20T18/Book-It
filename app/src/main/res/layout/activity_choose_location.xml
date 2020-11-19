@@ -17,9 +17,31 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/location_recycler"
+
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+
+        <Button
+            android:id="@+id/addLocationButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:text="Add New Location"
+            android:textColor="@android:color/black" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/location_recycler"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@id/addLocationButton"/>
+
+    </RelativeLayout>
+
+
+
+
+
+
 
 </LinearLayout>

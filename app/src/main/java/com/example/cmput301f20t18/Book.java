@@ -34,6 +34,7 @@ public class Book implements Comparable<Book> {
     private String owner_username;
     private String owner_dbID;
     private int year;
+    private String pickup_location;
 
 
     /**
@@ -54,6 +55,7 @@ public class Book implements Comparable<Book> {
         this.owner_dbID = owner_dbID;
         this.year = year;
         this.photos = photos;
+        this.pickup_location = null;
 
     }
 
@@ -280,7 +282,11 @@ public class Book implements Comparable<Book> {
         return photos;
     }
 
+    public String getPickup_location() {
+        return pickup_location;
+    }
 
-
-
+    public void setPickup_location(String pickup_location) {
+        this.pickup_location = pickup_location;
+    }
 }

@@ -1,5 +1,7 @@
 package com.example.cmput301f20t18;
 
+import android.location.Address;
+
 import androidx.annotation.NonNull;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -26,6 +28,10 @@ public class Transaction {
     public static final int STATUS_REQUESTED = 1;
     public static final int STATUS_ACCEPTED = 2;
     public static final int STATUS_BORROWED = 3;
+
+
+    public static final int CONFIRMED_LOCATION = 4;
+
 
 
     public static final String TAG = "TRANS_DEBUG";

@@ -95,14 +95,11 @@ public class FirestoreBookAdapter
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
-        /* TODO: Implement delete/edit UI and functionality. */
-        /* TODO: Implement cancel pick up UI and functionality (for "accepted" books) */
 
         // This is used to open up a user's profile when clicking on their profile photo
         View.OnClickListener openProfileListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* TODO: Pass which user profile to show to CheckProfileActivity */
                 Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
                 v.getContext().startActivity(intent);
             }
@@ -114,6 +111,7 @@ public class FirestoreBookAdapter
             public void onClick(View v) {
                 /* Owner can select a new location if they so please. */
                 Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                intent.putExtra("bookID", book.getId());
                 v.getContext().startActivity(intent);
             }
         };
@@ -122,7 +120,6 @@ public class FirestoreBookAdapter
         holder.buttonMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Change to book.getId()
                 CustomBottomSheetDialog bottomSheet =
                         new CustomBottomSheetDialog(true, book.getStatus(), book.getId());
                 bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
@@ -151,8 +148,7 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_ACCEPTED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-                holder.textViewUsername.setText("USERNAME");
-                //holder.textViewUsername.setText(book.getOwner().getUsername());
+
                 holder.textViewUserDescription.setText(R.string.picking_up);
 
                 /* User clicks the "Confirm pick up" button */

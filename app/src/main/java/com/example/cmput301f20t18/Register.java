@@ -1,11 +1,14 @@
 package com.example.cmput301f20t18;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.location.Address;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.text.SpannableString;
 import android.text.Spanned;
 import android.text.TextPaint;
@@ -178,8 +181,8 @@ public class Register extends AppCompatActivity {
                                                 // sign current user in
                                                 mAuth.signInWithEmailAndPassword(new_email, new_password);
 
-                                                // start new activity with current user
-                                                Intent intent = new Intent(getBaseContext(), MainActivity.class);
+                                                // make the user pick their first pickup location
+                                                Intent intent = new Intent(getBaseContext(), SelectLocationActivity.class);
                                                 finish();
                                                 startActivityForResult(intent, 0);
                                             }
@@ -207,4 +210,17 @@ public class Register extends AppCompatActivity {
 
     }
 
+
+    // set the users pickup location to be the location they choose
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // TODO: Set the users first pickup location
+
+        // start new activity with current user
+        Intent intent = new Intent(getBaseContext(), MainActivity.class);
+        finish();
+        startActivityForResult(intent, 0);
+    }
 }
