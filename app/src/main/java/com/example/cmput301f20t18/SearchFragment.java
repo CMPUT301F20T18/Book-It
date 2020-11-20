@@ -55,7 +55,8 @@ public class SearchFragment extends Fragment {
     final ArrayList<Book> bookDataList = new ArrayList();
     final ArrayList<User> userDataList = new ArrayList();
 
-    SearchFragBookAdapter bookAdapter;
+    SearchFragBookAdapter bookAvailableAdapter;
+    SearchFragBookAdapter bookAllAdapter;
     SearchFragUserAdapter userAdapter;
 
     ListView SearchResultList;
@@ -81,15 +82,9 @@ public class SearchFragment extends Fragment {
         //toolbar.setTitle(getResources().getText(R.string.mybooks_header));
         toolbar.setTitle("Search");
 
-        bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
+        bookAvailableAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
+        bookAllAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
-
-        TabLayout tabLayout = view.findViewById(R.id.search_tab_layout);
-        ViewPager viewPager = view.findViewById(R.id.search_viewPager);
-
-        SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
-
-        viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
 
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
@@ -125,10 +120,15 @@ public class SearchFragment extends Fragment {
      */
     private void search(String searchWord, String selectedOption) {
         if (searchWord != "") {
-            if (selectedOption.equals("Books")) {
-                SearchResultList.setAdapter(bookAdapter);
-                searchBooks(searchWord);
-            } else {
+            if (selectedOption.equals("All Books")) {
+                SearchResultList.setAdapter(bookAllAdapter);
+                searchBooks(searchWord, bookAllAdapter, true);
+            }
+            else if (selectedOption.equals("Available Books")){
+                SearchResultList.setAdapter(bookAvailableAdapter);
+                searchBooks(searchWord, bookAvailableAdapter, false);
+            }
+            else {
                 SearchResultList.setAdapter(userAdapter);
                 searchUsers(searchWord);
             }
@@ -143,9 +143,9 @@ public class SearchFragment extends Fragment {
      */
     //TODO Populate adapter with query results
     //TODO add parameter String[] searchField which determines what fields to check
-    private void searchBooks(String searchKey) {
+    private void searchBooks(String searchKey, SearchFragBookAdapter adapter, boolean allBooks) {
         bookDataList.clear();
-        final QueryBookListener listener = new QueryBookListener();
+        final QueryBookListener listener = new QueryBookListener(allBooks);
 
         FirebaseFirestore db = FirebaseFirestore.getInstance();
 
@@ -155,7 +155,7 @@ public class SearchFragment extends Fragment {
         BookQueryHandler.searchByAuthor(collection, listener, searchKey);
         BookQueryHandler.searchByISBN(collection, listener, searchKey);
         BookQueryHandler.searchByYear(collection, listener, searchKey);
-        bookAdapter.notifyDataSetChanged();
+        adapter.notifyDataSetChanged();
     }
 
     /**
@@ -457,15 +457,25 @@ public class SearchFragment extends Fragment {
      */
     class QueryBookListener implements EventListener<QuerySnapshot> {
         private String TAG = "SEARCH_FRAG";     //Tag for Log
+        private boolean allBooks;
+
+        public QueryBookListener(boolean allBooks){
+            this.allBooks = allBooks;
+        }
 
         @Override
         public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+            final int STATUS_AVAILABLE = 0;
+
             for (QueryDocumentSnapshot snapshot : querySnapshot) {
                 boolean add = true;
                 Book book = snapshot.toObject(Book.class);
                 Log.d(TAG, "Current Book: " + book.getTitle());
                 for (Book bookContained : bookDataList) {
                     if (book.getId() == bookContained.getId()) {
+                        add = false;
+                    }
+                    if (!allBooks && book.getStatus() != STATUS_AVAILABLE){
                         add = false;
                     }
                 }
@@ -543,18 +553,26 @@ public class SearchFragment extends Fragment {
 
             boolean requested = false;
             int bookID = book.getId();
+
+            boolean userOwned = book.getOwner_dbID().equals(FirebaseAuth.getInstance().getUid());
+
             for (Transaction transaction : transactionDataList) {
                 if (transaction.getBookID() == bookID) {
                     requested = true;
                 }
             }
 
-            if (requested) {
+            if (userOwned) {
+                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_owned,
+                        parent, false);
+            } else if (requested) {
                 view = LayoutInflater.from(context).inflate(R.layout.card_book_search_requested,
                         parent, false);
             } else {
                 view = LayoutInflater.from(context).inflate(R.layout.card_book_search_request,
                         parent, false);
+                Button requestBook = view.findViewById(R.id.button_request);
+                requestBook.setOnClickListener(new RequestBookButtonListener(book));
             }
 
 
@@ -565,18 +583,13 @@ public class SearchFragment extends Fragment {
             //TODO: Once we can decode image string implement
             //ImageView bookImage = view.findViewById(R.id.image_view);
             //bookImage.setImage(book.getImage())
-            Button requestBook = view.findViewById(R.id.button_request);
-            Button bookRequested = view.findViewById(R.id.deactivate_request);
-
-            requestBook.setVisibility(View.VISIBLE);
-            bookRequested.setVisibility(View.GONE);
 
             bookTitle.setText(book.getTitle());
             bookAuthor.setText(book.getAuthor());
             bookISBN.setText(Long.toString(book.getISBN()));
             bookYear.setText(Integer.toString(book.getYear()));
 
-            requestBook.setOnClickListener(new RequestBookButtonListener(book));
+
 
             return view;
         }
