@@ -518,10 +518,6 @@ public class User {
                                                 userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(bookID)).set(book);
                                                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_REQUESTED);
 
-                                                // notify the owner
-                                                Notification notification = new Notification(borrower.getUsername(), book.getOwner_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
-                                                notification.prepareMessage();
-                                                notification.sendNotification();
 
                                             }
 
