@@ -27,6 +27,9 @@ import static androidx.camera.core.CameraX.getContext;
 
 /**
  * Activity where the user can select a pick up location.
+ * Adding a new location requires the use of SelectPickUpLocation
+ * @see SelectLocationActivity
+ * @author deinum
  */
 public class ChooseLocationActivity extends AppCompatActivity {
 
@@ -34,20 +37,14 @@ public class ChooseLocationActivity extends AppCompatActivity {
     Query query;
     FirestoreLocationAdapter adapter;
     Button addLocation;
+    int bookID;
 
+    // DB info
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     CollectionReference userRef = DB.collection("users");
 
-    int bookID;
 
-
-
-    /**
-     * Initializes the list of locations and sets up adapter to display list of locations.
-     *
-     * @param savedInstanceState Previous saved state.
-     */
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -78,6 +75,9 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
     }
 
+    /**
+     * Sets up our recyclerview, including defining the query which will populate the list
+     */
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("pickup_locations");
         FirestoreRecyclerOptions<Address> options = new FirestoreRecyclerOptions.Builder<Address>()
@@ -89,6 +89,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
         recyclerView.setAdapter(adapter);
     }
 
+    // tell our adapter to start listening as soon as the fragment begins
     @Override
     public void onStart() {
         super.onStart();
@@ -98,7 +99,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
 
     }
-
+    // tell our adapter to stop listening as soon as the fragment ends
     @Override
     public void onStop() {
         super.onStop();
@@ -108,15 +109,15 @@ public class ChooseLocationActivity extends AppCompatActivity {
     }
 
 
+    // Handle returned address
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         int index = data.getIntExtra("LOCATION_INDEX", -1);
         Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
 
+        // add the new address to the users pickup_location collection
         User current = new User();
         current.ownerAddLocation(address);
     }
-
-
 }

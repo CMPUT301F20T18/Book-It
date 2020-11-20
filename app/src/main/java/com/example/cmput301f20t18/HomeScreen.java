@@ -48,6 +48,8 @@ import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
  * Homescreen also manages fragments, and provides a mean for two fragments to interact
  * @see User
  * @see Book
+ * @author Shuval
+ * @author deinum
  */
 
 public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDialog.BottomSheetListener{
@@ -81,15 +83,13 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
             }
         });
 
-        User current = new User();
-        // current.borrowerRequestBook(143);
 
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setItemIconTintList(null);
         bottomNav.setItemBackgroundResource(R.drawable.tab_background);
-
         bottomNav.setOnNavigationItemSelectedListener(navListener);
+
 
         // start at My Books by default
         bottomNav.setSelectedItemId(R.id.tab_mybooks);

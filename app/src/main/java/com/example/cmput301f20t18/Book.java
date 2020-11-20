@@ -15,8 +15,11 @@ import java.util.Base64;
 
 
 /**
- * A book object represents a book within our library
- * Books are stored within our library
+ * A book object represents a book within our system
+ * Books are owned by users, and can be transferred to others
+ * @see User
+ * @author deinum
+ * @author Sean Butler
  */
 public class Book implements Comparable<Book> {
 
@@ -141,20 +144,14 @@ public class Book implements Comparable<Book> {
     }
 
 
-
-
+    /**
+     * get the owner Database ID
+     * @return String representation of the Database ID
+     */
     public String getOwner_dbID() {
         return owner_dbID;
     }
 
-
-    public void setOwner_username(String owner_username) {
-        this.owner_username = owner_username;
-    }
-
-    public void setOwner_dbID(String owner_dbID) {
-        this.owner_dbID = owner_dbID;
-    }
 
     /**
      * Set the year of a book
@@ -187,6 +184,7 @@ public class Book implements Comparable<Book> {
             return -1;
         }
     }
+
 
     /**
      * Set the isbn for a book
@@ -259,16 +257,19 @@ public class Book implements Comparable<Book> {
         this.photos = newCover;
     }
 
-
-    public void setPhotos(ArrayList<String> photos) {
-        this.photos = photos;
-    }
-
+    /**
+     * Check if a book has images
+     * @return boolean representing
+     */
     public boolean hasPhotos(){
         return photos.isEmpty() == false;
     }
 
 
+    /**
+     * Retrieves the cover photo of a book object
+     * @return A base 64 String representing a books cover photo
+     */
     public String retrieveCover() {
         String cover = null;
         if (this.photos.size() > 0) {
@@ -278,15 +279,11 @@ public class Book implements Comparable<Book> {
     }
 
 
+    /**
+     * Get all of the books photos
+     * @return Array of base 64 strings representing a books images
+     */
     public ArrayList<String> getPhotos() {
         return photos;
-    }
-
-    public String getPickup_location() {
-        return pickup_location;
-    }
-
-    public void setPickup_location(String pickup_location) {
-        this.pickup_location = pickup_location;
     }
 }

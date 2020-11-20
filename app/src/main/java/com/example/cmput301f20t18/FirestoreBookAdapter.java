@@ -28,11 +28,11 @@ import static com.example.cmput301f20t18.photoAdapter.stringToByte;
 
 /**
  * Custom RecyclerView Adapter for Book objects in My Books.
- *
  * @see FirestoreRecyclerAdapter
  * @see MyBooksAvailableFragment
  * @see MyBooksPendingFragment
  * @see MyBooksLendingFragment
+ * @author deinum
  */
 public class FirestoreBookAdapter
         extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.BookViewHolder>

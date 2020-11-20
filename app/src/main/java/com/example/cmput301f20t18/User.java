@@ -27,6 +27,8 @@ import java.util.Objects;
 
 /**
  * A user within our system, contains the methods / variables for any transaction between users
+ * @see Transaction
+ * @author deinum
  */
 public class User {
     private String username;
@@ -506,7 +508,7 @@ public class User {
                                                 }
 
                                                 // create a new transaction
-                                                Transaction request = new Transaction(val, bookID, null, borrower.getUsername(), book.getOwner_username(), auth.getUid(), book.getOwner_dbID());
+                                                Transaction request = new Transaction(val, bookID, borrower.getUsername(), book.getOwner_username(), auth.getUid(), book.getOwner_dbID());
 
                                                 // add the transaction to the global trans file
                                                 transRef.document(Integer.toString(val)).set(request);

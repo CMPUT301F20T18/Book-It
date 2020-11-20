@@ -84,6 +84,11 @@ public class Register extends AppCompatActivity {
         addressText = (TextView) findViewById(R.id.text_address);
         signInRedirect = (TextView) findViewById(R.id.redirect_sign_in);
 
+        // Database info
+        mAuth = FirebaseAuth.getInstance();
+        DB = FirebaseFirestore.getInstance();
+        system = DB.collection("users");
+
         String text = "Sign In";
 
         SpannableString redirectString = new SpannableString(text);
@@ -107,10 +112,6 @@ public class Register extends AppCompatActivity {
         signInRedirect.setText(redirectString);
         signInRedirect.setMovementMethod(LinkMovementMethod.getInstance());
 
-        mAuth = FirebaseAuth.getInstance();
-
-        DB = FirebaseFirestore.getInstance();
-        system = DB.collection("users");
 
 
         register.setOnClickListener(new View.OnClickListener() {

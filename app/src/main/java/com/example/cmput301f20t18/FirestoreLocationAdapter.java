@@ -13,17 +13,16 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+
+/**
+ * Handles displaying pickup addresses for users
+ * @see User
+ * @author deinum
+ */
 public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<Address, FirestoreLocationAdapter.locationViewHolder> {
 
     private int bookID;
 
-
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
     public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<Address> options, int bookID) {
         super(options);
         this.bookID = bookID;
@@ -71,6 +70,4 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<Address, 
             deleteLocation = itemView.findViewById(R.id.button_delete_location);
         }
     }
-
-
 }
