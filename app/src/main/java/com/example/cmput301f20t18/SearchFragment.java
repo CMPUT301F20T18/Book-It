@@ -4,8 +4,6 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
-import android.renderscript.ScriptGroup;
-import android.util.ArraySet;
 import android.util.Log;
 import android.view.KeyEvent;
 import android.view.LayoutInflater;
@@ -17,7 +15,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,10 +22,12 @@ import android.widget.TextView;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
 import com.google.android.material.tabs.TabLayout;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.EventListener;
 import com.google.firebase.firestore.FirebaseFirestore;
@@ -77,6 +76,10 @@ public class SearchFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_search, container, false);
         Button searchButton;
 
+        // Setting the header title. This may be done in XML instead
+        Toolbar toolbar = view.findViewById(R.id.search_toolbar);
+        //toolbar.setTitle(getResources().getText(R.string.mybooks_header));
+        toolbar.setTitle("Search");
 
         bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
@@ -86,7 +89,7 @@ public class SearchFragment extends Fragment {
 
         SearchPageAdapter pageAdapter = new SearchPageAdapter(getChildFragmentManager(), tabLayout.getTabCount(), getContext());
 
-        //viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
+        viewPager.setAdapter(pageAdapter);                    //Chase commented this out because it results in a crash
 
         //Set up spinner
         SpinnerOnClickListener spinnerListener = new SpinnerOnClickListener();
@@ -481,7 +484,8 @@ public class SearchFragment extends Fragment {
         private String TAG = "SEARCH_FRAG";
 
         @Override
-        public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
+        public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                            @Nullable FirebaseFirestoreException error) {
             for (QueryDocumentSnapshot snapshot : querySnapshot) {
                 boolean add = true;
                 User user = snapshot.toObject(User.class);
@@ -498,25 +502,61 @@ public class SearchFragment extends Fragment {
         }
     }
 
+    /**
+     * SearchFragBookAdapter is an Adapter object used for displaying book data retrieved from the
+     * database to the user
+     */
     class SearchFragBookAdapter extends ArrayAdapter<Book> {
         private ArrayList<Book> books;
         private Context context;
+        private ArrayList<Transaction> transactionDataList = new ArrayList<>();
 
+        /**
+         * Constructs an instance of SearchFragBookAdapter
+         * @param context
+         * @param books ArrayList of Book objects retrieved from the database
+         */
         public SearchFragBookAdapter(Context context, ArrayList<Book> books) {
             super(context, 0, books);
             this.books = books;
             this.context = context;
+
+            String user = FirebaseAuth.getInstance().getUid();
+            Query transactionQuery = FirebaseFirestore.getInstance()
+                    .collection("transactions")
+                    .whereEqualTo("borrower_dbID", FirebaseAuth.getInstance().getUid());
+            transactionQuery.addSnapshotListener(new QueryTransactionListener(this));
         }
 
+        /**
+         * Gets the view depending on a variety of factors and sets the values to display each Book
+         * object
+         * @param position An int object representing a pointer to the current index of books
+         * @param convertView A View object
+         * @param parent A ViewGroup object
+         * @return The correct view for the book
+         */
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
-            View view = convertView;
+            View view;
 
-            if (view == null) {
-                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_available,
+            Book book = books.get(position);
+
+            boolean requested = false;
+            int bookID = book.getId();
+            for (Transaction transaction : transactionDataList) {
+                if (transaction.getBookID() == bookID) {
+                    requested = true;
+                }
+            }
+
+            if (requested) {
+                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_requested,
+                        parent, false);
+            } else {
+                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_request,
                         parent, false);
             }
 
-            Book book = books.get(position);
 
             TextView bookTitle = view.findViewById(R.id.text_book_title);
             TextView bookAuthor = view.findViewById(R.id.text_book_author);
@@ -536,43 +576,106 @@ public class SearchFragment extends Fragment {
             bookISBN.setText(Long.toString(book.getISBN()));
             bookYear.setText(Integer.toString(book.getYear()));
 
-            requestBook.setOnClickListener(new requestBookButtonListener(book,requestBook,bookRequested));
+            requestBook.setOnClickListener(new RequestBookButtonListener(book));
 
             return view;
         }
 
-        private class requestBookButtonListener implements View.OnClickListener {
+        /**
+         * RequestBookButtonListener is an OnClickListener for the request button
+         */
+        private class RequestBookButtonListener implements View.OnClickListener {
             private Book book;
-            private Button active, unactive;
 
-            public requestBookButtonListener(Book book, Button active, Button unactive) {
+            /**
+             * Constructs an instance of RequestBookButtonListener
+             * @param book
+             */
+            public RequestBookButtonListener(Book book) {
                 this.book = book;
-                this.active = active;
-                this.unactive = unactive;
             }
 
+            /**
+             * onClick is called when the button is clicked and it
+             * logs data for debugging
+             * tells user to create a request for the book clicked
+             * @param v A View object
+             */
             @Override
             public void onClick(View v) {
                 User current = new User();
                 Log.d(TAG, "User is attempting to request " + book.getTitle()
                         + " from user " + book.getOwner_username());
                 current.borrowerRequestBook(book.getId());
-                active.setVisibility(View.GONE);
-                unactive.setVisibility(View.VISIBLE);
+            }
+        }
+
+        /**
+         * QueryTransactionListener is an EventListener for QuerySnapshot events and is used to
+         * determine which books the user has previously requested. It also notifies the adapter
+         * to update onDataChange so that the adapter responds to any changes in the database
+         */
+        private class QueryTransactionListener implements EventListener<QuerySnapshot> {
+            final String TAG = "SEARCH_FRAG";
+            final SearchFragBookAdapter adapter;
+
+            /**
+             * Constructs an instance of QueryTransactionListener
+             * @param adapter A SearchFragBookAdapter responsible for displaying data to the user
+             */
+            public QueryTransactionListener(SearchFragBookAdapter adapter){
+                this.adapter = adapter;
+            }
+
+            /**
+             * onEvent is called when a QuerySnapshot event occurs and clears the
+             * transactionDataList before adding the updated information to it then notifies the
+             * adapter of changes
+             * @param querySnapshot A QuerySnapshot object carrying data from the database
+             * @param error A FirebaseFirestoreException object representing errors that occured
+             */
+            @Override
+            public void onEvent(@Nullable QuerySnapshot querySnapshot,
+                                @Nullable FirebaseFirestoreException error) {
+                transactionDataList.clear();
+                for (QueryDocumentSnapshot snapshot : querySnapshot) {
+                    Transaction transaction = snapshot.toObject(Transaction.class);
+                    Log.d(TAG, "Current Transaction: " + transaction.getID());
+                    transactionDataList.add(transaction);
+                }
+                adapter.notifyDataSetChanged();
             }
         }
     }
 
+
+    /**
+     * SearchFragUserAdapter is an Adapter object used for displaying user Data retrieved from the
+     * database to the user
+     */
     class SearchFragUserAdapter extends ArrayAdapter<User> {
         private ArrayList<User> users;
         private Context context;
 
+        /**
+         * Constructs an instance of SearchFragUserAdapter
+         * @param context
+         * @param users ArrayList of User objects retrieved from the database
+         */
         public SearchFragUserAdapter(Context context, ArrayList<User> users) {
             super(context, 0, users);
             this.users = users;
             this.context = context;
         }
 
+        /**
+         * Gets the view depending on a variety of factors and sets the values to display each Book
+         * object
+         * @param position An int object representing a pointer to the current index of books
+         * @param convertView A View object
+         * @param parent A ViewGroup object
+         * @return The correct view for the book
+         */
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view = convertView;
 
@@ -591,14 +694,27 @@ public class SearchFragment extends Fragment {
             return view;
         }
 
+
+        /**
+         * ViewProfileButtonListener is an OnClickListener for the request button
+         */
         //TODO Add profile picture to intent
         private class ViewProfileButtonListener implements View.OnClickListener {
             private User user;
 
+            /**
+             * Constructs an instance of ViewProfileUserAdapter
+             * @param user User object that was clicked
+             */
             public ViewProfileButtonListener(User user) {
                 this.user = user;
             }
 
+            /**
+             * onClick is called when the button is clicked and it passes data to
+             * CheckProfileActivity's intent before starting the activity
+             * @param v A View object
+             */
             @Override
             public void onClick(View v) {
                 Intent viewProfileIntent = new Intent(v.getContext(), CheckProfileActivity.class);
