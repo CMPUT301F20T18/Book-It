@@ -84,6 +84,7 @@ public class Notification {
 
 
         }
+        Log.d(TAG, "prepareMessage: Message: " + message);
     }
 
 
@@ -105,13 +106,15 @@ public class Notification {
 
                     // create the ID for the notification
                     String ID = target.getUsername() + "-" + now.toString();
+                    ID = ID.replace('.', ':');
+                    Log.d(TAG, "ID: " + ID);
 
                     Map<Object, Object> notification = new HashMap<>();
                     notification.put("target", target.getInstanceToken());
                     notification.put("message", Notification.this.message);
 
                     // write our notification to the DB
-                    RTDB.getReference().child("Notifications").child(ID).setValue(notification);
+                    RTDB.getReference().child("Notifications").child(ID.replace('.', ':')).setValue(notification);
 
                 }
 
@@ -120,9 +123,5 @@ public class Notification {
                 }
             }
         });
-
-
     }
-
-
 }

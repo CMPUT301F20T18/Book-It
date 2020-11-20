@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -14,11 +17,14 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+
+import static com.example.cmput301f20t18.photoAdapter.stringToByte;
 
 /**
  * Custom RecyclerView Adapter for Book objects in My Books.
@@ -60,7 +66,10 @@ public class FirestoreBookAdapter
      */
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).getStatus();
+        Log.d(TAG, "getItemViewType: Position of " + position);
+        Book book = getItem(position);
+        int status = book.getStatus();
+        return status;
     }
 
     /**
@@ -71,10 +80,16 @@ public class FirestoreBookAdapter
      * @param i position of book in list.
      * @param book Book to display.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
-        //holder.imageView.setImageResource(R.drawable.default_cover);
+//        if (book.hasPhotos()) {
+//            byte[] bytes = photoAdapter.stringToByte(book.retrieveCover());
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//            Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
+//            holder.imageView.setImageBitmap(photo);
+//        }
 
         holder.textViewTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
@@ -262,7 +277,7 @@ public class FirestoreBookAdapter
          */
         public BookViewHolder(@NonNull View itemView) {
             super(itemView);
-
+            Log.d(TAG, "onCreateBookViewHolder: Begin!!");
             imageView = itemView.findViewById(R.id.image_view);
 
             textViewTitle = itemView.findViewById(R.id.text_book_title);
@@ -280,6 +295,8 @@ public class FirestoreBookAdapter
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
             buttonMore = itemView.findViewById(R.id.button_book_more);
+
+            Log.d(TAG, "onCreateBookViewHolder: End!!");
         }
 
     }

@@ -22,10 +22,10 @@
         android:layout_marginTop="52dp"
         android:layout_marginEnd="11dp"
         android:paddingHorizontal="10dp"
-        android:background="@drawable/good_button_background"
+        android:background="@drawable/gray_button_background"
         style="?android:attr/borderlessButtonStyle"
         android:fontFamily="@font/poppins"
-        android:text="Request Book"
+        android:text="Book Requested"
         android:textColor="@color/colorAccent"
         app:layout_constraintEnd_toEndOf="@+id/include"
         app:layout_constraintTop_toTopOf="parent" />

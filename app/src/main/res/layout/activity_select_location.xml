@@ -11,10 +11,11 @@
         android:layout_height="match_parent"
         tools:context=".SelectLocationActivity"
         android:layout_weight="1"/>
+
     <com.google.android.material.floatingactionbutton.FloatingActionButton
         android:id="@+id/confirm_location_selected_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"></com.google.android.material.floatingactionbutton.FloatingActionButton>
+        android:layout_height="wrap_content"/>
 
 
 </LinearLayout>

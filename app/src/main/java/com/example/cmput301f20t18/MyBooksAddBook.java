@@ -1,25 +1,40 @@
 package com.example.cmput301f20t18;
 
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.database.Cursor;
+import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.api.LogDescriptor;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.io.ByteArrayOutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 
 /**
@@ -38,9 +53,24 @@ public class MyBooksAddBook extends AppCompatActivity {
     EditText author, bookTitle, year, isbn;
     Button done, cancel;
     ImageButton addPhoto;
+
+    ArrayList<Bitmap> photos;
+
     Toolbar toolbar;
     ImageButton addPic;
     private static final int RESULT_LOAD_IMAGE = 1;
+    public static final int EDIT_BOOK = 10;
+    public static final int ADD_BOOK = 11;
+    public static final int ADD_SCAN = 12;
+
+    private final static String TAG = "MBAB_DEBUG";
+    private int type;
+    private int bookID;
+    private long passed_isbn;
+
+    FirebaseFirestore DB;
+
+
 
     /**
      * This method has the purpose of creating the activity that prompts the user to add information
@@ -54,7 +84,25 @@ public class MyBooksAddBook extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_my_books_add_book);
+
+        DB = FirebaseFirestore.getInstance();
+
+
+        type = getIntent().getIntExtra("type", 0);
+        bookID = getIntent().getIntExtra("bookID", 0);
+        Long passed_isbn = getIntent().getLongExtra("filled_isbn", 0);
+
+
+        Log.d(TAG, "onCreate: type " + type);
+        Log.d(TAG, "onCreate: bookID " + bookID);
+        Log.d(TAG, "onCreate: isbn " + passed_isbn);
+
+        if (type == ADD_BOOK || type == ADD_SCAN)  {
+            setContentView(R.layout.activity_my_books_add_book);
+        }
+        else if ( type == EDIT_BOOK) {
+            setContentView(R.layout.activity_edit_books);
+        }
 
         labelAuthor = findViewById(R.id.author_prompt);
         labelTitle = findViewById(R.id.book_title_prompt);
@@ -70,14 +118,44 @@ public class MyBooksAddBook extends AppCompatActivity {
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
 
+        photos = new ArrayList<>();
+
+        if (type == EDIT_BOOK) {
+            DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
+                if(task.isSuccessful()) {
+                    Book book = task.getResult().toObject(Book.class);
+                    bookTitle.setText(book.getTitle());
+                    author.setText(book.getAuthor());
+                    year.setText(Integer.toString(book.getYear()));
+                    isbn.setText(Long.toString(book.getISBN()));
+                }
+
+                else {
+                    Log.d(TAG, "MyBooksAddBook - Error querying for book");
+                }
+
+            });
+
+        }
+
+        if (type == ADD_SCAN) {
+            isbn.setText(Long.toString(passed_isbn));
+        }
+
+
+
+
+
+
+
 
         /**
          * This method adds the values of the input into the FireStore database
          * This is a listener to be able to react to button press that ultimately creates
          * a book from the user input.
          */
-        // TODO add input verification
         done.setOnClickListener(new View.OnClickListener() {
+            @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onClick(View v) {
                 User current = new User();
@@ -87,10 +165,39 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_isbn = isbn.getText().toString();
                 String book_year = year.getText().toString();
 
-                if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
-                    Long isbn = Long.parseLong(book_isbn);
-                    Integer year = Integer.parseInt(book_year);
-                    current.ownerNewBook(isbn, book_title, book_author, year);
+                ArrayList<String> stringPhotos = new ArrayList<>();
+                for (Bitmap bmp : photos){
+                    stringPhotos.add(photoAdapter.bitmapToString(bmp));
+                }
+
+
+                // debug info
+                Log.d(TAG, "onClick: Title " + book_title);
+                Log.d(TAG, "onClick: Author " + book_author);
+                Log.d(TAG, "onClick: ISBN " + book_isbn );
+                Log.d(TAG, "onClick: Year " + book_year);
+                Log.d(TAG, "onClick: bookID " + bookID);
+                Log.d(TAG, "onClick: Type of Add " + type);
+
+                Long isbn = Long.parseLong(book_isbn);
+                Integer year = Integer.parseInt(book_year);
+                if (type == ADD_BOOK) {
+             
+                    if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
+
+                        Log.d(TAG, "Validity check passed");
+                        ArrayList<String> photoStrings = new ArrayList<>();
+                        for (Bitmap photo: photos){
+                            photoStrings
+                                    .add(photoAdapter.bitmapToString(photo));
+                        }
+                        current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
+                    }
+                }
+
+                else if (type == EDIT_BOOK) {
+                    current.ownerEditBook(book_title, book_author, isbn, bookID, year);
+
                 }
                 finish();
             }
@@ -125,7 +232,7 @@ public class MyBooksAddBook extends AppCompatActivity {
         super.onActivityResult(requestCode, resultCode, data);
         switch (requestCode){
             case RESULT_LOAD_IMAGE:
-                if(requestCode == RESULT_OK){
+                if(resultCode == RESULT_OK){
                     Uri image = data.getData();
                     String[] filePathColumn = {MediaStore.Images.Media.DATA};
                     Cursor cursor = getContentResolver().query(image, filePathColumn, null, null, null);
@@ -133,8 +240,11 @@ public class MyBooksAddBook extends AppCompatActivity {
                     int colIndex = cursor.getColumnIndex(filePathColumn[0]);
                     String picturePath = cursor.getString(colIndex);
                     cursor.close();
-                    addPhoto.setImageBitmap(BitmapFactory.decodeFile(picturePath));
-                    addPhoto.refreshDrawableState();
+                    Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
+
+                    Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) addPhoto.getWidth(), (float) addPhoto.getHeight());
+                    photos.add(outMap);
+                    addPhoto.setImageBitmap(outMap);
                 }
         }
     }
@@ -198,7 +308,7 @@ class CheckBookValidity {
      */
     private static boolean checkISBN(String bookISBN) {
         boolean valid = true;
-        final long MIN_VAL = 1000000000000L;
+        final long MIN_VAL = 10000000L;
         final long MAX_VAL = 9999999999999L;
 
         Long isbnNum = -1L;

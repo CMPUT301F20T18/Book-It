@@ -131,9 +131,7 @@ public class ProfileFragment extends Fragment {
      * @author Chase Warwick
      * @param user The user currently using the app!
      */
-    private void updateUserData(User user) {
-        View view = getView();
-
+    private void updateUserData(User user, View view) {
         username = (TextView) view.findViewById(R.id.my_user_name);
         phoneNum = (TextView) view.findViewById(R.id.phone_num);
         email = (TextView) view.findViewById(R.id.email);
@@ -164,7 +162,7 @@ public class ProfileFragment extends Fragment {
             if (task.isSuccessful()){
                 DocumentSnapshot UserDocument = (DocumentSnapshot) task.getResult();
                 User user = UserDocument.toObject(User.class);
-                updateUserData(user);
+                updateUserData(user, view);
             }
         }
     }

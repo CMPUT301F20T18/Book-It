@@ -6,7 +6,10 @@ import android.os.FileUtils;
 
 import androidx.annotation.RequiresApi;
 
+import com.google.firebase.firestore.Blob;
+
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Base64;
 
@@ -26,7 +29,7 @@ public class Book implements Comparable<Book> {
     private long isbn;
     private String author;
     private int id;
-    // private ArrayList<String> photos;
+    private ArrayList<String> photos;
     private int status;
     private String owner_username;
     private String owner_dbID;
@@ -41,7 +44,7 @@ public class Book implements Comparable<Book> {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, long isbn, String author, int id, int status, String owner, int year, String owner_dbID, String owner_username) {
+    public Book(String title, long isbn, String author, int id, int status, String owner, int year, String owner_dbID, String owner_username, ArrayList<String> photos) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
@@ -50,7 +53,7 @@ public class Book implements Comparable<Book> {
         this.owner_username = owner_username;
         this.owner_dbID = owner_dbID;
         this.year = year;
-        //this.photos = new ArrayList<String>();
+        this.photos = photos;
 
     }
 
@@ -201,23 +204,25 @@ public class Book implements Comparable<Book> {
     }
 
 
-    /* Returns the cover picture of a book
+    /** Returns the cover picture of a book
      * @return the byte[] represntation of a cover photo
+     * We use blobs instead of byte [] so firebase can properly serialize the object
+     * Must convert back to bytes once retrieved
      */
 //    @RequiresApi(api = Build.VERSION_CODES.O)
-//    public ArrayList<byte[]> retrievePhotos() {
-//        ArrayList<byte[]> outPhotos = new ArrayList<byte[]>();
+//    public ArrayList<Blob> retrievePhotos() {
+//        ArrayList<Blob> outPhotos = new ArrayList<Blob>();
 //        for(String photo: this.photos){
-//            outPhotos.add(Base64.getDecoder().decode(photo));
+//            outPhotos.add(Blob.fromBytes(Base64.getDecoder().decode(photo)));
 //        }
 //        return outPhotos;
 //    }
-//
 
-//    /**
-//     * Adds a photo to the arrayList of photos the book has, the first one is the cover
-//     * @param photoByte The byte representation of a book
-//     */
+
+    /**
+     * Adds a photo to the arrayList of photos the book has, the first one is the cover
+     * @param photoByte The byte representation of a book
+     */
 //    @RequiresApi(api = Build.VERSION_CODES.O)
 //    public void addPhoto(byte[] photoByte) {
 //
@@ -226,44 +231,56 @@ public class Book implements Comparable<Book> {
 //                .encodeToString(photoByte);
 //        this.photos.add(photo);
 //    }
-//
-//    /**
-//     * Removes a photo to the arrayList of photos the book has
-//     * @param i is the index of the book to be removed
-//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
-//     */
-//
-//    public void removePhoto(int i) {
-//        this.photos.remove(i);
-//    }
-//
-//    /**
-//     * Changes which string is at position 0 of the ArrayList this.photos which represents the
-//     * cover picture
-//     * @param i is the index of the book that is to be the new cover
-//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
-//     */
-//
-//    public void setCover(int i) {
-//        String cover = this.photos.remove(i);
-//        ArrayList<String> newCover = new ArrayList<>();
-//        newCover.add(cover);
-//        newCover.addAll(this.photos);
-//        this.photos = newCover;
-//    }
-//
-//
-//    public void setPhotos(ArrayList<String> photos) {
-//        this.photos = photos;
-//    }
-//
-//
-//    public String getCover() {
-//        return this.photos.get(0);
-//    }
-//
-//
-//    public ArrayList<String> getPhotos() {
-//        return photos;
-//    }
+
+    /**
+     * Removes a photo to the arrayList of photos the book has
+     * @param i is the index of the book to be removed
+     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+     */
+
+    public void removePhoto(int i) {
+        this.photos.remove(i);
+    }
+
+    /**
+     * Changes which string is at position 0 of the ArrayList this.photos which represents the
+     * cover picture
+     * @param i is the index of the book that is to be the new cover
+     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+     */
+
+    public void choseCover(int i) {
+        String cover = this.photos.remove(i);
+        ArrayList<String> newCover = new ArrayList<>();
+        newCover.add(cover);
+        newCover.addAll(this.photos);
+        this.photos = newCover;
+    }
+
+
+    public void setPhotos(ArrayList<String> photos) {
+        this.photos = photos;
+    }
+
+    public boolean hasPhotos(){
+        return photos.isEmpty() == false;
+    }
+
+
+    public String retrieveCover() {
+        String cover = null;
+        if (this.photos.size() > 0) {
+            cover = this.photos.get(0);
+        }
+        return cover;
+    }
+
+
+    public ArrayList<String> getPhotos() {
+        return photos;
+    }
+
+
+
+
 }
