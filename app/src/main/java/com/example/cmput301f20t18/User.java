@@ -22,6 +22,7 @@ import java.util.Objects;
 
 /**
  * A user within our system, contains the methods / variables for any transaction between users
+ * @author Jacob Deinum
  */
 public class User {
     private String username;
@@ -83,9 +84,7 @@ public class User {
      * @param author The author of the new book
      * @param year The year the new book was released
      * @param photos The photos of the book in String form
-
      */
-
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
