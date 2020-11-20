@@ -27,6 +27,8 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
  * @see BorrowedRequestedFragment
  * @see BorrowedPendingFragment
  * @see BorrowedBorrowingFragment
+ * @author Shuval
+ * @author deinum
  */
 public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.BookViewHolder> {
     final static String TAG = "FBA_DEBUG_BORROWED";
@@ -34,12 +36,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
     final static int FRAG_RETURN = 1;
 
 
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See
-     * {@link FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+
     public FirestoreBorrowedAdapter(FirestoreRecyclerOptions options) {
         super(options);
     }
@@ -47,7 +44,6 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
     /**
      * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
      * on the book status.
-     *
      * @param position Position of Book in list.
      * @return Status of book as an int.
      * @see #onCreateViewHolder(ViewGroup, int)
@@ -149,7 +145,6 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                         Log.d(TAG, " bookID: " + book.getId());
                         Log.d(TAG, " book ISBN:  " + book.getISBN());
 
-
                         Intent intent = new Intent(v.getContext(), Scanner.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
@@ -163,7 +158,6 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 holder.buttonMore.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        // TODO: Change to book.getId()
                         CustomBottomSheetDialog bottomSheet =
                                 new CustomBottomSheetDialog(false, book.getStatus(), book.getId());
                         bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
@@ -213,10 +207,8 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
 
         switch (viewType) {
             case Book.STATUS_AVAILABLE:
-                Log.d(TAG, "onCreateViewHolder: Got to available!!");
                 return new BookViewHolder(inflater.inflate(R.layout.card_no_requests, null));
             case Book.STATUS_REQUESTED:
-                Log.d(TAG, "onCreateViewHolder: Got to requested!");
                 return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_requested, null));
             case Book.STATUS_ACCEPTED:
                 return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));

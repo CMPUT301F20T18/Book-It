@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuth;
  * The class is still under development so the elements that appear on screen are mostly visual
  * with the exception of cancel
  * @author Johnathon Gil
- * @author
+ * @author deinum
  */
 
 public class PostScanActivity extends AppCompatActivity {
@@ -107,7 +107,6 @@ public class PostScanActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MyBooksAddBook.class);
                 Log.d(TAG, "ONLeave: ISBN =  " + passed_isbn);
-
                 intent.putExtra("filled_isbn", Long.parseLong(passed_isbn));
                 intent.putExtra("type", MyBooksAddBook.ADD_SCAN);
                 startActivityForResult(intent, 5);

@@ -28,11 +28,11 @@ import static com.example.cmput301f20t18.photoAdapter.stringToByte;
 
 /**
  * Custom RecyclerView Adapter for Book objects in My Books.
- *
  * @see FirestoreRecyclerAdapter
  * @see MyBooksAvailableFragment
  * @see MyBooksPendingFragment
  * @see MyBooksLendingFragment
+ * @author deinum
  */
 public class FirestoreBookAdapter
         extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.BookViewHolder>
@@ -54,6 +54,7 @@ public class FirestoreBookAdapter
         super(options);
         this.context = context;
     }
+
 
     /**
      * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
@@ -83,26 +84,23 @@ public class FirestoreBookAdapter
     @Override
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
-        if (book.hasPhotos()) {
-            byte[] bytes = photoAdapter.stringToByte(book.retrieveCover());
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
-            Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
-            holder.imageView.setImageBitmap(photo);
-        }
+//        if (book.hasPhotos()) {
+//            byte[] bytes = photoAdapter.stringToByte(book.retrieveCover());
+//            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+//            Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
+//            holder.imageView.setImageBitmap(photo);
+//        }
 
         holder.textViewTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
-        /* TODO: Implement delete/edit UI and functionality. */
-        /* TODO: Implement cancel pick up UI and functionality (for "accepted" books) */
 
         // This is used to open up a user's profile when clicking on their profile photo
         View.OnClickListener openProfileListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* TODO: Pass which user profile to show to CheckProfileActivity */
                 Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
                 v.getContext().startActivity(intent);
             }
@@ -114,6 +112,7 @@ public class FirestoreBookAdapter
             public void onClick(View v) {
                 /* Owner can select a new location if they so please. */
                 Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                intent.putExtra("bookID", book.getId());
                 v.getContext().startActivity(intent);
             }
         };
@@ -122,7 +121,6 @@ public class FirestoreBookAdapter
         holder.buttonMore.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                // TODO: Change to book.getId()
                 CustomBottomSheetDialog bottomSheet =
                         new CustomBottomSheetDialog(true, book.getStatus(), book.getId());
                 bottomSheet.show(((AppCompatActivity) v.getContext()).getSupportFragmentManager(),
@@ -151,8 +149,7 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_ACCEPTED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-                holder.textViewUsername.setText("USERNAME");
-                //holder.textViewUsername.setText(book.getOwner().getUsername());
+
                 holder.textViewUserDescription.setText(R.string.picking_up);
 
                 /* User clicks the "Confirm pick up" button */

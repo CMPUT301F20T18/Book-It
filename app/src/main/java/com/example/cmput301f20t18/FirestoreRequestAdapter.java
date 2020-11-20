@@ -14,23 +14,21 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+/**
+ * Handles display the requests for a book a user owns
+ * @see User
+ * @see Book
+ * @author deinum
+ */
 public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transaction, FirestoreRequestAdapter.requestViewHolder> {
 
     final static String TAG = "FRA_DEBUG";
 
-    /**
-     * Create a new RecyclerView adapter that listens to a Firestore Query.  See {@link
-     * FirestoreRecyclerOptions} for configuration options.
-     *
-     * @param options
-     */
+
+
     public FirestoreRequestAdapter(@NonNull FirestoreRecyclerOptions<Transaction> options) {
         super(options);
     }
-
-
-
-
 
     @Override
     protected void onBindViewHolder(@NonNull FirestoreRequestAdapter.requestViewHolder holder, int position, @NonNull Transaction transaction) {
@@ -79,10 +77,5 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
             borrower_name = itemView.findViewById(R.id.text_username);
 
         }
-
-
-
-
-
     }
 }

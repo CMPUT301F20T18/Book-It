@@ -17,8 +17,9 @@ import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 /**
- * A {@link Fragment} subclass that is responsible for the page the user sees when in the
- * "Borrowed" section.
+ * A Fragment that handles all sub-fragments for books that a user is borrowing
+ * @author Shuval
+ * @author deinum
  */
 public class BorrowedFragment extends Fragment implements fragmentListener {
     private final static String TAG = "BF_DEBUG";
@@ -71,49 +72,37 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
     }
 
 
-    // take appropriate action from result
+    /**
+     * Process results from called activities
+     * @param requestCode The requested finish code
+     * @param resultCode The result code for the activity
+     * @param data The data returned by the called activities
+     */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
         int bookID = data.getIntExtra("bookID", 0);
         Long expected_isbn = data.getLongExtra("eISBN", 0);
 
+        // debug info
         Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
 
-        User current = new User();
 
+        User current = new User();
         switch (requestCode) {
 
-            case 0:
-                break;
-
-
             case 1:
-
-                if (expected_isbn != isbn) {
-                    current.borrowerDropOffBook(bookID);
-                }
-                else {
-                    // TODO: Implement popup stating that the wrong book was returned
-                    Log.d(TAG, "Wrong book pickup!");
-
-
-                }
+                // TODO: Implement ISBN check?
+                current.borrowerDropOffBook(bookID);
                 break;
 
             case 2:
-                if (expected_isbn != isbn) {
-                    current.borrowerPickupBook(bookID);
-                }
-                else {
-                    // TODO: Implement popup stating that the wrong book was returned
-                    Log.d(TAG, "Wrong book pickup!");
-                }
+                // TODO: Implement ISBN check?
+                current.borrowerPickupBook(bookID);
                 break;
         }
-
     }
 }

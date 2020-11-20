@@ -20,6 +20,12 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 import java.util.Map;
 
+
+/**
+ * Represents a notification for a user
+ * @see User
+ * @author deinum
+ */
 public class Notification {
 
 
@@ -38,6 +44,7 @@ public class Notification {
     private final int type;
     private String message;
 
+
     // database info
     FirebaseAuth auth = FirebaseAuth.getInstance();
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
@@ -45,6 +52,13 @@ public class Notification {
     CollectionReference userRef = DB.collection("users");
 
 
+    /**
+     * Contructor for a notification
+     * @param sourceUsername The user whose action sends a notification
+     * @param targetUsername The user who the notification is being sent to
+     * @param bookTitle The title of the book used within the notification
+     * @param type The type of notification being sent
+     */
     public Notification(String sourceUsername, String targetUsername, String bookTitle, int type) {
         this.sourceUsername = sourceUsername;
         this.targetUsername = targetUsername;
@@ -54,7 +68,9 @@ public class Notification {
     }
 
 
-
+    /**
+     * Prepare the message being sent to the user, depending on the type of notification being sent
+     */
     public void prepareMessage() {
         switch (this.type) {
 
@@ -79,17 +95,13 @@ public class Notification {
 
             default:
                 Log.d(TAG, "prepareMessage: Invalid Request Type!");
-
-
-
-
         }
-        Log.d(TAG, "prepareMessage: Message: " + message);
     }
 
 
-
-
+    /**
+     * Initiate the sending of the Notification by writing it to the database
+     */
     public void sendNotification() {
 
         // find the instance token of the targeted user
@@ -109,6 +121,7 @@ public class Notification {
                     ID = ID.replace('.', ':');
                     Log.d(TAG, "ID: " + ID);
 
+                    // create the notification map
                     Map<Object, Object> notification = new HashMap<>();
                     notification.put("target", target.getInstanceToken());
                     notification.put("message", Notification.this.message);
