@@ -17,6 +17,12 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Display all the requests for a given book to the user
+ * @see User
+ * @see FirestoreRequestAdapter
+ * @author deinum
+ */
 public class ViewRequestsActivity extends AppCompatActivity {
     static final String TAG = "VRA_DEBUG";
 
@@ -25,6 +31,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
     Query query;
     int bookID;
 
+    // Database info
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     CollectionReference transRef = DB.collection("transactions");
@@ -44,6 +51,9 @@ public class ViewRequestsActivity extends AppCompatActivity {
         setUp();
     }
 
+    /**
+     * Sets up our recyclerview, including defining the query which will populate the list
+     */
     public void setUp() {
         query = transRef.whereEqualTo("owner_dbID", auth.getUid()).whereEqualTo("status", Transaction.STATUS_REQUESTED);
         FirestoreRecyclerOptions<Transaction> options = new FirestoreRecyclerOptions.Builder<Transaction>()
@@ -56,7 +66,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
     }
 
 
-
+    // tell our adapter to start listening as soon as the activity begins
     @Override
     public void onStart() {
         super.onStart();
@@ -66,7 +76,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
 
 
     }
-
+    // tell our adapter to stop listening as soon as the activity ends
     @Override
     public void onStop() {
         super.onStop();

@@ -21,6 +21,11 @@ import com.google.android.material.tabs.TabLayout;
 /**
  * A {@link Fragment} subclass that is responsible for the page the user sees when in the
  * "My Books" section.
+ * @see MyBooksLendingFragment
+ * @see MyBooksAvailableFragment
+ * @see MyBooksPendingFragment
+ * @author Shuval
+ * @author deinum
  */
 public class MyBooksFragment extends Fragment implements fragmentListener {
     final static String TAG = "MBF";
@@ -84,6 +89,8 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         });
     }
 
+
+    // handle results from link fragments
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             return;
@@ -101,32 +108,14 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
 
         switch (requestCode) {
 
-            // change book status to borrowed
-            // change transaction
-
-            case 0:
-                break;
-
-
             case 1:
-                if (expected_isbn != isbn) {
-                    current.ownerSignOff(bookID);
-                }
-                else {
-                    // TODO: implement popup stating wrong back returned
-                    Log.d(TAG, "Wrong book pickup!");
-                }
+                // TODO: implement ISBN check?
+                current.ownerSignOff(bookID);
                 break;
 
             case 2:
-
-                if (expected_isbn != isbn) {
-                    current.ownerConfirmPickup(bookID);
-                }
-                else {
-                    // TODO: implement popup stating wrong back returned
-                    Log.d(TAG, "Wrong book pickup!");
-                }
+                // TODO: Implement ISBN check?
+                current.ownerConfirmPickup(bookID);
                 break;
         }
 

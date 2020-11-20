@@ -22,8 +22,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
- * in Borrowed>Ready for pick up.
+ * A {@link Fragment} subclass that is responsible for displaying all books that a user has requested
+ * Firebase manages this adapter and will update in real time based on writes to firestore.
+ * @see BorrowedBorrowingFragment
+ * @see BorrowedRequestedFragment
+ * @see FirestoreBorrowedAdapter
+ * @author deinum
+ * @author Shuval De Villiers
  */
 public class BorrowedPendingFragment extends Fragment {
     RecyclerView recyclerView;
@@ -96,6 +101,10 @@ public class BorrowedPendingFragment extends Fragment {
         return view;
     }
 
+
+    /**
+     * Sets up our recyclerview, including defining the query which will populate the list
+     */
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("requested_books").whereEqualTo("status", Book.STATUS_ACCEPTED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
@@ -107,6 +116,7 @@ public class BorrowedPendingFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    // tell our adapter to start listening as soon as the fragment begins
     @Override
     public void onStart() {
         super.onStart();
@@ -117,6 +127,7 @@ public class BorrowedPendingFragment extends Fragment {
 
     }
 
+    // tell our adapter to stop listening as soon as the fragment ends
     @Override
     public void onStop() {
         super.onStop();

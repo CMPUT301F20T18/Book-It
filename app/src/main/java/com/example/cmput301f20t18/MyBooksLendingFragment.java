@@ -25,10 +25,15 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
- * in My Books>Lending.
+ * A {@link Fragment} subclass that is responsible for displaying books a user owns
+ * Firebase manages this adapter and will update in real time based on writes to firestore.
+ * @see MyBooksAvailableFragment
+ * @see MyBooksPendingFragment
+ * @see FirestoreBookAdapter
+ * @author deinum
+ * @author Shuval De Villiers
  */
-public class MyBooksLendingFragment extends Fragment implements fragmentListener {
+public class MyBooksLendingFragment extends Fragment {
 
     RecyclerView recyclerView;
     List<Book> bookList;
@@ -36,10 +41,7 @@ public class MyBooksLendingFragment extends Fragment implements fragmentListener
     FirestoreBookAdapter adapter;
     final static String TAG = "MBLF";
 
-    /* Everything below here and above onCreateView() is auto-inserted boilerplate */
-
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -105,7 +107,7 @@ public class MyBooksLendingFragment extends Fragment implements fragmentListener
 
 
 
-
+    // tell our adapter to start listening as soon as the fragment begins
     @Override
     public void onStart() {
         super.onStart();
@@ -115,7 +117,7 @@ public class MyBooksLendingFragment extends Fragment implements fragmentListener
 
 
     }
-
+    // tell our adapter to stop listening as soon as the fragment ends
     @Override
     public void onStop() {
         super.onStop();
@@ -124,6 +126,9 @@ public class MyBooksLendingFragment extends Fragment implements fragmentListener
         }
     }
 
+    /**
+     * Sets up our recyclerview, including defining the query which will populate the list
+     */
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("books_owned").whereEqualTo("status", Book.STATUS_BORROWED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
@@ -133,33 +138,5 @@ public class MyBooksLendingFragment extends Fragment implements fragmentListener
         adapter = new FirestoreBookAdapter(options, this.getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
-    }
-
-    /**
-     * Handle users scanning books to return / borrow
-     * @param requestCode The request code for the calling activity
-     * @param resultCode The result code from the called activity
-     * @param data The data embedded in the intent
-     */
-    public void onActivityResult(int requestCode, int resultCode, Intent data) {
-        String isbn_string = data.getStringExtra("ISBN");
-        Long isbn = Long.parseLong(isbn_string);
-        int bookID = data.getIntExtra("bookID", 0);
-        switch (resultCode) {
-
-            // change book status to borrowed
-            // change transaction
-            case 0:
-                Log.d(TAG, "0 bookID: " + Integer.toString(bookID));
-                break;
-
-
-            case 1:
-                Log.d(TAG, "1 bookID: " + Integer.toString(bookID));
-                User current = new User();
-                current.ownerSignOff(bookID);
-                break;
-        }
-
     }
 }

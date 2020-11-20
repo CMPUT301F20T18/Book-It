@@ -21,7 +21,7 @@ import com.google.firebase.auth.FirebaseAuthException;
 import com.google.firebase.auth.FirebaseUser;
 
 /**
- * Allows the users to sign in / register for the application
+ * Allows the users to sign in / opt to register for the application
  * @author Jacob Deinum
  * UI contributions
  * @author Johnathon Gil
@@ -87,7 +87,8 @@ public class Login extends AppCompatActivity {
                                     Intent intent = new Intent(getBaseContext(), HomeScreen.class);
                                     finish();
                                     startActivityForResult(intent, 0);
-                                } else {
+                                }
+                                else {
                                     // If sign in fails, display a message to the user.
                                     FirebaseAuthException e = (FirebaseAuthException) task.getException();
                                     Toast.makeText(Login.this, "Wrong username or password!", Toast.LENGTH_SHORT).show();
