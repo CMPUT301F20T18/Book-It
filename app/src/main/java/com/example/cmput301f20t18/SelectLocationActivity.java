@@ -28,11 +28,6 @@ import java.util.Locale;
  * select a location on the map (places a marker at the location they clicked)
  * display the address of said location (so long as the phone has access to a geocoder)
  * confirm that this is the correct location and click a button to exit
- *
- * functionality
- * @author Chase Warwick
- * UI
- * @author
  */
 public class SelectLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -56,7 +51,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
 
-        //Grab data from caller
+        // Grab data from caller
         defaultAddress = getIntent().getParcelableExtra("INPUT_ADDRESS");
         locationIndex = getIntent().getIntExtra("LOCATION_INDEX", -1);
 
@@ -97,7 +92,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
      * @param address   The address to be described
      * @return A String object which describes address
      */
-    private String getAddressString(Address address){
+    public static String getAddressString(Address address){
         String addressTitle = "";
         String subThoroughfare = address.getSubThoroughfare();
         String thoroughfare = address.getThoroughfare();

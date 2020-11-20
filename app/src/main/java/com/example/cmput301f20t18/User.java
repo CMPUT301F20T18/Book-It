@@ -1,11 +1,15 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
+import android.location.Address;
 import android.os.Build;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -14,6 +18,7 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,13 +27,14 @@ import java.util.Objects;
 
 /**
  * A user within our system, contains the methods / variables for any transaction between users
+ * @see Transaction
+ * @author deinum
  */
 public class User {
     private String username;
     private int appID;
     private String dbID;
     private String address;
-    private String pickup;
     private String phone;
     private String email;
     private String profile_picture;
@@ -69,7 +75,6 @@ public class User {
         this.dbID = DB_id;
         this.email = email;
         this.address = address;
-        this.pickup = address;
         this.phone = null;
         this.profile_picture = null;
         this.instanceToken = null;
@@ -273,6 +278,7 @@ public class User {
 
                     // change the status of the book to borrowed
                     bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
+                    bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
 
                     // delete the request for the book
                     userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
@@ -331,6 +337,7 @@ public class User {
 
                 // update the global book reference
                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
+                bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
 
                 // delete the borrower book reference
                 userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).delete();
@@ -358,8 +365,13 @@ public class User {
                 // delete the book
                 bookRef.document(Integer.toString(bookID)).delete();
 
-                // delete each transaction associated with this book
                 for (int i = 0 ; i < transactions.size() ; i++) {
+
+                    // remove this book from requested for each requester
+                    userRef.document(transactions.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).delete();
+
+
+                    // delete each transaction associated with this book
                     transRef.document(Integer.toString(transactions.get(i).getID())).delete();
                 }
             }
@@ -369,6 +381,43 @@ public class User {
             }
         });
 
+    }
+
+
+    public void ownerAddLocation(Address address) {
+        userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
+    }
+
+
+
+
+    public void ownerSetPickupLocation(Address address, int bookID) {
+
+        // find the transaction associated with this book
+        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // must be unique
+
+                    // update the borrowers pickup address
+                    userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID))
+                            .update("pickup_location", SelectLocationActivity.getAddressString(address));
+
+                    // update the pickup location for the owner
+                    bookRef.document(Integer.toString(bookID)).update("pickup_location", SelectLocationActivity.getAddressString(address));
+                }
+
+                else {
+                    Log.d(TAG, "ownerSetPickupLocation - Error finding transaction");
+                }
+            }
+        });
+    }
+
+
+    public void ownerDeleteLocation(String location) {
+        userRef.document(auth.getUid()).collection("pickup_locations").document(location).delete();
     }
 
 
@@ -391,6 +440,8 @@ public class User {
 
                 // update the global book reference
                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
+                bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+
 
                 // delete the borrower book reference
                 userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).delete();
@@ -457,7 +508,7 @@ public class User {
                                                 }
 
                                                 // create a new transaction
-                                                Transaction request = new Transaction(val, bookID, null, borrower.getUsername(), book.getOwner_username(), auth.getUid(), book.getOwner_dbID());
+                                                Transaction request = new Transaction(val, bookID, borrower.getUsername(), book.getOwner_username(), auth.getUid(), book.getOwner_dbID());
 
                                                 // add the transaction to the global trans file
                                                 transRef.document(Integer.toString(val)).set(request);
@@ -466,11 +517,6 @@ public class User {
                                                 book.setStatus(Book.STATUS_REQUESTED);
                                                 userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(bookID)).set(book);
                                                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_REQUESTED);
-
-                                                // notify the owner
-                                                Notification notification = new Notification(borrower.getUsername(), book.getOwner_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
-                                                notification.prepareMessage();
-                                                notification.sendNotification();
 
                                             }
 
@@ -523,6 +569,8 @@ public class User {
 
                     // update the book status in the DB
                     bookRef.document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_AVAILABLE);
+                    bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+
                     userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
 
                     // delete the global transaction
@@ -586,6 +634,9 @@ public class User {
 
                 // delete the transaction from the global transaction file
                 transRef.document(Integer.toString(transaction.getID())).delete();
+
+                // set pickup location to null
+                bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
 
                 // remove the book from requested list
                 userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
@@ -672,14 +723,6 @@ public class User {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getPickup() {
-        return pickup;
-    }
-
-    public void setPickup(String pickup) {
-        this.pickup = pickup;
     }
 
     public String getPhone() {
