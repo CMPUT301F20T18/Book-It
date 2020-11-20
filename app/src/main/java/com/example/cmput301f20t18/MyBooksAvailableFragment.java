@@ -57,7 +57,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference bookRef = DB.collection("books");
+    CollectionReference userRef = DB.collection("users");
 
 
 
@@ -136,12 +136,12 @@ public class MyBooksAvailableFragment extends Fragment {
      * Sets up our recyclerview, including defining the query which will populate the list
      */
     public void setUp() {
-        query = bookRef.whereEqualTo("owner_dbID", auth.getUid()).whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE ).whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED);
+        query = userRef.document(auth.getUid()).collection("books_owned").whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE ).whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();
 
-        adapter = new FirestoreBookAdapter(options, getContext());
+        adapter = new FirestoreBookAdapter(options, this.getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
