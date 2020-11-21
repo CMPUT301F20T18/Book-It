@@ -266,24 +266,26 @@ public class Book implements Comparable<Book> {
     }
 
 
-    /**
-     * Retrieves the cover photo of a book object
-     * @return A base 64 String representing a books cover photo
-     */
-    public String retrieveCover() {
-        String cover = null;
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public Bitmap retrieveCover() {
+        Bitmap cover = null;
+
+
         if (this.photos.size() > 0) {
-            cover = this.photos.get(0);
+            String coverString = this.photos.get(0);
+            cover = photoAdapter.stringToBitmap(coverString);
         }
         return cover;
     }
 
 
-    /**
-     * Get all of the books photos
-     * @return Array of base 64 strings representing a books images
-     */
-    public ArrayList<String> getPhotos() {
-        return photos;
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    public ArrayList<Bitmap> getPhotos() {
+        ArrayList<Bitmap> photoList = new ArrayList<>();
+        for(String photo: photos){
+            photoList.add(photoAdapter.stringToBitmap(photo));
+        }
+        return photoList;
     }
 }
