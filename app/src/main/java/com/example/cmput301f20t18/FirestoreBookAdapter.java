@@ -84,8 +84,7 @@ public class FirestoreBookAdapter
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
         if (book.hasPhotos()) {
-            byte[] bytes = photoAdapter.stringToByte(book.retrieveCover());
-            Bitmap bitmap = BitmapFactory.decodeByteArray(bytes, 0, bytes.length);
+            Bitmap bitmap = book.retrieveCover();
             Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
             holder.imageView.setImageBitmap(photo);
         }
