@@ -22,23 +22,27 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
- * in Borrowed>Borrowing.
+ * A {@link Fragment} subclass that is responsible for displaying all books that a user is borrowing
+ * Firebase manages this adapter and will update in real time based on writes to firestore.
+ * @see BorrowedPendingFragment
+ * @see BorrowedRequestedFragment
+ * @see FirestoreBorrowedAdapter
+ * @author deinum
+ * @author Shuval De Villiers
  */
 public class BorrowedBorrowingFragment extends Fragment {
     RecyclerView recyclerView;
     Query query;
     FirestoreBorrowedAdapter adapter;
 
+    // DB info
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     CollectionReference userRef = DB.collection("users");
 
 
-    /* Everything below here and above onCreateView() is auto-inserted boilerplate */
 
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
     private static final String ARG_PARAM2 = "param2";
 
@@ -90,15 +94,20 @@ public class BorrowedBorrowingFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.fragment_borrowed_borrowing, container, false);
+        View view = inflater.
+                inflate(R.layout.fragment_borrowed_borrowing, container, false);
         recyclerView = view.findViewById(R.id.BBrecyclerView);
         setUp();
         return view;
     }
 
 
+    /**
+     * Sets up our recyclerview, including defining the query which will populate the list
+     */
     public void setUp() {
-        query = userRef.document(auth.getUid()).collection("requested_books").whereEqualTo("status", Book.STATUS_BORROWED);
+        query = userRef.document(auth.getUid()).collection("requested_books")
+                .whereEqualTo("status", Book.STATUS_BORROWED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();
@@ -108,6 +117,7 @@ public class BorrowedBorrowingFragment extends Fragment {
         recyclerView.setAdapter(adapter);
     }
 
+    // tell our adapter to start listening as soon as the fragment begins
     @Override
     public void onStart() {
         super.onStart();
@@ -118,6 +128,7 @@ public class BorrowedBorrowingFragment extends Fragment {
 
     }
 
+    // tell our adapter to stop listening as soon as the fragment ends
     @Override
     public void onStop() {
         super.onStop();

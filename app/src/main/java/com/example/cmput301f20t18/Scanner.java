@@ -47,6 +47,8 @@ import java.util.concurrent.Executors;
 /**
  * This activity implements an ISBN scanner and returns the ISBN calling this activity
  * This activity must be called with startActivityForResult to function properly
+ * @see Book
+ * @author deinum
  */
 public class Scanner extends AppCompatActivity {
 
