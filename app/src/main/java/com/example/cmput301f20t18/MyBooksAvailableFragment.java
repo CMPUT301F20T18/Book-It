@@ -40,7 +40,6 @@ import java.util.List;
 public class MyBooksAvailableFragment extends Fragment {
 
     RecyclerView recyclerView;
-    List<Book> bookList;
     Query query;
     FirestoreBookAdapter adapter;
 
