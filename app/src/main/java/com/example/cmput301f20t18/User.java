@@ -385,6 +385,10 @@ public class User {
 
 
     public void ownerEditProfile(String username, String address, String phone, String cover_photo) {
+        // username isn't being changed, no need to query the DB
+        if (username == null) {
+
+        }
     }
 
 
