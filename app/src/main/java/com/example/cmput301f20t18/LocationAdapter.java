@@ -184,8 +184,8 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            return returnValue;
         }
+        return returnValue;
     }
 
     /**
