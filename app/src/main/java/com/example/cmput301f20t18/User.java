@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -388,6 +390,51 @@ public class User {
         userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
     }
 
+    public void ownerEditBook(String username, String address, String coverPhoto) {
+        if (!address.equals("")) {
+            userRef.document(auth.getUid()).update("address", address);
+        }
+
+        if (!coverPhoto.equals("")) {
+            userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
+        }
+
+        if (!username.equals("")) {
+            // check if the username is already taken
+            FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
+            RTDB.getReference("username_list").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        // username exists, cannot get that username
+                        Log.d(TAG, "ownerChangeUsername - Username already taken");
+                    }
+
+                    else {
+                        userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    User current = task.getResult().toObject(User.class);
+                                    RTDB.getReference().child("username_list").child(current.username).removeValue();
+                                    RTDB.getReference().child(username).setValue(username);
+                                }
+                                else {
+                                    Log.d(TAG, "ownerEditPRofile - Error finding current user");
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
 
 
 
@@ -517,6 +564,12 @@ public class User {
                                                 book.setStatus(Book.STATUS_REQUESTED);
                                                 userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(bookID)).set(book);
                                                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_REQUESTED);
+
+
+                                                // notify the user
+                                                Notification notification = new Notification(request.getBorrower_username(), request.getBorrower_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
+                                                notification.prepareMessage();
+                                                notification.sendNotification();
 
 
                                             }
