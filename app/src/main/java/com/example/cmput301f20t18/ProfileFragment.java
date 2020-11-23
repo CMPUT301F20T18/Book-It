@@ -157,7 +157,6 @@ public class ProfileFragment extends Fragment {
      * UserQueryTaskCompleteListener waits for the task of getting user snapshot to complete
      * before calling a function to update user information
      * @author Chase Warwick
-     * TODO: Currently crashes if user repeatedly clicks profile button (not sure what that's about)
      * TODO: Add profile picture functionality (Should be easy just need db to have it)
      */
     private class UserQueryTaskCompleteListener implements OnCompleteListener{

@@ -262,7 +262,7 @@ public class Book implements Comparable<Book> {
      * @return boolean representing
      */
     public boolean hasPhotos(){
-        return photos.isEmpty() == false;
+        return !photos.isEmpty();
     }
 
 

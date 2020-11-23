@@ -53,6 +53,13 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
         // Grab data from caller
         defaultAddress = getIntent().getParcelableExtra("INPUT_ADDRESS");
+        if (defaultAddress == null){
+            defaultAddress = new Address(Locale.getDefault());
+            defaultAddress.setLatitude(53.5232);
+            defaultAddress.setLongitude(-113.5263);
+        }
+
+
         locationIndex = getIntent().getIntExtra("LOCATION_INDEX", -1);
 
         //Set up confirm button
@@ -170,6 +177,9 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         }
 
         private void updateAddress(LatLng latLng, String addressTitle) {
+            if (this.address == null){
+                this.address = new Address(Locale.getDefault());
+            }
             this.address.setAddressLine(1, addressTitle);
             updateAddressLatLng(latLng);
         }
