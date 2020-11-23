@@ -1,6 +1,7 @@
 package com.example.cmput301f20t18;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -14,6 +15,7 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
@@ -31,7 +33,7 @@ public class EditProfile extends AppCompatActivity {
     private TextView changePass;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
     private ImageView profilePic;
-    private Bitmap photo;
+    private String photo;
 
 
     @Override
@@ -75,7 +77,6 @@ public class EditProfile extends AppCompatActivity {
                 Intent i = getIntent();
                 i.putExtra("photo", photo);
                 i.putExtra("username", usernameInput.getText().toString());
-                i.putExtra("email", emailInput.getText().toString());
                 i.putExtra("phone", phoneNumInput.getText().toString());
                 setResult(RESULT_OK, i);
                 finish();
@@ -104,6 +105,7 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,7 +123,7 @@ public class EditProfile extends AppCompatActivity {
 
                     Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) profilePic.getWidth(), (float) profilePic.getHeight());
                     Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
-                    photo = outMap;
+                    photo = photoAdapter.bitmapToString(outMap);
                     profilePic.setImageBitmap(circleImage);
                 }
         }
