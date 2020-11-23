@@ -388,6 +388,7 @@ public class User {
         // username isn't being changed, no need to query the DB
         if (username == null) {
 
+
         }
     }
 

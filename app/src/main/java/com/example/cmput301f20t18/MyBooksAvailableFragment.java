@@ -29,8 +29,13 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
- * in My Books>Available.
+ * A {@link Fragment} subclass that is responsible for displaying books a user owns
+ * Firebase manages this adapter and will update in real time based on writes to firestore.
+ * @see MyBooksLendingFragment
+ * @see MyBooksPendingFragment
+ * @see FirestoreBookAdapter
+ * @author deinum
+ * @author Shuval De Villiers
  */
 public class MyBooksAvailableFragment extends Fragment {
 
@@ -131,6 +136,7 @@ public class MyBooksAvailableFragment extends Fragment {
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();
+
 
         adapter = new FirestoreBookAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
