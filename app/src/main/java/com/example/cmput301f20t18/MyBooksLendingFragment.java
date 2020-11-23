@@ -51,7 +51,7 @@ public class MyBooksLendingFragment extends Fragment {
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference userRef = DB.collection("users");
+    CollectionReference bookRef = DB.collection("books");
 
 
 
@@ -131,12 +131,12 @@ public class MyBooksLendingFragment extends Fragment {
      * Sets up our recyclerview, including defining the query which will populate the list
      */
     public void setUp() {
-        query = userRef.document(auth.getUid()).collection("books_owned").whereEqualTo("status", Book.STATUS_BORROWED);
+        query = bookRef.whereEqualTo("owner_dbID", auth.getUid()).whereEqualTo("status", Book.STATUS_BORROWED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();
 
-        adapter = new FirestoreBookAdapter(options, this.getContext());
+        adapter = new FirestoreBookAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
