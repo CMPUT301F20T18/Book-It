@@ -5,6 +5,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.location.Address;
+import android.location.Geocoder;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -17,7 +18,11 @@ import androidx.appcompat.app.AlertDialog;
 import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import java.io.IOException;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * Custom RecyclerView Adapter for UserLocation objects in ChooseLocationActivity.
@@ -151,6 +156,36 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
     @Override
     public int getItemCount() {
         return locationList.size();
+    }
+
+    /**
+     * @author Chase-Warwick
+     * parseString takes in a string describing a location and if Geocoder is present attempts
+     * to return an Address object representing the location. If Geocoder is not present or Geocoder
+     * fails to provide an address then it returns an address with LatLng set to the middle of
+     * Canada
+     * @param context Context object representing current context
+     * @param locationName String object representing a specified location
+     * @return Address representing either the location specified in locationName or the middle of
+     *         Canada
+     */
+    public static Address parseString(Context context, String locationName){
+        Address returnValue = new Address(Locale.getDefault());
+        returnValue.setLatitude(43.651070);
+        returnValue.setLongitude(-79.347015);
+        if (Geocoder.isPresent()) {
+            Geocoder geocoder = new Geocoder(context);
+            try {
+                List<Address> possibleAddress = geocoder.getFromLocationName(
+                        locationName, 1);
+                if (possibleAddress.size() == 1) {
+                    returnValue = possibleAddress.get(0);
+                }
+            }
+            catch (IOException e) {
+                e.printStackTrace();
+            }
+        return returnValue;
     }
 
     /**

@@ -59,20 +59,20 @@
         </FrameLayout>
 
         <EditText
-            app:layout_constraintStart_toEndOf="@id/spinner_layout"
-            app:layout_constraintEnd_toStartOf="@id/search_button"
-            app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/search_edit_text"
-            android:layout_width="0dp"
+            android:layout_width="262dp"
             android:layout_height="32dp"
-            android:inputType="text"
-            android:imeOptions="actionSearch"
             android:layout_gravity="center"
             android:background="@color/colorWhite"
             android:hint="Search..."
+            android:imeOptions="actionSearch"
+            android:inputType="text"
             android:paddingLeft="10dp"
             android:textColor="@color/colorGray2"
-            android:textColorHint="@color/doveGray" />
+            android:textColorHint="@color/doveGray"
+            app:layout_constraintEnd_toStartOf="@id/search_button"
+            app:layout_constraintStart_toEndOf="@id/spinner_layout"
+            app:layout_constraintTop_toTopOf="parent" />
 
         <Button
             android:id="@+id/search_button"
