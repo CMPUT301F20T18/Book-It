@@ -162,12 +162,28 @@ public class User {
                         for (int i = 0 ; i < list.size() ; i++) {
                             transRef.document(Integer.toString(list.get(i).getID())).delete();
                         }
+
+
+                        bookRef.document(Integer.toString(transaction.getBookID())).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
+                                if (task1.isSuccessful()) {
+                                    Book book = task1.getResult().toObject(Book.class);
+
+                                    // send a notification
+                                    Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
+                                    notification.prepareMessage();
+                                    notification.sendNotification();
+                                }
+                            }
+                        });
                     }
 
                     else {
                         Log.d(TAG, "ownerAcceptRequest - Error querying for other transactions!");
                     }
                 });
+
             }
 
             else {
@@ -419,10 +435,13 @@ public class User {
 
                                     // delete old username from list and add the new one
                                     RTDB.getReference().child("username_list").child(current.username).removeValue();
-                                    RTDB.getReference().child(username).setValue(username);
+                                    RTDB.getReference().child("username_list").child(username).setValue(username);
+
+                                    // update username in firestore
+                                    userRef.document(auth.getUid()).update("username", username);
                                 }
                                 else {
-                                    Log.d(TAG, "ownerEditPRofile - Error finding current user");
+                                    Log.d(TAG, "ownerEditProfile - Error finding current user");
                                 }
                             }
                         });

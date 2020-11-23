@@ -195,6 +195,9 @@ public class ProfileFragment extends Fragment {
                     username.setText((String)newInfo.get("username"));
                     phoneNum.setText((String)newInfo.get("phone"));
                     email.setText((String)newInfo.get("email"));
+
+                    User current = new User();
+                    current.ownerEditProfile((String) newInfo.get("username"), (String)newInfo.get("phone"), "default address");
                 }
         }
     }

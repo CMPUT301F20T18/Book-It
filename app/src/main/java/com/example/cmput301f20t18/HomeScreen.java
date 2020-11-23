@@ -83,7 +83,6 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
             }
         });
 
-
         //* Bottom navigation menu *//*
         BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setItemIconTintList(null);
