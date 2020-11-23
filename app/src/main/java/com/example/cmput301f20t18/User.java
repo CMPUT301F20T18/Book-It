@@ -390,7 +390,7 @@ public class User {
         userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
     }
 
-    public void ownerEditBook(String username, String address, String coverPhoto) {
+    public void ownerEditProfile(String username, String address, String coverPhoto) {
         if (!address.equals("")) {
             userRef.document(auth.getUid()).update("address", address);
         }
@@ -416,6 +416,8 @@ public class User {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                                 if (task.isSuccessful()) {
                                     User current = task.getResult().toObject(User.class);
+
+                                    // delete old username from list and add the new one
                                     RTDB.getReference().child("username_list").child(current.username).removeValue();
                                     RTDB.getReference().child(username).setValue(username);
                                 }
@@ -570,7 +572,7 @@ public class User {
 
 
                                                 // notify the user
-                                                Notification notification = new Notification(request.getBorrower_username(), request.getBorrower_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
+                                                Notification notification = new Notification(request.getBorrower_username(), request.getOwner_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
                                                 notification.prepareMessage();
                                                 notification.sendNotification();
 
