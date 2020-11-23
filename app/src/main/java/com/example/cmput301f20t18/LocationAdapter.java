@@ -169,7 +169,7 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
      * @return Address representing either the location specified in locationName or the middle of
      *         Canada
      */
-    public static Address parseString(Context context, String locationName){
+    public static Address parseString(Context context, String locationName) {
         Address returnValue = new Address(Locale.getDefault());
         returnValue.setLatitude(43.651070);
         returnValue.setLongitude(-79.347015);
@@ -181,11 +181,11 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
                 if (possibleAddress.size() == 1) {
                     returnValue = possibleAddress.get(0);
                 }
-            }
-            catch (IOException e) {
+            } catch (IOException e) {
                 e.printStackTrace();
             }
-        return returnValue;
+            return returnValue;
+        }
     }
 
     /**
