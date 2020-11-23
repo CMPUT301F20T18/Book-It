@@ -368,7 +368,11 @@ public class User {
                 Log.d(TAG, "ownerDeleteBook - Error getting transaction list");
             }
         });
+    }
 
+
+
+    public void ownerEditProfile(String username, String address, String phone, String cover_photo) {
     }
 
 
@@ -611,15 +615,6 @@ public class User {
         });
 
     }
-
-
-    public void userSendNotification(String bookTitle, String source_username, String target_username, char type) {
-
-    }
-
-
-
-
 
 
 
