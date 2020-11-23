@@ -76,10 +76,10 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
+        // LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
 
         mMap = googleMap;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
+        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
 
         listener = new OnMapClickListener();
         mMap.setOnMapClickListener(listener);
@@ -139,7 +139,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
      *
      */
     private class OnMapClickListener implements GoogleMap.OnMapClickListener{
-        Address address = defaultAddress;
+        Address address;
 
         @Override
         public void onMapClick(LatLng latLng) {

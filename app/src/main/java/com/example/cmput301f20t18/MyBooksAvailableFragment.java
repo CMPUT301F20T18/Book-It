@@ -29,13 +29,8 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A {@link Fragment} subclass that is responsible for displaying books the user owns
- * Firebase manages this adapter and will update in real time based on writes to firestore.
- * @see MyBooksAvailableFragment
- * @see MyBooksLendingFragment
- * @see FirestoreBookAdapter
- * @author deinum
- * @author Shuval De Villiers
+ * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
+ * in My Books>Available.
  */
 public class MyBooksAvailableFragment extends Fragment {
 
@@ -57,7 +52,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
-    CollectionReference userRef = DB.collection("users");
+    CollectionReference bookRef = DB.collection("books");
 
 
 
@@ -92,7 +87,6 @@ public class MyBooksAvailableFragment extends Fragment {
         }
     }
 
-    // tell our adapter to start listening as soon as the fragment begins
     @Override
     public void onStart() {
         super.onStart();
@@ -102,7 +96,7 @@ public class MyBooksAvailableFragment extends Fragment {
 
 
     }
-    // tell our adapter to stop listening as soon as the fragment ends
+
     @Override
     public void onStop() {
         super.onStop();
@@ -132,16 +126,13 @@ public class MyBooksAvailableFragment extends Fragment {
     }
 
 
-    /**
-     * Sets up our recyclerview, including defining the query which will populate the list
-     */
     public void setUp() {
-        query = userRef.document(auth.getUid()).collection("books_owned").whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE ).whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED);
+        query = bookRef.whereEqualTo("owner_dbID", auth.getUid()).whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE ).whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED);
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();
 
-        adapter = new FirestoreBookAdapter(options, this.getContext());
+        adapter = new FirestoreBookAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }
