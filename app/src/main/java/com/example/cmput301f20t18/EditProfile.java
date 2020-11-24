@@ -19,7 +19,9 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -36,6 +38,7 @@ public class EditProfile extends AppCompatActivity {
     private String photo;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,6 +55,9 @@ public class EditProfile extends AppCompatActivity {
         emailInput.setText((String) extras.get("email"));
 
         profilePic  = findViewById(R.id.profile_pic);
+        photo = (String) extras.get("photo");
+
+
 
         changePass = findViewById(R.id.password_change);
 
@@ -103,6 +109,25 @@ public class EditProfile extends AppCompatActivity {
 
 
 
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (photo != ""){
+            Bitmap userPhoto = photoAdapter.stringToBitmap(photo);
+            float w;
+            float h;
+            w = profilePic.getHeight();
+            h = profilePic.getWidth();
+            Log.d("TAG", "onCreate: "+ w);
+            Log.d("TAG", "onCreate: "+ h);
+            Bitmap outMap = photoAdapter.scaleBitmap(userPhoto, w, h);
+            Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
+            profilePic.setImageBitmap(circleImage);
+
+        }
     }
 
     @RequiresApi(api = Build.VERSION_CODES.O)

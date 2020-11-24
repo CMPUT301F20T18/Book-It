@@ -113,6 +113,7 @@ public class ProfileFragment extends Fragment {
                 editIntent.putExtra("username", username.getText().toString());
                 editIntent.putExtra("email", email.getText().toString());
                 editIntent.putExtra("phone", phoneNum.getText().toString());
+                editIntent.putExtra("photo", photoString);
 
                 startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
             }
@@ -156,8 +157,17 @@ public class ProfileFragment extends Fragment {
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
         photoString = user.getProfile_picture();
+        if (photoString!= "") {
+            Bitmap bitmap;
+            try {
+               bitmap = photoAdapter.stringToBitmap(photoString);
+                profilePic.setImageBitmap(photoAdapter.makeCircularImage(bitmap, profilePic.getHeight()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                photoString = "";
+            }
 
-        profilePic.setImageBitmap(photoAdapter.stringToBitmap(photoString));
+        }
 
 
     }
