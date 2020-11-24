@@ -48,7 +48,7 @@ public class ProfileFragment extends Fragment {
     TextView username, phoneNum, email, editAccount;
     Button signOut;
     ImageView profilePic;
-    String photoString;
+    String photoString, address;
     //Bitmap userPhoto;
 
 
@@ -127,7 +127,7 @@ public class ProfileFragment extends Fragment {
 
                 Intent editIntent = new Intent(getContext(),EditProfile.class);
                 editIntent.putExtra("username", username.getText().toString());
-                editIntent.putExtra("email", email.getText().toString());
+                editIntent.putExtra("address", address);
                 editIntent.putExtra("phone", phoneNum.getText().toString());
                 editIntent.putExtra("photo", photoString);
 
@@ -173,6 +173,7 @@ public class ProfileFragment extends Fragment {
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
         photoString = user.getProfile_picture();
+        address = user.getAddress();
         if (photoString!= "") {
             Bitmap bitmap;
             try {
@@ -239,9 +240,11 @@ public class ProfileFragment extends Fragment {
 
                     username.setText((String)newInfo.get("username"));
                     phoneNum.setText((String)newInfo.get("phone"));
+                    address = (String)newInfo.get("address");
+
 
                     User current = new User();
-                    current.ownerEditProfile((String) newInfo.get("username"), (String)newInfo.get("phone"), photoString);
+                    current.ownerEditProfile((String) newInfo.get("username"), address , photoString, (String)newInfo.get("phone"));
                 }
         }
     }
