@@ -101,6 +101,23 @@ public class ProfileFragment extends Fragment {
 
         editAccount = (TextView) view.findViewById(R.id.edit_profile);
 
+        signOut = (Button) view.findViewById(R.id.sign_out_button);
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // clear all previous activities
+                Intent intent = new Intent(getContext(), Login.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // sign user out
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                auth.signOut();
+
+                // send user back to login
+                startActivity(intent);
+            }
+        });
+
         final String editAccountText = "Edit Account";
 
         SpannableString  editProf = new SpannableString(editAccountText);
