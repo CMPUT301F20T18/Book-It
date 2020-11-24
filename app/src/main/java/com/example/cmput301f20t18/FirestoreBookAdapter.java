@@ -95,12 +95,16 @@ public class FirestoreBookAdapter
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
+        if (book.getBorrower_username() != null) {
+            holder.textViewUsername.setText(book.getBorrower_username());
+        }
 
         // This is used to open up a user's profile when clicking on their profile photo
         View.OnClickListener openProfileListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
+                intent.putExtra("USERNAME", book.getBorrower_username());
                 v.getContext().startActivity(intent);
             }
         };

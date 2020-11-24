@@ -154,6 +154,8 @@ public class User {
 
                 // update the global book
                 bookRef.document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_ACCEPTED);
+                bookRef.document(Integer.toString(transaction.getBookID())).update("borrower_username", transaction.getBorrower_username());
+
 
                 // delete any other requests for the same book
                 transRef.whereEqualTo("bookID", transaction.getBookID()).whereEqualTo("status",Book.STATUS_REQUESTED).get().addOnCompleteListener(task1 -> {
@@ -161,6 +163,7 @@ public class User {
                         List <Transaction> list = task1.getResult().toObjects(Transaction.class);
                         for (int i = 0 ; i < list.size() ; i++) {
                             transRef.document(Integer.toString(list.get(i).getID())).delete();
+                            userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
                         }
 
 
@@ -297,6 +300,8 @@ public class User {
                     // change the status of the book to borrowed
                     bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
                     bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+                    bookRef.document(Integer.toString(bookID)).update("borrower_username", null);
+
 
                     // delete the request for the book
                     userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
@@ -356,6 +361,8 @@ public class User {
                 // update the global book reference
                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
                 bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+                bookRef.document(Integer.toString(bookID)).update("borrower_username", null);
+
 
                 // delete the borrower book reference
                 userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).delete();
@@ -512,6 +519,8 @@ public class User {
                 // update the global book reference
                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
                 bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+                bookRef.document(Integer.toString(bookID)).update("borrower_username", null);
+
 
 
                 // delete the borrower book reference
