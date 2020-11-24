@@ -95,9 +95,6 @@ public class FirestoreBookAdapter
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
-        if (book.getBorrower_username() != null) {
-            holder.textViewUsername.setText(book.getBorrower_username());
-        }
 
         // This is used to open up a user's profile when clicking on their profile photo
         View.OnClickListener openProfileListener = new View.OnClickListener() {
@@ -152,7 +149,9 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_ACCEPTED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-
+                if (book.getBorrower_username() != null) {
+                    holder.textViewUsername.setText(book.getBorrower_username());
+                }
                 holder.textViewUserDescription.setText(R.string.picking_up);
 
                 /* User clicks the "Confirm pick up" button */

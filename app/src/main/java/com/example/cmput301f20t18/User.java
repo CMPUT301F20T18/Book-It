@@ -715,7 +715,7 @@ public class User {
      * @param bookID The book ID of the book they no longer want to request
      */
     public void borrowerCancelRequest(int bookID) {
-        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_REQUESTED).get().addOnCompleteListener(task -> {
+        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // request is unique and non null
 
