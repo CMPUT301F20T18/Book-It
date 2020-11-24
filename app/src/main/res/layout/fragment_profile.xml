@@ -72,10 +72,10 @@
 
         <FrameLayout
             android:id="@+id/frame_image"
-            android:layout_width="133dp"
-            android:layout_height="141dp"
+            android:layout_width="95dp"
+            android:layout_height="103dp"
             android:layout_marginStart="20dp"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="30dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/circle_outline"
             android:padding="2dp"
@@ -99,7 +99,7 @@
             android:fontFamily="@font/poppins_medium"
             android:text="Username"
             android:textColor="@color/colorBlue"
-            android:textSize="30sp"
+            android:textSize="28sp"
             app:layout_constraintStart_toEndOf="@+id/frame_image"
             app:layout_constraintTop_toTopOf="parent" />
 
