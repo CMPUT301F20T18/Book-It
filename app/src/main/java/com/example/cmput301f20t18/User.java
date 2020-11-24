@@ -422,6 +422,10 @@ public class User {
             userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
         }
 
+        if (!phone.equals("")) {
+            userRef.document(auth.getUid()).update("phone", phone);
+        }
+
         if (!username.equals("")) {
             // check if the username is already taken
             FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
