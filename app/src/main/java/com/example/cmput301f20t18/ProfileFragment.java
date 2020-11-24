@@ -36,9 +36,8 @@ import java.util.Collections;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * This is a class that creates options for the use of the ISBN
- * The class is still under development so the elements that appear on screen are mostly visual
- * with the exception of cancel
+ * This is a class that displays a user's profile information such as username, email, and
+ * phone number.
  * @author Johnathon Gil
  * @author Chase Warwick (class UserQueryTaskCompleteListener and function updateUserInfo)
  * @author Sean Butler
@@ -196,6 +195,13 @@ public class ProfileFragment extends Fragment {
             }
         }
     }
+
+    /**
+     * onActivityResult triggers after a user edits their profile information
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

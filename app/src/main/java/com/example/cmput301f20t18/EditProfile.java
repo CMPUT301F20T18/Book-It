@@ -27,6 +27,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * This is a class used to edit a user's profile information.
+ * @author Sean Butler
+ */
+
 public class EditProfile extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
@@ -68,6 +73,7 @@ public class EditProfile extends AppCompatActivity {
         editDone = findViewById(R.id.done_edit_profile);
 
 
+        // Button to return to profile page, saving no changes
         myProfileReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,6 +81,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to save changes made to the profile
         editDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -90,6 +97,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to delete the user's profile picture
         deletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -98,6 +106,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to have the user upload a profile picture.
         changePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -111,6 +120,9 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    /**
+     * Used to load and resize the user's current profile picture on the edit screen
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
@@ -129,6 +141,13 @@ public class EditProfile extends AppCompatActivity {
 
         }
     }
+
+    /**
+     * onActivityResult triggers after a user uploads a profile picture
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override

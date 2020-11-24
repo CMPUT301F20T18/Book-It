@@ -78,7 +78,7 @@ public class User {
         this.email = email;
         this.address = address;
         this.phone = null;
-        this.profile_picture = null;
+        this.profile_picture = "";
         this.instanceToken = null;
     }
 
