@@ -24,6 +24,8 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -52,6 +54,9 @@ public class MyBooksAddBook extends AppCompatActivity {
 
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
     EditText author, bookTitle, year, isbn;
+    RecyclerView imagesViewer;
+    RecyclerView.LayoutManager layoutManager;
+    ImageRecyclerViewAdapter imageRecyclerViewAdapter;
     Button done, cancel;
     ImageButton addPhoto;
 
@@ -118,6 +123,14 @@ public class MyBooksAddBook extends AppCompatActivity {
         done = findViewById(R.id.done_add_book);
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
+
+        imagesViewer = findViewById(R.id.image_recycler_view);
+        layoutManager = new GridLayoutManager(this, 3);
+        imagesViewer.setLayoutManager(layoutManager);
+        // Send the images to the recycler view adapter
+        // imageRecyclerViewAdapter = new ImageRecyclerViewAdapter();
+        imagesViewer.setAdapter(imageRecyclerViewAdapter);
+        imagesViewer.setHasFixedSize(true);
 
         photos = new ArrayList<>();
 
