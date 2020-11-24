@@ -413,7 +413,7 @@ public class User {
         userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
     }
 
-    public void ownerEditProfile(String username, String address, String coverPhoto) {
+    public void ownerEditProfile(String username, String address, String coverPhoto, String phone) {
         if (!address.equals("")) {
             userRef.document(auth.getUid()).update("address", address);
         }
