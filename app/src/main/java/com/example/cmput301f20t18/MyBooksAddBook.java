@@ -157,12 +157,6 @@ public class MyBooksAddBook extends AppCompatActivity {
         }
 
 
-
-
-
-
-
-
         /**
          * This method adds the values of the input into the FireStore database
          * This is a listener to be able to react to button press that ultimately creates
