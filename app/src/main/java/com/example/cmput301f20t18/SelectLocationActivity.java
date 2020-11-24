@@ -58,7 +58,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
             defaultAddress.setLatitude(53.5232);
             defaultAddress.setLongitude(-113.5263);
         }
-
+        returnAddress = defaultAddress;
 
         locationIndex = getIntent().getIntExtra("LOCATION_INDEX", -1);
 
@@ -83,10 +83,10 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        // LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
+        LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
 
         mMap = googleMap;
-        // mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
 
         listener = new OnMapClickListener();
         mMap.setOnMapClickListener(listener);
@@ -129,17 +129,10 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
      */
     private void stopActivity() {
         Intent returnIntent = new Intent();
-        if (locationIndex == -1){
-            returnIntent.putExtra("OUTPUT_ADDRESS", returnAddress);
-            returnIntent.putExtra("LOCATION_INDEX", locationIndex);
-            setResult(RESULT_OK, returnIntent);
-            finish();
-        }
-        else{
-            setResult(0, returnIntent);
-            finish();
-        }
-
+        returnIntent.putExtra("OUTPUT_ADDRESS", returnAddress);
+        returnIntent.putExtra("LOCATION_INDEX", locationIndex);
+        setResult(RESULT_OK, returnIntent);
+        finish();
     }
 
     /**
@@ -177,21 +170,13 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         }
 
         private void updateAddress(LatLng latLng, String addressTitle) {
-            if (this.address == null){
-                this.address = new Address(Locale.getDefault());
-            }
-            this.address.setAddressLine(1, addressTitle);
+            returnAddress.setAddressLine(1, addressTitle);
             updateAddressLatLng(latLng);
         }
 
         private void updateAddressLatLng(LatLng latLng) {
-            this.address.setLatitude(latLng.latitude);
-            this.address.setLongitude(latLng.longitude);
-        }
-
-
-        public Address getData(){
-            return address;
+            returnAddress.setLatitude(latLng.latitude);
+            returnAddress.setLongitude(latLng.longitude);
         }
     }
 
