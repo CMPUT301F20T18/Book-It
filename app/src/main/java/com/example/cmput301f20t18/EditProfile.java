@@ -1,6 +1,7 @@
 package com.example.cmput301f20t18;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Activity;
@@ -14,10 +15,13 @@ import android.graphics.PorterDuff;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -31,9 +35,10 @@ public class EditProfile extends AppCompatActivity {
     private TextView changePass;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
     private ImageView profilePic;
-    private Bitmap photo;
+    private String photo;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -50,6 +55,9 @@ public class EditProfile extends AppCompatActivity {
         emailInput.setText((String) extras.get("email"));
 
         profilePic  = findViewById(R.id.profile_pic);
+        photo = (String) extras.get("photo");
+
+
 
         changePass = findViewById(R.id.password_change);
 
@@ -75,7 +83,6 @@ public class EditProfile extends AppCompatActivity {
                 Intent i = getIntent();
                 i.putExtra("photo", photo);
                 i.putExtra("username", usernameInput.getText().toString());
-                i.putExtra("email", emailInput.getText().toString());
                 i.putExtra("phone", phoneNumInput.getText().toString());
                 setResult(RESULT_OK, i);
                 finish();
@@ -104,6 +111,26 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (photo != ""){
+            Bitmap userPhoto = photoAdapter.stringToBitmap(photo);
+            float w;
+            float h;
+            w = profilePic.getHeight();
+            h = profilePic.getWidth();
+            Log.d("TAG", "onCreate: "+ w);
+            Log.d("TAG", "onCreate: "+ h);
+            Bitmap outMap = photoAdapter.scaleBitmap(userPhoto, w, h);
+            Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
+            profilePic.setImageBitmap(circleImage);
+
+        }
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,7 +148,7 @@ public class EditProfile extends AppCompatActivity {
 
                     Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) profilePic.getWidth(), (float) profilePic.getHeight());
                     Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
-                    photo = outMap;
+                    photo = photoAdapter.bitmapToString(outMap);
                     profilePic.setImageBitmap(circleImage);
                 }
         }

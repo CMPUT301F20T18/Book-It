@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -47,7 +49,9 @@ public class ProfileFragment extends Fragment {
     TextView username, phoneNum, email, editAccount;
     Button signOut;
     ImageView profilePic;
-    Bitmap userPhoto;
+    String photoString;
+    //Bitmap userPhoto;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -126,6 +130,7 @@ public class ProfileFragment extends Fragment {
                 editIntent.putExtra("username", username.getText().toString());
                 editIntent.putExtra("email", email.getText().toString());
                 editIntent.putExtra("phone", phoneNum.getText().toString());
+                editIntent.putExtra("photo", photoString);
 
                 startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
             }
@@ -158,6 +163,7 @@ public class ProfileFragment extends Fragment {
      * @author Chase Warwick
      * @param user The user currently using the app!
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateUserData(User user, View view) {
         username = (TextView) view.findViewById(R.id.my_user_name);
         phoneNum = (TextView) view.findViewById(R.id.phone_num);
@@ -167,6 +173,19 @@ public class ProfileFragment extends Fragment {
         username.setText(user.getUsername());
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
+        photoString = user.getProfile_picture();
+        if (photoString!= "") {
+            Bitmap bitmap;
+            try {
+               bitmap = photoAdapter.stringToBitmap(photoString);
+                profilePic.setImageBitmap(photoAdapter.makeCircularImage(bitmap, profilePic.getHeight()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                photoString = "";
+            }
+
+        }
+
 
     }
 
@@ -184,6 +203,7 @@ public class ProfileFragment extends Fragment {
             this.view = view;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
@@ -194,6 +214,7 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -202,8 +223,9 @@ public class ProfileFragment extends Fragment {
             case RESULT_PROFILE_EDITED:
                 if (resultCode == RESULT_OK) {
                     Bundle newInfo = data.getExtras();
-                    userPhoto = (Bitmap) newInfo.get("photo");
-                    if(userPhoto != null) {
+                    photoString= (String) newInfo.get("photo");
+                    if(photoString != "") {
+                        Bitmap userPhoto = photoAdapter.stringToBitmap(photoString);
                         Bitmap outMap = photoAdapter.scaleBitmap(userPhoto, (float) profilePic.getWidth(), (float) profilePic.getHeight());
                         Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
                         profilePic.setImageBitmap(circleImage);
@@ -211,10 +233,9 @@ public class ProfileFragment extends Fragment {
 
                     username.setText((String)newInfo.get("username"));
                     phoneNum.setText((String)newInfo.get("phone"));
-                    email.setText((String)newInfo.get("email"));
 
                     User current = new User();
-                    current.ownerEditProfile((String) newInfo.get("username"), (String)newInfo.get("phone"), "default address");
+                    current.ownerEditProfile((String) newInfo.get("username"), (String)newInfo.get("phone"), photoString);
                 }
         }
     }
