@@ -101,6 +101,7 @@ public class FirestoreBookAdapter
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
+                intent.putExtra("USERNAME", book.getBorrower_username());
                 v.getContext().startActivity(intent);
             }
         };
@@ -148,7 +149,9 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_ACCEPTED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-
+                if (book.getBorrower_username() != null) {
+                    holder.textViewUsername.setText(book.getBorrower_username());
+                }
                 holder.textViewUserDescription.setText(R.string.picking_up);
 
                 /* User clicks the "Confirm pick up" button */
