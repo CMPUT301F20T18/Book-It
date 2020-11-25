@@ -36,7 +36,7 @@ import java.util.Collections;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * This is a class that displays a user's profile information such as username, email, and
+ * This is a class that displays a user's profile information such as username, email, address, and
  * phone number.
  * @author Johnathon Gil
  * @author Chase Warwick (class UserQueryTaskCompleteListener and function updateUserInfo)
