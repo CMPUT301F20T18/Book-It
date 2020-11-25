@@ -1,8 +1,11 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -31,6 +34,7 @@ public class CheckProfileActivity extends AppCompatActivity {
 
     // TODO: Update and add references of the user from the database to the class
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -47,10 +51,15 @@ public class CheckProfileActivity extends AppCompatActivity {
 
 
         profilePic = findViewById(R.id.profile_pic_user);
+        String imageString = currentActivity.getStringExtra("PICTURE");
+        Bitmap photo = photoAdapter.scaleBitmap(photoAdapter.stringToBitmap(imageString),
+                profilePic.getLayoutParams().width,
+                profilePic.getLayoutParams().height);
 
         username.setText(currentActivity.getStringExtra("USERNAME"));
         phoneNum.setText(currentActivity.getStringExtra("PHONE"));
         email.setText(currentActivity.getStringExtra("EMAIL"));
+        profilePic.setImageBitmap(photo);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

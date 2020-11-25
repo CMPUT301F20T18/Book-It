@@ -6,6 +6,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
@@ -39,6 +40,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
     Button addLocation;
     int bookID;
 
+    private static final int SELECT_LOCATION_REQUEST_CODE = 0;
+
     // DB info
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -63,17 +66,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
         Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
         toolbar.setTitle(getResources().getText(R.string.choose_location_header));
 
-        addLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                Intent intent = new Intent(getApplicationContext(), SelectLocationActivity.class);
-                // intent.putExtra("INPUT_ADDRESS", address2);
-                startActivityForResult(intent, RESULT_OK);
-            }
-        });
-
+        addLocation.setOnClickListener(new AddLocationOnClickListener(this));
     }
 
     /**
@@ -112,7 +105,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
     // Handle returned address
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         int index = data.getIntExtra("LOCATION_INDEX", -1);
         Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
@@ -120,5 +113,20 @@ public class ChooseLocationActivity extends AppCompatActivity {
         // add the new address to the users pickup_location collection
         User current = new User();
         current.ownerAddLocation(address);
+    }
+
+    private class AddLocationOnClickListener implements View.OnClickListener{
+        private Context parentContext;
+
+        AddLocationOnClickListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            // intent.putExtra("INPUT_ADDRESS", address2);
+            startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
+        }
     }
 }

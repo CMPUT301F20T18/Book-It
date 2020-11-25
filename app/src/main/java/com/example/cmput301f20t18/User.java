@@ -394,7 +394,8 @@ public class User {
 
 
     public void ownerAddLocation(Address address) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
+        userRef.document(auth.getUid()).collection("pickup_locations").document()
+                .set(address);
     }
 
 
