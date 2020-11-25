@@ -17,6 +17,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
@@ -113,13 +114,16 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     selectedFragment = null;
+                    String FragTag = "";
 
                     switch (item.getItemId()) {
                         case R.id.tab_borrowed:
                             selectedFragment = new BorrowedFragment();
+                            FragTag = "BORROWED";
                             break;
                         case R.id.tab_search:
                             selectedFragment = new SearchFragment();
+                            FragTag = "SEARCH";
                             break;
                         case R.id.tab_scan:
                             Intent intent = new Intent(HomeScreen.this, Scanner.class);
@@ -128,18 +132,23 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                             break;
                         case R.id.tab_mybooks:
                             selectedFragment = new MyBooksFragment();
+                            FragTag = "MYBOOKS";
                             break;
                         case R.id.tab_profile:
                             selectedFragment = new ProfileFragment();
+                            FragTag = "PROFILE";
                             break;
                     }
 
-                    if (selectedFragment == null) {
+                    Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(FragTag);
+
+                    if (selectedFragment == null ||
+                            (currentFragment != null && currentFragment.isResumed())) {
                         return false;
                     }
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
+                            selectedFragment,FragTag).commit();
 
                     return true;
                 }

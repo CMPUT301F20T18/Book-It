@@ -119,7 +119,7 @@ public class SearchFragment extends Fragment {
      *                       in spinner
      */
     private void search(String searchWord, String selectedOption) {
-        if (searchWord != "") {
+        if (!searchWord.equals("")) {
             if (selectedOption.equals("All Books")) {
                 SearchResultList.setAdapter(bookAllAdapter);
                 searchBooks(searchWord, bookAllAdapter, true);

@@ -108,7 +108,7 @@ public class EditProfile extends AppCompatActivity {
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (photo != ""){
+        if (!photo.equals("")){
             Bitmap userPhoto = photoAdapter.stringToBitmap(photo);
             float w;
             float h;

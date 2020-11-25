@@ -235,7 +235,7 @@ public class ProfileFragment extends Fragment {
                     phoneNum.setText((String)newInfo.get("phone"));
 
                     User current = new User();
-                    current.ownerEditProfile((String) newInfo.get("username"), (String)newInfo.get("phone"), photoString);
+                    //current.ownerEditProfile((String) newInfo.get("username"), (String)newInfo.get("phone"), photoString);
                 }
         }
     }
