@@ -12,6 +12,7 @@ import java.io.File;
 import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.Base64;
+import java.util.List;
 
 
 /**
@@ -206,19 +207,6 @@ public class Book implements Comparable<Book> {
     }
 
 
-    /** Returns the cover picture of a book
-     * @return the byte[] represntation of a cover photo
-     * We use blobs instead of byte [] so firebase can properly serialize the object
-     * Must convert back to bytes once retrieved
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<Blob> retrievePhotos() {
-        ArrayList<Blob> outPhotos = new ArrayList<Blob>();
-        for(String photo: this.photos){
-            outPhotos.add(Blob.fromBytes(Base64.getDecoder().decode(photo)));
-        }
-        return outPhotos;
-    }
 
 
     /**
@@ -283,12 +271,16 @@ public class Book implements Comparable<Book> {
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
-    public ArrayList<Bitmap> getPhotos() {
+    public ArrayList<Bitmap> retrievePhotos() {
         ArrayList<Bitmap> photoList = new ArrayList<>();
         for(String photo: photos){
             photoList.add(photoAdapter.stringToBitmap(photo));
         }
         return photoList;
+    }
+
+    public ArrayList<String> getPhotos(){
+        return this.photos;
     }
 
     public void setPhotos(ArrayList<String> photos){

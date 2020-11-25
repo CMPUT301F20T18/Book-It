@@ -6,6 +6,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -16,6 +17,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +31,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.LogDescriptor;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -38,6 +41,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * This is a class that creates a new book object through user input
@@ -130,6 +134,12 @@ public class MyBooksAddBook extends AppCompatActivity {
             layoutManager = new GridLayoutManager(this, 3);
             imagesViewer.setLayoutManager(layoutManager);
             imagesViewer.setHasFixedSize(true);
+            imagesViewer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = view.getVerticalScrollbarPosition();
+                }
+            });
             // Send the images to the recycler view adapter
         }
         photos = new ArrayList<>();
@@ -148,10 +158,13 @@ public class MyBooksAddBook extends AppCompatActivity {
                     author.setText(book.getAuthor());
                     year.setText(Integer.toString(book.getYear()));
                     isbn.setText(Long.toString(book.getISBN()));
-                    photos = book.getPhotos();
+                    photos = book.retrievePhotos();
                     Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
                     imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos);
                     imagesViewer.setAdapter(imageRecyclerViewAdapter);
+
+
+
                 }
 
                 else {
@@ -184,10 +197,9 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_isbn = isbn.getText().toString();
                 String book_year = year.getText().toString();
 
-                ArrayList<String> stringPhotos = new ArrayList<>();
-                if (type == EDIT_BOOK) {
-                    photos = imageRecyclerViewAdapter.getPhotos();
-                }
+                List<String> stringPhotos = new ArrayList<String>() {
+                };
+
                 for (Bitmap bmp : photos){
                     stringPhotos.add(photoAdapter.bitmapToString(bmp));
                 }
@@ -203,16 +215,17 @@ public class MyBooksAddBook extends AppCompatActivity {
 
                 Long isbn = Long.parseLong(book_isbn);
                 Integer year = Integer.parseInt(book_year);
+                ArrayList<String> photoStrings = new ArrayList<>();
+                for (Bitmap photo: photos){
+                    photoStrings
+                            .add(photoAdapter.bitmapToString(photo));
+                }
                 if (type == ADD_BOOK) {
              
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
 
                         Log.d(TAG, "Validity check passed");
-                        ArrayList<String> photoStrings = new ArrayList<>();
-                        for (Bitmap photo: photos){
-                            photoStrings
-                                    .add(photoAdapter.bitmapToString(photo));
-                        }
+
                         current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
                     }
                 }
@@ -255,6 +268,7 @@ public class MyBooksAddBook extends AppCompatActivity {
             });
         }
     }
+
 
     //Work in progress
     @Override

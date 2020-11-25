@@ -110,6 +110,9 @@ public class SearchFragment extends Fragment {
         return view;
     }
 
+
+
+
     /**
      * Search checks to ensure search field is populated
      * Search then calls a method depending on the selected option
@@ -706,6 +709,7 @@ public class SearchFragment extends Fragment {
 
             return view;
         }
+
 
 
         /**

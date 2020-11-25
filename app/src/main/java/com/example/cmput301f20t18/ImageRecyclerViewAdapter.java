@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -42,13 +43,16 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
         FloatingActionButton button = holder.button;
         //Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getWidth(), imageView.getHeight());
         imageView.setImageBitmap(photos.get(position));
-
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Log.d("FLOAT CLICK", "onClick: postion of " + position);
                 photos.remove(position);
+                notifyDataSetChanged();
+
             }
         });
+
 
     }
 
