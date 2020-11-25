@@ -1,39 +1,42 @@
 package com.example.cmput301f20t18;
 
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Canvas;
-import android.graphics.Paint;
-import android.graphics.PorterDuff;
-import android.graphics.PorterDuffXfermode;
-import android.graphics.Rect;
 import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * This is a class used to edit a user's profile information.
+ * @author Sean Butler
+ */
+
 public class EditProfile extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_PROFILE_EDITED = 1;
-    private EditText usernameInput, phoneNumInput, emailInput;
+    private EditText usernameInput, phoneNumInput, addressInput;
     private TextView changePass;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
     private ImageView profilePic;
-    private Bitmap photo;
+    private String photo;
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,10 +49,13 @@ public class EditProfile extends AppCompatActivity {
         phoneNumInput = findViewById(R.id.phone_input);
         phoneNumInput.setText((String) extras.get("phone"));
 
-        emailInput = findViewById(R.id.email_input);
-        emailInput.setText((String) extras.get("email"));
+        addressInput = findViewById(R.id.address_input);
+        addressInput.setText((String) extras.get("address"));
 
         profilePic  = findViewById(R.id.profile_pic);
+        photo = (String) extras.get("photo");
+
+
 
         changePass = findViewById(R.id.password_change);
 
@@ -60,6 +66,7 @@ public class EditProfile extends AppCompatActivity {
         editDone = findViewById(R.id.done_edit_profile);
 
 
+        // Button to return to profile page, saving no changes
         myProfileReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,6 +74,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to save changes made to the profile
         editDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -75,14 +83,15 @@ public class EditProfile extends AppCompatActivity {
                 Intent i = getIntent();
                 i.putExtra("photo", photo);
                 i.putExtra("username", usernameInput.getText().toString());
-                i.putExtra("email", emailInput.getText().toString());
                 i.putExtra("phone", phoneNumInput.getText().toString());
+                i.putExtra("address", addressInput.getText().toString());
                 setResult(RESULT_OK, i);
                 finish();
 
             }
         });
 
+        // Button to delete the user's profile picture
         deletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +100,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to have the user upload a profile picture.
         changePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,6 +114,36 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    /**
+     * Used to load and resize the user's current profile picture on the edit screen
+     */
+    @RequiresApi(api = Build.VERSION_CODES.O)
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        if (!photo.equals("")){
+            Bitmap userPhoto = photoAdapter.stringToBitmap(photo);
+            float w;
+            float h;
+            w = profilePic.getHeight();
+            h = profilePic.getWidth();
+            Log.d("TAG", "onCreate: "+ w);
+            Log.d("TAG", "onCreate: "+ h);
+            Bitmap outMap = photoAdapter.scaleBitmap(userPhoto, w, h);
+            Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
+            profilePic.setImageBitmap(circleImage);
+
+        }
+    }
+
+    /**
+     * onActivityResult triggers after a user uploads a profile picture
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -121,7 +161,7 @@ public class EditProfile extends AppCompatActivity {
 
                     Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) profilePic.getWidth(), (float) profilePic.getHeight());
                     Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
-                    photo = outMap;
+                    photo = photoAdapter.bitmapToString(outMap);
                     profilePic.setImageBitmap(circleImage);
                 }
         }

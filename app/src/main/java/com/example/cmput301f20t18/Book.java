@@ -38,6 +38,7 @@ public class Book implements Comparable<Book> {
     private String owner_dbID;
     private int year;
     private String pickup_location;
+    private String borrower_username;
 
 
     /**
@@ -59,6 +60,7 @@ public class Book implements Comparable<Book> {
         this.year = year;
         this.photos = photos;
         this.pickup_location = null;
+        this.borrower_username = null;
 
     }
 
@@ -287,5 +289,18 @@ public class Book implements Comparable<Book> {
             photoList.add(photoAdapter.stringToBitmap(photo));
         }
         return photoList;
+    }
+
+    public void setPhotos(ArrayList<String> photos){
+        this.photos = photos;
+    }
+
+
+    public String getBorrower_username() {
+        return borrower_username;
+    }
+
+    public void setBorrower_username(String borrower_username) {
+        this.borrower_username = borrower_username;
     }
 }

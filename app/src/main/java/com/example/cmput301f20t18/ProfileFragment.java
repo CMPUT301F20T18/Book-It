@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
 import android.text.Spanned;
@@ -17,6 +18,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
@@ -34,9 +36,8 @@ import java.util.Collections;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * This is a class that creates options for the use of the ISBN
- * The class is still under development so the elements that appear on screen are mostly visual
- * with the exception of cancel
+ * This is a class that displays a user's profile information such as username, email, and
+ * phone number.
  * @author Johnathon Gil
  * @author Chase Warwick (class UserQueryTaskCompleteListener and function updateUserInfo)
  * @author Sean Butler
@@ -47,7 +48,9 @@ public class ProfileFragment extends Fragment {
     TextView username, phoneNum, email, editAccount;
     Button signOut;
     ImageView profilePic;
-    Bitmap userPhoto;
+    String photoString, address;
+    //Bitmap userPhoto;
+
 
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -97,6 +100,23 @@ public class ProfileFragment extends Fragment {
 
         editAccount = (TextView) view.findViewById(R.id.edit_profile);
 
+        signOut = (Button) view.findViewById(R.id.sign_out_button);
+        signOut.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // clear all previous activities
+                Intent intent = new Intent(getContext(), Login.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+
+                // sign user out
+                FirebaseAuth auth = FirebaseAuth.getInstance();
+                auth.signOut();
+
+                // send user back to login
+                startActivity(intent);
+            }
+        });
+
         final String editAccountText = "Edit Account";
 
         SpannableString  editProf = new SpannableString(editAccountText);
@@ -107,8 +127,9 @@ public class ProfileFragment extends Fragment {
 
                 Intent editIntent = new Intent(getContext(),EditProfile.class);
                 editIntent.putExtra("username", username.getText().toString());
-                editIntent.putExtra("email", email.getText().toString());
+                editIntent.putExtra("address", address);
                 editIntent.putExtra("phone", phoneNum.getText().toString());
+                editIntent.putExtra("photo", photoString);
 
                 startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
             }
@@ -141,6 +162,7 @@ public class ProfileFragment extends Fragment {
      * @author Chase Warwick
      * @param user The user currently using the app!
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateUserData(User user, View view) {
         username = (TextView) view.findViewById(R.id.my_user_name);
         phoneNum = (TextView) view.findViewById(R.id.phone_num);
@@ -150,6 +172,20 @@ public class ProfileFragment extends Fragment {
         username.setText(user.getUsername());
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
+        photoString = user.getProfile_picture();
+        address = user.getAddress();
+        if (photoString!= "") {
+            Bitmap bitmap;
+            try {
+               bitmap = photoAdapter.stringToBitmap(photoString);
+                profilePic.setImageBitmap(photoAdapter.makeCircularImage(bitmap, profilePic.getHeight()));
+            } catch (Exception e) {
+                e.printStackTrace();
+                photoString = "";
+            }
+
+        }
+
 
     }
 
@@ -166,6 +202,7 @@ public class ProfileFragment extends Fragment {
             this.view = view;
         }
 
+        @RequiresApi(api = Build.VERSION_CODES.O)
         @Override
         public void onComplete(@NonNull Task task) {
             if (task.isSuccessful()){
@@ -176,6 +213,14 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * onActivityResult triggers after a user edits their profile information
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
+
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -184,8 +229,9 @@ public class ProfileFragment extends Fragment {
             case RESULT_PROFILE_EDITED:
                 if (resultCode == RESULT_OK) {
                     Bundle newInfo = data.getExtras();
-                    userPhoto = (Bitmap) newInfo.get("photo");
-                    if(userPhoto != null) {
+                    photoString= (String) newInfo.get("photo");
+                    if(photoString != "") {
+                        Bitmap userPhoto = photoAdapter.stringToBitmap(photoString);
                         Bitmap outMap = photoAdapter.scaleBitmap(userPhoto, (float) profilePic.getWidth(), (float) profilePic.getHeight());
                         Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
                         profilePic.setImageBitmap(circleImage);
@@ -193,7 +239,14 @@ public class ProfileFragment extends Fragment {
 
                     username.setText((String)newInfo.get("username"));
                     phoneNum.setText((String)newInfo.get("phone"));
-                    email.setText((String)newInfo.get("email"));
+                    address = (String)newInfo.get("address");
+
+
+                    User current = new User();
+
+                    current.ownerEditProfile((String) newInfo.get("username"), address , photoString, (String)newInfo.get("phone"));
+
+
                 }
         }
     }

@@ -69,7 +69,7 @@
                 android:textStyle="italic"
                 android:fontFamily="@font/poppins_light"
                 android:textColor="@color/colorText"
-                android:textSize="18sp"/>
+                android:textSize="15sp"/>
 
             <Button
                 android:id="@+id/button_accept_request"

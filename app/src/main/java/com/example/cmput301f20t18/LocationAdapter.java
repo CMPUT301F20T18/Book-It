@@ -1,3 +1,5 @@
+
+/*
 package com.example.cmput301f20t18;
 
 import android.app.Activity;
@@ -24,11 +26,13 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Locale;
 
+*/
 /**
  * Custom RecyclerView Adapter for UserLocation objects in ChooseLocationActivity.
  *
  * @see UserLocation
- */
+ *//*
+
 public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.RequestViewHolder> {
 
     private final String TAG = "LocationAdapter";
@@ -38,24 +42,28 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
     private Intent selectLocationIntent;
     private Activity forDataReturn;
 
-    /**
+    */
+/**
      * Class constructor
      * @param context Context to inflate from
      * @param locationList List of UserLocations
-     */
+     *//*
+
     public LocationAdapter(Context context, List<UserLocation> locationList) {
         this.context = context;
         this.locationList = locationList;
     }
 
-    /**
+    */
+/**
      * Tells the RecyclerView how to represent UserLocation objects.
      *
      * @param parent The ViewGroup into which the new View will be added after it is bound to
      *               an adapter position.
      * @param viewType The view type of the new View.
      * @return A new ViewHolder that holds the inflated card_location layout.
-     */
+     *//*
+
     @NonNull
     @Override
     public LocationAdapter.RequestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -66,13 +74,15 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         return new RequestViewHolder(view);
     }
 
-    /**
+    */
+/**
      * Tells the RecyclerView how to display a UserLocation at a specified location.
      *
      * @param holder The ViewHolder which should be updated to represent the contents of the
      *               item at the given position in the data set.
      * @param position The position in the list
-     */
+     *//*
+
     @Override
     public void onBindViewHolder(@NonNull RequestViewHolder holder, int position) {
 
@@ -116,19 +126,23 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         holder.selectButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* TODO: Update book status to accepted */
+                */
+/* TODO: Update book status to accepted *//*
+
                 Intent intent = new Intent(v.getContext(), HomeScreen.class);
                 v.getContext().startActivity(intent);
             }
         });
     }
 
-    /**
+    */
+/**
      * This method is called to pass the address information to SelectLocationActivity
      *
      * @param address Address to send to SelectLocationActivity
      * @param index The position of the UserLocation in the list
-     */
+     *//*
+
     private void startSelectLocation(Address address, int index) {
         selectLocationIntent = new Intent(context, SelectLocationActivity.class);
         selectLocationIntent.putExtra("INPUT_ADDRESS", address);
@@ -148,17 +162,20 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         }
     }
 
-    /**
+    */
+/**
      * Returns the number of UserLocations in the adapter
      *
      * @return The number of UserLocations in the adapter
-     */
+     *//*
+
     @Override
     public int getItemCount() {
         return locationList.size();
     }
 
-    /**
+    */
+/**
      * @author Chase-Warwick
      * parseString takes in a string describing a location and if Geocoder is present attempts
      * to return an Address object representing the location. If Geocoder is not present or Geocoder
@@ -168,8 +185,9 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
      * @param locationName String object representing a specified location
      * @return Address representing either the location specified in locationName or the middle of
      *         Canada
-     */
-    public static Address parseString(Context context, String locationName) {
+     *//*
+
+    public static Address parseString(Context context, String locationName){
         Address returnValue = new Address(Locale.getDefault());
         returnValue.setLatitude(43.651070);
         returnValue.setLongitude(-79.347015);
@@ -181,18 +199,20 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
                 if (possibleAddress.size() == 1) {
                     returnValue = possibleAddress.get(0);
                 }
-            } catch (IOException e) {
+            }
+            catch (IOException e) {
                 e.printStackTrace();
             }
-        }
         return returnValue;
     }
 
-    /**
+    */
+/**
      * Caches Views from layout
      *
      * @see #onBindViewHolder(RequestViewHolder, int)
-     */
+     *//*
+
     public static class RequestViewHolder extends RecyclerView.ViewHolder {
 
         TextView textViewAddress;
@@ -201,11 +221,13 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         Button selectButton;
         Button mapButton;
 
-        /**
+        */
+/**
          * Class constructor.
          *
          * @param itemView Used to retrieve Views from layout file.
-         */
+         *//*
+
         public RequestViewHolder(@NonNull View itemView) {
             super(itemView);
 
@@ -217,3 +239,5 @@ public class LocationAdapter extends RecyclerView.Adapter<LocationAdapter.Reques
         }
     }
 }
+*/
+

@@ -4,6 +4,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.os.Build;
 import android.util.Log;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -17,6 +18,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
@@ -76,7 +78,7 @@ public class User {
         this.email = email;
         this.address = address;
         this.phone = null;
-        this.profile_picture = null;
+        this.profile_picture = "";
         this.instanceToken = null;
     }
 
@@ -152,6 +154,8 @@ public class User {
 
                 // update the global book
                 bookRef.document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_ACCEPTED);
+                bookRef.document(Integer.toString(transaction.getBookID())).update("borrower_username", transaction.getBorrower_username());
+
 
                 // delete any other requests for the same book
                 transRef.whereEqualTo("bookID", transaction.getBookID()).whereEqualTo("status",Book.STATUS_REQUESTED).get().addOnCompleteListener(task1 -> {
@@ -159,13 +163,30 @@ public class User {
                         List <Transaction> list = task1.getResult().toObjects(Transaction.class);
                         for (int i = 0 ; i < list.size() ; i++) {
                             transRef.document(Integer.toString(list.get(i).getID())).delete();
+                            userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
                         }
+
+
+                        bookRef.document(Integer.toString(transaction.getBookID())).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
+                                if (task1.isSuccessful()) {
+                                    Book book = task1.getResult().toObject(Book.class);
+
+                                    // send a notification
+                                    Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
+                                    notification.prepareMessage();
+                                    notification.sendNotification();
+                                }
+                            }
+                        });
                     }
 
                     else {
                         Log.d(TAG, "ownerAcceptRequest - Error querying for other transactions!");
                     }
                 });
+
             }
 
             else {
@@ -279,6 +300,8 @@ public class User {
                     // change the status of the book to borrowed
                     bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
                     bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+                    bookRef.document(Integer.toString(bookID)).update("borrower_username", null);
+
 
                     // delete the request for the book
                     userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).delete();
@@ -338,6 +361,8 @@ public class User {
                 // update the global book reference
                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
                 bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+                bookRef.document(Integer.toString(bookID)).update("borrower_username", null);
+
 
                 // delete the borrower book reference
                 userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).delete();
@@ -380,23 +405,69 @@ public class User {
                 Log.d(TAG, "ownerDeleteBook - Error getting transaction list");
             }
         });
-    }
 
-
-
-    public void ownerEditProfile(String username, String address, String phone, String cover_photo) {
-        // username isn't being changed, no need to query the DB
-        if (username == null) {
-
-
-        }
     }
 
 
     public void ownerAddLocation(Address address) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document()
-                .set(address);
+        userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
     }
+
+    public void ownerEditProfile(String username, String address, String coverPhoto, String phone) {
+        if (!address.equals("")) {
+            userRef.document(auth.getUid()).update("address", address);
+        }
+
+        if (!coverPhoto.equals("")) {
+            userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
+        }
+
+        if (!phone.equals("")) {
+            userRef.document(auth.getUid()).update("phone", phone);
+        }
+
+        if (!username.equals("")) {
+            // check if the username is already taken
+            FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
+            RTDB.getReference("username_list").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if (snapshot.exists()) {
+                        // username exists, cannot get that username
+                        Log.d(TAG, "ownerChangeUsername - Username already taken");
+                    }
+                    else {
+                        userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                            @Override
+                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                                if (task.isSuccessful()) {
+                                    User current = task.getResult().toObject(User.class);
+
+                                    // delete old username from list and add the new one
+                                    RTDB.getReference().child("username_list").child(current.username).removeValue();
+                                    RTDB.getReference().child("username_list").child(username).setValue(username);
+
+                                    // update username in firestore
+                                    userRef.document(auth.getUid()).update("username", username);
+                                }
+                                else {
+                                    Log.d(TAG, "ownerEditProfile - Error finding current user");
+                                }
+                            }
+                        });
+                    }
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+        }
+    }
+
+
+
 
 
 
@@ -451,6 +522,8 @@ public class User {
                 // update the global book reference
                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_AVAILABLE);
                 bookRef.document(Integer.toString(bookID)).update("pickup_location", null);
+                bookRef.document(Integer.toString(bookID)).update("borrower_username", null);
+
 
 
                 // delete the borrower book reference
@@ -527,6 +600,13 @@ public class User {
                                                 book.setStatus(Book.STATUS_REQUESTED);
                                                 userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(bookID)).set(book);
                                                 bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_REQUESTED);
+
+
+                                                // notify the user
+                                                Notification notification = new Notification(request.getBorrower_username(), request.getOwner_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
+                                                notification.prepareMessage();
+                                                notification.sendNotification();
+
 
                                             }
 
@@ -638,7 +718,7 @@ public class User {
      * @param bookID The book ID of the book they no longer want to request
      */
     public void borrowerCancelRequest(int bookID) {
-        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_REQUESTED).get().addOnCompleteListener(task -> {
+        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // request is unique and non null
 
@@ -672,6 +752,15 @@ public class User {
         });
 
     }
+
+
+    public void userSendNotification(String bookTitle, String source_username, String target_username, char type) {
+
+    }
+
+
+
+
 
 
 
