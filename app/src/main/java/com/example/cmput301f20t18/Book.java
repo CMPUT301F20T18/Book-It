@@ -291,6 +291,10 @@ public class Book implements Comparable<Book> {
         return photoList;
     }
 
+    public void setPhotos(ArrayList<String> photos){
+        this.photos = photos;
+    }
+
 
     public String getBorrower_username() {
         return borrower_username;

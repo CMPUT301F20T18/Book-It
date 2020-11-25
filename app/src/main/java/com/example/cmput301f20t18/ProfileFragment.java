@@ -36,9 +36,8 @@ import java.util.Collections;
 import static android.app.Activity.RESULT_OK;
 
 /**
- * This is a class that creates options for the use of the ISBN
- * The class is still under development so the elements that appear on screen are mostly visual
- * with the exception of cancel
+ * This is a class that displays a user's profile information such as username, email, and
+ * phone number.
  * @author Johnathon Gil
  * @author Chase Warwick (class UserQueryTaskCompleteListener and function updateUserInfo)
  * @author Sean Butler
@@ -49,7 +48,7 @@ public class ProfileFragment extends Fragment {
     TextView username, phoneNum, email, editAccount;
     Button signOut;
     ImageView profilePic;
-    String photoString;
+    String photoString, address;
     //Bitmap userPhoto;
 
 
@@ -128,7 +127,7 @@ public class ProfileFragment extends Fragment {
 
                 Intent editIntent = new Intent(getContext(),EditProfile.class);
                 editIntent.putExtra("username", username.getText().toString());
-                editIntent.putExtra("email", email.getText().toString());
+                editIntent.putExtra("address", address);
                 editIntent.putExtra("phone", phoneNum.getText().toString());
                 editIntent.putExtra("photo", photoString);
 
@@ -174,6 +173,7 @@ public class ProfileFragment extends Fragment {
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
         photoString = user.getProfile_picture();
+        address = user.getAddress();
         if (photoString!= "") {
             Bitmap bitmap;
             try {
@@ -214,6 +214,13 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * onActivityResult triggers after a user edits their profile information
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -233,9 +240,14 @@ public class ProfileFragment extends Fragment {
 
                     username.setText((String)newInfo.get("username"));
                     phoneNum.setText((String)newInfo.get("phone"));
+                    address = (String)newInfo.get("address");
+
 
                     User current = new User();
-                    //current.ownerEditProfile((String) newInfo.get("username"), (String)newInfo.get("phone"), photoString);
+
+                    current.ownerEditProfile((String) newInfo.get("username"), address , photoString, (String)newInfo.get("phone"));
+
+
                 }
         }
     }

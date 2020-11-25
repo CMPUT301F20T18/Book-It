@@ -1,5 +1,7 @@
 package com.example.cmput301f20t18;
 
+import android.content.Context;
+import android.graphics.Bitmap;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -8,9 +10,18 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import java.util.ArrayList;
+
 public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecyclerViewAdapter.ImageViewHolder> {
 
-    // add the variable container that are need for the images and create a constructor
+
+    private ArrayList<Bitmap> photos;
+    private Context context;
+
+
+    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos){
+        this.photos = photos;
+    }
 
     @NonNull
     @Override
@@ -21,14 +32,20 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
         return imageHolder;
     }
 
+
+
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        //holder.bookImage.setImageResource(); This is to set to the image resource
+        ImageView imageView = holder.bookImage; //This is to set to the image resource
+        //Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getWidth(), imageView.getHeight());
+        imageView.setImageBitmap(photos.get(position));
     }
+
+
 
     @Override
     public int getItemCount() {
-        return 0; // This needs to be set to the length of the container
+        return photos.size(); // This needs to be set to the length of the container
     }
 
     public class ImageViewHolder extends RecyclerView.ViewHolder{
@@ -39,5 +56,6 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
             super(itemView);
             bookImage = itemView.findViewById(R.id.book_image_view);
         }
+
     }
 }

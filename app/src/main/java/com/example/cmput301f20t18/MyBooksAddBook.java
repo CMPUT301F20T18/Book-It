@@ -87,6 +87,7 @@ public class MyBooksAddBook extends AppCompatActivity {
      *
      */
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -128,11 +129,14 @@ public class MyBooksAddBook extends AppCompatActivity {
         layoutManager = new GridLayoutManager(this, 3);
         imagesViewer.setLayoutManager(layoutManager);
         // Send the images to the recycler view adapter
-        // imageRecyclerViewAdapter = new ImageRecyclerViewAdapter();
-        imagesViewer.setAdapter(imageRecyclerViewAdapter);
-        imagesViewer.setHasFixedSize(true);
 
         photos = new ArrayList<>();
+
+
+        imagesViewer.setHasFixedSize(true);
+
+
+
 
         if (type == EDIT_BOOK) {
             DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
@@ -142,6 +146,10 @@ public class MyBooksAddBook extends AppCompatActivity {
                     author.setText(book.getAuthor());
                     year.setText(Integer.toString(book.getYear()));
                     isbn.setText(Long.toString(book.getISBN()));
+                    photos = book.getPhotos();
+                    Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
+                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos);
+                    imagesViewer.setAdapter(imageRecyclerViewAdapter);
                 }
 
                 else {
@@ -155,7 +163,8 @@ public class MyBooksAddBook extends AppCompatActivity {
         if (type == ADD_SCAN) {
             isbn.setText(Long.toString(passed_isbn));
         }
-
+        //Log.d(TAG, "onCreate: Photos in recylerView: " + imageRecyclerViewAdapter.getItemCount());
+        Log.d(TAG, "onCreate: Photos exist " + photos.size());
 
         /**
          * This method adds the values of the input into the FireStore database
@@ -230,14 +239,16 @@ public class MyBooksAddBook extends AppCompatActivity {
          * The first image uploaded is the cover, while the others are extras
          * At the moment, the addPhoto button changes to match the last image uploaded
          */
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent pickPicture = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
-            }
-        });
+        if(addPhoto != null) {
+            addPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent pickPicture = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
+                }
+            });
+        }
     }
 
     //Work in progress
