@@ -59,6 +59,8 @@ public class Register extends AppCompatActivity {
     EditText password;
     EditText email;
     EditText address;
+    EditText phone;
+
     private TextView accountCreate, usernameText, passwordText, emailText, addressText, signInRedirect;
     Button register;
     FirebaseAuth mAuth;
@@ -76,6 +78,7 @@ public class Register extends AppCompatActivity {
         password = (EditText) findViewById(R.id.password);
         email = (EditText) findViewById(R.id.email);
         address = (EditText) findViewById(R.id.address);
+        phone = (EditText) findViewById(R.id.phone);
         register = (Button) findViewById(R.id.registerButton);
         accountCreate = (TextView) findViewById(R.id.text_Create_Account);
         usernameText = (TextView) findViewById(R.id.text_username);
