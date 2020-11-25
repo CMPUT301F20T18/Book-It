@@ -10,13 +10,15 @@ import android.widget.ImageView;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
+
 import java.util.ArrayList;
 
 public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecyclerViewAdapter.ImageViewHolder> {
 
 
     private ArrayList<Bitmap> photos;
-    private Context context;
+
 
 
     public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos){
@@ -36,12 +38,23 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        ImageView imageView = holder.bookImage; //This is to set to the image resource
+        ImageView imageView = holder.bookImage;
+        FloatingActionButton button = holder.button;
         //Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getWidth(), imageView.getHeight());
         imageView.setImageBitmap(photos.get(position));
+
+        button.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                photos.remove(position);
+            }
+        });
+
     }
 
-
+    public ArrayList<Bitmap> getPhotos() {
+        return photos;
+    }
 
     @Override
     public int getItemCount() {
@@ -51,10 +64,12 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
     public class ImageViewHolder extends RecyclerView.ViewHolder{
 
         ImageView bookImage;
+        FloatingActionButton button;
 
         public ImageViewHolder(@NonNull View itemView) {
             super(itemView);
             bookImage = itemView.findViewById(R.id.book_image_view);
+            button =  itemView.findViewById(R.id.clear_image);
         }
 
     }

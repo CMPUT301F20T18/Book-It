@@ -125,15 +125,17 @@ public class MyBooksAddBook extends AppCompatActivity {
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
 
-        imagesViewer = findViewById(R.id.image_recycler_view);
-        layoutManager = new GridLayoutManager(this, 3);
-        imagesViewer.setLayoutManager(layoutManager);
-        // Send the images to the recycler view adapter
-
+        if ( type == EDIT_BOOK) {
+            imagesViewer = findViewById(R.id.image_recycler_view);
+            layoutManager = new GridLayoutManager(this, 3);
+            imagesViewer.setLayoutManager(layoutManager);
+            imagesViewer.setHasFixedSize(true);
+            // Send the images to the recycler view adapter
+        }
         photos = new ArrayList<>();
 
 
-        imagesViewer.setHasFixedSize(true);
+
 
 
 
@@ -183,6 +185,9 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_year = year.getText().toString();
 
                 ArrayList<String> stringPhotos = new ArrayList<>();
+                if (type == EDIT_BOOK) {
+                    photos = imageRecyclerViewAdapter.getPhotos();
+                }
                 for (Bitmap bmp : photos){
                     stringPhotos.add(photoAdapter.bitmapToString(bmp));
                 }
