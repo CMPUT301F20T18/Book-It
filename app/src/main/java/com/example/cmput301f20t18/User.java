@@ -78,7 +78,7 @@ public class User {
         this.email = email;
         this.address = address;
         this.phone = null;
-        this.profile_picture = null;
+        this.profile_picture = "";
         this.instanceToken = null;
     }
 
@@ -436,7 +436,6 @@ public class User {
                         // username exists, cannot get that username
                         Log.d(TAG, "ownerChangeUsername - Username already taken");
                     }
-
                     else {
                         userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override

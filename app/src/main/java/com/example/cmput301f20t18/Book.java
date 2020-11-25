@@ -264,7 +264,7 @@ public class Book implements Comparable<Book> {
      * @return boolean representing
      */
     public boolean hasPhotos(){
-        return photos.isEmpty() == false;
+        return !photos.isEmpty();
     }
 
 
@@ -289,6 +289,10 @@ public class Book implements Comparable<Book> {
             photoList.add(photoAdapter.stringToBitmap(photo));
         }
         return photoList;
+    }
+
+    public void setPhotos(ArrayList<String> photos){
+        this.photos = photos;
     }
 
 

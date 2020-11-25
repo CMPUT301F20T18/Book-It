@@ -20,11 +20,16 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * This is a class used to edit a user's profile information.
+ * @author Sean Butler
+ */
+
 public class EditProfile extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_PROFILE_EDITED = 1;
-    private EditText usernameInput, phoneNumInput, emailInput;
+    private EditText usernameInput, phoneNumInput, addressInput;
     private TextView changePass;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
     private ImageView profilePic;
@@ -44,8 +49,8 @@ public class EditProfile extends AppCompatActivity {
         phoneNumInput = findViewById(R.id.phone_input);
         phoneNumInput.setText((String) extras.get("phone"));
 
-        emailInput = findViewById(R.id.address_input);
-        emailInput.setText((String) extras.get("email"));
+        addressInput = findViewById(R.id.address_input);
+        addressInput.setText((String) extras.get("address"));
 
         profilePic  = findViewById(R.id.profile_pic);
         photo = (String) extras.get("photo");
@@ -61,6 +66,7 @@ public class EditProfile extends AppCompatActivity {
         editDone = findViewById(R.id.done_edit_profile);
 
 
+        // Button to return to profile page, saving no changes
         myProfileReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +74,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to save changes made to the profile
         editDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,12 +84,14 @@ public class EditProfile extends AppCompatActivity {
                 i.putExtra("photo", photo);
                 i.putExtra("username", usernameInput.getText().toString());
                 i.putExtra("phone", phoneNumInput.getText().toString());
+                i.putExtra("address", addressInput.getText().toString());
                 setResult(RESULT_OK, i);
                 finish();
 
             }
         });
 
+        // Button to delete the user's profile picture
         deletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +100,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to have the user upload a profile picture.
         changePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -104,11 +114,14 @@ public class EditProfile extends AppCompatActivity {
 
     }
 
+    /**
+     * Used to load and resize the user's current profile picture on the edit screen
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (photo != ""){
+        if (!photo.equals("")){
             Bitmap userPhoto = photoAdapter.stringToBitmap(photo);
             float w;
             float h;
@@ -122,6 +135,13 @@ public class EditProfile extends AppCompatActivity {
 
         }
     }
+
+    /**
+     * onActivityResult triggers after a user uploads a profile picture
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
