@@ -36,5 +36,8 @@
     <string name="borrowing">borrowing</string>
     <string name="owner">owner</string>
     <string name="edit_profile"><u>Edit Account</u></string>
+    <string name="my_account_header">My Account</string>
+    <string name="sign_out_button">Sign Out</string>
+    <string name="email_label">Email</string>
 
 </resources>
