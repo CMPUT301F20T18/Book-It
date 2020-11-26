@@ -21,7 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,9 +31,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -49,6 +53,17 @@ public class ProfileFragment extends Fragment {
     Button signOut;
     ImageView profilePic;
     String photoString, address;
+
+    RecyclerView recyclerView;
+    Query query;
+    FirestoreNotificationAdapter adapter;
+
+    // DB info
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference userRef = DB.collection("users");
+
+
     //Bitmap userPhoto;
 
 
@@ -250,4 +265,38 @@ public class ProfileFragment extends Fragment {
                 }
         }
     }
+
+    public void setUp() {
+        query = userRef.document(auth.getUid()).collection("notifications");
+        FirestoreRecyclerOptions<HashMap> options = new FirestoreRecyclerOptions.Builder<HashMap>()
+                .setQuery(query, HashMap.class)
+                .build();
+
+        adapter = new FirestoreNotificationAdapter(options);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+
+
+    // tell our adapter to start listening as soon as the fragment begins
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+
+
+    }
+    // tell our adapter to stop listening as soon as the fragment ends
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+
+
 }

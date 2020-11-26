@@ -11,7 +11,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<String, FirestoreNotificationAdapter.NotifViewHolder> {
+import java.util.HashMap;
+
+public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<HashMap, FirestoreNotificationAdapter.NotifViewHolder> {
 
 
     /**
@@ -20,13 +22,14 @@ public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<Strin
      *
      * @param options
      */
-    public FirestoreNotificationAdapter(@NonNull FirestoreRecyclerOptions<String> options) {
+    public FirestoreNotificationAdapter(@NonNull FirestoreRecyclerOptions<HashMap> options) {
         super(options);
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull NotifViewHolder holder, int position, @NonNull String model) {
-        holder.notification_text.setText(model);
+    protected void onBindViewHolder(@NonNull NotifViewHolder holder, int position, @NonNull HashMap model) {
+        String message = (String) model.get("message");
+        holder.notification_text.setText(message);
     }
 
     @NonNull
@@ -42,7 +45,7 @@ public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<Strin
 
         public NotifViewHolder(@NonNull View itemView) {
             super(itemView);
-        }
+         }
     }
 
 
