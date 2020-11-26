@@ -1,18 +1,22 @@
 package com.example.cmput301f20t18;
 
 import android.annotation.SuppressLint;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.media.Image;
 import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.camera.core.Camera;
 import androidx.camera.core.CameraSelector;
@@ -65,6 +69,10 @@ public class Scanner extends AppCompatActivity {
     private Long expected_isbn;
     String TAG = "SCANNER_DEBUG";
 
+    // TODO: don't forget to remove temporary button
+    private Button buttonManual; // delete this
+    private String inputISBN; // delete this too
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -72,6 +80,7 @@ public class Scanner extends AppCompatActivity {
         setContentView(R.layout.activity_scanner);
         previewView = findViewById(R.id.previewView);
         cap = (Button) findViewById(R.id.capture);
+        buttonManual = (Button) findViewById(R.id.button_manual);
 
         mode = getIntent().getIntExtra("type", OPEN_POST);
         bookID = getIntent().getIntExtra("bookID", 0);
@@ -190,6 +199,37 @@ public class Scanner extends AppCompatActivity {
                 });
             }
         });
+
+        // temporary
+        // allows phlafoo to manually enter ISBN since he is a pleb and doesn't have an android
+        buttonManual.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final EditText input = new EditText(v.getContext());
+                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+
+                android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(v.getContext())
+                        .setTitle("Enter ISBN")
+                        .setView(input)
+                        .setPositiveButton("GO", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                manualISBN(input.getText().toString());
+                            }
+                        })
+                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                dialog.cancel();
+                            }
+                        })
+                        .show();
+                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+                dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
+                        .getColor(R.color.colorPrimaryDark));
+            }
+        });
     }
 
 
@@ -259,6 +299,28 @@ public class Scanner extends AppCompatActivity {
                 });
 
         return 0;
+    }
+
+    // TEMPORARY
+    public void manualISBN(String rawValue) {
+        if (rawValue != null) {
+            Intent intent;
+            if (mode == OPEN_POST) {
+                intent = new Intent(Scanner.this, PostScanActivity.class);
+                intent.putExtra("ISBN", rawValue);
+                setResult(RESULT_OK, intent);
+                finish();
+                startActivity(intent);
+            }
+            else {
+                intent = new Intent();
+                intent.putExtra("ISBN", rawValue);
+                intent.putExtra("bookID", bookID);
+                intent.putExtra("eISBN", expected_isbn);
+                setResult(RESULT_OK, intent);
+                finish();
+            }
+        }
     }
 }
 
