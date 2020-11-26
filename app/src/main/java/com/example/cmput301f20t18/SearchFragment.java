@@ -57,6 +57,8 @@ public class SearchFragment extends Fragment {
     SearchFragBookAdapter bookAdapter;
     SearchFragUserAdapter userAdapter;
 
+    TextView noResultsTextView;
+    EditText searchEditText;
     ListView SearchResultList;
 
     /**
@@ -93,8 +95,10 @@ public class SearchFragment extends Fragment {
         searchSpinner.setAdapter(spinnerAdapter);
         searchSpinner.setOnItemSelectedListener(spinnerListener);
 
+        noResultsTextView = view.findViewById(R.id.no_results);
+
         //set up edit text
-        final EditText searchEditText = view.findViewById(R.id.search_edit_text);
+        searchEditText = view.findViewById(R.id.search_edit_text);
         searchEditText.setOnEditorActionListener(
                 new SearchEditTextOnActionListener(searchEditText, spinnerListener));
 
@@ -119,7 +123,7 @@ public class SearchFragment extends Fragment {
      *                       in spinner
      */
     private void search(String searchWord, String selectedOption) {
-        if (searchWord != "") {
+        if (!searchWord.equals("")) {
             if (selectedOption.equals("Books")) {
                 SearchResultList.setAdapter(bookAdapter);
                 searchBooks(searchWord, bookAdapter, true);
@@ -185,7 +189,23 @@ public class SearchFragment extends Fragment {
          */
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            setSearchOption(parent.getItemAtPosition(position).toString());
+            String option = parent.getItemAtPosition(position).toString(); // get selected option
+
+            // change the EditText hint and clear the list when changing options
+            if (option.equals("Books")) {
+                Log.d(TAG, "onItemSelected: Books selected");
+                searchEditText.setText("");
+                searchEditText.setHint(R.string.search_book);
+                userAdapter.clear();
+            } else {
+                Log.d(TAG, "onItemSelected: Users selected");
+                searchEditText.setText("");
+                searchEditText.setHint("Enter a username");
+                bookAdapter.clear();
+            }
+
+            noResultsTextView.setText(R.string.no_results);
+            setSearchOption(option);
         }
 
         /**
@@ -480,7 +500,11 @@ public class SearchFragment extends Fragment {
                 }
                 if (add) {
                     bookDataList.add(book);
+                    bookAdapter.notifyDataSetChanged();
                 }
+            }
+            if (bookDataList.size() > 0) {
+                noResultsTextView.setText("");
             }
         }
     }
@@ -506,6 +530,7 @@ public class SearchFragment extends Fragment {
                 }
                 if (add) {
                     userDataList.add(user);
+                    userAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -707,7 +732,9 @@ public class SearchFragment extends Fragment {
             Button viewProfile = view.findViewById(R.id.button_view_profile);
 
             //Set up profile pic
+
             if (user.getProfile_picture() != null && !user.getProfile_picture().equals("")){
+
                 ImageView profilePicView = view.findViewById(R.id.profile_view);
                 String profilePicString = user.getProfile_picture();
                 Bitmap bm = photoAdapter.scaleBitmap(

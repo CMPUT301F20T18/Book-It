@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -29,6 +31,7 @@ import com.google.android.material.tabs.TabLayout;
  */
 public class MyBooksFragment extends Fragment implements fragmentListener {
     final static String TAG = "MBF";
+    private Context mContext;
 
 
     /**
@@ -89,13 +92,17 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         });
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     // handle results from link fragments
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == 0) {
             return;
         }
-
         String isbn_string = data.getStringExtra("ISBN");
         Long isbn = Long.parseLong(isbn_string);
         int bookID = data.getIntExtra("bookID", 0);
@@ -104,21 +111,28 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "bookID: " + Integer.toString(bookID));
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
-        User current = new User();
 
-        switch (requestCode) {
+        if (expected_isbn.equals(isbn)) {
+            User current = new User();
 
-            case 1:
-                // TODO: implement ISBN check?
-                current.ownerSignOff(bookID);
-                break;
+            switch (requestCode) {
 
-            case 2:
-                // TODO: Implement ISBN check?
-                current.ownerConfirmPickup(bookID);
-                break;
+                case 1:
+                    current.ownerSignOff(bookID);
+                    break;
+
+                case 2:
+                    current.ownerConfirmPickup(bookID);
+                    break;
+            }
         }
-
+        else {
+            // using getContext() here instead of mContext will sometimes cause a crash since this
+            // fragment may not have been attached to HomeScreen yet
+            Toast.makeText(mContext, "Scanned ISBN does not match book's ISBN",
+                    Toast.LENGTH_LONG).show();
+            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
+        }
     }
 
 }

@@ -74,8 +74,7 @@ public class FirestoreBookAdapter
     public int getItemViewType(int position) {
         Log.d(TAG, "getItemViewType: Position of " + position);
         Book book = getItem(position);
-        int status = book.getStatus();
-        return status;
+        return book.getStatus();
     }
 
     /**
@@ -170,7 +169,7 @@ public class FirestoreBookAdapter
                             if (task.isSuccessful()) {
                                 User borrower = task.getResult().toObjects(User.class).get(0);
                                 String photoString = borrower.getProfile_picture();
-                                if (photoString!= "") {
+                                if (!photoString.equals("")) {
                                     Bitmap bm = photoAdapter.stringToBitmap(photoString);
                                     Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
                                     holder.buttonUser.setImageBitmap(photo);
