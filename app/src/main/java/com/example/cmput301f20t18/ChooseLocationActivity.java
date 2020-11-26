@@ -110,11 +110,10 @@ public class ChooseLocationActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
             int index = data.getIntExtra("LOCATION_INDEX", -1);
             Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+            // add the new address to the users pickup_location collection
+            User current = new User();
+            current.ownerAddLocation(address);
         }
-
-        // add the new address to the users pickup_location collection
-        //User current = new User();
-        //current.ownerAddLocation(address);
     }
 
     private class AddLocationOnClickListener implements View.OnClickListener{

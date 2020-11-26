@@ -483,10 +483,10 @@ public class User {
 
                     // update the borrowers pickup address
                     userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID))
-                            .update("pickup_location", address.getAddressLine(0));
+                            .update("pickup_location", (address.getAddressLine(0)).replace(" ", "_"));
 
                     // update the pickup location for the owner
-                    bookRef.document(Integer.toString(bookID)).update("pickup_location", address.getAddressLine(0));
+                    bookRef.document(Integer.toString(bookID)).update("pickup_location", (address.getAddressLine(0)).replace(" ", "_"));
                 }
 
                 else {

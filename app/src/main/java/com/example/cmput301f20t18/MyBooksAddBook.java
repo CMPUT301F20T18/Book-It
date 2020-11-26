@@ -81,6 +81,7 @@ public class MyBooksAddBook extends AppCompatActivity {
     ImageButton addPhoto;
 
     ArrayList<Bitmap> photos;
+    Bitmap defaultPhoto;
 
     Toolbar toolbar;
     ImageButton addPic;
@@ -243,6 +244,11 @@ public class MyBooksAddBook extends AppCompatActivity {
                     photoStrings
                             .add(photoAdapter.bitmapToString(photo));
                 }
+                if (photos.isEmpty()){
+                    if (defaultPhoto != null) {
+                        photoStrings.add(photoAdapter.bitmapToString(defaultPhoto));
+                    }
+                }
 
                 if (type == ADD_BOOK || type == ADD_SCAN) {
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
@@ -299,8 +305,8 @@ public class MyBooksAddBook extends AppCompatActivity {
         year.setText(publishedYear);
     }
 
-    private void addBookCover(Bitmap coverPhoto){
-        photos.add(coverPhoto);
+    private void setDefaultPhoto(Bitmap coverPhoto){
+        defaultPhoto = coverPhoto;
     }
 
     //Work in progress
@@ -416,7 +422,7 @@ public class MyBooksAddBook extends AppCompatActivity {
     private class GoogleBookImageResponseListener implements Response.Listener<Bitmap>{
         @Override
         public void onResponse(Bitmap response) {
-            addBookCover(response);
+            setDefaultPhoto(response);
         }
     }
 

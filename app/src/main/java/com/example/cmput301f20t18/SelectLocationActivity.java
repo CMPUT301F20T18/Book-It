@@ -4,7 +4,6 @@ import androidx.fragment.app.FragmentActivity;
 
 import android.content.Context;
 import android.content.Intent;
-import android.location.Address;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -29,7 +28,6 @@ import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Locale;
 
 /**
  * SelectLocationActivity is an Activity which allows the user to
@@ -41,9 +39,9 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
     private GoogleMap mMap;
     private static Marker marker;
-    private Address defaultAddress;
+    private UserLocation defaultUserLocation;
 
-    private static Address returnAddress;
+    private static UserLocation returnUserLocation;
     private int locationIndex;
 
     private OnMapClickListener listener;
@@ -61,10 +59,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         setContentView(R.layout.activity_select_location);
 
         // Grab data from caller
-        defaultAddress = getIntent().getParcelableExtra("INPUT_ADDRESS");
-
-        locationIndex = getIntent().getIntExtra("LOCATION_INDEX", -1);
-
+        defaultUserLocation = getDefaultUserLocation();
         //Set up confirm button
         findViewById(
                 R.id.confirm_location_selected_button)
@@ -77,6 +72,13 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         mapFragment.getMapAsync(this);
     }
 
+    private UserLocation getDefaultUserLocation() {
+        String title = getIntent().getStringExtra("LOCATION_TITLE");
+        Double latitude = getIntent().getDoubleExtra("LATITUDE", Double.MAX_VALUE);
+        Double longitude = getIntent().getDoubleExtra("LONGITUDE", Double.MIN_VALUE);
+        return new UserLocation(title, latitude, longitude);
+    }
+
     /**
      * Called on map ready
      * Sets up the map
@@ -87,13 +89,13 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (defaultAddress == null){
-            returnAddress = new Address(Locale.getDefault());
+        if (defaultUserLocation == null){
+            returnUserLocation = new UserLocation();
         }
         else{
-            returnAddress = defaultAddress;
-            LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(),
-                    defaultAddress.getLongitude());
+            returnUserLocation = defaultUserLocation;
+            LatLng defaultLocation = new LatLng(defaultUserLocation.getLatitude(),
+                    defaultUserLocation.getLongitude());
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
         }
         listener = new OnMapClickListener(this);
@@ -117,7 +119,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         }
 
         /**
-         * Places marker at location of click and updates returnAddress latlng
+         * Places marker at location of click and updates returnUserLocation latlng
          * @param latLng LatLng object containing latitude and longitude of location that was
          *               clicked
          */
@@ -130,12 +132,12 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         }
 
         /**
-         * Updates latitude and longitude of returnAddress with provided LatLng
+         * Updates latitude and longitude of returnUserLocation with provided LatLng
          * @param latLng LatLng object containing location data
          */
         private void updateAddressLatLng(LatLng latLng) {
-            returnAddress.setLatitude(latLng.latitude);
-            returnAddress.setLongitude(latLng.longitude);
+            returnUserLocation.setLatitude(latLng.latitude);
+            returnUserLocation.setLongitude(latLng.longitude);
         }
     }
 
@@ -147,8 +149,9 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         @Override
         public void onClick(View v) {
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("OUTPUT_ADDRESS", returnAddress);
-            returnIntent.putExtra("LOCATION_INDEX", locationIndex);
+            returnIntent.putExtra("OUTPUT_TITLE", returnUserLocation.getTitle());
+            returnIntent.putExtra("OUTPUT_LATITUDE", returnUserLocation.getLatitude());
+            returnIntent.putExtra("OUTPUT_LONGITUDE", returnUserLocation.getLongitude());
             setResult(RESULT_OK, returnIntent);
             finish();
         }
@@ -204,7 +207,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
                     Log.d(TAG, addressComponents.toString());
                     marker.setTitle(address);
                     marker.showInfoWindow();
-                    returnAddress.setAddressLine(0, address);
+                    returnUserLocation.setTitle(address);
 
                 } catch (JSONException e) {
                     e.printStackTrace();
