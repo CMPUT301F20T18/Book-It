@@ -111,8 +111,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
             int index = data.getIntExtra("LOCATION_INDEX", -1);
             Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
             // add the new address to the users pickup_location collection
-            User current = new User();
-            current.ownerAddLocation(address);
+            //User current = new User();
+            //current.ownerAddLocation(address);
         }
     }
 
@@ -126,7 +126,6 @@ public class ChooseLocationActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
-            // intent.putExtra("INPUT_ADDRESS", address2);
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }
