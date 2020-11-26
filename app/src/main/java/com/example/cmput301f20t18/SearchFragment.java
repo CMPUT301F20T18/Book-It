@@ -732,13 +732,16 @@ public class SearchFragment extends Fragment {
             Button viewProfile = view.findViewById(R.id.button_view_profile);
 
             //Set up profile pic
-            if (!user.getProfile_picture().equals("")){
+
+            if (user.getProfile_picture() != null && !user.getProfile_picture().equals("")){
+
                 ImageView profilePicView = view.findViewById(R.id.profile_view);
                 String profilePicString = user.getProfile_picture();
-                Bitmap profilePicture = photoAdapter.scaleBitmap(
+                Bitmap bm = photoAdapter.scaleBitmap(
                         photoAdapter.stringToBitmap(profilePicString),
                         profilePicView.getLayoutParams().width,
                         profilePicView.getLayoutParams().height);
+                Bitmap profilePicture = photoAdapter.makeCircularImage(bm, bm.getHeight());
                 profilePicView.setImageBitmap(profilePicture);
             }
 
@@ -750,7 +753,7 @@ public class SearchFragment extends Fragment {
 
             return view;
         }
-
+        
 
 
         /**
