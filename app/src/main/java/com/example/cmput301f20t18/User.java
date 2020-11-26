@@ -410,7 +410,9 @@ public class User {
 
 
     public void ownerAddLocation(Address address) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document(address.getAddressLine(0)).set(address);
+        if (address != null) {
+            userRef.document(auth.getUid()).collection("pickup_locations").document(address.getAddressLine(0)).set(address);
+        }
     }
 
     public void ownerEditProfile(String username, String address, String coverPhoto, String phone) {
