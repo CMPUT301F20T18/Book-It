@@ -504,7 +504,7 @@ public class User {
 
 
     public void ownerDeleteLocation(UserLocation location) {
-
+        userRef.document(auth.getUid())
     }
 
 
