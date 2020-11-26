@@ -19,19 +19,19 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
  * @see User
  * @author deinum
  */
-public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<Address, FirestoreLocationAdapter.locationViewHolder> {
+public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocation, FirestoreLocationAdapter.locationViewHolder> {
 
     private int bookID;
 
-    public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<Address> options, int bookID) {
+    public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<UserLocation> options, int bookID) {
         super(options);
         this.bookID = bookID;
     }
 
     @Override
-    protected void onBindViewHolder(@NonNull FirestoreLocationAdapter.locationViewHolder holder, int position, @NonNull Address location) {
+    protected void onBindViewHolder(@NonNull FirestoreLocationAdapter.locationViewHolder holder, int position, @NonNull UserLocation location) {
 
-            holder.pickup_location.setText(SelectLocationActivity.getAddressString(location));
+            holder.pickup_location.setText();
             holder.selectLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {

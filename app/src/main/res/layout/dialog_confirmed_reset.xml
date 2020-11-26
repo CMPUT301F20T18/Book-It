@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:background="@color/colorGray2"
+    tools:context=".ChangePasswordDialog"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:background="@color/colorGray1">
+
+        <TextView
+            android:id="@+id/notify_message_1"
+            android:layout_width="300dp"
+            android:layout_height="wrap_content"
+            android:paddingHorizontal="10dp"
+            android:paddingVertical="5dp"
+            android:text="Your password reset email has been sent to your account email."
+            android:gravity="center"
+            android:textColor="@color/colorOrange"
+            android:fontFamily="@font/poppins_semibold"
+            android:textSize="15sp"/>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:paddingVertical="10dp">
+
+        <Button
+            android:id="@+id/dismissButton"
+            android:layout_width="157dp"
+            android:layout_height="25dp"
+            android:layout_centerHorizontal="true"
+            android:background="@drawable/good_button_background"
+            android:fontFamily="@font/poppins_medium"
+            android:text="Dismiss"
+            android:textColor="@color/karryText"
+            android:textSize="18sp" />
+    </RelativeLayout>
+
+    </FrameLayout>
+
+</LinearLayout>

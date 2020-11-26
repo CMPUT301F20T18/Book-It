@@ -154,7 +154,6 @@ public class User {
                 // update the transaction
                 transRef.document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
 
-                // TODO: Implement notification
 
                 // update the user book
                 userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_ACCEPTED);
@@ -474,12 +473,20 @@ public class User {
     }
 
 
+    public void ownerAddLocation(UserLocation location) {
+        userRef.document(auth.getUid()).collection("pickup_locations").document().set(location);
+    }
 
 
 
 
 
-    public void ownerSetPickupLocation(Address address, int bookID) {
+
+
+
+
+
+    public void ownerSetPickupLocation(UserLocation location, int bookID) {
 
         // find the transaction associated with this book
         transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -490,10 +497,10 @@ public class User {
 
                     // update the borrowers pickup address
                     userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID))
-                            .update("pickup_location", SelectLocationActivity.getAddressString(address));
+                            .update("pickup_location", location);
 
                     // update the pickup location for the owner
-                    bookRef.document(Integer.toString(bookID)).update("pickup_location", SelectLocationActivity.getAddressString(address));
+                    bookRef.document(Integer.toString(bookID)).update("pickup_location", location);
                 }
 
                 else {
@@ -787,7 +794,7 @@ public class User {
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
                 if (task.isSuccessful()) {
                     User current = task.getResult().toObject(User.class);
-                    //auth.sendPasswordResetEmail(current.getEmail());
+                    auth.sendPasswordResetEmail(current.getEmail());
                     Log.d(TAG, "Sent email to: " + current.getEmail());
                 }
 
