@@ -18,7 +18,9 @@
             android:minHeight="?attr/actionBarSize"
             android:theme="?attr/actionBarTheme"
             app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-            app:theme="@style/ThemeOverlay.AppCompat.Dark" />
+            app:theme="@style/ThemeOverlay.AppCompat.Dark">
+
+        </androidx.appcompat.widget.Toolbar>
 
         <Button
             android:id="@+id/button_add_book"

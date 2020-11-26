@@ -414,7 +414,6 @@ public class User {
 
     }
 
-
     public void ownerAddLocation(UserLocation location) {
         userRef.document(auth.getUid()).collection("pickup_locations").document().set(location);
     }
