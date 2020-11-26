@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -171,7 +172,8 @@ public class FirestoreBookAdapter
                                 String photoString = borrower.getProfile_picture();
                                 if (photoString!= "") {
                                     Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                                    Bitmap photo = photoAdapter.makeCircularImage(bm, holder.imageView.getHeight());
+                                    Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
+                                    holder.buttonUser.setImageBitmap(photo);
                                     Log.d(TAG, "Picture attached");
                                 }
                             }
@@ -294,9 +296,10 @@ public class FirestoreBookAdapter
         Button buttonCancelRequest;
         Button buttonConfirmPickUp;
         Button buttonMap;
-        Button buttonUser;
+        ImageButton buttonUser;
         Button buttonConfirmReturn;
         Button buttonMore;
+
 
         /**
          * Class constructor.
@@ -323,6 +326,7 @@ public class FirestoreBookAdapter
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
             buttonMore = itemView.findViewById(R.id.button_book_more);
+
 
             Log.d(TAG, "onCreateBookViewHolder: End!!");
         }

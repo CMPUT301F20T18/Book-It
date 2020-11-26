@@ -55,9 +55,12 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
                 if (task.isSuccessful()) {
                     User borrower = task.getResult().toObjects(User.class).get(0);
                     String photoString = borrower.getProfile_picture();
-                    Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                    Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
-                    Log.d(TAG, "Picture attached");
+                        if(photoString!="" && photoString!=null) {
+                            Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                            Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
+                            holder.profile_pic.setImageBitmap(photo);
+                            Log.d(TAG, "Picture attached");
+                        }
                 }
 
                 else {
