@@ -111,8 +111,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
         Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
 
         // add the new address to the users pickup_location collection
-        User current = new User();
-        current.ownerAddLocation(address);
+        //User current = new User();
+        //current.ownerAddLocation(address);
     }
 
     private class AddLocationOnClickListener implements View.OnClickListener{
