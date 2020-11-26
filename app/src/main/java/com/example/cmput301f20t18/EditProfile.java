@@ -1,9 +1,11 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.FragmentManager;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +14,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -110,6 +117,28 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        String text = "Change Password";
+
+        SpannableString redirectString = new SpannableString(text);
+
+        ClickableSpan redirect = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+
+                ChangePasswordDialog changePassword = new ChangePasswordDialog();
+                changePassword.show(getSupportFragmentManager(), "dialog");
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.colorLightGray));
+            }
+        };
+
+        redirectString.setSpan(redirect,0,15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        changePass.setText(redirectString);
+        changePass.setMovementMethod(LinkMovementMethod.getInstance());
 
 
     }
