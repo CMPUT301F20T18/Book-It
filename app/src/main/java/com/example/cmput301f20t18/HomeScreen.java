@@ -56,6 +56,7 @@ import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
 public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDialog.BottomSheetListener{
     private int permissionStorageWriteCode = 100;
     private int permissionStorageReadCode = 101;
+    private int permissionInternet = 102;
 
 
     Fragment selectedFragment;
@@ -96,6 +97,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new MyBooksFragment()).commit();
 
+        checkPermissionInternet();
         checkPermissionExternalData();
 
 
@@ -271,6 +273,14 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
             ActivityCompat.requestPermissions(HomeScreen.this,
                     new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
                     permissionStorageReadCode);
+        }
+    }
+
+    private void checkPermissionInternet(){
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.INTERNET) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.INTERNET}, permissionInternet);
         }
     }
 }
