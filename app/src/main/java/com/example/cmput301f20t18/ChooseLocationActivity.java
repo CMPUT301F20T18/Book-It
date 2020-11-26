@@ -74,8 +74,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
      */
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("pickup_locations");
-        FirestoreRecyclerOptions<Address> options = new FirestoreRecyclerOptions.Builder<Address>()
-                .setQuery(query, Address.class)
+        FirestoreRecyclerOptions<UserLocation> options = new FirestoreRecyclerOptions.Builder<UserLocation>()
+                .setQuery(query, UserLocation.class)
                 .build();
 
         adapter = new FirestoreLocationAdapter(options, bookID);
@@ -108,11 +108,15 @@ public class ChooseLocationActivity extends AppCompatActivity {
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (resultCode == RESULT_OK) {
-            int index = data.getIntExtra("LOCATION_INDEX", -1);
-            Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+
+            String title = data.getStringExtra("OUTPUT_TITLE");
+            double longitude = data.getDoubleExtra("OUTPUT_LAT", 0);
+            double latitude = data.getDoubleExtra("OUTPUT_LONG", 0);
+
+            UserLocation location = new UserLocation(title, latitude, longitude);
             // add the new address to the users pickup_location collection
             User current = new User();
-            current.ownerAddLocation(address);
+            current.ownerAddLocation(location);
         }
     }
 

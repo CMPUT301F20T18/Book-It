@@ -415,8 +415,8 @@ public class User {
     }
 
 
-    public void ownerAddLocation(Address address) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
+    public void ownerAddLocation(UserLocation location) {
+        userRef.document(auth.getUid()).collection("pickup_locations").document().set(location);
     }
 
     public void ownerEditProfile(String username, String address, String coverPhoto, String phone) {
@@ -464,6 +464,7 @@ public class User {
                     }
                 }
 
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 
@@ -471,15 +472,6 @@ public class User {
             });
         }
     }
-
-
-    public void ownerAddLocation(UserLocation location) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document().set(location);
-    }
-
-
-
-
 
 
 
@@ -511,8 +503,8 @@ public class User {
     }
 
 
-    public void ownerDeleteLocation(String location) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document(location).delete();
+    public void ownerDeleteLocation(UserLocation location) {
+
     }
 
 

@@ -31,7 +31,7 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
     @Override
     protected void onBindViewHolder(@NonNull FirestoreLocationAdapter.locationViewHolder holder, int position, @NonNull UserLocation location) {
 
-            holder.pickup_location.setText();
+            holder.pickup_location.setText(location.getTitle());
             holder.selectLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -44,7 +44,6 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
                 @Override
                 public void onClick(View v) {
                     User current = new User();
-                    current.ownerDeleteLocation(SelectLocationActivity.getAddressString(location));
                 }
             });
         }
