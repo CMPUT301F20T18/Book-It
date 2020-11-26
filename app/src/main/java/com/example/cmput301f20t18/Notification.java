@@ -129,6 +129,12 @@ public class Notification {
                     // write our notification to the DB
                     RTDB.getReference().child("Notifications").child(ID.replace('.', ':')).setValue(notification);
 
+
+                    userNotification notif = new userNotification(ID.replace('.', ':'), message);
+
+                    // write our notification to Firestore
+                    userRef.document(target.getDbID()).collection("notifications").document(ID.replace('.', ':')).set(notif);
+
                 }
 
                 else {

@@ -212,6 +212,10 @@
     </androidx.constraintlayout.widget.ConstraintLayout>
 
     <!-- ListView or RecyclerView goes here for the notifications -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/NotifRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>

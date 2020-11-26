@@ -96,9 +96,9 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     }
 
     private UserLocation getDefaultUserLocation() {
-        String title = getIntent().getStringExtra("LOCATION_TITLE");
-        Double latitude = getIntent().getDoubleExtra("LATITUDE", Double.MAX_VALUE);
-        Double longitude = getIntent().getDoubleExtra("LONGITUDE", Double.MIN_VALUE);
+        String title = getIntent().getStringExtra("INPUT_TITLE");
+        Double latitude = getIntent().getDoubleExtra("INPUT_LATITUDE", Double.MAX_VALUE);
+        Double longitude = getIntent().getDoubleExtra("INPUT_LONGITUDE", Double.MIN_VALUE);
         return new UserLocation(title, latitude, longitude);
     }
 
@@ -112,7 +112,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (defaultUserLocation == null){
+        if (defaultUserLocation.getLatitude() == Double.MAX_VALUE){
             returnUserLocation = new UserLocation();
         }
         else{

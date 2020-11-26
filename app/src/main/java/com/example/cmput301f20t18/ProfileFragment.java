@@ -21,7 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,9 +31,12 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -46,9 +51,20 @@ import static android.app.Activity.RESULT_OK;
 public class ProfileFragment extends Fragment {
 
     TextView username, textAddress, phoneNum, email, editAccount;
-    Button signOut;
+    Button signOut, clearNotifications;
     ImageView profilePic;
     String photoString, address;
+
+    RecyclerView recyclerView;
+    Query query;
+    FirestoreNotificationAdapter adapter;
+
+    // DB info
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference userRef = DB.collection("users");
+
+
     //Bitmap userPhoto;
 
 
@@ -99,6 +115,8 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         editAccount = (TextView) view.findViewById(R.id.edit_profile);
+        recyclerView = view.findViewById(R.id.NotifRecyclerView);
+        setUp();
 
         signOut = (Button) view.findViewById(R.id.sign_out_button);
         signOut.setOnClickListener(new View.OnClickListener() {
@@ -116,6 +134,17 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        clearNotifications = view.findViewById(R.id.button_clear_notifications);
+        clearNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User current = new User();
+                current.userDeleteNotifications();
+            }
+        });
+
+
 
         final String editAccountText = "Edit Account";
 
@@ -253,4 +282,38 @@ public class ProfileFragment extends Fragment {
                 }
         }
     }
+
+    public void setUp() {
+        query = userRef.document(auth.getUid()).collection("notifications");
+        FirestoreRecyclerOptions<userNotification> options = new FirestoreRecyclerOptions.Builder<userNotification>()
+                .setQuery(query, userNotification.class)
+                .build();
+
+        adapter = new FirestoreNotificationAdapter(options);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+
+
+    // tell our adapter to start listening as soon as the fragment begins
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+
+
+    }
+    // tell our adapter to stop listening as soon as the fragment ends
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+
+
 }
