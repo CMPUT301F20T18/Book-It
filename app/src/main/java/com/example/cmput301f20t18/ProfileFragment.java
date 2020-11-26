@@ -36,6 +36,7 @@ import com.google.firebase.firestore.Query;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
@@ -50,7 +51,7 @@ import static android.app.Activity.RESULT_OK;
 public class ProfileFragment extends Fragment {
 
     TextView username, textAddress, phoneNum, email, editAccount;
-    Button signOut;
+    Button signOut, clearNotifications;
     ImageView profilePic;
     String photoString, address;
 
@@ -114,6 +115,8 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         editAccount = (TextView) view.findViewById(R.id.edit_profile);
+        recyclerView = view.findViewById(R.id.NotifRecyclerView);
+        setUp();
 
         signOut = (Button) view.findViewById(R.id.sign_out_button);
         signOut.setOnClickListener(new View.OnClickListener() {
@@ -131,6 +134,17 @@ public class ProfileFragment extends Fragment {
                 startActivity(intent);
             }
         });
+
+        clearNotifications = view.findViewById(R.id.button_clear_notifications);
+        clearNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User current = new User();
+                current.userDeleteNotifications();
+            }
+        });
+
+
 
         final String editAccountText = "Edit Account";
 
@@ -271,8 +285,8 @@ public class ProfileFragment extends Fragment {
 
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("notifications");
-        FirestoreRecyclerOptions<HashMap> options = new FirestoreRecyclerOptions.Builder<HashMap>()
-                .setQuery(query, HashMap.class)
+        FirestoreRecyclerOptions<userNotification> options = new FirestoreRecyclerOptions.Builder<userNotification>()
+                .setQuery(query, userNotification.class)
                 .build();
 
         adapter = new FirestoreNotificationAdapter(options);
