@@ -243,7 +243,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     photoStrings
                             .add(photoAdapter.bitmapToString(photo));
                 }
-                
+
                 if (type == ADD_BOOK || type == ADD_SCAN) {
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
 
@@ -396,12 +396,20 @@ public class MyBooksAddBook extends AppCompatActivity {
             return ((String) bookData.get("publishedDate")).substring(0,4);
         }
 
-        private void getCover(JSONObject bookData) throws JSONException {
-            String imageURL = (String) ((JSONObject) bookData.get("imageLinks")).get("thumbnail");
-            imageURL = imageURL.substring(0,4) + "s" + imageURL.substring(4);
-            GoogleBookAPIQueryMaker googleBookAPIQueryMaker =
-                    new GoogleBookAPIQueryMaker(this.context);
-            googleBookAPIQueryMaker.getCoverPhoto(imageURL);
+        private void getCover(JSONObject bookData){
+            String imageURL = null;
+            try {
+                imageURL = (String) ((JSONObject) bookData.get("imageLinks")).get("thumbnail");
+                imageURL = imageURL.substring(0,4) + "s" + imageURL.substring(4);
+
+                GoogleBookAPIQueryMaker googleBookAPIQueryMaker =
+                        new GoogleBookAPIQueryMaker(this.context);
+                googleBookAPIQueryMaker.getCoverPhoto(imageURL);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
         }
     }
 

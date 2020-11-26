@@ -123,12 +123,10 @@ public class SearchFragment extends Fragment {
             if (selectedOption.equals("Books")) {
                 SearchResultList.setAdapter(bookAdapter);
                 searchBooks(searchWord, bookAdapter, true);
-                bookAdapter.notifyDataSetChanged();
             }
             else {
                 SearchResultList.setAdapter(userAdapter);
                 searchUsers(searchWord);
-                userAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -170,7 +168,6 @@ public class SearchFragment extends Fragment {
         final CollectionReference userCollection = db.collection("users");
 
         UserQueryHandler.searchByUsername(userCollection, listener, searchKey);
-        userAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -480,6 +477,7 @@ public class SearchFragment extends Fragment {
                 }
                 if (add) {
                     bookDataList.add(book);
+                    bookAdapter.notifyDataSetChanged();
                 }
             }
         }
@@ -506,6 +504,7 @@ public class SearchFragment extends Fragment {
                 }
                 if (add) {
                     userDataList.add(user);
+                    userAdapter.notifyDataSetChanged();
                 }
             }
         }

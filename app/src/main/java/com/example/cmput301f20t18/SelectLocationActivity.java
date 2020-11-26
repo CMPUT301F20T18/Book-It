@@ -2,14 +2,19 @@ package com.example.cmput301f20t18;
 
 import androidx.fragment.app.FragmentActivity;
 
-import android.content.DialogInterface;
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
-import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.Volley;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -17,10 +22,13 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
-import java.io.IOException;
-import java.util.List;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -32,9 +40,10 @@ import java.util.Locale;
 public class SelectLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
+    private static Marker marker;
     private Address defaultAddress;
 
-    private Address returnAddress;
+    private static Address returnAddress;
     private int locationIndex;
 
     private OnMapClickListener listener;
@@ -53,12 +62,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
         // Grab data from caller
         defaultAddress = getIntent().getParcelableExtra("INPUT_ADDRESS");
-        if (defaultAddress == null){
-            defaultAddress = new Address(Locale.getDefault());
-            defaultAddress.setLatitude(53.5232);
-            defaultAddress.setLongitude(-113.5263);
-        }
-        returnAddress = defaultAddress;
 
         locationIndex = getIntent().getIntExtra("LOCATION_INDEX", -1);
 
@@ -83,108 +86,241 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(), defaultAddress.getLongitude());
-
         mMap = googleMap;
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
-
-        listener = new OnMapClickListener();
+        if (defaultAddress == null){
+            returnAddress = new Address(Locale.getDefault());
+        }
+        else{
+            returnAddress = defaultAddress;
+            LatLng defaultLocation = new LatLng(defaultAddress.getLatitude(),
+                    defaultAddress.getLongitude());
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
+        }
+        listener = new OnMapClickListener(this);
         mMap.setOnMapClickListener(listener);
-
     }
 
     /**
-     * This function takes in an address and produces
-     * a string that best describes the address
-     * @param address   The address to be described
-     * @return A String object which describes address
-     */
-    public static String getAddressString(Address address){
-        String addressTitle = "";
-        String subThoroughfare = address.getSubThoroughfare();
-        String thoroughfare = address.getThoroughfare();
-        String locality = address.getLocality();
-        String adminArea = address.getAdminArea();
-        if (subThoroughfare != null){
-            addressTitle += subThoroughfare + " ";
-        }
-        if (thoroughfare != null){
-            addressTitle += thoroughfare + " ";
-        }
-        if (locality != null){
-            addressTitle += locality + ", ";
-        }
-        if (adminArea != null){
-            addressTitle += adminArea;
-        }
-        return addressTitle;
-    }
-
-    /**
-     * Function to be called on clicking the confirm
-     * button
-     * Sends data back in the form of
-     * An Address which represents the location clicked on the map
-     * A Location index which is equivalent to the one passed in
-     */
-    private void stopActivity() {
-        Intent returnIntent = new Intent();
-        returnIntent.putExtra("OUTPUT_ADDRESS", returnAddress);
-        returnIntent.putExtra("LOCATION_INDEX", locationIndex);
-        setResult(RESULT_OK, returnIntent);
-        finish();
-    }
-
-    /**
-     *
+     * Listener for OnMapClickEvent
+     * Places a marker at location of click and updates return address with relevant information
      */
     private class OnMapClickListener implements GoogleMap.OnMapClickListener{
-        Address address;
+        Context context;
+
+        public OnMapClickListener(Context context){
+            this.context = context;
+        }
 
         @Override
         public void onMapClick(LatLng latLng) {
-            createMarker(latLng);
+            placeMarker(latLng);
         }
 
-        private void createMarker(LatLng latLng){
-            mMap.clear();
-            Marker marker = null;
-            if (Geocoder.isPresent()) {
-                Geocoder geocoder = new Geocoder(getApplicationContext());
-                try {
-                    List<Address> possibleMarkerAddresses = geocoder.getFromLocation(latLng.latitude, latLng.longitude, 1);
-                    Address currentMarkerAddress = possibleMarkerAddresses.get(0);
-                    String addressTitle = getAddressString(currentMarkerAddress);
-                    marker = mMap.addMarker(new MarkerOptions().position(latLng).title(addressTitle));
-                    marker.showInfoWindow();
-
-                    updateAddress(latLng, addressTitle);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } else {
-                marker = mMap.addMarker(new MarkerOptions().position(latLng).title("Marker Placed!"));
-                updateAddressLatLng(latLng);
-            }
-            marker.showInfoWindow();
-        }
-
-        private void updateAddress(LatLng latLng, String addressTitle) {
-            returnAddress.setAddressLine(1, addressTitle);
+        /**
+         * Places marker at location of click and updates returnAddress latlng
+         * @param latLng LatLng object containing latitude and longitude of location that was
+         *               clicked
+         */
+        private void placeMarker(LatLng latLng){
+            GoogleGeocoderQueryHandler googleGeocoderQueryHandler =
+                    new GoogleGeocoderQueryHandler(this.context);
+            googleGeocoderQueryHandler.queryReverseGeocoder(latLng);
+            marker = mMap.addMarker(new MarkerOptions().position(latLng));
             updateAddressLatLng(latLng);
         }
 
+        /**
+         * Updates latitude and longitude of returnAddress with provided LatLng
+         * @param latLng LatLng object containing location data
+         */
         private void updateAddressLatLng(LatLng latLng) {
             returnAddress.setLatitude(latLng.latitude);
             returnAddress.setLongitude(latLng.longitude);
         }
     }
 
+    /**
+     * Listener for OnButtonClickEvent
+     * Sets up return intent and finishes processes
+     */
     private class ConfirmLocationOnClickListener implements View.OnClickListener{
-
         @Override
         public void onClick(View v) {
-            stopActivity();
+            Intent returnIntent = new Intent();
+            returnIntent.putExtra("OUTPUT_ADDRESS", returnAddress);
+            returnIntent.putExtra("LOCATION_INDEX", locationIndex);
+            setResult(RESULT_OK, returnIntent);
+            finish();
+        }
+    }
+
+    /**
+     * Handles Queries to Google Geocoder API
+     */
+    private static class GoogleGeocoderQueryHandler{
+        private final String TAG = "GEOCODER";
+        private RequestQueue queue;
+
+        /**
+         * Instantiates GoogleGeocoderQueryHandler Object
+         * @param context
+         */
+        public GoogleGeocoderQueryHandler(Context context){
+            this.queue = Volley.newRequestQueue(context);
+        }
+
+        /**
+         * Handles Queries for reverse geocoding (LatLng to String)
+         * @param latLng LatLng object representing location to be reverse geocoded
+         */
+        public void queryReverseGeocoder(LatLng latLng){
+            String url = "https://maps.googleapis.com/maps/api/geocode/json?latlng="
+                    + Double.toString(latLng.latitude) + "," + Double.toString(latLng.longitude)
+                    + "&key=AIzaSyBlqu6di8MVHD--P54I9OLgla61KUQwpG0";
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url,
+                    null, new ReverseGeocoderRequestListener(),
+                    new GoogleGeocoderErrorListener());
+            queue.add(jsonRequest);
+        }
+
+        /**
+         * Listener for JSONObject ResponseEvent's for GoogleGeocoderAPI reverse geocoding
+         */
+        private class ReverseGeocoderRequestListener implements Response.Listener<JSONObject> {
+            private final String TAG = "GEOCODER";
+
+            /**
+             * Method called on response of GoogleGeocoderAPI constructs string from response given
+             * @param response JSONObject representing location that was reverse Gecoded
+             */
+            @Override
+            public void onResponse(JSONObject response) {
+                try {
+                    JSONArray addressComponents = (JSONArray)
+                            ((JSONObject) ((JSONArray) response.get("results")).get(0))
+                                    .get("address_components");
+                    String address = getAddressString(addressComponents);
+
+                    Log.d(TAG, addressComponents.toString());
+                    marker.setTitle(address);
+                    marker.showInfoWindow();
+                    returnAddress.setAddressLine(0, address);
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+
+            /**
+             * Constructs string from JSONArray given through Google Geocoder API's response
+             * @param addressComponents JSONArray object containing components of an address
+             * @return String object representing address represented in addressComponents
+             */
+            private String getAddressString(JSONArray addressComponents){
+                String address = "";
+
+                for (int i=0; i < addressComponents.length(); i++){
+                    String addressComponent = getAddressComponent(addressComponents, i);
+
+                    if (!addressComponent.equals("")){
+                        address += addressComponent;
+                    }
+                }
+                Log.d(TAG, address);
+                return address;
+            }
+
+            /**
+             * Gets a single addressComponent from addressComponents in it's short form
+             * @param addressComponents JSONArray object representing an address
+             * @param index int object pointing to current place in JSONArray
+             * @return String object representing a single addressComponent
+             */
+            private String getAddressComponent(JSONArray addressComponents, int index){
+                String addressComponentString = "";
+
+                try {
+                    JSONObject addressComponent = (JSONObject) addressComponents.get(index);
+                    if (approvedType((JSONArray)addressComponent.get("types"))){
+                        addressComponentString = ((String) addressComponent.get("short_name"));
+                        if (!lastType((JSONArray)addressComponent.get("types"))){
+                            addressComponentString += " ";
+                        }
+                    }
+
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                    Log.e(TAG, "Address Component at index " + Integer.toString(index)
+                    + "may not be associated with LatLng");
+                }
+                return addressComponentString;
+            }
+        }
+
+        /**
+         * Checks that the current addressComponent should be added to the address
+         * This is to ensure the address displayed to the user and stored in the db is simple and
+         * readble
+         * @param addressComponentTypes JSONArray which represents an address component's various
+         *                              types ([route, street name] for example)
+         * @return Boolean object representing whether the current addressComponent is one of a few
+         *         approved types
+         */
+        private boolean approvedType(JSONArray addressComponentTypes) {
+            ArrayList<String> approvedTypes = new ArrayList<>(
+                    Arrays.asList("street_number", "route", "locality",
+                            "administrative_area_level_1"));
+            for (String type : approvedTypes){
+                for (int i=0; i < addressComponentTypes.length(); i++){
+                    try {
+                        if (type.equals((String)addressComponentTypes.get(i))){
+                            return true;
+                        }
+                    } catch (JSONException e) {
+                        return false;
+                    }
+                }
+            }
+            return false;
+        }
+
+        /**
+         * Checks if the current address component is the last one to be displayed
+         * (used for string formatting ensuring that a space is not added on the last component)
+         * @param addressComponentTypes addressComponentTypes JSONArray which represents an
+         *                              address component's various types
+         * @return Boolean object representing whether an address component is the last to be
+         *         displayed
+         */
+        private boolean lastType(JSONArray addressComponentTypes){
+            String type = "administrative_area_level_1";
+
+                for (int i=0; i<addressComponentTypes.length(); i++){
+                    try {
+                        if (type.equals((String)addressComponentTypes.get(i))){
+                            return true;
+                        }
+                    } catch (JSONException e) {
+                        return false;
+                    }
+                }
+            return false;
+        }
+
+        /**
+         * Listener for Error Response Event
+         */
+        private class GoogleGeocoderErrorListener implements Response.ErrorListener{
+            private final String TAG = "GEOCODER";
+
+            /**
+             * Method called when an error with the response occurs
+             * @param error VolleyError object representing error that occured
+             */
+            @Override
+            public void onErrorResponse(VolleyError error) {
+                Log.e(TAG, error.toString());
+            }
         }
     }
 }

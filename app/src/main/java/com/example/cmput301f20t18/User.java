@@ -410,7 +410,7 @@ public class User {
 
 
     public void ownerAddLocation(Address address) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
+        userRef.document(auth.getUid()).collection("pickup_locations").document(address.getAddressLine(0)).set(address);
     }
 
     public void ownerEditProfile(String username, String address, String coverPhoto, String phone) {
@@ -483,10 +483,10 @@ public class User {
 
                     // update the borrowers pickup address
                     userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID))
-                            .update("pickup_location", SelectLocationActivity.getAddressString(address));
+                            .update("pickup_location", address.getAddressLine(0));
 
                     // update the pickup location for the owner
-                    bookRef.document(Integer.toString(bookID)).update("pickup_location", SelectLocationActivity.getAddressString(address));
+                    bookRef.document(Integer.toString(bookID)).update("pickup_location", address.getAddressLine(0));
                 }
 
                 else {
