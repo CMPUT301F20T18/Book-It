@@ -48,5 +48,6 @@
     <string name="borrowed_pending_empty">Books you need to pick up will appear here</string>
     <string name="borrowed_borrowing_empty">Books you are borrowing will appear here</string>
     <string name="select_an_address">Select an address</string>
+    <string name="title_activity_show_map_location">Map</string>
 
 </resources>

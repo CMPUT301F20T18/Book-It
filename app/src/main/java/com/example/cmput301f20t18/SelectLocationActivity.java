@@ -162,17 +162,19 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     private class ConfirmLocationOnClickListener implements View.OnClickListener{
         @Override
         public void onClick(View v) {
-            Intent returnIntent = new Intent();
+
             if (returnUserLocation == null){
-                setResult(RESULT_CANCELED, returnIntent);
+                Toast.makeText(getApplicationContext(), "Please tap to choose a location",
+                        Toast.LENGTH_SHORT).show();
             }
             else {
+                Intent returnIntent = new Intent();
                 returnIntent.putExtra("OUTPUT_TITLE", returnUserLocation.getTitle());
                 returnIntent.putExtra("OUTPUT_LATITUDE", returnUserLocation.getLatitude());
                 returnIntent.putExtra("OUTPUT_LONGITUDE", returnUserLocation.getLongitude());
                 setResult(RESULT_OK, returnIntent);
+                finish();
             }
-            finish();
         }
     }
 
