@@ -114,6 +114,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
          *               clicked
          */
         private void placeMarker(LatLng latLng){
+            mMap.clear();
             GoogleGeocoderQueryHandler googleGeocoderQueryHandler =
                     new GoogleGeocoderQueryHandler(this.context);
             googleGeocoderQueryHandler.queryReverseGeocoder(latLng);
