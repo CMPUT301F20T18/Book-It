@@ -195,6 +195,4 @@ public class EditProfile extends AppCompatActivity {
                 }
         }
     }
-
-
 }

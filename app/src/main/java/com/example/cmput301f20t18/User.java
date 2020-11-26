@@ -781,6 +781,23 @@ public class User {
                     });
     }
 
+    public void passwordReset() {
+        userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User current = task.getResult().toObject(User.class);
+                    //auth.sendPasswordResetEmail(current.getEmail());
+                    Log.d(TAG, "Sent email to: " + current.getEmail());
+                }
+
+                else {
+                    Log.d(TAG, "Change password - Error finding user");
+                }
+            }
+        });
+    }
+
 
 
 
