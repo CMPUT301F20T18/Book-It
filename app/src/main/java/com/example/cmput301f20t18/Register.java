@@ -58,8 +58,8 @@ public class Register extends AppCompatActivity {
     EditText username;
     EditText password;
     EditText email;
-    EditText address;
     EditText phone;
+    Button address;
 
     private TextView accountCreate, usernameText, passwordText, emailText, addressText, signInRedirect;
     Button register;
@@ -77,7 +77,7 @@ public class Register extends AppCompatActivity {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         email = (EditText) findViewById(R.id.email);
-        address = (EditText) findViewById(R.id.address);
+        address = (Button) findViewById(R.id.address);
         phone = (EditText) findViewById(R.id.phone);
         register = (Button) findViewById(R.id.registerButton);
         accountCreate = (TextView) findViewById(R.id.text_Create_Account);
@@ -115,7 +115,12 @@ public class Register extends AppCompatActivity {
         signInRedirect.setText(redirectString);
         signInRedirect.setMovementMethod(LinkMovementMethod.getInstance());
 
-
+        address.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                // TODO: allow user to select location from map
+            }
+        });
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -126,7 +131,7 @@ public class Register extends AppCompatActivity {
                 String new_username = username.getText().toString();
                 String new_password = password.getText().toString();
                 String new_email= email.getText().toString();
-                String new_address = address.getText().toString();
+                String new_address = "";//address.getText().toString();
 
                 if (new_username.matches("") || new_email.matches("") || new_password.matches("") || new_address.matches("")) {
                     Toast.makeText(Register.this, "Please fill all fields", Toast.LENGTH_LONG).show();
