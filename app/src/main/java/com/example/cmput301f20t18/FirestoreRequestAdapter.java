@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
@@ -55,9 +56,11 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
                 if (task.isSuccessful()) {
                     User borrower = task.getResult().toObjects(User.class).get(0);
                     String photoString = borrower.getProfile_picture();
-                    Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                    Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
-                    Log.d(TAG, "Picture attached");
+                    if (!photoString.equals("")) {
+                        Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                        Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
+                        Log.d(TAG, "Picture attached");
+                    }
                 }
 
                 else {
@@ -72,6 +75,10 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
             public void onClick(View v) {
                 User current = new User();
                 current.ownerAcceptRequest(transaction.getID());
+
+                Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                intent.putExtra("bookID", transaction.getBookID());
+                v.getContext().startActivity(intent);
             }
         });
 

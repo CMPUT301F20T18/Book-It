@@ -5,6 +5,15 @@
     android:layout_height="match_parent"
     tools:context=".MyBooksLendingFragment">
 
+    <TextView
+        android:id="@+id/no_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:textAlignment="center"
+        android:layout_alignParentTop="true"
+        android:textSize="18sp"/>
+
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/BBrecyclerView"
         android:layout_width="match_parent"
