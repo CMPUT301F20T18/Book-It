@@ -1,7 +1,6 @@
 <resources>
     <string-array name="search_spinner_array">
-        <item>Available Books</item>
-        <item>All Books</item>
+        <item>Books</item>
         <item>Users</item>
     </string-array>
 

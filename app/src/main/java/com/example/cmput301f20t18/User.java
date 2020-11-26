@@ -436,7 +436,6 @@ public class User {
                         // username exists, cannot get that username
                         Log.d(TAG, "ownerChangeUsername - Username already taken");
                     }
-
                     else {
                         userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
                             @Override

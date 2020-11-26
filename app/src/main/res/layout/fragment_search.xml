@@ -42,7 +42,7 @@
             android:layout_height="wrap_content">
             <Spinner
                 android:id="@+id/search_spinner"
-                android:layout_width="98dp"
+                android:layout_width="80dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
                 android:paddingHorizontal="8dp"
@@ -53,21 +53,21 @@
             <ImageView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center"
-                android:layout_marginStart="36dp"
+                android:layout_gravity="center_vertical|end"
+                android:layout_marginEnd="3dp"
                 android:src="@drawable/ic_drop_down_icon" />
         </FrameLayout>
 
         <EditText
             android:id="@+id/search_edit_text"
-            android:layout_width="262dp"
+            android:layout_width="0dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
             android:background="@color/colorWhite"
             android:hint="Search..."
             android:imeOptions="actionSearch"
             android:inputType="text"
-            android:paddingLeft="10dp"
+            android:paddingHorizontal="10dp"
             android:textColor="@color/colorGray2"
             android:textColorHint="@color/doveGray"
             app:layout_constraintEnd_toStartOf="@id/search_button"
@@ -85,39 +85,6 @@
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <!--<FrameLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
-        <androidx.viewpager.widget.ViewPager
-            android:id="@+id/search_viewPager"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content">
-            <com.google.android.material.tabs.TabLayout
-                android:id="@+id/search_tab_layout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:tabGravity="fill"
-                app:tabIndicatorGravity="bottom"
-                android:background="@drawable/ic_navigation_bar_2"
-                app:tabSelectedTextColor="@color/colorOrange"
-                app:tabTextColor="@color/colorAccent"
-                app:tabIndicatorColor="@color/colorOrange"
-                >
-
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/tab_search_available"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-                <com.google.android.material.tabs.TabItem
-                    android:id="@+id/tab_search_show_all"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content" />
-
-            </com.google.android.material.tabs.TabLayout>
-        </androidx.viewpager.widget.ViewPager>
-
-    </FrameLayout>-->
 
     <ListView
         android:id="@+id/search_result_list"
