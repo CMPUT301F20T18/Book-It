@@ -107,8 +107,10 @@ public class ChooseLocationActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        int index = data.getIntExtra("LOCATION_INDEX", -1);
-        Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+        if (resultCode == RESULT_OK) {
+            int index = data.getIntExtra("LOCATION_INDEX", -1);
+            Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+        }
 
         // add the new address to the users pickup_location collection
         //User current = new User();

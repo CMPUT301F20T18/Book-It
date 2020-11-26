@@ -5,6 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.VoiceInteractor;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -19,6 +20,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -28,6 +30,7 @@ import com.android.volley.Request;
 import com.android.volley.RequestQueue;
 import com.android.volley.Response;
 import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
@@ -49,6 +52,7 @@ import java.util.List;
  * @author  Jacob Deinum
  * @author Johnathon Gil
  * @author Sean Butler
+ * @author Chase-Warwick
  * @see    Toolbar
  * @see    FirebaseAuth
  * @see    FirebaseFirestore
@@ -58,7 +62,10 @@ import java.util.List;
 public class MyBooksAddBook extends AppCompatActivity {
 
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
-    EditText author, bookTitle, year, isbn;
+    EditText author;
+    EditText bookTitle;
+    EditText year;
+    EditText isbn;
     RecyclerView imagesViewer;
     RecyclerView.LayoutManager layoutManager;
     ImageRecyclerViewAdapter imageRecyclerViewAdapter;
@@ -103,8 +110,10 @@ public class MyBooksAddBook extends AppCompatActivity {
         Long passed_isbn = getIntent().getLongExtra("filled_isbn", 0);
 
         if (passed_isbn != 0){
-            GoogleBookIsbnSearch googleBookIsbnSearch = new GoogleBookIsbnSearch();
-            googleBookIsbnSearch.searchByISBN(this, Long.toString(passed_isbn));
+            GoogleBookAPIQueryMaker googleBookAPIQueryMaker =
+                    new GoogleBookAPIQueryMaker(this);
+
+            googleBookAPIQueryMaker.searchByISBN(this, Long.toString(passed_isbn));
         }
 
 
@@ -206,7 +215,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
                 Long isbn = Long.parseLong(book_isbn);
                 Integer year = Integer.parseInt(book_year);
-                if (type == ADD_BOOK) {
+                if (type == ADD_BOOK || type == ADD_SCAN) {
              
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
 
@@ -265,6 +274,10 @@ public class MyBooksAddBook extends AppCompatActivity {
         year.setText(publishedYear);
     }
 
+    private void addBookCover(Bitmap coverPhoto){
+        photos.add(coverPhoto);
+    }
+
     //Work in progress
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -289,49 +302,91 @@ public class MyBooksAddBook extends AppCompatActivity {
     }
 
 
-    private class GoogleBookIsbnSearch{
+    private class GoogleBookAPIQueryMaker{
         private String TAG = "GOOGLEBOOK";
+        private RequestQueue queue;
+
+        GoogleBookAPIQueryMaker(Context context){
+            this.queue = Volley.newRequestQueue(context);
+        }
 
         public void searchByISBN(Context context, String ISBN) {
-            RequestQueue queue = Volley.newRequestQueue(context);
             String url = "https://www.googleapis.com/books/v1/volumes?q=isbn%3D" + ISBN;
             JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url,
-                    null, new GoogleBookResponseListener(), new GoogleBookErrorListener());
+                    null, new GoogleBookJsonResponseListener(context),
+                    new GoogleBookErrorListener());
             queue.add(jsonRequest);
         }
+
+        public void getCoverPhoto(String url){
+            ImageRequest imageRequest = new ImageRequest(url, new GoogleBookImageResponseListener(),
+                    0, 0, ImageView.ScaleType.CENTER_CROP,
+                    null, new GoogleBookErrorListener());
+            queue.add(imageRequest);
+        }
     }
-    private class GoogleBookResponseListener implements Response.Listener<JSONObject> {
+    private class GoogleBookJsonResponseListener implements Response.Listener<JSONObject> {
+        private Context context;
+
+        public GoogleBookJsonResponseListener(Context context){
+            this.context = context;
+        }
+
         @Override
         public void onResponse(JSONObject response) {
             try {
                 JSONObject bookData = (JSONObject)
                         ((JSONObject) ((JSONArray) response.get("items")).get(0)).get("volumeInfo");
 
-                String bookTitle = (String) bookData.get("title");
-
-                JSONArray authorArray = (JSONArray) bookData.get("authors");
-
-                String bookAuthors = "";
-                for (int i=0; i < authorArray.length(); i++){
-                    bookAuthors += (String) authorArray.get(i);
-                    if (i != authorArray.length()-1) {
-                        bookAuthors += ", ";
-                    }
-                }
-
-                String bookYear = ((String) bookData.get("publishedDate")).substring(0,4);
+                String bookTitle = getTitle(bookData);
+                String bookAuthors = getAuthors(bookData);
+                String bookYear = getYear(bookData);
+                getCover(bookData);
 
                 setBookData(bookTitle, bookAuthors, bookYear);
 
-                Log.d(TAG, bookData.toString());
-                Log.d(TAG, bookTitle);
-                Log.d(TAG, bookAuthors);
-                Log.d(TAG, bookYear);
             } catch (JSONException e) {
                 e.printStackTrace();
             }
         }
+
+        public String getTitle(JSONObject bookData) throws JSONException {
+            return (String) bookData.get("title");
+        }
+
+        public String getAuthors(JSONObject bookData) throws JSONException{
+            JSONArray authorArray = (JSONArray) bookData.get("authors");
+
+            String bookAuthors = "";
+            for (int i=0; i < authorArray.length(); i++){
+                bookAuthors += (String) authorArray.get(i);
+                if (i != authorArray.length()-1) {
+                    bookAuthors += ", ";
+                }
+            }
+            return bookAuthors;
+        }
+
+        public String getYear(JSONObject bookData) throws JSONException{
+            return ((String) bookData.get("publishedDate")).substring(0,4);
+        }
+
+        private void getCover(JSONObject bookData) throws JSONException {
+            String imageURL = (String) ((JSONObject) bookData.get("imageLinks")).get("thumbnail");
+            imageURL = imageURL.substring(0,4) + "s" + imageURL.substring(4);
+            GoogleBookAPIQueryMaker googleBookAPIQueryMaker =
+                    new GoogleBookAPIQueryMaker(this.context);
+            googleBookAPIQueryMaker.getCoverPhoto(imageURL);
+        }
     }
+
+    private class GoogleBookImageResponseListener implements Response.Listener<Bitmap>{
+        @Override
+        public void onResponse(Bitmap response) {
+            addBookCover(response);
+        }
+    }
+
     private class GoogleBookErrorListener implements Response.ErrorListener {
         @Override
         public void onErrorResponse(VolleyError error) {
