@@ -56,7 +56,7 @@ public class Login extends AppCompatActivity {
 
         usernameT = (TextView) findViewById(R.id.textView_username);
         passwordT = (TextView) findViewById(R.id.textView_password);
-        loginArt = (ImageView) findViewById(R.id.login_image);
+        //loginArt = (ImageView) findViewById(R.id.login_image);
         signIn = (TextView) findViewById(R.id.sign_in);
         projectLogo = (ImageView) findViewById(R.id.login_image);
 
