@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
@@ -18,30 +18,51 @@
         app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
 
-    <RelativeLayout
+    <Button
+        android:id="@+id/button_back"
+        android:layout_width="80dp"
+        android:layout_height="33dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="11dp"
+        android:background="@drawable/ic_goodcancelbutton" />
+
+    <androidx.appcompat.widget.AppCompatTextView
         android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_toEndOf="@id/button_back"
+        android:text="@string/choose_location_header"
+        android:fontFamily="@font/poppins_semibold"
+        android:textSize="24sp"
+        android:layout_marginTop="9dp"
+        android:layout_marginStart="9dp"
+        android:elevation="2dp"
+        android:textColor="@color/colorAccent"
+        />
 
         <Button
             android:id="@+id/addLocationButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
+            android:textColor="@color/colorWhite"
+            android:background="@drawable/good_button_blue"
             android:text="Add New Location"
-            android:textColor="@android:color/black" />
+            android:textSize="16sp" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/location_recycler"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/addLocationButton"/>
-
-    </RelativeLayout>
-
+            android:layout_above="@id/addLocationButton"
+            android:layout_below="@id/mybooks_toolbar"/>
 
 
 
 
 
 
-</LinearLayout>
+
+
+
+</RelativeLayout>

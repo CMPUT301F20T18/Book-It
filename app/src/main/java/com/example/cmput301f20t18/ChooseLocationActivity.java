@@ -61,10 +61,13 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
         bookID = getIntent().getIntExtra("bookID", 0);
 
-
-        // Setting the header title. This may be done in XML instead
-        Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
-        toolbar.setTitle(getResources().getText(R.string.choose_location_header));
+        Button buttonBack = findViewById(R.id.button_back);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         addLocation.setOnClickListener(new AddLocationOnClickListener(this));
     }
@@ -107,9 +110,10 @@ public class ChooseLocationActivity extends AppCompatActivity {
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        int index = data.getIntExtra("LOCATION_INDEX", -1);
-        Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
-
+        if (data != null) {
+            int index = data.getIntExtra("LOCATION_INDEX", -1);
+            Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+        }
         // add the new address to the users pickup_location collection
         //User current = new User();
         //current.ownerAddLocation(address);

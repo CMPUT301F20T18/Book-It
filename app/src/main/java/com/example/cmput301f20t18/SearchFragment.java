@@ -194,12 +194,10 @@ public class SearchFragment extends Fragment {
             // change the EditText hint and clear the list when changing options
             if (option.equals("Books")) {
                 Log.d(TAG, "onItemSelected: Books selected");
-                searchEditText.setText("");
                 searchEditText.setHint(R.string.search_book);
                 userAdapter.clear();
             } else {
                 Log.d(TAG, "onItemSelected: Users selected");
-                searchEditText.setText("");
                 searchEditText.setHint("Enter a username");
                 bookAdapter.clear();
             }
@@ -533,6 +531,9 @@ public class SearchFragment extends Fragment {
                     userAdapter.notifyDataSetChanged();
                 }
             }
+            if (userDataList.size() > 0) {
+                noResultsTextView.setText("");
+            }
         }
     }
 
@@ -732,9 +733,9 @@ public class SearchFragment extends Fragment {
             Button viewProfile = view.findViewById(R.id.button_view_profile);
 
             //Set up profile pic
-            if (!user.getProfile_picture().equals("")){
+            String profilePicString = user.getProfile_picture();
+            if (profilePicString != null && !profilePicString.equals("")){
                 ImageView profilePicView = view.findViewById(R.id.profile_view);
-                String profilePicString = user.getProfile_picture();
                 Bitmap profilePicture = photoAdapter.scaleBitmap(
                         photoAdapter.stringToBitmap(profilePicString),
                         profilePicView.getLayoutParams().width,

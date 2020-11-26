@@ -1,14 +1,19 @@
 package com.example.cmput301f20t18;
 
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
 
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.res.ColorStateList;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -38,6 +43,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     private int locationIndex;
 
     private OnMapClickListener listener;
+    private FloatingActionButton confirm;
 
     /**
      * Called on creation of the activity
@@ -51,6 +57,10 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
 
+        // Setting the header title. This may be done in XML instead
+        Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
+        //toolbar.setTitle("Select an address");
+
         // Grab data from caller
         defaultAddress = getIntent().getParcelableExtra("INPUT_ADDRESS");
         if (defaultAddress == null){
@@ -62,10 +72,19 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
         locationIndex = getIntent().getIntExtra("LOCATION_INDEX", -1);
 
+        Button buttonBack = findViewById(R.id.button_back);
+        buttonBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
+
         //Set up confirm button
-        findViewById(
-                R.id.confirm_location_selected_button)
-                .setOnClickListener(new ConfirmLocationOnClickListener());
+        confirm = findViewById(R.id.confirm_location_selected_button);
+        confirm.setImageDrawable(ContextCompat.getDrawable(this, R.drawable.ic_selected));
+        confirm.setImageAlpha(30);
+        confirm.setOnClickListener(new ConfirmLocationOnClickListener());
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -144,6 +163,8 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         @Override
         public void onMapClick(LatLng latLng) {
             createMarker(latLng);
+            confirm.setImageAlpha(255);
+            confirm.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorBlue)));
         }
 
         private void createMarker(LatLng latLng){
@@ -184,7 +205,11 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
         @Override
         public void onClick(View v) {
-            stopActivity();
+            if (confirm.getImageAlpha() == 255) {
+                stopActivity();
+            } else {
+                Toast.makeText(getApplicationContext(), "Please tap to choose a location", Toast.LENGTH_SHORT).show();
+            }
         }
     }
 }
