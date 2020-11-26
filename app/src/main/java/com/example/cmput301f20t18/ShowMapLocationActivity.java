@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
@@ -10,11 +11,27 @@ import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 public class ShowMapLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;
     private UserLocation pickupLocation;
+    private int bookID;
+
+    // database info
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    CollectionReference userRef = DB.collection("users");
+    CollectionReference transRef = DB.collection("transactions");
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -24,7 +41,8 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-        pickupLocation = getPickupLocation();
+        bookID = getIntent().getIntExtra("bookID", 0);
+
     }
 
     private UserLocation getPickupLocation() {
@@ -55,6 +73,27 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
         mMap.addMarker(new MarkerOptions().position(markerPosition)
                 .title(pickupLocation.getTitle()));
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
+        transRef.whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED).whereGreaterThan("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    Transaction transaction = task.getResult().toObjects(Transaction.class).get(0);
+
+
+                    mMap = googleMap;
+
+                    // Add a marker in Sydney and move the camera
+                    LatLng markerPosition = new LatLng(transaction.getLocation().getLatitude(), transaction.getLocation().getLongitude());
+
+
+                    mMap.addMarker(new MarkerOptions().position(markerPosition)
+                            .title(pickupLocation.getTitle()));
+
+                    mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
+                }
+            }
+        });
+
     }
+
 }

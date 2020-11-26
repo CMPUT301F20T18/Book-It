@@ -139,10 +139,9 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             public void onClick(View v) {
                 /* TODO: make activity that displays pick up location to borrower */
                 /* Owner can select a new location if they so please. */
-                Intent intent = new Intent(v.getContext(), showLocationActivity.class);
+                Intent intent = new Intent(v.getContext(), ShowMapLocationActivity.class);
                 intent.putExtra("bookID", book.getId());
                 v.getContext().startActivity(intent);
-
             }
         };
 

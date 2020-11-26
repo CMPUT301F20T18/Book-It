@@ -50,6 +50,9 @@ public class Transaction {
     private String borrower_dbID;
     private String owner_dbID;
 
+    // location info
+    private UserLocation location;
+
 
     /**
      * Constructor for creating a transaction object
@@ -70,6 +73,7 @@ public class Transaction {
         this.borrowerFlag = 0;
         this.ownerFlag = 0;
         this.status = Transaction.STATUS_REQUESTED;
+        this.location = null;
     }
 
     /**
@@ -233,5 +237,13 @@ public class Transaction {
      */
     public void setOwner_dbID(String owner_dbID) {
         this.owner_dbID = owner_dbID;
+    }
+
+    public UserLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(UserLocation location) {
+        this.location = location;
     }
 }

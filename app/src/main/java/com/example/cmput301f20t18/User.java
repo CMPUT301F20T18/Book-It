@@ -480,18 +480,13 @@ public class User {
     public void ownerSetPickupLocation(UserLocation location, int bookID) {
 
         // find the transaction associated with this book
-        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        transRef.whereEqualTo("bookID", bookID).whereGreaterThanOrEqualTo("status", Transaction.STATUS_ACCEPTED).whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED ).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // must be unique
 
-                    // update the borrowers pickup address
-                    userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID))
-                            .update("pickup_location", location);
-
-                    // update the pickup location for the owner
-                    bookRef.document(Integer.toString(bookID)).update("pickup_location", location);
+                    transRef.document(Integer.toString(bookID)).update("location", location);
                 }
 
                 else {
@@ -503,7 +498,7 @@ public class User {
 
 
     public void ownerDeleteLocation(UserLocation location) {
-        userRef.document(auth.getUid())
+
     }
 
 
