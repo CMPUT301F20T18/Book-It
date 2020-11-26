@@ -39,9 +39,10 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
 
     private GoogleMap mMap;
     private static Marker marker;
-    private UserLocation defaultUserLocation;
 
-    private static UserLocation returnUserLocation;
+    private static UserLocation returnUserLocation =
+            new UserLocation("DEFAULT", 0.0, 0.0);
+
     private int locationIndex;
 
     private OnMapClickListener listener;
@@ -58,8 +59,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
 
-        // Grab data from caller
-        defaultUserLocation = getDefaultUserLocation();
         //Set up confirm button
         findViewById(
                 R.id.confirm_location_selected_button)
@@ -89,15 +88,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        if (defaultUserLocation.getLatitude() == Double.MAX_VALUE){
-            returnUserLocation = new UserLocation();
-        }
-        else{
-            returnUserLocation = defaultUserLocation;
-            LatLng defaultLocation = new LatLng(defaultUserLocation.getLatitude(),
-                    defaultUserLocation.getLongitude());
-            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(defaultLocation, 18));
-        }
         listener = new OnMapClickListener(this);
         mMap.setOnMapClickListener(listener);
     }
@@ -149,10 +139,15 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         @Override
         public void onClick(View v) {
             Intent returnIntent = new Intent();
-            returnIntent.putExtra("OUTPUT_TITLE", returnUserLocation.getTitle());
-            returnIntent.putExtra("OUTPUT_LATITUDE", returnUserLocation.getLatitude());
-            returnIntent.putExtra("OUTPUT_LONGITUDE", returnUserLocation.getLongitude());
-            setResult(RESULT_OK, returnIntent);
+            if (returnUserLocation == null){
+                setResult(RESULT_CANCELED, returnIntent);
+            }
+            else{
+                returnIntent.putExtra("OUTPUT_TITLE", returnUserLocation.getTitle());
+                returnIntent.putExtra("OUTPUT_LATITUDE", returnUserLocation.getLatitude());
+                returnIntent.putExtra("OUTPUT_LONGITUDE", returnUserLocation.getLongitude());
+                setResult(RESULT_OK, returnIntent);
+            }
             finish();
         }
     }

@@ -110,8 +110,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             String title = data.getStringExtra("OUTPUT_TITLE");
-            double longitude = data.getDoubleExtra("OUTPUT_LAT", 0);
-            double latitude = data.getDoubleExtra("OUTPUT_LONG", 0);
+            double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+            double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
 
             UserLocation location = new UserLocation(title, latitude, longitude);
             // add the new address to the users pickup_location collection
@@ -130,7 +130,6 @@ public class ChooseLocationActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
-            // intent.putExtra("INPUT_ADDRESS", address2);
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }
