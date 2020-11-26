@@ -13,6 +13,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -36,6 +37,7 @@ import java.util.List;
 public class MyBooksLendingFragment extends Fragment {
 
     RecyclerView recyclerView;
+    TextView noResultsTextView;
     List<Book> bookList;
     Query query;
     FirestoreBookAdapter adapter;
@@ -104,6 +106,24 @@ public class MyBooksLendingFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_my_books_available, container, false);
         recyclerView = view.findViewById(R.id.recyclerView);
         setUp();
+
+        noResultsTextView = view.findViewById(R.id.no_results);
+        noResultsTextView.setText(R.string.mybooks_lending_empty);
+
+        // display message if list of books is empty
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                noResultsTextView.setText("");
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    noResultsTextView.setText(R.string.mybooks_lending_empty);
+                }
+            }
+        });
+
         return view;
     }
 

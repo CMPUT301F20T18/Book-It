@@ -45,7 +45,7 @@
                 android:layout_width="80dp"
                 android:layout_height="32dp"
                 android:layout_gravity="center"
-                android:paddingHorizontal="8dp"
+                android:paddingHorizontal="7dp"
                 android:background="@drawable/spinner_background"
                 android:gravity="center"
                 android:spinnerMode="dropdown" />
@@ -54,7 +54,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_gravity="center_vertical|end"
-                android:layout_marginEnd="3dp"
+                android:layout_marginEnd="4dp"
                 android:src="@drawable/ic_drop_down_icon" />
         </FrameLayout>
 
@@ -64,10 +64,10 @@
             android:layout_height="32dp"
             android:layout_gravity="center"
             android:background="@color/colorWhite"
-            android:hint="Search..."
+            android:hint="@string/search_book"
             android:imeOptions="actionSearch"
             android:inputType="text"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="6dp"
             android:textColor="@color/colorGray2"
             android:textColorHint="@color/doveGray"
             app:layout_constraintEnd_toStartOf="@id/search_button"
@@ -86,9 +86,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ListView
-        android:id="@+id/search_result_list"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"></ListView>
+        android:layout_height="match_parent">
+
+        <ListView
+            android:id="@+id/search_result_list"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"></ListView>
+
+        <TextView
+            android:id="@+id/no_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="80dp"
+            android:textAlignment="center"
+            android:text="@string/no_results"
+            android:textSize="18sp"/>
+
+    </FrameLayout>
 
 </LinearLayout>

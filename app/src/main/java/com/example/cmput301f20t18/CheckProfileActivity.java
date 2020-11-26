@@ -82,16 +82,17 @@ public class CheckProfileActivity extends AppCompatActivity {
         });
 
 
-        profilePic = findViewById(R.id.profile_pic_user);
         String imageString = currentActivity.getStringExtra("PICTURE");
-        Bitmap photo = photoAdapter.scaleBitmap(photoAdapter.stringToBitmap(imageString),
-                profilePic.getLayoutParams().width,
-                profilePic.getLayoutParams().height);
-
+        if (imageString != null && !imageString.equals("")) {
+            profilePic = findViewById(R.id.profile_pic_user);
+            Bitmap photo = photoAdapter.scaleBitmap(photoAdapter.stringToBitmap(imageString),
+                    profilePic.getLayoutParams().width,
+                    profilePic.getLayoutParams().height);
+            profilePic.setImageBitmap(photo);
+        }
         username.setText(currentActivity.getStringExtra("USERNAME"));
         phoneNum.setText(currentActivity.getStringExtra("PHONE"));
         email.setText(currentActivity.getStringExtra("EMAIL"));
-        profilePic.setImageBitmap(photo);
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

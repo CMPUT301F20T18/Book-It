@@ -49,7 +49,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
-    TextView username, phoneNum, email, editAccount;
+    TextView username, textAddress, phoneNum, email, editAccount;
     Button signOut;
     ImageView profilePic;
     String photoString, address;
@@ -180,11 +180,13 @@ public class ProfileFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateUserData(User user, View view) {
         username = (TextView) view.findViewById(R.id.my_user_name);
+        textAddress = (TextView) view.findViewById(R.id.address);
         phoneNum = (TextView) view.findViewById(R.id.phone_num);
         email = (TextView) view.findViewById(R.id.email);
         profilePic = (ImageView) view.findViewById(R.id.profile_pic);
 
         username.setText(user.getUsername());
+        textAddress.setText(user.getAddress());
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
         photoString = user.getProfile_picture();
@@ -245,7 +247,7 @@ public class ProfileFragment extends Fragment {
                 if (resultCode == RESULT_OK) {
                     Bundle newInfo = data.getExtras();
                     photoString= (String) newInfo.get("photo");
-                    if(photoString != "") {
+                    if(!photoString.equals("")) {
                         Bitmap userPhoto = photoAdapter.stringToBitmap(photoString);
                         Bitmap outMap = photoAdapter.scaleBitmap(userPhoto, (float) profilePic.getWidth(), (float) profilePic.getHeight());
                         Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
@@ -253,6 +255,7 @@ public class ProfileFragment extends Fragment {
                     }
 
                     username.setText((String)newInfo.get("username"));
+                    textAddress.setText((String)newInfo.get("address"));
                     phoneNum.setText((String)newInfo.get("phone"));
                     address = (String)newInfo.get("address");
 
