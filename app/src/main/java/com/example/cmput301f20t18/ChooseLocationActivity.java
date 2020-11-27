@@ -47,7 +47,10 @@ public class ChooseLocationActivity extends AppCompatActivity {
     FirestoreLocationAdapter adapter;
     Button addLocation;
     int bookID;
+    int t_id;
     final static String TAG = "CLA_DEBUG";
+    Button cancel;
+
 
     private static final int SELECT_LOCATION_REQUEST_CODE = 0;
 
@@ -69,9 +72,19 @@ public class ChooseLocationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         bookID = getIntent().getIntExtra("bookID", 0);
+        t_id = getIntent().getIntExtra("t_id", 0);
+
         setUp();
 
         addLocation.setOnClickListener(new AddLocationOnClickListener(this));
+
+        cancel = findViewById(R.id.button_back);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /**
@@ -83,7 +96,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
                 .setQuery(query, UserLocation.class)
                 .build();
 
-        adapter = new FirestoreLocationAdapter(options, bookID, ChooseLocationActivity.this);
+        adapter = new FirestoreLocationAdapter(options, bookID, ChooseLocationActivity.this, t_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
         recyclerView.setAdapter(adapter);
     }
