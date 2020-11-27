@@ -137,8 +137,11 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         View.OnClickListener openMapListener = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* Are we allowing the borrower to see the location before being accepted? */
                 /* TODO: make activity that displays pick up location to borrower */
+                /* Owner can select a new location if they so please. */
+                Intent intent = new Intent(v.getContext(), ShowMapLocationActivity.class);
+                intent.putExtra("bookID", book.getId());
+                v.getContext().startActivity(intent);
             }
         };
 

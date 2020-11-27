@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -39,6 +40,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
     FirestoreLocationAdapter adapter;
     Button addLocation;
     int bookID;
+    final static String TAG = "CLA_DEBUG";
 
     private static final int SELECT_LOCATION_REQUEST_CODE = 0;
 
@@ -60,14 +62,12 @@ public class ChooseLocationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         bookID = getIntent().getIntExtra("bookID", 0);
+        setUp();
 
-        Button buttonBack = findViewById(R.id.button_back);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+
+        // Setting the header title. This may be done in XML instead
+        Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
+        toolbar.setTitle(getResources().getText(R.string.choose_location_header));
 
         addLocation.setOnClickListener(new AddLocationOnClickListener(this));
     }
@@ -81,7 +81,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
                 .setQuery(query, UserLocation.class)
                 .build();
 
-        adapter = new FirestoreLocationAdapter(options, bookID);
+        adapter = new FirestoreLocationAdapter(options, bookID, ChooseLocationActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
         recyclerView.setAdapter(adapter);
     }
@@ -106,6 +106,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
     }
 
 
+
+
     // Handle returned address
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -116,11 +118,20 @@ public class ChooseLocationActivity extends AppCompatActivity {
             double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
             double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
 
+
+            Log.d(TAG, "Title: " + title);
+            Log.d(TAG, "Lat: " + latitude);
+            Log.d(TAG, "Long: " + longitude);
+
+
+
             UserLocation location = new UserLocation(title, latitude, longitude);
             // add the new address to the users pickup_location collection
             User current = new User();
             current.ownerAddLocation(location);
         }
+
+
     }
 
     private class AddLocationOnClickListener implements View.OnClickListener{

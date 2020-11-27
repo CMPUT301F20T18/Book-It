@@ -1,6 +1,9 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
+import android.content.Context;
 import android.location.Address;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,21 +25,27 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocation, FirestoreLocationAdapter.locationViewHolder> {
 
     private int bookID;
+    static final String TAG = "FLA_DEBUG";
+    Context context;
 
-    public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<UserLocation> options, int bookID) {
+    public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<UserLocation> options, int bookID, Context context) {
         super(options);
         this.bookID = bookID;
+        this.context = context;
     }
 
     @Override
     protected void onBindViewHolder(@NonNull FirestoreLocationAdapter.locationViewHolder holder, int position, @NonNull UserLocation location) {
 
+        Log.d(TAG, "onBindViewHolder: Title: " + location.getTitle());
             holder.pickup_location.setText(location.getTitle());
             holder.selectLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     User current = new User();
                     current.ownerSetPickupLocation(location, bookID);
+                    ((Activity)context).finish();
+
                 }
             });
 
