@@ -150,31 +150,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Task<DocumentSnapshot> userLocationTask = userRef.document(auth.getUid()).get();
-            userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener(parentContext));
-        }
-    }
-
-    private class UserQueryOnCompleteListener implements OnCompleteListener<DocumentSnapshot> {
-        private Context parentContext;
-
-        UserQueryOnCompleteListener(Context parentContext){
-            this.parentContext = parentContext;
-        }
-
-        @Override
-        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-            UserLocation location = new UserLocation("DEFAULT_LOCATION",
-                    0.0, 0.0);
-            if (task.isSuccessful()) {
-                DocumentSnapshot userSnapshot = task.getResult();
-                User user = userSnapshot.toObject(User.class);
-                location = user.getAddress();
-            }
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
-            intent.putExtra("INPUT_TITLE", location.getTitle());
-            intent.putExtra("INPUT_LATITUDE", location.getLatitude());
-            intent.putExtra("INPUT_LONGITUDE", location.getLongitude());
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }

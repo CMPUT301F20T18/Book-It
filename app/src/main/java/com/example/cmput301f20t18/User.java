@@ -121,7 +121,7 @@ public class User {
                         User current = Objects.requireNonNull(task.getResult()).toObject(User.class);
                         Log.d(TAG, "user dbID " + current.getDbID());
                         Log.d(TAG, "Number of Photos " + photos.size());
-                        Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE, current.getDbID() , year, auth.getUid(), current.getUsername(), photos);
+                        Book book = new Book(title, isbn, author, val, Book.STATUS_AVAILABLE, year, auth.getUid(), current.getUsername(), photos);
                         bookRef.document(Integer.toString(val)).set(book);
                     }
 

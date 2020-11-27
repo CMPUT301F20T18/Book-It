@@ -1,9 +1,5 @@
 package com.example.cmput301f20t18;
 
-import android.location.Address;
-
-import com.google.android.gms.maps.model.LatLng;
-
 public class UserLocation {
     private String title;
     private Double latitude;
