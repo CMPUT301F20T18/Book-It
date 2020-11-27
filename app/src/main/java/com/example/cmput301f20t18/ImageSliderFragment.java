@@ -74,7 +74,6 @@ public class ImageSliderFragment extends Fragment {
 
         imgDisplay.setImageBitmap(photo);
 
-
         imgDisplay.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
