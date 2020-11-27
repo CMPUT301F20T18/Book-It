@@ -19,7 +19,7 @@
             android:layout_height="wrap_content"
             android:padding="0dp">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/image_view"
                 android:src="@drawable/default_cover"
                 android:contentDescription="Book cover"

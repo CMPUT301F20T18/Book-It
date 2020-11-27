@@ -30,6 +30,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+
 import static com.example.cmput301f20t18.photoAdapter.stringToByte;
 
 /**
@@ -94,6 +96,13 @@ public class FirestoreBookAdapter
                 Bitmap bitmap = book.retrieveCover();
                 Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
                 holder.imageView.setImageBitmap(photo);
+                holder.imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<Bitmap> photos = book.retrievePhotos();
+                        //Start slider activity here, photos is the list of Bitmaps needed
+                    }
+                });
             }
         }
 
@@ -282,7 +291,7 @@ public class FirestoreBookAdapter
          /* Not all layout files will have all of these views, so some may be null.
           * The switch in onBindViewHolder() ensures that this is not an issue. */
 
-        ImageView imageView;
+        ImageButton imageView;
         TextView textViewTitle;
         TextView textViewAuthor;
         TextView textViewYear;

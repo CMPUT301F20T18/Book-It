@@ -1,14 +1,21 @@
 package com.example.cmput301f20t18;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
+import android.os.Build;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
+import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -19,16 +26,21 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
 
     private ArrayList<Bitmap> photos;
+    private MyBooksAddBook.addListener addListener;
 
 
 
-    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos){
+
+    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos, MyBooksAddBook.addListener addListener){
         this.photos = photos;
+        this.photos.add(null);
+        this.addListener = addListener;
     }
 
     @NonNull
     @Override
     public ImageViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+
 
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.image_single_view,parent,false);
         ImageViewHolder imageHolder = new ImageViewHolder(view);
@@ -37,27 +49,52 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
 
 
+    @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
     public void onBindViewHolder(@NonNull ImageViewHolder holder, int position) {
-        ImageView imageView = holder.bookImage;
+        ImageButton imageView = holder.bookImage;
         FloatingActionButton button = holder.button;
-        //Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getWidth(), imageView.getHeight());
-        imageView.setImageBitmap(photos.get(position));
-        button.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Log.d("FLOAT CLICK", "onClick: postion of " + position);
-                photos.remove(position);
-                notifyDataSetChanged();
 
-            }
-        });
+        if (position < this.photos.size() -1) {
+            Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+            imageView.setImageBitmap(bm);
+            button.show();
+            button.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Log.d("FLOAT CLICK", "onClick: postion of " + position);
+                    photos.remove(photos.size()-1);
+                    photos.remove(position);
+                    photos.add(null);
+                    notifyDataSetChanged();
+
+                }
+            });
+
+        }
+        else{
+
+            imageView.setImageDrawable(imageView.getContext().getDrawable(R.drawable.ic_activeaddimage));
+            button.hide();
+
+            imageView.setOnClickListener(addListener);
+
+        }
 
 
     }
 
+
+
     public ArrayList<Bitmap> getPhotos() {
-        return photos;
+
+        return (ArrayList<Bitmap>) photos.subList(0, photos.size()-1);
+
+    }
+
+    public void addData(Bitmap bm){
+        this.photos.add(this.photos.size()-1, bm);
+        notifyDataSetChanged();
     }
 
     @Override
@@ -67,7 +104,7 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
     public class ImageViewHolder extends RecyclerView.ViewHolder{
 
-        ImageView bookImage;
+        ImageButton bookImage;
         FloatingActionButton button;
 
         public ImageViewHolder(@NonNull View itemView) {

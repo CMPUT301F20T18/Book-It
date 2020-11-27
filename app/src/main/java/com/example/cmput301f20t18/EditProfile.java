@@ -203,18 +203,22 @@ public class EditProfile extends AppCompatActivity {
                     photo = photoAdapter.bitmapToString(outMap);
                     profilePic.setImageBitmap(circleImage);
                 }
+                break;
 
             default:
-                String title = data.getStringExtra("OUTPUT_TITLE");
-                double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
-                double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+                if (resultCode == RESULT_OK) {
+                    String title = data.getStringExtra("OUTPUT_TITLE");
+                    double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+                    double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
 
 
-                location = new UserLocation(title, latitude, longitude);
-                Log.d(TAG, "CHECK 2: location: " + location.getTitle());
+                    location = new UserLocation(title, latitude, longitude);
+                    Log.d(TAG, "CHECK 2: location: " + location.getTitle());
 
-                User current = new User();
-                current.userChangeAddress(location);
+                    User current = new User();
+                    current.userChangeAddress(location);
+                    break;
+                }
 
         }
 
