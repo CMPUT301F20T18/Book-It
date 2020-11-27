@@ -72,12 +72,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         //toolbar.setTitle("Select an address");
 
         Button buttonBack = findViewById(R.id.button_back);
-        buttonBack.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        buttonBack.setOnClickListener(v -> finish());
 
         //Set up confirm button
         confirm = findViewById(R.id.confirm_location_selected_button);

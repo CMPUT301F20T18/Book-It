@@ -179,11 +179,7 @@ public class Register extends AppCompatActivity {
 
                                                 // sign current user in
                                                 mAuth.signInWithEmailAndPassword(new_email, new_password);
-
-                                                // make the user pick their first pickup location
-                                                Intent intent = new Intent(getBaseContext(), SelectLocationActivity.class);
                                                 finish();
-                                                startActivityForResult(intent, 0);
                                             }
                                             else {
                                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
