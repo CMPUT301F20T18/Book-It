@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -22,6 +23,8 @@ import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -57,12 +60,33 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
     private int permissionStorageWriteCode = 100;
     private int permissionStorageReadCode = 101;
     private int permissionInternet = 102;
+    private BottomNavigationView bottomNav;
 
 
     Fragment selectedFragment;
     final String TAG = "HOMESCREEN_DEBUG";
 
+    // this is for when a user clicks "search for available copies" in postscan
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getIntent() != null) {
+            String ISBN = getIntent().getStringExtra("ISBN");
+            if (ISBN != null) {
+                // Have to switch to search frag and then replace it with itself to pass intent
+                bottomNav.setSelectedItemId(R.id.tab_search);
 
+                Bundle bundle = new Bundle();
+                bundle.putString("ISBN", ISBN);
+                Fragment fragment = new SearchFragment();
+                fragment.setArguments(bundle);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment).commit();
+            }
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -86,7 +110,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
         });
 
         //* Bottom navigation menu *//*
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setItemIconTintList(null);
         bottomNav.setItemBackgroundResource(R.drawable.tab_background);
         bottomNav.setOnNavigationItemSelectedListener(navListener);

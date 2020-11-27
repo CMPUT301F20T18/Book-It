@@ -59,6 +59,7 @@ public class SearchFragment extends Fragment {
 
     TextView noResultsTextView;
     EditText searchEditText;
+    Button searchButton;
     ListView SearchResultList;
 
     /**
@@ -75,7 +76,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        Button searchButton;
+
 
         // Setting the header title. This may be done in XML instead
         Toolbar toolbar = view.findViewById(R.id.search_toolbar);
@@ -107,12 +108,24 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(
                 new SearchButtonOnClickListener(searchEditText, spinnerListener));
 
+
         SearchResultList = view.findViewById(R.id.search_result_list);
         return view;
     }
 
-
-
+    // this is for when a user clicks "search for available copies" in postscan
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getArguments() != null) {
+            String ISBN = getArguments().getString("ISBN");
+            if (ISBN != null) {
+                searchEditText.setText(ISBN);
+                searchButton.performClick();
+                noResultsTextView.setText(""); // this has to be here for some reason
+            }
+        }
+    }
 
     /**
      * Search checks to ensure search field is populated
@@ -498,7 +511,9 @@ public class SearchFragment extends Fragment {
                     bookAdapter.notifyDataSetChanged();
                 }
             }
-            if (bookDataList.size() > 0) {
+            if (bookDataList.size() == 0) {
+                noResultsTextView.setText(getResources().getString(R.string.no_results));
+            } else {
                 noResultsTextView.setText("");
             }
         }
@@ -528,7 +543,9 @@ public class SearchFragment extends Fragment {
                     userAdapter.notifyDataSetChanged();
                 }
             }
-            if (userDataList.size() > 0) {
+            if (userDataList.size() == 0) {
+                noResultsTextView.setText(getResources().getString(R.string.no_results));
+            } else {
                 noResultsTextView.setText("");
             }
         }
