@@ -22,6 +22,7 @@ public class ImagePageAdapter extends FragmentPagerAdapter {
 
     public ImagePageAdapter(@NonNull FragmentManager fm, int behavior, ArrayList<Bitmap> photos) {
         super(fm, behavior);
+        this.photos = photos;
     }
 
     @NonNull

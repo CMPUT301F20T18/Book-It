@@ -49,6 +49,7 @@ public class FirestoreBookAdapter
     final static int VIEW_REQUESTS = 3;
     final static int FRAG_PENDING = 2;
     final static int FRAG_LENDING = 1;
+    final static int FRAG_IMAGE = 4;
 
     private Context context;
 
@@ -99,7 +100,11 @@ public class FirestoreBookAdapter
                 holder.imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ArrayList<Bitmap> photos = book.retrievePhotos();
+                        ArrayList<String> photos = book.getPhotos();
+                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+                        slider.putExtra("Photos", photos);
+                        Activity activity = (Activity) view.getContext();
+                        activity.startActivity(slider);
                         //Start slider activity here, photos is the list of Bitmaps needed
                     }
                 });
