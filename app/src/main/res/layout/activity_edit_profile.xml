@@ -93,29 +93,29 @@
             android:id="@+id/change_photo"
             android:layout_width="135dp"
             android:layout_height="35dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="12dp"
             android:background="@drawable/good_button_background"
             android:fontFamily="@font/poppins"
             android:text="Change Photo"
             android:textColor="@color/colorAccent"
             android:textSize="15sp"
-            app:layout_constraintEnd_toStartOf="@+id/delete_photo"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/frame_image"
+            app:layout_constraintTop_toTopOf="@id/frame_image" />
 
         <Button
             android:id="@+id/delete_photo"
             android:layout_width="135dp"
             android:layout_height="35dp"
-            android:layout_marginTop="40dp"
-            android:layout_marginEnd="10dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="12dp"
             android:background="@drawable/bad_button_background"
             android:fontFamily="@font/poppins"
             android:text="Remove Photo"
             android:textColor="@color/colorOrange"
             android:textSize="15sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintStart_toEndOf="@id/frame_image"
+            app:layout_constraintBottom_toBottomOf="@id/frame_image" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -129,29 +129,26 @@
 
         <TextView
             android:id="@+id/username_prompt"
-            android:layout_width="100dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
-            android:paddingTop="2dp"
-            android:paddingRight="2dp"
             android:text="Username"
-            android:textAlignment="textEnd"
             android:textColor="@color/colorOrange"
-            android:textSize="18sp"
+            android:textSize="20sp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
             android:id="@+id/username_input"
-            android:layout_width="280dp"
-            android:layout_height="35dp"
+            android:layout_width="0dp"
+            android:layout_height="37dp"
             android:layout_marginHorizontal="5dp"
             android:layout_marginTop="22dp"
             android:background="@color/colorGray1"
             android:inputType="textPersonName"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="6dp"
             android:textColor="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/username_prompt"
@@ -159,59 +156,65 @@
 
         <TextView
             android:id="@+id/address_prompt"
-            android:layout_width="100dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
-            android:paddingTop="2dp"
-            android:paddingRight="2dp"
             android:text="Address"
-            android:textAlignment="textEnd"
             android:textColor="@color/colorOrange"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/username_prompt" />
-
-        <Button
-            android:id="@+id/edit_address_button"
-            android:layout_width="280dp"
-            android:layout_height="35dp"
-            android:layout_marginHorizontal="5dp"
-            android:layout_marginTop="22dp"
-            android:background="@color/colorOrange"
-            android:paddingHorizontal="10dp"
-            android:textColor="@color/colorAccent"
-            android:text="Select New Address"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toEndOf="@+id/address_prompt"
+            app:layout_constraintEnd_toEndOf="@id/username_prompt"
             app:layout_constraintTop_toBottomOf="@+id/username_input" />
 
         <TextView
-            android:id="@+id/phone_prompt"
-            android:layout_width="100dp"
+            android:id="@+id/text_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:maxHeight="74dp"
+            android:layout_marginHorizontal="11dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/address_prompt"
+            app:layout_constraintTop_toBottomOf="@id/username_input"
+            />
+
+        <Button
+            android:id="@+id/edit_address_button"
+            android:layout_width="wrap_content"
             android:layout_height="35dp"
-            android:layout_marginStart="5dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/good_button_background"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/colorAccent"
+            android:text="Select New Address"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@+id/address_prompt"
+            app:layout_constraintTop_toBottomOf="@+id/text_address" />
+
+        <TextView
+            android:id="@+id/phone_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
-            android:paddingTop="2dp"
-            android:paddingRight="2dp"
             android:text="Phone"
-            android:textAlignment="textEnd"
             android:textColor="@color/colorOrange"
             android:textSize="20sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/address_prompt" />
+            app:layout_constraintEnd_toEndOf="@id/username_prompt"
+            app:layout_constraintTop_toBottomOf="@+id/edit_address_button" />
 
         <EditText
             android:id="@+id/phone_input"
-            android:layout_width="280dp"
+            android:layout_width="0dp"
             android:layout_height="35dp"
             android:layout_marginHorizontal="5dp"
             android:layout_marginTop="22dp"
             android:background="@color/colorGray1"
             android:inputType="phone"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="6dp"
             android:textColor="@color/colorAccent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/phone_prompt"
@@ -219,33 +222,25 @@
 
         <TextView
             android:id="@+id/password_text_view"
-            android:layout_width="100dp"
-            android:layout_height="35dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
-            android:paddingTop="2dp"
-            android:paddingRight="2dp"
             android:text="Password"
-            android:textAlignment="textEnd"
             android:textColor="@color/colorOrange"
-            android:textSize="18sp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/phone_prompt" />
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/username_prompt"
+            app:layout_constraintTop_toBottomOf="@+id/phone_input" />
 
         <TextView
             android:id="@+id/password_change"
-            android:layout_width="280dp"
-            android:layout_height="35dp"
-            android:layout_marginHorizontal="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
             android:layout_marginTop="22dp"
-            android:paddingHorizontal="5dp"
-            android:paddingVertical="2dp"
-            android:text="Change password"
+            android:text="@string/change_password"
             android:textColor="@color/doveGray"
-            android:textSize="18sp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.481"
+            android:textSize="20sp"
             app:layout_constraintStart_toEndOf="@+id/password_text_view"
             app:layout_constraintTop_toBottomOf="@+id/phone_input" />
 
