@@ -33,6 +33,9 @@ public class Notification {
     public static final int CANCEL_PICKUP = 2;
     public static final int OWNER_ACCEPT_REQUEST = 3;
     public static final int OWNER_DELETE = 5;
+    public static final int CHANGE_LOCATION = 6;
+
+
 
     static final String TAG = "NOTIF_DEBUG";
 
@@ -93,6 +96,9 @@ public class Notification {
                 this.message = String.format("%s has deleted %s from his collection, the book is now yours!", this.sourceUsername, this.bookTitle);
                 break;
 
+
+            case CHANGE_LOCATION:
+                this.message = String.format("%s has set the location for %s", this.sourceUsername, this.bookTitle);
             default:
                 Log.d(TAG, "prepareMessage: Invalid Request Type!");
         }

@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.fragment.app.FragmentActivity;
 
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -24,6 +25,8 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
     private GoogleMap mMap;
     private UserLocation pickupLocation;
     private int bookID;
+
+    final static String TAG = "SMLA_DEBUG";
 
     // database info
     FirebaseAuth auth = FirebaseAuth.getInstance();
@@ -64,20 +67,17 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
      */
     @Override
     public void onMapReady(GoogleMap googleMap) {
-        mMap = googleMap;
 
-        // Add a marker in Sydney and move the camera
-        LatLng markerPosition =
-                new LatLng(pickupLocation.getLatitude(), pickupLocation.getLongitude());
 
-        mMap.addMarker(new MarkerOptions().position(markerPosition)
-                .title(pickupLocation.getTitle()));
-
-        transRef.whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED).whereGreaterThan("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        Log.d(TAG, "onMapReady: bookID: " + bookID);
+        transRef.whereEqualTo("bookID", bookID).whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED).whereGreaterThanOrEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Transaction transaction = task.getResult().toObjects(Transaction.class).get(0);
+                    Log.d(TAG, "onMapReady: transactionID: " + transaction.getID());
+                    Log.d(TAG, "LAT " + transaction.getLocation().getLatitude());
+                    Log.d(TAG, "LONG " + transaction.getLocation().getLongitude());
 
 
                     mMap = googleMap;
@@ -87,7 +87,7 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
 
 
                     mMap.addMarker(new MarkerOptions().position(markerPosition)
-                            .title(pickupLocation.getTitle()));
+                            .title(transaction.getLocation().getTitle()));
 
                     mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
                 }

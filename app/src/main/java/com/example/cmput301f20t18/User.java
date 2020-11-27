@@ -43,7 +43,7 @@ public class User {
     private String username;
     private int appID;
     private String dbID;
-    private String address;
+    private UserLocation address;
     private String phone;
     private String email;
     private String profile_picture;
@@ -78,7 +78,7 @@ public class User {
      * @param email The email used by the user
      * @param address The users address
      */
-    public User(String username, int appID, String DB_id, String email, String address) {
+    public User(String username, int appID, String DB_id, String email, UserLocation address) {
         this.username = username;
         this.appID = appID;
         this.dbID = DB_id;
@@ -491,7 +491,21 @@ public class User {
                     Log.d(TAG,"setPickupLocation - Location title: " + location.getTitle());
                     transRef.document(Integer.toString(transaction.getID())).update("location", location);
 
-                    // TODO: Notify the Borrowerb n
+
+                    bookRef.document(Integer.toString(transaction.getBookID())).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
+                            if (task1.isSuccessful()) {
+                                Book book = task1.getResult().toObject(Book.class);
+
+                                Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.CHANGE_LOCATION);
+                                notification.prepareMessage();
+                                notification.sendNotification();
+                            }
+                        }
+                    });
+
+
                 }
 
                 else {
@@ -845,11 +859,11 @@ public class User {
         this.dbID = dbID;
     }
 
-    public String getAddress() {
+    public UserLocation getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(UserLocation address) {
         this.address = address;
     }
 
