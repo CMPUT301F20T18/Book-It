@@ -254,7 +254,10 @@ public class Book implements Comparable<Book> {
     }
 
 
-
+    /**
+     * Retrieve the cover photo of the book
+     * @ Bitmap Representation of the photo
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Bitmap retrieveCover() {
         Bitmap cover = null;
@@ -268,6 +271,10 @@ public class Book implements Comparable<Book> {
     }
 
 
+    /**
+     * Retrieve all the photos for the book
+     * @return
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<Bitmap> retrievePhotos() {
         ArrayList<Bitmap> photoList = new ArrayList<>();
@@ -276,6 +283,7 @@ public class Book implements Comparable<Book> {
         }
         return photoList;
     }
+
 
     public ArrayList<String> getPhotos(){
         return this.photos;
