@@ -134,18 +134,18 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         };
 
         // This is used to view the pick up location when clicking the map button
-        View.OnClickListener openMapListener = new View.OnClickListener() {
+        holder.buttonMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* TODO: make activity that displays pick up location to borrower */
-                /* Owner can select a new location if they so please. */
                 Intent intent = new Intent(v.getContext(), ShowMapLocationActivity.class);
                 intent.putExtra("bookID", book.getId());
                 v.getContext().startActivity(intent);
             }
-        };
+        });
 
-        /* holder will be updated differently depending on Book status. */
+
+
+                /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
