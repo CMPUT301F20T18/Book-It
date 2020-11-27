@@ -6,10 +6,12 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.content.Context;
 import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
@@ -38,6 +40,9 @@ public class ChooseLocationActivity extends AppCompatActivity {
     FirestoreLocationAdapter adapter;
     Button addLocation;
     int bookID;
+    final static String TAG = "CLA_DEBUG";
+
+    private static final int SELECT_LOCATION_REQUEST_CODE = 0;
 
     // DB info
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
@@ -48,6 +53,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_choose_location);
 
 
@@ -56,23 +62,14 @@ public class ChooseLocationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         bookID = getIntent().getIntExtra("bookID", 0);
+        setUp();
 
 
         // Setting the header title. This may be done in XML instead
         Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
         toolbar.setTitle(getResources().getText(R.string.choose_location_header));
 
-        addLocation.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-
-                Intent intent = new Intent(getApplicationContext(), SelectLocationActivity.class);
-                // intent.putExtra("INPUT_ADDRESS", address2);
-                startActivityForResult(intent, RESULT_OK);
-            }
-        });
-
+        addLocation.setOnClickListener(new AddLocationOnClickListener(this));
     }
 
     /**
@@ -80,11 +77,11 @@ public class ChooseLocationActivity extends AppCompatActivity {
      */
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("pickup_locations");
-        FirestoreRecyclerOptions<Address> options = new FirestoreRecyclerOptions.Builder<Address>()
-                .setQuery(query, Address.class)
+        FirestoreRecyclerOptions<UserLocation> options = new FirestoreRecyclerOptions.Builder<UserLocation>()
+                .setQuery(query, UserLocation.class)
                 .build();
 
-        adapter = new FirestoreLocationAdapter(options, bookID);
+        adapter = new FirestoreLocationAdapter(options, bookID, ChooseLocationActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
         recyclerView.setAdapter(adapter);
     }
@@ -109,15 +106,45 @@ public class ChooseLocationActivity extends AppCompatActivity {
     }
 
 
+
+
     // Handle returned address
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        int index = data.getIntExtra("LOCATION_INDEX", -1);
-        Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+        if (resultCode == RESULT_OK) {
 
-        // add the new address to the users pickup_location collection
-        User current = new User();
-        current.ownerAddLocation(address);
+            String title = data.getStringExtra("OUTPUT_TITLE");
+            double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+            double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+
+
+            Log.d(TAG, "Title: " + title);
+            Log.d(TAG, "Lat: " + latitude);
+            Log.d(TAG, "Long: " + longitude);
+
+
+
+            UserLocation location = new UserLocation(title, latitude, longitude);
+            // add the new address to the users pickup_location collection
+            User current = new User();
+            current.ownerAddLocation(location);
+        }
+
+
+    }
+
+    private class AddLocationOnClickListener implements View.OnClickListener{
+        private Context parentContext;
+
+        AddLocationOnClickListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
+        }
     }
 }

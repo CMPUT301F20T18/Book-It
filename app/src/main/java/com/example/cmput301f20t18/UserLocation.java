@@ -6,18 +6,19 @@ import com.google.android.gms.maps.model.LatLng;
 
 public class UserLocation {
     private String title;
-    private Address address;
-    private LatLng latlng;
+    private Double latitude;
+    private Double longitude;
 
-    public UserLocation(String title, Address address, LatLng latlng){
+    public UserLocation(String title, Double latitude, Double longitude){
         this.title = title;
-        this.address = address;
-        this.latlng = latlng;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
-    public UserLocation(Address address, LatLng latlng){
-        this.address = address;
-        this.latlng = latlng;
+
+    public UserLocation(){
+
     }
+
 
     public String getTitle() {
         return title;
@@ -27,19 +28,19 @@ public class UserLocation {
         this.title = title;
     }
 
-    public Address getAddress() {
-        return address;
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public LatLng getLatlng() {
-        return latlng;
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setLatlng(LatLng latlng) {
-        this.latlng = latlng;
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

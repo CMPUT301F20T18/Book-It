@@ -4,6 +4,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
@@ -32,6 +33,7 @@ import java.util.List;
  */
 public class BorrowedBorrowingFragment extends Fragment {
     RecyclerView recyclerView;
+    TextView noResultsTextView;
     Query query;
     FirestoreBorrowedAdapter adapter;
 
@@ -98,6 +100,24 @@ public class BorrowedBorrowingFragment extends Fragment {
                 inflate(R.layout.fragment_borrowed_borrowing, container, false);
         recyclerView = view.findViewById(R.id.BBrecyclerView);
         setUp();
+
+        noResultsTextView = view.findViewById(R.id.no_results);
+        noResultsTextView.setText(R.string.borrowed_borrowing_empty);
+
+        // display message if list of books is empty
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                noResultsTextView.setText("");
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    noResultsTextView.setText(R.string.borrowed_borrowing_empty);
+                }
+            }
+        });
+
         return view;
     }
 

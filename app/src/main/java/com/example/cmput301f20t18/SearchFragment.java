@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
@@ -15,6 +16,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -45,9 +47,6 @@ import java.util.ArrayList;
  * UI contrabutions
  * @author Johnathon Gil
  */
-/*
- *Note: Chase added a listview to fragment_search.xml because the results wouldn't display otherwise
- */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
     private final String TAG = "SEARCH_FRAG";                                       //Tag for Log
@@ -55,10 +54,12 @@ public class SearchFragment extends Fragment {
     final ArrayList<Book> bookDataList = new ArrayList();
     final ArrayList<User> userDataList = new ArrayList();
 
-    SearchFragBookAdapter bookAvailableAdapter;
-    SearchFragBookAdapter bookAllAdapter;
+    SearchFragBookAdapter bookAdapter;
     SearchFragUserAdapter userAdapter;
 
+    TextView noResultsTextView;
+    EditText searchEditText;
+    Button searchButton;
     ListView SearchResultList;
 
     /**
@@ -75,15 +76,14 @@ public class SearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        Button searchButton;
+
 
         // Setting the header title. This may be done in XML instead
         Toolbar toolbar = view.findViewById(R.id.search_toolbar);
         //toolbar.setTitle(getResources().getText(R.string.mybooks_header));
         toolbar.setTitle("Search");
 
-        bookAvailableAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
-        bookAllAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
+        bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
 
         //Set up spinner
@@ -96,8 +96,10 @@ public class SearchFragment extends Fragment {
         searchSpinner.setAdapter(spinnerAdapter);
         searchSpinner.setOnItemSelectedListener(spinnerListener);
 
+        noResultsTextView = view.findViewById(R.id.no_results);
+
         //set up edit text
-        final EditText searchEditText = view.findViewById(R.id.search_edit_text);
+        searchEditText = view.findViewById(R.id.search_edit_text);
         searchEditText.setOnEditorActionListener(
                 new SearchEditTextOnActionListener(searchEditText, spinnerListener));
 
@@ -106,8 +108,23 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(
                 new SearchButtonOnClickListener(searchEditText, spinnerListener));
 
+
         SearchResultList = view.findViewById(R.id.search_result_list);
         return view;
+    }
+
+    // this is for when a user clicks "search for available copies" in postscan
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getArguments() != null) {
+            String ISBN = getArguments().getString("ISBN");
+            if (ISBN != null) {
+                searchEditText.setText(ISBN);
+                searchButton.performClick();
+                noResultsTextView.setText(""); // this has to be here for some reason
+            }
+        }
     }
 
     /**
@@ -119,14 +136,10 @@ public class SearchFragment extends Fragment {
      *                       in spinner
      */
     private void search(String searchWord, String selectedOption) {
-        if (searchWord != "") {
-            if (selectedOption.equals("All Books")) {
-                SearchResultList.setAdapter(bookAllAdapter);
-                searchBooks(searchWord, bookAllAdapter, true);
-            }
-            else if (selectedOption.equals("Available Books")){
-                SearchResultList.setAdapter(bookAvailableAdapter);
-                searchBooks(searchWord, bookAvailableAdapter, false);
+        if (!searchWord.equals("")) {
+            if (selectedOption.equals("Books")) {
+                SearchResultList.setAdapter(bookAdapter);
+                searchBooks(searchWord, bookAdapter, true);
             }
             else {
                 SearchResultList.setAdapter(userAdapter);
@@ -172,7 +185,6 @@ public class SearchFragment extends Fragment {
         final CollectionReference userCollection = db.collection("users");
 
         UserQueryHandler.searchByUsername(userCollection, listener, searchKey);
-        userAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -187,7 +199,21 @@ public class SearchFragment extends Fragment {
          */
         @Override
         public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-            setSearchOption(parent.getItemAtPosition(position).toString());
+            String option = parent.getItemAtPosition(position).toString(); // get selected option
+
+            // change the EditText hint and clear the list when changing options
+            if (option.equals("Books")) {
+                Log.d(TAG, "onItemSelected: Books selected");
+                searchEditText.setHint(R.string.search_book);
+                userAdapter.clear();
+            } else {
+                Log.d(TAG, "onItemSelected: Users selected");
+                searchEditText.setHint("Enter a username");
+                bookAdapter.clear();
+            }
+
+            noResultsTextView.setText(R.string.no_results);
+            setSearchOption(option);
         }
 
         /**
@@ -248,6 +274,10 @@ public class SearchFragment extends Fragment {
         public void onClick(View v) {
             String searchWord = searchEditText.getText().toString();
             String selectedOption = spinnerListener.getSearchOption();
+            InputMethodManager imm = (InputMethodManager) v.getContext()
+                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(v.getWindowToken(), 0);
+            search(searchWord, selectedOption);
             search(searchWord, selectedOption);
         }
     }
@@ -475,13 +505,16 @@ public class SearchFragment extends Fragment {
                     if (book.getId() == bookContained.getId()) {
                         add = false;
                     }
-                    if (!allBooks && book.getStatus() != STATUS_AVAILABLE){
-                        add = false;
-                    }
                 }
                 if (add) {
                     bookDataList.add(book);
+                    bookAdapter.notifyDataSetChanged();
                 }
+            }
+            if (bookDataList.size() == 0) {
+                noResultsTextView.setText(getResources().getString(R.string.no_results));
+            } else {
+                noResultsTextView.setText("");
             }
         }
     }
@@ -507,7 +540,13 @@ public class SearchFragment extends Fragment {
                 }
                 if (add) {
                     userDataList.add(user);
+                    userAdapter.notifyDataSetChanged();
                 }
+            }
+            if (userDataList.size() == 0) {
+                noResultsTextView.setText(getResources().getString(R.string.no_results));
+            } else {
+                noResultsTextView.setText("");
             }
         }
     }
@@ -546,6 +585,7 @@ public class SearchFragment extends Fragment {
          * @param parent A ViewGroup object
          * @return The correct view for the book
          */
+        @RequiresApi(api = Build.VERSION_CODES.O)
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view;
 
@@ -580,9 +620,13 @@ public class SearchFragment extends Fragment {
             TextView bookAuthor = view.findViewById(R.id.text_book_author);
             TextView bookISBN = view.findViewById(R.id.text_book_isbn);
             TextView bookYear = view.findViewById(R.id.text_book_year);
-            //TODO: Once we can decode image string implement
-            //ImageView bookImage = view.findViewById(R.id.image_view);
-            //bookImage.setImage(book.getImage())
+
+            if (book.hasPhotos()) {
+                ImageView bookImageView = view.findViewById(R.id.image_view);
+                Bitmap bookCoverImage = photoAdapter.scaleBitmap(book.retrieveCover(),
+                        bookImageView.getLayoutParams().width, bookImageView.getLayoutParams().height);
+                bookImageView.setImageBitmap(bookCoverImage);
+            }
 
             bookTitle.setText(book.getTitle());
             bookAuthor.setText(book.getAuthor());
@@ -689,6 +733,7 @@ public class SearchFragment extends Fragment {
          * @param parent A ViewGroup object
          * @return The correct view for the book
          */
+        @RequiresApi(api = Build.VERSION_CODES.O)
         public View getView(int position, @Nullable View convertView, @NonNull ViewGroup parent) {
             View view = convertView;
 
@@ -701,11 +746,29 @@ public class SearchFragment extends Fragment {
             TextView userName = view.findViewById(R.id.text_username);
             Button viewProfile = view.findViewById(R.id.button_view_profile);
 
+            //Set up profile pic
+
+            String profilePictureSting = user.getProfile_picture();
+            if (profilePictureSting != null && !profilePictureSting.equals("")){
+
+                ImageView profilePicView = view.findViewById(R.id.profile_view);
+                Bitmap bm = photoAdapter.scaleBitmap(
+                        photoAdapter.stringToBitmap(profilePictureSting),
+                        profilePicView.getLayoutParams().width,
+                        profilePicView.getLayoutParams().height);
+                Bitmap profilePicture = photoAdapter.makeCircularImage(bm, bm.getHeight());
+                profilePicView.setImageBitmap(profilePicture);
+            }
+
+
+
+
             userName.setText(user.getUsername());
             viewProfile.setOnClickListener(new ViewProfileButtonListener(user));
 
             return view;
         }
+        
 
 
         /**
@@ -734,7 +797,7 @@ public class SearchFragment extends Fragment {
                 viewProfileIntent.putExtra("USERNAME", user.getUsername());
                 viewProfileIntent.putExtra("PHONE", user.getPhone());
                 viewProfileIntent.putExtra("EMAIL", user.getEmail());
-                //viewProfileIntent.putExtra("PICTURE", user.getPicture());
+                viewProfileIntent.putExtra("PICTURE", user.getProfile_picture());
 
                 startActivity(viewProfileIntent);
             }

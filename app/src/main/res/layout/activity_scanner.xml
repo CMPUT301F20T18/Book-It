@@ -45,12 +45,22 @@
 
         <Button
             android:id="@+id/capture"
-            android:layout_width="wrap_content"
+            android:layout_width="50dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Scan"
+            android:text="@string/scan_button"
+            android:textSize="20sp"
             android:background="@drawable/good_button_background"
-            android:textColor="@color/karryText"/>
+            android:textColor="@color/colorAccent"/>
+
+        <!--TEMPORARY BUTTON-->
+        <Button
+            android:id="@+id/button_manual"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Manual"
+            android:textSize="14sp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

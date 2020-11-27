@@ -3,15 +3,19 @@ package com.example.cmput301f20t18;
 import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.content.ContextCompat;
@@ -19,6 +23,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 /**
  * Custom RecyclerView Adapter for Book objects in Borrowed books.
@@ -61,6 +70,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
      * @param i position of book in list.
      * @param book Book to display.
      */
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
@@ -76,10 +86,41 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         try {
             /* These two TextViews will be null if the book status is "Available" */
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-            holder.textViewUsername.setText(book.getOwner_username());
+            String uName = book.getOwner_username();
+            holder.textViewUsername.setText(uName);
             holder.textViewUserDescription.setText("");
+
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            CollectionReference collection = db.collection("users");
+            collection.whereEqualTo("username", uName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        User borrower = task.getResult().toObjects(User.class).get(0);
+                        String photoString = borrower.getProfile_picture();
+                        if(photoString!="" && photoString!=null) {
+                            Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                            Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
+                            holder.buttonUser.setImageBitmap(photo);
+                            Log.d(TAG, "Picture attached");
+                        }
+                    }
+
+                    else {
+                        Log.d(TAG, "Error Querying for borrower information");
+                    }
+                }
+            });
+
         } catch (Exception e) {
             Log.e(TAG, e.toString());
+        }
+
+        if (book.hasPhotos()) {
+            Bitmap bm = book.retrieveCover();
+            Bitmap cover = photoAdapter.scaleBitmap(bm, holder.imageView.getLayoutParams().width, holder.imageView.getLayoutParams().height);
+            holder.imageView.setImageBitmap(cover);
         }
 
         // This is used to open up a user's profile when clicking on their profile photo
@@ -93,15 +134,18 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         };
 
         // This is used to view the pick up location when clicking the map button
-        View.OnClickListener openMapListener = new View.OnClickListener() {
+        holder.buttonMap.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                /* Are we allowing the borrower to see the location before being accepted? */
-                /* TODO: make activity that displays pick up location to borrower */
+                Intent intent = new Intent(v.getContext(), ShowMapLocationActivity.class);
+                intent.putExtra("bookID", book.getId());
+                v.getContext().startActivity(intent);
             }
-        };
+        });
 
-        /* holder will be updated differently depending on Book status. */
+
+
+                /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
@@ -237,10 +281,14 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         TextView textViewUsername;
         TextView textViewUserDescription;
 
+
+
+        Button profilePic;
+
         Button buttonCancelRequest;
         Button buttonConfirmPickUp;
         Button buttonMap;
-        Button buttonUser;
+        ImageButton buttonUser;
         Button buttonConfirmReturn;
         Button buttonMore;
 
@@ -258,6 +306,8 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             textViewAuthor = itemView.findViewById(R.id.text_book_author);
             textViewYear = itemView.findViewById(R.id.text_book_year);
             textViewISBN = itemView.findViewById(R.id.text_book_isbn);
+
+
 
             textViewUsername = itemView.findViewById(R.id.text_username);
             textViewUserDescription = itemView.findViewById(R.id.text_user_description);

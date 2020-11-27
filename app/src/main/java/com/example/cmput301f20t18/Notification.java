@@ -33,6 +33,9 @@ public class Notification {
     public static final int CANCEL_PICKUP = 2;
     public static final int OWNER_ACCEPT_REQUEST = 3;
     public static final int OWNER_DELETE = 5;
+    public static final int CHANGE_LOCATION = 6;
+
+
 
     static final String TAG = "NOTIF_DEBUG";
 
@@ -93,6 +96,9 @@ public class Notification {
                 this.message = String.format("%s has deleted %s from his collection, the book is now yours!", this.sourceUsername, this.bookTitle);
                 break;
 
+
+            case CHANGE_LOCATION:
+                this.message = String.format("%s has set the location for %s", this.sourceUsername, this.bookTitle);
             default:
                 Log.d(TAG, "prepareMessage: Invalid Request Type!");
         }
@@ -128,6 +134,12 @@ public class Notification {
 
                     // write our notification to the DB
                     RTDB.getReference().child("Notifications").child(ID.replace('.', ':')).setValue(notification);
+
+
+                    userNotification notif = new userNotification(ID.replace('.', ':'), message);
+
+                    // write our notification to Firestore
+                    userRef.document(target.getDbID()).collection("notifications").document(ID.replace('.', ':')).set(notif);
 
                 }
 

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- displayed when on the "Profile" tab -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/fragment_profile"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyBooksAddBook"
     android:orientation="vertical">
 
     <FrameLayout
@@ -27,17 +27,18 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:paddingLeft="10dp">
+            android:paddingStart="10dp"
+            android:paddingEnd="0dp">
             <TextView
                 android:id="@+id/my_account_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:layout_marginStart="10dp"
                 android:paddingTop="3dp"
                 android:fontFamily="@font/poppins_medium"
-                android:text="My Account"
-                android:textColor="@color/karryText"
+                android:text="@string/my_account_header"
+                android:textColor="@color/colorAccent"
                 android:textSize="30sp" />
             <Button
                 android:id="@+id/sign_out_button"
@@ -47,7 +48,7 @@
                 android:layout_centerInParent="true"
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/sign_out_button"
-                android:text="Sign Out"
+                android:text="@string/sign_out_button"
                 android:textColor="@color/colorOrange"
                 android:textSize="15sp" />
         </RelativeLayout>
@@ -60,7 +61,7 @@
         <FrameLayout
             android:id="@+id/frame_background"
             android:layout_width="match_parent"
-            android:layout_height="180dp"
+            android:layout_height="268dp"
             android:background="@color/colorGray2"
             android:padding="20dp"
             tools:layout_editor_absoluteX="-1dp"
@@ -74,8 +75,8 @@
             android:id="@+id/frame_image"
             android:layout_width="95dp"
             android:layout_height="103dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="30dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="10dp"
             android:layout_gravity="center_horizontal"
             android:background="@drawable/circle_outline"
             android:padding="2dp"
@@ -94,12 +95,11 @@
             android:id="@+id/my_user_name"
             android:layout_width="234dp"
             android:layout_height="39dp"
-            android:layout_marginStart="20dp"
-            android:layout_marginTop="36dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="20dp"
             android:fontFamily="@font/poppins_medium"
-            android:text="Username"
             android:textColor="@color/colorBlue"
-            android:textSize="28sp"
+            android:textSize="22sp"
             app:layout_constraintStart_toEndOf="@+id/frame_image"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -107,7 +107,7 @@
             android:id="@+id/edit_profile"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
+            android:layout_marginStart="14dp"
             android:layout_marginTop="8dp"
             android:fontFamily="@font/poppins"
             android:text="@string/edit_profile"
@@ -116,66 +116,106 @@
             app:layout_constraintStart_toEndOf="@+id/frame_image"
             app:layout_constraintTop_toBottomOf="@+id/my_user_name" />
 
+        <TextView
+            android:id="@+id/address_label"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/poppins"
+            android:text="Address"
+            android:textColor="@color/colorOrange"
+            android:textSize="18sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/frame_image"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        <TextView
+            android:id="@+id/address"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
+            android:fontFamily="@font/poppins"
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:layout_alignParentEnd="true"
+            app:layout_constraintStart_toEndOf="@id/address_label"
+            app:layout_constraintTop_toBottomOf="@id/frame_image"/>
 
         <TextView
             android:id="@+id/phone_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/poppins"
             android:text="Phone"
             android:textColor="@color/colorOrange"
-            android:textSize="20sp"
-            android:layout_alignParentLeft="true"/>
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@id/address_label"
+            app:layout_constraintTop_toBottomOf="@+id/address_label"/>
 
         <TextView
             android:id="@+id/phone_num"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/poppins"
-            android:text="780 986 1873"
-            android:textColor="@color/karryText"
-            android:textSize="20sp"
-            android:layout_alignParentRight="true" />
-
-    </RelativeLayout>
-
-    <View style="@style/Divider.Horizontal"/>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:layout_alignParentEnd="true"
+            app:layout_constraintStart_toEndOf="@id/phone_label"
+            app:layout_constraintTop_toBottomOf="@id/address_label"/>
 
         <TextView
             android:id="@+id/email_label"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/poppins"
             android:text="Email"
             android:textColor="@color/colorOrange"
-            android:textSize="20sp"
-            android:layout_alignParentLeft="true"/>
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="@id/address_label"
+            app:layout_constraintTop_toBottomOf="@+id/phone_label"/>
 
         <TextView
             android:id="@+id/email"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:padding="15dp"
+            android:layout_marginStart="14dp"
+            android:layout_marginTop="4dp"
             android:fontFamily="@font/poppins"
-            android:text="not_you_average_joe@gmail.com"
-            android:textColor="@color/karryText"
-            android:textSize="15sp"
-            android:layout_alignParentRight="true"/>
+            android:textColor="@color/colorAccent"
+            android:textSize="18sp"
+            android:layout_alignParentEnd="true"
+            app:layout_constraintStart_toEndOf="@id/email_label"
+            app:layout_constraintTop_toBottomOf="@id/phone_label"/>
 
-    </RelativeLayout>
+        <Button
+            android:id="@+id/button_clear_notifications"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintBottom_toBottomOf="@id/frame_background"
+            app:layout_constraintStart_toStartOf="parent"
+            android:text="Clear notifications"
+            android:textSize="16sp"
+            android:paddingHorizontal="10dp"
+            android:paddingBottom="2dp"
+            app:layout_constrainedHeight="true"
+            app:layout_constraintHeight_max="40dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/good_button_background"/>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- ListView or RecyclerView goes here for the notifications -->
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/NotifRecyclerView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
 
 
 </LinearLayout>

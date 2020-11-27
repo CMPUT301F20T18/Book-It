@@ -1,21 +1,21 @@
 package com.example.cmput301f20t18;
 
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.VoiceInteractor;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Matrix;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
-import android.os.Parcelable;
 import android.provider.MediaStore;
+import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -24,24 +24,43 @@ import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import androidx.appcompat.widget.Toolbar;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
+
+
+import com.android.volley.Request;
+import com.android.volley.RequestQueue;
+import com.android.volley.Response;
+import com.android.volley.VolleyError;
+import com.android.volley.toolbox.ImageRequest;
+import com.android.volley.toolbox.JsonObjectRequest;
+import com.android.volley.toolbox.StringRequest;
+import com.android.volley.toolbox.Volley;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import com.google.api.LogDescriptor;
+
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.gson.JsonObject;
 
-import java.io.ByteArrayOutputStream;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.List;
 
 /**
  * This is a class that creates a new book object through user input
  * @author  Jacob Deinum
  * @author Johnathon Gil
  * @author Sean Butler
+ * @author Chase-Warwick
  * @see    Toolbar
  * @see    FirebaseAuth
  * @see    FirebaseFirestore
@@ -51,11 +70,18 @@ import java.util.Calendar;
 public class MyBooksAddBook extends AppCompatActivity {
 
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
-    EditText author, bookTitle, year, isbn;
+    EditText author;
+    EditText bookTitle;
+    EditText year;
+    EditText isbn;
+    RecyclerView imagesViewer;
+    RecyclerView.LayoutManager layoutManager;
+    ImageRecyclerViewAdapter imageRecyclerViewAdapter;
     Button done, cancel;
     ImageButton addPhoto;
 
     ArrayList<Bitmap> photos;
+    Bitmap defaultPhoto;
 
     Toolbar toolbar;
     ImageButton addPic;
@@ -71,8 +97,6 @@ public class MyBooksAddBook extends AppCompatActivity {
 
     FirebaseFirestore DB;
 
-
-
     /**
      * This method has the purpose of creating the activity that prompts the user to add information
      * to be able to add a book of theirs into the collection
@@ -82,6 +106,7 @@ public class MyBooksAddBook extends AppCompatActivity {
      *
      */
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -92,6 +117,13 @@ public class MyBooksAddBook extends AppCompatActivity {
         type = getIntent().getIntExtra("type", 0);
         bookID = getIntent().getIntExtra("bookID", 0);
         Long passed_isbn = getIntent().getLongExtra("filled_isbn", 0);
+
+        if (passed_isbn != 0){
+            GoogleBookAPIQueryMaker googleBookAPIQueryMaker =
+                    new GoogleBookAPIQueryMaker(this);
+
+            googleBookAPIQueryMaker.searchByISBN(this, Long.toString(passed_isbn));
+        }
 
 
         Log.d(TAG, "onCreate: type " + type);
@@ -119,7 +151,27 @@ public class MyBooksAddBook extends AppCompatActivity {
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
 
+
+        if ( type == EDIT_BOOK) {
+            imagesViewer = findViewById(R.id.image_recycler_view);
+            layoutManager = new GridLayoutManager(this, 3);
+            imagesViewer.setLayoutManager(layoutManager);
+            imagesViewer.setHasFixedSize(true);
+            imagesViewer.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    int pos = view.getVerticalScrollbarPosition();
+                }
+            });
+            // Send the images to the recycler view adapter
+        }
         photos = new ArrayList<>();
+
+
+
+
+
+
 
         if (type == EDIT_BOOK) {
             DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
@@ -129,6 +181,13 @@ public class MyBooksAddBook extends AppCompatActivity {
                     author.setText(book.getAuthor());
                     year.setText(Integer.toString(book.getYear()));
                     isbn.setText(Long.toString(book.getISBN()));
+                    photos = book.retrievePhotos();
+                    Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
+                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos);
+                    imagesViewer.setAdapter(imageRecyclerViewAdapter);
+
+
+
                 }
 
                 else {
@@ -142,13 +201,8 @@ public class MyBooksAddBook extends AppCompatActivity {
         if (type == ADD_SCAN) {
             isbn.setText(Long.toString(passed_isbn));
         }
-
-
-
-
-
-
-
+        //Log.d(TAG, "onCreate: Photos in recylerView: " + imageRecyclerViewAdapter.getItemCount());
+        Log.d(TAG, "onCreate: Photos exist " + photos.size());
 
         /**
          * This method adds the values of the input into the FireStore database
@@ -166,7 +220,9 @@ public class MyBooksAddBook extends AppCompatActivity {
                 String book_isbn = isbn.getText().toString();
                 String book_year = year.getText().toString();
 
-                ArrayList<String> stringPhotos = new ArrayList<>();
+                List<String> stringPhotos = new ArrayList<String>() {
+                };
+
                 for (Bitmap bmp : photos){
                     stringPhotos.add(photoAdapter.bitmapToString(bmp));
                 }
@@ -182,16 +238,23 @@ public class MyBooksAddBook extends AppCompatActivity {
 
                 Long isbn = Long.parseLong(book_isbn);
                 Integer year = Integer.parseInt(book_year);
-                if (type == ADD_BOOK) {
-             
+
+                ArrayList<String> photoStrings = new ArrayList<>();
+                for (Bitmap photo: photos){
+                    photoStrings
+                            .add(photoAdapter.bitmapToString(photo));
+                }
+                if (photos.isEmpty()){
+                    if (defaultPhoto != null) {
+                        photoStrings.add(photoAdapter.bitmapToString(defaultPhoto));
+                    }
+                }
+
+                if (type == ADD_BOOK || type == ADD_SCAN) {
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
 
                         Log.d(TAG, "Validity check passed");
-                        ArrayList<String> photoStrings = new ArrayList<>();
-                        for (Bitmap photo: photos){
-                            photoStrings
-                                    .add(photoAdapter.bitmapToString(photo));
-                        }
+
                         current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
                     }
                 }
@@ -223,14 +286,27 @@ public class MyBooksAddBook extends AppCompatActivity {
          * The first image uploaded is the cover, while the others are extras
          * At the moment, the addPhoto button changes to match the last image uploaded
          */
-        addPhoto.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent pickPicture = new Intent(Intent.ACTION_PICK,
-                        MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
-            }
-        });
+        if(addPhoto != null) {
+            addPhoto.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    Intent pickPicture = new Intent(Intent.ACTION_PICK,
+                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+                    startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
+                }
+            });
+        }
+    }
+
+
+    private void setBookData(String title, String authors, String publishedYear){
+        bookTitle.setText(title);
+        author.setText(authors);
+        year.setText(publishedYear);
+    }
+
+    private void setDefaultPhoto(Bitmap coverPhoto){
+        defaultPhoto = coverPhoto;
     }
 
     //Work in progress
@@ -253,6 +329,107 @@ public class MyBooksAddBook extends AppCompatActivity {
                     photos.add(outMap);
                     addPhoto.setImageBitmap(outMap);
                 }
+        }
+    }
+
+
+    private class GoogleBookAPIQueryMaker{
+        private String TAG = "GOOGLEBOOK";
+        private RequestQueue queue;
+
+        GoogleBookAPIQueryMaker(Context context){
+            this.queue = Volley.newRequestQueue(context);
+        }
+
+        public void searchByISBN(Context context, String ISBN) {
+            String url = "https://www.googleapis.com/books/v1/volumes?q=isbn%3D" + ISBN;
+            JsonObjectRequest jsonRequest = new JsonObjectRequest(Request.Method.GET, url,
+                    null, new GoogleBookJsonResponseListener(context),
+                    new GoogleBookErrorListener());
+            queue.add(jsonRequest);
+        }
+
+        public void getCoverPhoto(String url){
+            ImageRequest imageRequest = new ImageRequest(url, new GoogleBookImageResponseListener(),
+                    0, 0, ImageView.ScaleType.CENTER_CROP,
+                    null, new GoogleBookErrorListener());
+            queue.add(imageRequest);
+        }
+    }
+    private class GoogleBookJsonResponseListener implements Response.Listener<JSONObject> {
+        private Context context;
+
+        public GoogleBookJsonResponseListener(Context context){
+            this.context = context;
+        }
+
+        @Override
+        public void onResponse(JSONObject response) {
+            try {
+                JSONObject bookData = (JSONObject)
+                        ((JSONObject) ((JSONArray) response.get("items")).get(0)).get("volumeInfo");
+
+                String bookTitle = getTitle(bookData);
+                String bookAuthors = getAuthors(bookData);
+                String bookYear = getYear(bookData);
+                getCover(bookData);
+
+                setBookData(bookTitle, bookAuthors, bookYear);
+
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+
+        public String getTitle(JSONObject bookData) throws JSONException {
+            return (String) bookData.get("title");
+        }
+
+        public String getAuthors(JSONObject bookData) throws JSONException{
+            JSONArray authorArray = (JSONArray) bookData.get("authors");
+
+            String bookAuthors = "";
+            for (int i=0; i < authorArray.length(); i++){
+                bookAuthors += (String) authorArray.get(i);
+                if (i != authorArray.length()-1) {
+                    bookAuthors += ", ";
+                }
+            }
+            return bookAuthors;
+        }
+
+        public String getYear(JSONObject bookData) throws JSONException{
+            return ((String) bookData.get("publishedDate")).substring(0,4);
+        }
+
+        private void getCover(JSONObject bookData){
+            String imageURL = null;
+            try {
+                imageURL = (String) ((JSONObject) bookData.get("imageLinks")).get("thumbnail");
+                imageURL = imageURL.substring(0,4) + "s" + imageURL.substring(4);
+
+                GoogleBookAPIQueryMaker googleBookAPIQueryMaker =
+                        new GoogleBookAPIQueryMaker(this.context);
+                googleBookAPIQueryMaker.getCoverPhoto(imageURL);
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+    }
+
+    private class GoogleBookImageResponseListener implements Response.Listener<Bitmap>{
+        @Override
+        public void onResponse(Bitmap response) {
+            setDefaultPhoto(response);
+        }
+    }
+
+    private class GoogleBookErrorListener implements Response.ErrorListener {
+        @Override
+        public void onErrorResponse(VolleyError error) {
+            Log.e(TAG, error.toString());
         }
     }
 }
@@ -409,3 +586,6 @@ class CheckBookValidity {
         }
     }
 }
+
+
+

@@ -1,9 +1,12 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -12,6 +15,11 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
+import android.text.SpannableString;
+import android.text.Spanned;
+import android.text.TextPaint;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,15 +28,24 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+/**
+ * This is a class used to edit a user's profile information.
+ * @author Sean Butler
+ */
+
 public class EditProfile extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_PROFILE_EDITED = 1;
-    private EditText usernameInput, phoneNumInput, emailInput;
+    private EditText usernameInput, phoneNumInput;
+    private Button addressInput;
     private TextView changePass;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
     private ImageView profilePic;
     private String photo;
+    private UserLocation location;
+
+    private final static String TAG = "EP_DEBUG";
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -44,8 +61,7 @@ public class EditProfile extends AppCompatActivity {
         phoneNumInput = findViewById(R.id.phone_input);
         phoneNumInput.setText((String) extras.get("phone"));
 
-        emailInput = findViewById(R.id.address_input);
-        emailInput.setText((String) extras.get("email"));
+        addressInput = findViewById(R.id.edit_address_button);
 
         profilePic  = findViewById(R.id.profile_pic);
         photo = (String) extras.get("photo");
@@ -61,6 +77,7 @@ public class EditProfile extends AppCompatActivity {
         editDone = findViewById(R.id.done_edit_profile);
 
 
+        // Button to return to profile page, saving no changes
         myProfileReturn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -68,6 +85,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to save changes made to the profile
         editDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -83,6 +101,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to delete the user's profile picture
         deletePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -91,6 +110,7 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // Button to have the user upload a profile picture.
         changePhoto.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -100,15 +120,47 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        String text = "Change Password";
+
+        SpannableString redirectString = new SpannableString(text);
+
+        ClickableSpan redirect = new ClickableSpan() {
+            @Override
+            public void onClick(@NonNull View widget) {
+
+                ChangePasswordDialog changePassword = new ChangePasswordDialog();
+                changePassword.show(getSupportFragmentManager(), "dialog");
+            }
+
+            @Override
+            public void updateDrawState(@NonNull TextPaint ds) {
+                super.updateDrawState(ds);
+                ds.setColor(getResources().getColor(R.color.colorLightGray));
+            }
+        };
+
+
+
+        EditProfile.AddressOnClickListener listener = new EditProfile.AddressOnClickListener(this);
+        addressInput.setOnClickListener(listener);
+
+
+
+        redirectString.setSpan(redirect,0,15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+        changePass.setText(redirectString);
+        changePass.setMovementMethod(LinkMovementMethod.getInstance());
 
 
     }
 
+    /**
+     * Used to load and resize the user's current profile picture on the edit screen
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onWindowFocusChanged(boolean hasFocus) {
         super.onWindowFocusChanged(hasFocus);
-        if (photo != ""){
+        if (!photo.equals("")){
             Bitmap userPhoto = photoAdapter.stringToBitmap(photo);
             float w;
             float h;
@@ -122,6 +174,13 @@ public class EditProfile extends AppCompatActivity {
 
         }
     }
+
+    /**
+     * onActivityResult triggers after a user uploads a profile picture
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
 
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
@@ -144,8 +203,35 @@ public class EditProfile extends AppCompatActivity {
                     photo = photoAdapter.bitmapToString(outMap);
                     profilePic.setImageBitmap(circleImage);
                 }
+
+            default:
+                String title = data.getStringExtra("OUTPUT_TITLE");
+                double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+                double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+
+
+                location = new UserLocation(title, latitude, longitude);
+                Log.d(TAG, "CHECK 2: location: " + location.getTitle());
+
+                User current = new User();
+                current.userChangeAddress(location);
+
         }
+
     }
 
+    private class AddressOnClickListener implements View.OnClickListener{
+        private Context parentContext;
+        private final int SELECT_LOCATION_REQUEST_CODE = 0;
 
+        AddressOnClickListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
+        }
+    }
 }

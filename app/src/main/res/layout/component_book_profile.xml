@@ -19,7 +19,7 @@
                 android:layout_gravity="center"
                 app:cardCornerRadius="30dp">
 
-                <Button
+                <ImageButton
                     android:id="@+id/button_mybooks_user"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"

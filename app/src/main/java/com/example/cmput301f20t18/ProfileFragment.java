@@ -21,7 +21,9 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
@@ -29,16 +31,18 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
+import java.util.Map;
 
 import static android.app.Activity.RESULT_OK;
 
 /**
- * This is a class that creates options for the use of the ISBN
- * The class is still under development so the elements that appear on screen are mostly visual
- * with the exception of cancel
+ * This is a class that displays a user's profile information such as username, email, address, and
+ * phone number.
  * @author Johnathon Gil
  * @author Chase Warwick (class UserQueryTaskCompleteListener and function updateUserInfo)
  * @author Sean Butler
@@ -46,10 +50,21 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
-    TextView username, phoneNum, email, editAccount;
-    Button signOut;
+    TextView username, textAddress, phoneNum, email, editAccount;
+    Button signOut, clearNotifications;
     ImageView profilePic;
-    String photoString;
+    String photoString, address;
+
+    RecyclerView recyclerView;
+    Query query;
+    FirestoreNotificationAdapter adapter;
+
+    // DB info
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference userRef = DB.collection("users");
+
+
     //Bitmap userPhoto;
 
 
@@ -100,6 +115,8 @@ public class ProfileFragment extends Fragment {
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
 
         editAccount = (TextView) view.findViewById(R.id.edit_profile);
+        recyclerView = view.findViewById(R.id.NotifRecyclerView);
+        setUp();
 
         signOut = (Button) view.findViewById(R.id.sign_out_button);
         signOut.setOnClickListener(new View.OnClickListener() {
@@ -118,6 +135,17 @@ public class ProfileFragment extends Fragment {
             }
         });
 
+        clearNotifications = view.findViewById(R.id.button_clear_notifications);
+        clearNotifications.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                User current = new User();
+                current.userDeleteNotifications();
+            }
+        });
+
+
+
         final String editAccountText = "Edit Account";
 
         SpannableString  editProf = new SpannableString(editAccountText);
@@ -128,7 +156,7 @@ public class ProfileFragment extends Fragment {
 
                 Intent editIntent = new Intent(getContext(),EditProfile.class);
                 editIntent.putExtra("username", username.getText().toString());
-                editIntent.putExtra("email", email.getText().toString());
+                editIntent.putExtra("address", address);
                 editIntent.putExtra("phone", phoneNum.getText().toString());
                 editIntent.putExtra("photo", photoString);
 
@@ -166,14 +194,17 @@ public class ProfileFragment extends Fragment {
     @RequiresApi(api = Build.VERSION_CODES.O)
     private void updateUserData(User user, View view) {
         username = (TextView) view.findViewById(R.id.my_user_name);
+        textAddress = (TextView) view.findViewById(R.id.address);
         phoneNum = (TextView) view.findViewById(R.id.phone_num);
         email = (TextView) view.findViewById(R.id.email);
         profilePic = (ImageView) view.findViewById(R.id.profile_pic);
 
         username.setText(user.getUsername());
+        textAddress.setText(user.getAddress().getTitle());
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
         photoString = user.getProfile_picture();
+        address = user.getAddress().getTitle();
         if (photoString!= "") {
             Bitmap bitmap;
             try {
@@ -193,7 +224,6 @@ public class ProfileFragment extends Fragment {
      * UserQueryTaskCompleteListener waits for the task of getting user snapshot to complete
      * before calling a function to update user information
      * @author Chase Warwick
-     * TODO: Currently crashes if user repeatedly clicks profile button (not sure what that's about)
      * TODO: Add profile picture functionality (Should be easy just need db to have it)
      */
     private class UserQueryTaskCompleteListener implements OnCompleteListener{
@@ -214,6 +244,13 @@ public class ProfileFragment extends Fragment {
         }
     }
 
+    /**
+     * onActivityResult triggers after a user edits their profile information
+     * @param requestCode represents the type of activity that the result is from
+     * @param resultCode represents the result of the activity
+     * @param data the data from the result of the activity
+     */
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
@@ -224,7 +261,7 @@ public class ProfileFragment extends Fragment {
                 if (resultCode == RESULT_OK) {
                     Bundle newInfo = data.getExtras();
                     photoString= (String) newInfo.get("photo");
-                    if(photoString != "") {
+                    if(!photoString.equals("")) {
                         Bitmap userPhoto = photoAdapter.stringToBitmap(photoString);
                         Bitmap outMap = photoAdapter.scaleBitmap(userPhoto, (float) profilePic.getWidth(), (float) profilePic.getHeight());
                         Bitmap circleImage = photoAdapter.makeCircularImage(outMap, outMap.getHeight());
@@ -232,11 +269,50 @@ public class ProfileFragment extends Fragment {
                     }
 
                     username.setText((String)newInfo.get("username"));
+                    textAddress.setText((String)newInfo.get("address"));
                     phoneNum.setText((String)newInfo.get("phone"));
+                    address = (String)newInfo.get("address");
+
 
                     User current = new User();
-                    current.ownerEditProfile((String) newInfo.get("username"), (String) newInfo.get("address"), photoString, (String) newInfo.get("phone"));
+                    current.ownerEditProfile((String) newInfo.get("username"), photoString, (String)newInfo.get("phone"));
+
+
                 }
         }
     }
+
+    public void setUp() {
+        query = userRef.document(auth.getUid()).collection("notifications");
+        FirestoreRecyclerOptions<userNotification> options = new FirestoreRecyclerOptions.Builder<userNotification>()
+                .setQuery(query, userNotification.class)
+                .build();
+
+        adapter = new FirestoreNotificationAdapter(options);
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
+    }
+
+
+    // tell our adapter to start listening as soon as the fragment begins
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+
+
+    }
+    // tell our adapter to stop listening as soon as the fragment ends
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
+        }
+    }
+
+
+
 }

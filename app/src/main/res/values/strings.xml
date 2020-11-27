@@ -1,7 +1,6 @@
 <resources>
     <string-array name="search_spinner_array">
-        <item>Available Books</item>
-        <item>All Books</item>
+        <item>Books</item>
         <item>Users</item>
     </string-array>
 
@@ -26,7 +25,7 @@
     <string name="search_show_all">Show All</string>
     <string name="borrowed_header">Borrowed</string>
     <string name="borrowed_requested">Requested</string>
-    <string name="borrowed_pending">Ready for pick up</string>
+    <string name="borrowed_pending">Ready to pick up</string>
     <string name="borrowed_borrowing">Borrowing</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
@@ -36,5 +35,27 @@
     <string name="borrowing">borrowing</string>
     <string name="owner">owner</string>
     <string name="edit_profile"><u>Edit Account</u></string>
+    <string name="my_account_header">My Account</string>
+    <string name="sign_out_button">Sign Out</string>
+    <string name="email_label">Email</string>
+    <string name="scan_button">Scan</string>
+    <string name="search_book">Enter title, author, ISBN, or year</string>
+    <string name="no_results">No results</string>
+    <string name="mybooks_available_empty">Hit \"Add book\" to start lending books!</string>
+    <string name="mybooks_pending_empty">You have no books pending pick up</string>
+    <string name="mybooks_lending_empty">You are not lending any books</string>
+    <string name="borrowed_requested_empty">Books you request will appear here</string>
+    <string name="borrowed_pending_empty">Books you need to pick up will appear here</string>
+    <string name="borrowed_borrowing_empty">Books you are borrowing will appear here</string>
+    <string name="select_an_address">Select an address</string>
+    <string name="title_activity_show_map_location">Map</string>
+    <string name="mybooks_empy">No owned books found</string>
+    <string name="borrowed_empty">No borrowed books found</string>
+    <string name="email">Email</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up_question">Don\'t have an account?</string>
+    <string name="sign_up">Sign up</string>
 
 </resources>

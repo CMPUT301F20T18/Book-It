@@ -1,9 +1,12 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.RequiresApi;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
@@ -43,6 +46,7 @@ public class CheckProfileActivity extends AppCompatActivity {
      */
 
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -69,6 +73,15 @@ public class CheckProfileActivity extends AppCompatActivity {
                     username.setText(borrower.getUsername());
                     phoneNum.setText(borrower.getPhone());
                     email.setText(borrower.getEmail());
+                    String photoString = borrower.getProfile_picture();
+
+                    if(photoString!="" && photoString != null) {
+                        Bitmap photo = photoAdapter.scaleBitmap(photoAdapter.stringToBitmap(photoString),
+                                profilePic.getWidth(),
+                                profilePic.getHeight());
+                        Bitmap profile = photoAdapter.makeCircularImage(photo, photo.getHeight());
+                        profilePic.setImageBitmap(profile);
+                    }
                 }
 
                 else {
@@ -78,6 +91,13 @@ public class CheckProfileActivity extends AppCompatActivity {
         });
 
 
+
+
+
+
+        username.setText(currentActivity.getStringExtra("USERNAME"));
+        phoneNum.setText(currentActivity.getStringExtra("PHONE"));
+        email.setText(currentActivity.getStringExtra("EMAIL"));
 
 
         backButton.setOnClickListener(new View.OnClickListener() {

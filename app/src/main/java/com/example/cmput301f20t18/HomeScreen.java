@@ -8,6 +8,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentTransaction;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
@@ -17,10 +18,13 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
+import android.provider.ContactsContract;
 import android.util.Log;
 import android.view.ContextMenu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -55,12 +59,34 @@ import static com.example.cmput301f20t18.FirestoreBookAdapter.VIEW_REQUESTS;
 public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDialog.BottomSheetListener{
     private int permissionStorageWriteCode = 100;
     private int permissionStorageReadCode = 101;
+    private int permissionInternet = 102;
+    private BottomNavigationView bottomNav;
 
 
     Fragment selectedFragment;
     final String TAG = "HOMESCREEN_DEBUG";
 
+    // this is for when a user clicks "search for available copies" in postscan
+    @RequiresApi(api = Build.VERSION_CODES.M)
+    @Override
+    protected void onStart() {
+        super.onStart();
+        if (getIntent() != null) {
+            String ISBN = getIntent().getStringExtra("ISBN");
+            if (ISBN != null) {
+                // Have to switch to search frag and then replace it with itself to pass intent
+                bottomNav.setSelectedItemId(R.id.tab_search);
 
+                Bundle bundle = new Bundle();
+                bundle.putString("ISBN", ISBN);
+                Fragment fragment = new SearchFragment();
+                fragment.setArguments(bundle);
+
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.fragment_container, fragment).commit();
+            }
+        }
+    }
 
     @RequiresApi(api = Build.VERSION_CODES.N)
     @Override
@@ -84,7 +110,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
         });
 
         //* Bottom navigation menu *//*
-        BottomNavigationView bottomNav = findViewById(R.id.bottom_navigation);
+        bottomNav = findViewById(R.id.bottom_navigation);
         bottomNav.setItemIconTintList(null);
         bottomNav.setItemBackgroundResource(R.drawable.tab_background);
         bottomNav.setOnNavigationItemSelectedListener(navListener);
@@ -95,6 +121,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
         getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
                 new MyBooksFragment()).commit();
 
+        checkPermissionInternet();
         checkPermissionExternalData();
 
 
@@ -113,13 +140,16 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                 @Override
                 public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                     selectedFragment = null;
+                    String FragTag = "";
 
                     switch (item.getItemId()) {
                         case R.id.tab_borrowed:
                             selectedFragment = new BorrowedFragment();
+                            FragTag = "BORROWED";
                             break;
                         case R.id.tab_search:
                             selectedFragment = new SearchFragment();
+                            FragTag = "SEARCH";
                             break;
                         case R.id.tab_scan:
                             Intent intent = new Intent(HomeScreen.this, Scanner.class);
@@ -128,18 +158,23 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                             break;
                         case R.id.tab_mybooks:
                             selectedFragment = new MyBooksFragment();
+                            FragTag = "MYBOOKS";
                             break;
                         case R.id.tab_profile:
                             selectedFragment = new ProfileFragment();
+                            FragTag = "PROFILE";
                             break;
                     }
 
-                    if (selectedFragment == null) {
+                    Fragment currentFragment = getSupportFragmentManager().findFragmentByTag(FragTag);
+
+                    if (selectedFragment == null ||
+                            (currentFragment != null && currentFragment.isResumed())) {
                         return false;
                     }
 
                     getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
-                            selectedFragment).commit();
+                            selectedFragment,FragTag).commit();
 
                     return true;
                 }
@@ -262,6 +297,14 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
             ActivityCompat.requestPermissions(HomeScreen.this,
                     new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
                     permissionStorageReadCode);
+        }
+    }
+
+    private void checkPermissionInternet(){
+        if (ContextCompat.checkSelfPermission(HomeScreen.this,
+                Manifest.permission.INTERNET) == PackageManager.PERMISSION_DENIED){
+            ActivityCompat.requestPermissions(HomeScreen.this,
+                    new String[] {Manifest.permission.INTERNET}, permissionInternet);
         }
     }
 }

@@ -46,7 +46,7 @@
                 android:fontFamily="@font/poppins_medium"
                 android:paddingTop="3dp"
                 android:text="Profile"
-                android:textColor="@color/karryText"
+                android:textColor="@color/colorAccent"
                 android:textSize="30sp" />
 
         </RelativeLayout>
@@ -127,7 +127,7 @@
             android:padding="15dp"
             android:fontFamily="@font/poppins"
             android:text="780 986 1873"
-            android:textColor="@color/karryText"
+            android:textColor="@color/colorAccent"
             android:textSize="20sp"
             android:layout_alignParentRight="true" />
 
@@ -157,7 +157,7 @@
             android:padding="15dp"
             android:fontFamily="@font/poppins"
             android:text="not_you_average_joe@gmail.com"
-            android:textColor="@color/karryText"
+            android:textColor="@color/colorAccent"
             android:textSize="15sp"
             android:layout_alignParentRight="true"/>
 

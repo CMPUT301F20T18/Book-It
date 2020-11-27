@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -23,6 +24,11 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.QuerySnapshot;
 
 import static com.example.cmput301f20t18.photoAdapter.stringToByte;
 
@@ -68,8 +74,7 @@ public class FirestoreBookAdapter
     public int getItemViewType(int position) {
         Log.d(TAG, "getItemViewType: Position of " + position);
         Book book = getItem(position);
-        int status = book.getStatus();
-        return status;
+        return book.getStatus();
     }
 
     /**
@@ -84,10 +89,12 @@ public class FirestoreBookAdapter
     @Override
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
-        if (book.hasPhotos()) {
-            Bitmap bitmap = book.retrieveCover();
-            Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
-            holder.imageView.setImageBitmap(photo);
+        if(book!= null) {
+            if (book.hasPhotos()) {
+                Bitmap bitmap = book.retrieveCover();
+                Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
+                holder.imageView.setImageBitmap(photo);
+            }
         }
 
         holder.textViewTitle.setText(book.getTitle());
@@ -149,8 +156,32 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_ACCEPTED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-                if (book.getBorrower_username() != null) {
+                String uName = book.getBorrower_username();
+                if (uName != null) {
                     holder.textViewUsername.setText(book.getBorrower_username());
+                    Log.d(TAG, "Requester is " + uName);
+                    FirebaseFirestore db = FirebaseFirestore.getInstance();
+                    CollectionReference collection = db.collection("users");
+                    collection.whereEqualTo("username", uName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @RequiresApi(api = Build.VERSION_CODES.O)
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                User borrower = task.getResult().toObjects(User.class).get(0);
+                                String photoString = borrower.getProfile_picture();
+                                if (!photoString.equals("")) {
+                                    Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                                    Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
+                                    holder.buttonUser.setImageBitmap(photo);
+                                    Log.d(TAG, "Picture attached");
+                                }
+                            }
+
+                            else {
+                                Log.d(TAG, "Error Querying for borrower information");
+                            }
+                        }
+                    });
                 }
                 holder.textViewUserDescription.setText(R.string.picking_up);
 
@@ -264,9 +295,10 @@ public class FirestoreBookAdapter
         Button buttonCancelRequest;
         Button buttonConfirmPickUp;
         Button buttonMap;
-        Button buttonUser;
+        ImageButton buttonUser;
         Button buttonConfirmReturn;
         Button buttonMore;
+
 
         /**
          * Class constructor.
@@ -293,6 +325,7 @@ public class FirestoreBookAdapter
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
             buttonMore = itemView.findViewById(R.id.button_book_more);
+
 
             Log.d(TAG, "onCreateBookViewHolder: End!!");
         }
