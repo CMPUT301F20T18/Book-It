@@ -1,10 +1,7 @@
 package com.example.cmput301f20t18;
 
-import android.content.Intent;
-import android.location.Address;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;

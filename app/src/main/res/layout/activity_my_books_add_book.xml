@@ -112,7 +112,7 @@
             android:layout_marginStart="4dp"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
-            android:text="Author"
+            android:text="Author    "
             android:textColor="@color/colorOrange"
             android:textSize="22sp"
             android:paddingTop="2dp"
