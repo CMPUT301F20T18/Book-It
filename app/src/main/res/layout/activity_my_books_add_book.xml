@@ -78,17 +78,15 @@
 
         <TextView
             android:id="@+id/book_title_prompt"
-            android:layout_width="75dp"
-            android:layout_height="37dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
             android:text="Title"
             android:textColor="@color/colorOrange"
             android:textSize="22sp"
-            android:textAlignment="textEnd"
             android:paddingTop="2dp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="@id/author_prompt"
             app:layout_constraintTop_toTopOf="parent" />
 
         <EditText
@@ -109,18 +107,17 @@
 
         <TextView
             android:id="@+id/author_prompt"
-            android:layout_width="75dp"
-            android:layout_height="37dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
             android:text="Author"
             android:textColor="@color/colorOrange"
             android:textSize="22sp"
-            android:textAlignment="textEnd"
             android:paddingTop="2dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/book_title_prompt" />
+            app:layout_constraintTop_toBottomOf="@+id/title_input" />
 
         <EditText
             android:id="@+id/author_input"
@@ -140,18 +137,16 @@
 
         <TextView
             android:id="@+id/year_prompt"
-            android:layout_width="75dp"
-            android:layout_height="37dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
             android:text="Year"
             android:textColor="@color/colorOrange"
             android:textSize="22sp"
-            android:textAlignment="textEnd"
             android:paddingTop="2dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/author_prompt" />
+            app:layout_constraintEnd_toEndOf="@id/author_prompt"
+            app:layout_constraintTop_toBottomOf="@+id/author_input" />
 
         <EditText
             android:id="@+id/year_input"
@@ -171,18 +166,16 @@
 
         <TextView
             android:id="@+id/isbn_prompt"
-            android:layout_width="75dp"
-            android:layout_height="37dp"
-            android:layout_marginStart="5dp"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:layout_marginTop="22dp"
             android:fontFamily="@font/poppins"
             android:text="ISBN"
             android:textColor="@color/colorOrange"
             android:textSize="22sp"
-            android:textAlignment="textEnd"
             android:paddingTop="2dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/year_prompt" />
+            app:layout_constraintEnd_toEndOf="@id/author_prompt"
+            app:layout_constraintTop_toBottomOf="@+id/year_input" />
 
         <EditText
             android:id="@+id/isbn_input"
