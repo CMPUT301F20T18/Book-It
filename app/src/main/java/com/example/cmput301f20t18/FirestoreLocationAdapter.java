@@ -49,10 +49,13 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
                 }
             });
 
+
+            // owner deletes a location from the their pickup_locations
             holder.deleteLocation.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     User current = new User();
+                    current.ownerDeleteLocation(location);
                 }
             });
         }

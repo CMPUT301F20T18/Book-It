@@ -103,29 +103,6 @@ public class Register extends AppCompatActivity {
             }
         });
 
-        // Delete this later unless someone has a reason for it
-        /*String text = "Sign In";
-
-        SpannableString redirectString = new SpannableString(text);
-
-        ClickableSpan redirect = new ClickableSpan() {
-            @Override
-            public void onClick(@NonNull View widget) {
-
-                Intent redirectIntent = new Intent(Register.this,Login.class);
-                startActivity(redirectIntent);
-            }
-
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.colorOrange));
-            }
-        };
-
-        redirectString.setSpan(redirect,0,7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        signInRedirect.setText(redirectString);
-        signInRedirect.setMovementMethod(LinkMovementMethod.getInstance());*/
 
         AddressOnClickListener listener = new AddressOnClickListener(this);
         address.setOnClickListener(listener);
@@ -139,9 +116,10 @@ public class Register extends AppCompatActivity {
                 String new_username = username.getText().toString();
                 String new_password = password.getText().toString();
                 String new_email= email.getText().toString();
+                String new_phone = phone.getText().toString();
 
 
-                if (new_username.matches("") || new_email.matches("") || new_password.matches("")) {
+                if (new_username.matches("") || new_email.matches("") || new_password.matches("") || new_phone.matches("")) {
                     Toast.makeText(Register.this, "Please fill all fields!", Toast.LENGTH_LONG).show();
                     return;
                 }
@@ -184,7 +162,7 @@ public class Register extends AppCompatActivity {
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         Integer val = snapshot.getValue(Integer.class);
                                                         // add the user to the collection
-                                                        User person = new User(new_username, val, mAuth.getUid(), new_email, new_address);
+                                                        User person = new User(new_username, val, mAuth.getUid(), new_email, new_address, new_phone);
                                                         system.document(user.getUid()).set(person);
 
 
