@@ -55,7 +55,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
      * Sets up our recyclerview, including defining the query which will populate the list
      */
     public void setUp() {
-        query = transRef.whereEqualTo("owner_dbID", auth.getUid()).whereEqualTo("status", Transaction.STATUS_REQUESTED);
+        query = transRef.whereEqualTo("owner_dbID", auth.getUid()).whereEqualTo("status", Transaction.STATUS_REQUESTED).whereEqualTo("bookID", bookID);
         FirestoreRecyclerOptions<Transaction> options = new FirestoreRecyclerOptions.Builder<Transaction>()
                 .setQuery(query, Transaction.class)
                 .build();

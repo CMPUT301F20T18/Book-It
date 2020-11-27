@@ -39,10 +39,10 @@ public class EditProfile extends AppCompatActivity {
     private static final int RESULT_PROFILE_EDITED = 1;
     private EditText usernameInput, phoneNumInput;
     private Button addressInput;
-    private TextView changePass;
+    private TextView changePass, textAddress;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
     private ImageView profilePic;
-    private String photo;
+    private String photo, address;
     private UserLocation location;
 
     private final static String TAG = "EP_DEBUG";
@@ -61,12 +61,12 @@ public class EditProfile extends AppCompatActivity {
         phoneNumInput = findViewById(R.id.phone_input);
         phoneNumInput.setText((String) extras.get("phone"));
 
+        address = (String) extras.get("address");
+        textAddress = findViewById(R.id.text_address);
         addressInput = findViewById(R.id.edit_address_button);
 
         profilePic  = findViewById(R.id.profile_pic);
         photo = (String) extras.get("photo");
-
-
 
         changePass = findViewById(R.id.password_change);
 
@@ -95,6 +95,7 @@ public class EditProfile extends AppCompatActivity {
                 i.putExtra("photo", photo);
                 i.putExtra("username", usernameInput.getText().toString());
                 i.putExtra("phone", phoneNumInput.getText().toString());
+                i.putExtra("address", textAddress.getText().toString());
                 setResult(RESULT_OK, i);
                 finish();
 
@@ -120,36 +121,19 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
-        String text = "Change Password";
-
-        SpannableString redirectString = new SpannableString(text);
-
-        ClickableSpan redirect = new ClickableSpan() {
+        // User wants to change password
+        changePass.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(@NonNull View widget) {
-
+            public void onClick(View v) {
                 ChangePasswordDialog changePassword = new ChangePasswordDialog();
                 changePassword.show(getSupportFragmentManager(), "dialog");
             }
+        });
 
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.colorLightGray));
-            }
-        };
-
-
+        textAddress.setText(address);
 
         EditProfile.AddressOnClickListener listener = new EditProfile.AddressOnClickListener(this);
         addressInput.setOnClickListener(listener);
-
-
-
-        redirectString.setSpan(redirect,0,15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        changePass.setText(redirectString);
-        changePass.setMovementMethod(LinkMovementMethod.getInstance());
-
 
     }
 
@@ -217,6 +201,7 @@ public class EditProfile extends AppCompatActivity {
 
                     User current = new User();
                     current.userChangeAddress(location);
+                    textAddress.setText(title);
                     break;
                 }
 

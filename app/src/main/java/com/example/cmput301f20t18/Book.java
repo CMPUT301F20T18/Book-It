@@ -261,7 +261,10 @@ public class Book{
     }
 
 
-
+    /**
+     * Retrieve the cover photo of the book
+     * @ Bitmap Representation of the photo
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Bitmap retrieveCover() {
         Bitmap cover = null;
@@ -275,6 +278,10 @@ public class Book{
     }
 
 
+    /**
+     * Retrieve all the photos for the book
+     * @return
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public ArrayList<Bitmap> retrievePhotos() {
         ArrayList<Bitmap> photoList = new ArrayList<>();
