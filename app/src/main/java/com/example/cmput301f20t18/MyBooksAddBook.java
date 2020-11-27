@@ -81,6 +81,7 @@ public class MyBooksAddBook extends AppCompatActivity {
     ImageButton addPhoto;
 
     ArrayList<Bitmap> photos;
+    ArrayList<Bitmap> outPhotos;
     Bitmap defaultPhoto;
 
     Toolbar toolbar;
@@ -164,6 +165,7 @@ public class MyBooksAddBook extends AppCompatActivity {
             // Send the images to the recycler view adapter
         //}
         photos = new ArrayList<>();
+        outPhotos = new ArrayList<>();
 
 
 
@@ -244,9 +246,11 @@ public class MyBooksAddBook extends AppCompatActivity {
                 Integer year = Integer.parseInt(book_year);
 
                 ArrayList<String> photoStrings = new ArrayList<>();
-                for (Bitmap photo: photos){
-                    photoStrings
-                            .add(photoAdapter.bitmapToString(photo));
+                for (Bitmap photo: outPhotos){
+                    if (photo != null) {
+                        photoStrings
+                                .add(photoAdapter.bitmapToString(photo));
+                    }
                 }
                 if (photos.isEmpty()){
                     if (defaultPhoto != null) {
@@ -322,9 +326,11 @@ public class MyBooksAddBook extends AppCompatActivity {
                     cursor.close();
                     Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
-                    //Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) addPhoto.getWidth(), (float) addPhoto.getHeight());
+
                     imageRecyclerViewAdapter.addData(bitmap);
-                    //photos.add(outMap);
+                    View view = findViewById(R.id.book_image_view);
+                    Bitmap outmap = photoAdapter.scaleBitmap(bitmap, view.getLayoutParams().width, view.getLayoutParams().height);
+                    outPhotos.add(outmap);
                     //addPhoto.setImageBitmap(outMap);
                 }
         }
