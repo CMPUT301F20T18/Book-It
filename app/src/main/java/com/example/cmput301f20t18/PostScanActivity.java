@@ -86,14 +86,16 @@ public class PostScanActivity extends AppCompatActivity {
             @RequiresApi(api = Build.VERSION_CODES.M)
             @Override
             public void onClick(View v) {
-                Bundle bundle = new Bundle();
+                /*Bundle bundle = new Bundle();
                 bundle.putString("ISBN", passed_isbn);
                 Fragment fragment = new SearchFragment();
                 fragment.setArguments(bundle);
                 // TODO: Implement fragment_container for this activity
-                //getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();
+                getSupportFragmentManager().beginTransaction().add(R.id.fragment_container, fragment).commit();*/
 
-
+                Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                intent.putExtra("ISBN", passed_isbn);
+                startActivity(intent);
 
             }
         });
