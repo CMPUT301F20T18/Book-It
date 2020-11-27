@@ -49,5 +49,13 @@
     <string name="borrowed_borrowing_empty">Books you are borrowing will appear here</string>
     <string name="select_an_address">Select an address</string>
     <string name="title_activity_show_map_location">Map</string>
+    <string name="mybooks_empy">No owned books found</string>
+    <string name="borrowed_empty">No borrowed books found</string>
+    <string name="email">Email</string>
+    <string name="welcome_to">Welcome to</string>
+    <string name="password">Password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="sign_up_question">Don\'t have an account?</string>
+    <string name="sign_up">Sign up</string>
 
 </resources>

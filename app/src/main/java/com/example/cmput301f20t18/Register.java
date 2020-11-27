@@ -93,7 +93,17 @@ public class Register extends AppCompatActivity {
         DB = FirebaseFirestore.getInstance();
         system = DB.collection("users");
 
-        String text = "Sign In";
+        signInRedirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent redirectIntent = new Intent(Register.this,Login.class);
+                startActivity(redirectIntent);
+                finish();
+            }
+        });
+
+        // Delete this later unless someone has a reason for it
+        /*String text = "Sign In";
 
         SpannableString redirectString = new SpannableString(text);
 
@@ -114,7 +124,7 @@ public class Register extends AppCompatActivity {
 
         redirectString.setSpan(redirect,0,7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         signInRedirect.setText(redirectString);
-        signInRedirect.setMovementMethod(LinkMovementMethod.getInstance());
+        signInRedirect.setMovementMethod(LinkMovementMethod.getInstance());*/
 
         AddressOnClickListener listener = new AddressOnClickListener(this);
         address.setOnClickListener(listener);
