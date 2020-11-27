@@ -12,7 +12,7 @@
 
     <style name="Button" parent="Widget.AppCompat.Button">
         <item name="android:textAllCaps">false</item>
-
+        <item name="android:fontFamily">@font/poppins</item>
     </style>
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">

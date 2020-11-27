@@ -33,7 +33,7 @@ public class Login extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     Button login;
-    Button register;
+    TextView register;
     EditText login_user;
     EditText login_password;
     TextView usernameT;
@@ -50,15 +50,15 @@ public class Login extends AppCompatActivity {
         // register parameters
         mAuth = FirebaseAuth.getInstance();
         login = (Button) findViewById(R.id.login);
-        register = (Button) findViewById(R.id.Register);
+        register = (TextView) findViewById(R.id.sign_up);
         login_user = (EditText) findViewById(R.id.username);
         login_password = (EditText) findViewById(R.id.password);
 
-        usernameT = (TextView) findViewById(R.id.textView_username);
-        passwordT = (TextView) findViewById(R.id.textView_password);
+        //usernameT = (TextView) findViewById(R.id.textView_username);
+        //passwordT = (TextView) findViewById(R.id.textView_password);
         //loginArt = (ImageView) findViewById(R.id.login_image);
-        signIn = (TextView) findViewById(R.id.sign_in);
-        projectLogo = (ImageView) findViewById(R.id.login_image);
+        //signIn = (TextView) findViewById(R.id.sign_in);
+        //projectLogo = (ImageView) findViewById(R.id.login_image);
 
         // user clicks on login button
         login.setOnClickListener(new View.OnClickListener() {

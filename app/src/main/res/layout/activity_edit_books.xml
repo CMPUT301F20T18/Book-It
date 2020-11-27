@@ -45,7 +45,7 @@
                 android:paddingTop="3dp"
                 android:fontFamily="@font/poppins_medium"
                 android:text="Edit Book"
-                android:textColor="@color/karryText"
+                android:textColor="@color/colorAccent"
                 android:textSize="30sp" />
             <Button
                 android:id="@+id/done_add_book"
@@ -56,7 +56,7 @@
                 android:layout_marginEnd="8dp"
                 android:background="@drawable/good_button_blue"
                 android:text="Done"
-                android:textColor="@color/karryText"
+                android:textColor="@color/colorAccent"
                 android:textSize="15sp" />
         </RelativeLayout>
     </FrameLayout>
@@ -101,7 +101,7 @@
             android:hint="Enter Title"
             android:inputType="textPersonName"
             android:paddingHorizontal="10dp"
-            android:textColor="@color/karryText"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/book_title_prompt"
@@ -132,7 +132,7 @@
             android:hint="Enter author name"
             android:inputType="textPersonName"
             android:paddingHorizontal="10dp"
-            android:textColor="@color/karryText"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/author_prompt"
@@ -163,7 +163,7 @@
             android:hint="Enter year of publication"
             android:inputType="number"
             android:paddingHorizontal="10dp"
-            android:textColor="@color/karryText"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/year_prompt"
@@ -194,7 +194,7 @@
             android:hint="Enter ISBN-13"
             android:inputType="number"
             android:paddingHorizontal="10dp"
-            android:textColor="@color/karryText"
+            android:textColor="@color/colorAccent"
             android:textColorHint="@color/colorText"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@+id/isbn_prompt"
