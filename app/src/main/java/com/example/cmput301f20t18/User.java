@@ -1,10 +1,7 @@
 package com.example.cmput301f20t18;
 
-import android.content.Intent;
-import android.location.Address;
 import android.os.Build;
 import android.util.Log;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -40,6 +37,8 @@ import java.util.Objects;
  * @author deinum
  */
 public class User {
+
+    // user info
     private String username;
     private int appID;
     private String dbID;
@@ -783,6 +782,11 @@ public class User {
 
     }
 
+
+    /**
+     * Delete all the notifications for the current user
+     * Done recursively through a cloud function
+     */
     public void userDeleteNotifications() {
             Map<String, Object> data = new HashMap<>();
             data.put("path", "/users/" + auth.getUid() + "/notifications");
@@ -804,6 +808,9 @@ public class User {
                     });
     }
 
+    /**
+     * Send a password reset email to the current user
+     */
     public void passwordReset() {
         userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
@@ -822,6 +829,10 @@ public class User {
     }
 
 
+    /**
+     * Change the users current address
+     * @param location The new location for the user
+     */
     public void userChangeAddress(UserLocation location) {
         userRef.document(auth.getUid()).update("address", location);
     }
@@ -859,58 +870,118 @@ public class User {
         this.username = username;
     }
 
+    /**
+     * Returns the users appID
+     * @return Integer representing the users app ID
+     */
     public int getAppID() {
         return appID;
     }
 
+
+    /**
+     * Set the users appID
+     * Do not use this, it is used by firestore during de-serialization
+     * @param appID The new appID
+     */
     public void setAppID(int appID) {
         this.appID = appID;
     }
 
+    /**
+     * Get the current users Database ID
+     * @return String representation of the user database ID
+     */
     public String getDbID() {
         return dbID;
     }
 
+    /**
+     * Set the users Database ID
+     * Do not use this, it is used by firestore during de-serialization
+     * @param dbID The new database ID for the user
+     */
     public void setDbID(String dbID) {
         this.dbID = dbID;
     }
 
+    /**
+     * Get the current address for the user
+     * @return Userlocation object, containing the Latitude, Longitude, and title of the address
+     */
     public UserLocation getAddress() {
         return address;
     }
 
+    /**
+     * Set the new address for the user
+     * @param address new UserLocation object specifying the users new address
+     */
     public void setAddress(UserLocation address) {
         this.address = address;
     }
 
+
+    /**
+     * Get the current users phone number
+     * @return String representation of the users current phone number
+     */
     public String getPhone() {
         return phone;
     }
 
+    /**
+     * Set the users phone number
+     * @param phone The new phone number for the current user
+     */
     public void setPhone(String phone) {
         this.phone = phone;
     }
 
+    /**
+     * Get the current users email
+     * @return String representation of the users email
+     */
     public String getEmail() {
         return email;
     }
 
+    /**
+     * Set the users email
+     * @param email The new email for the user
+     */
     public void setEmail(String email) {
         this.email = email;
     }
 
+    /**
+     * Get the profile picture for the user
+     * @return String represention of the users profile picture
+     */
     public String getProfile_picture() {
         return profile_picture;
     }
 
+    /**
+     * Set the users profile picture
+     * @param profile_picture The new string representation of the profile picture
+     */
     public void setProfile_picture(String profile_picture) {
         this.profile_picture = profile_picture;
     }
 
+    /**
+     * Get the users current instance token
+     * @return String Representation of the users current instance token
+     */
     public String getInstanceToken() {
         return instanceToken;
     }
 
+    /**
+     * Set the users instance token
+     * @param instanceToken The new instance token for the user
+     */
     public void setInstanceToken(String instanceToken) {
         this.instanceToken = instanceToken;
     }

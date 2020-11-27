@@ -99,7 +99,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                     if (task.isSuccessful()) {
                         User borrower = task.getResult().toObjects(User.class).get(0);
                         String photoString = borrower.getProfile_picture();
-                        if(photoString!="" && photoString!=null) {
+                        if(photoString != null && !photoString.equals("")) {
                             Bitmap bm = photoAdapter.stringToBitmap(photoString);
                             Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
                             holder.buttonUser.setImageBitmap(photo);
