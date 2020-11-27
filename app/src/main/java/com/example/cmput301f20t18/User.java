@@ -10,6 +10,8 @@ import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
 
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -21,9 +23,14 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.functions.FirebaseFunctions;
+import com.google.firebase.functions.HttpsCallableReference;
+import com.google.firebase.functions.HttpsCallableResult;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 
@@ -36,7 +43,7 @@ public class User {
     private String username;
     private int appID;
     private String dbID;
-    private String address;
+    private UserLocation address;
     private String phone;
     private String email;
     private String profile_picture;
@@ -71,13 +78,13 @@ public class User {
      * @param email The email used by the user
      * @param address The users address
      */
-    public User(String username, int appID, String DB_id, String email, String address) {
+    public User(String username, int appID, String DB_id, String email, UserLocation address, String phone) {
         this.username = username;
         this.appID = appID;
         this.dbID = DB_id;
         this.email = email;
         this.address = address;
-        this.phone = null;
+        this.phone = phone;
         this.profile_picture = "";
         this.instanceToken = null;
     }
@@ -147,7 +154,6 @@ public class User {
                 // update the transaction
                 transRef.document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
 
-                // TODO: Implement notification
 
                 // update the user book
                 userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(transaction.getBookID())).update("status", Book.STATUS_ACCEPTED);
@@ -408,15 +414,12 @@ public class User {
 
     }
 
-
-    public void ownerAddLocation(Address address) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document(SelectLocationActivity.getAddressString(address)).set(address);
+    public void ownerAddLocation(UserLocation location) {
+        userRef.document(auth.getUid()).collection("pickup_locations").document(location.getTitle().replace(' ', '_')).set(location);
     }
 
-    public void ownerEditProfile(String username, String address, String coverPhoto, String phone) {
-        if (!address.equals("")) {
-            userRef.document(auth.getUid()).update("address", address);
-        }
+    public void ownerEditProfile(String username, String coverPhoto, String phone) {
+
 
         if (!coverPhoto.equals("")) {
             userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
@@ -458,6 +461,7 @@ public class User {
                     }
                 }
 
+
                 @Override
                 public void onCancelled(@NonNull DatabaseError error) {
 
@@ -471,22 +475,35 @@ public class User {
 
 
 
+    public void ownerSetPickupLocation(UserLocation location, int bookID) {
 
-    public void ownerSetPickupLocation(Address address, int bookID) {
-
+        Log.d(TAG, "ownerSetPickupLocation: bookID:" + bookID);
         // find the transaction associated with this book
-        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        transRef.whereEqualTo("bookID", bookID).whereGreaterThanOrEqualTo("status", Transaction.STATUS_ACCEPTED).whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED ).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // must be unique
 
-                    // update the borrowers pickup address
-                    userRef.document(transaction.getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID))
-                            .update("pickup_location", SelectLocationActivity.getAddressString(address));
 
-                    // update the pickup location for the owner
-                    bookRef.document(Integer.toString(bookID)).update("pickup_location", SelectLocationActivity.getAddressString(address));
+                    Log.d(TAG,"setPickupLocation - Location title: " + location.getTitle());
+                    transRef.document(Integer.toString(transaction.getID())).update("location", location);
+
+
+                    bookRef.document(Integer.toString(transaction.getBookID())).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
+                            if (task1.isSuccessful()) {
+                                Book book = task1.getResult().toObject(Book.class);
+
+                                Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.CHANGE_LOCATION);
+                                notification.prepareMessage();
+                                notification.sendNotification();
+                            }
+                        }
+                    });
+
+
                 }
 
                 else {
@@ -497,8 +514,21 @@ public class User {
     }
 
 
-    public void ownerDeleteLocation(String location) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document(location).delete();
+    public void ownerDeleteLocation(UserLocation location) {
+        userRef.document(auth.getUid()).collection("pickup_locations").whereEqualTo("title", location.getTitle()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    UserLocation spot = task.getResult().toObjects(UserLocation.class).get(0);
+                    userRef.document(auth.getUid()).collection("pickup_locations").document(location.getTitle().replace(' ', '_')).delete();
+                }
+
+                else {
+                    Log.d(TAG, "DeleteLocation - error finding pickup location");
+                }
+            }
+        });
     }
 
 
@@ -718,7 +748,7 @@ public class User {
      * @param bookID The book ID of the book they no longer want to request
      */
     public void borrowerCancelRequest(int bookID) {
-        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_ACCEPTED).get().addOnCompleteListener(task -> {
+        transRef.whereEqualTo("bookID", bookID).whereEqualTo("status", Transaction.STATUS_REQUESTED).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // request is unique and non null
 
@@ -753,9 +783,47 @@ public class User {
 
     }
 
+    public void userDeleteNotifications() {
+            Map<String, Object> data = new HashMap<>();
+            data.put("path", "/users/" + auth.getUid() + "/notifications");
 
-    public void userSendNotification(String bookTitle, String source_username, String target_username, char type) {
+            HttpsCallableReference deleteFn =
+                    FirebaseFunctions.getInstance().getHttpsCallable("recursiveDelete");
+            deleteFn.call(data)
+                    .addOnSuccessListener(new OnSuccessListener<HttpsCallableResult>() {
+                        @Override
+                        public void onSuccess(HttpsCallableResult httpsCallableResult) {
+                            Log.d(TAG, "userDeleteNotification - Success");
+                        }
+                    })
+                    .addOnFailureListener(new OnFailureListener() {
+                        @Override
+                        public void onFailure(@NonNull Exception e) {
+                            Log.d(TAG, "userDeleteNotification - Failure");
+                        }
+                    });
+    }
 
+    public void passwordReset() {
+        userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User current = task.getResult().toObject(User.class);
+                    auth.sendPasswordResetEmail(current.getEmail());
+                    Log.d(TAG, "Sent email to: " + current.getEmail());
+                }
+
+                else {
+                    Log.d(TAG, "Change password - Error finding user");
+                }
+            }
+        });
+    }
+
+
+    public void userChangeAddress(UserLocation location) {
+        userRef.document(auth.getUid()).update("address", location);
     }
 
 
@@ -807,11 +875,11 @@ public class User {
         this.dbID = dbID;
     }
 
-    public String getAddress() {
+    public UserLocation getAddress() {
         return address;
     }
 
-    public void setAddress(String address) {
+    public void setAddress(UserLocation address) {
         this.address = address;
     }
 

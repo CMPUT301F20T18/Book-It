@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -11,14 +12,21 @@ import android.content.Intent;
 import android.location.Address;
 import android.location.Geocoder;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -39,6 +47,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
     FirestoreLocationAdapter adapter;
     Button addLocation;
     int bookID;
+    final static String TAG = "CLA_DEBUG";
 
     private static final int SELECT_LOCATION_REQUEST_CODE = 0;
 
@@ -60,6 +69,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         bookID = getIntent().getIntExtra("bookID", 0);
+        setUp();
 
 
         // Setting the header title. This may be done in XML instead
@@ -74,11 +84,11 @@ public class ChooseLocationActivity extends AppCompatActivity {
      */
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("pickup_locations");
-        FirestoreRecyclerOptions<Address> options = new FirestoreRecyclerOptions.Builder<Address>()
-                .setQuery(query, Address.class)
+        FirestoreRecyclerOptions<UserLocation> options = new FirestoreRecyclerOptions.Builder<UserLocation>()
+                .setQuery(query, UserLocation.class)
                 .build();
 
-        adapter = new FirestoreLocationAdapter(options, bookID);
+        adapter = new FirestoreLocationAdapter(options, bookID, ChooseLocationActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
         recyclerView.setAdapter(adapter);
     }
@@ -103,16 +113,32 @@ public class ChooseLocationActivity extends AppCompatActivity {
     }
 
 
+
+
     // Handle returned address
     @Override
     public void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        int index = data.getIntExtra("LOCATION_INDEX", -1);
-        Address address = data.getParcelableExtra("OUTPUT_ADDRESS");
+        if (resultCode == RESULT_OK) {
 
-        // add the new address to the users pickup_location collection
-        //User current = new User();
-        //current.ownerAddLocation(address);
+            String title = data.getStringExtra("OUTPUT_TITLE");
+            double latitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+            double longitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+
+
+            Log.d(TAG, "Title: " + title);
+            Log.d(TAG, "Lat: " + latitude);
+            Log.d(TAG, "Long: " + longitude);
+
+
+
+            UserLocation location = new UserLocation(title, latitude, longitude);
+            // add the new address to the users pickup_location collection
+            User current = new User();
+            current.ownerAddLocation(location);
+        }
+
+
     }
 
     private class AddLocationOnClickListener implements View.OnClickListener{
@@ -124,8 +150,31 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
+            Task<DocumentSnapshot> userLocationTask = userRef.document(auth.getUid()).get();
+            userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener(parentContext));
+        }
+    }
+
+    private class UserQueryOnCompleteListener implements OnCompleteListener<DocumentSnapshot> {
+        private Context parentContext;
+
+        UserQueryOnCompleteListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            UserLocation location = new UserLocation("DEFAULT_LOCATION",
+                    0.0, 0.0);
+            if (task.isSuccessful()) {
+                DocumentSnapshot userSnapshot = task.getResult();
+                User user = userSnapshot.toObject(User.class);
+                location = user.getAddress();
+            }
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
-            // intent.putExtra("INPUT_ADDRESS", address2);
+            intent.putExtra("INPUT_TITLE", location.getTitle());
+            intent.putExtra("INPUT_LATITUDE", location.getLatitude());
+            intent.putExtra("INPUT_LONGITUDE", location.getLongitude());
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }

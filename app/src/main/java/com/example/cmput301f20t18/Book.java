@@ -38,7 +38,6 @@ public class Book implements Comparable<Book> {
     private String owner_username;
     private String owner_dbID;
     private int year;
-    private String pickup_location;
     private String borrower_username;
 
 
@@ -60,7 +59,6 @@ public class Book implements Comparable<Book> {
         this.owner_dbID = owner_dbID;
         this.year = year;
         this.photos = photos;
-        this.pickup_location = null;
         this.borrower_username = null;
 
     }

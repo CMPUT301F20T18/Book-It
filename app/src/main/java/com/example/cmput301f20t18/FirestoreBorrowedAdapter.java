@@ -124,25 +124,33 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         }
 
         // This is used to open up a user's profile when clicking on their profile photo
-        View.OnClickListener openProfileListener = new View.OnClickListener() {
+        holder.buttonUser.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v) {
-                /* TODO: Pass which user profile to show to CheckProfileActivity */
-                Intent intent = new Intent(v.getContext(), CheckProfileActivity.class);
-                v.getContext().startActivity(intent);
+            public void onClick(View view) {
+                Intent intent = new Intent(view.getContext(), CheckProfileActivity.class);
+                intent.putExtra("USERNAME", book.getOwner_username());
+                view.getContext().startActivity(intent);
             }
-        };
+        });
 
-        // This is used to view the pick up location when clicking the map button
-        View.OnClickListener openMapListener = new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                /* Are we allowing the borrower to see the location before being accepted? */
-                /* TODO: make activity that displays pick up location to borrower */
-            }
-        };
+        try {
+            // This is used to view the pick up location when clicking the map button
+            holder.buttonMap.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(v.getContext(), ShowMapLocationActivity.class);
+                    intent.putExtra("bookID", book.getId());
+                    v.getContext().startActivity(intent);
+                }
+            });
+        }
+        catch (Exception e) {
+            Log.d(TAG, e.toString());
+        }
 
-        /* holder will be updated differently depending on Book status. */
+
+
+                /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:

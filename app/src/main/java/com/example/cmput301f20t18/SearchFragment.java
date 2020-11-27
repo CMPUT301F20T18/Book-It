@@ -59,6 +59,7 @@ public class SearchFragment extends Fragment {
 
     TextView noResultsTextView;
     EditText searchEditText;
+    Button searchButton;
     ListView SearchResultList;
 
     /**
@@ -75,7 +76,7 @@ public class SearchFragment extends Fragment {
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
-        Button searchButton;
+
 
         // Setting the header title. This may be done in XML instead
         Toolbar toolbar = view.findViewById(R.id.search_toolbar);
@@ -107,12 +108,24 @@ public class SearchFragment extends Fragment {
         searchButton.setOnClickListener(
                 new SearchButtonOnClickListener(searchEditText, spinnerListener));
 
+
         SearchResultList = view.findViewById(R.id.search_result_list);
         return view;
     }
 
-
-
+    // this is for when a user clicks "search for available copies" in postscan
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (getArguments() != null) {
+            String ISBN = getArguments().getString("ISBN");
+            if (ISBN != null) {
+                searchEditText.setText(ISBN);
+                searchButton.performClick();
+                noResultsTextView.setText(""); // this has to be here for some reason
+            }
+        }
+    }
 
     /**
      * Search checks to ensure search field is populated
@@ -127,12 +140,10 @@ public class SearchFragment extends Fragment {
             if (selectedOption.equals("Books")) {
                 SearchResultList.setAdapter(bookAdapter);
                 searchBooks(searchWord, bookAdapter, true);
-                bookAdapter.notifyDataSetChanged();
             }
             else {
                 SearchResultList.setAdapter(userAdapter);
                 searchUsers(searchWord);
-                userAdapter.notifyDataSetChanged();
             }
         }
     }
@@ -174,7 +185,6 @@ public class SearchFragment extends Fragment {
         final CollectionReference userCollection = db.collection("users");
 
         UserQueryHandler.searchByUsername(userCollection, listener, searchKey);
-        userAdapter.notifyDataSetChanged();
     }
 
     /**
@@ -194,12 +204,10 @@ public class SearchFragment extends Fragment {
             // change the EditText hint and clear the list when changing options
             if (option.equals("Books")) {
                 Log.d(TAG, "onItemSelected: Books selected");
-                searchEditText.setText("");
                 searchEditText.setHint(R.string.search_book);
                 userAdapter.clear();
             } else {
                 Log.d(TAG, "onItemSelected: Users selected");
-                searchEditText.setText("");
                 searchEditText.setHint("Enter a username");
                 bookAdapter.clear();
             }
@@ -503,7 +511,9 @@ public class SearchFragment extends Fragment {
                     bookAdapter.notifyDataSetChanged();
                 }
             }
-            if (bookDataList.size() > 0) {
+            if (bookDataList.size() == 0) {
+                noResultsTextView.setText(getResources().getString(R.string.no_results));
+            } else {
                 noResultsTextView.setText("");
             }
         }
@@ -532,6 +542,11 @@ public class SearchFragment extends Fragment {
                     userDataList.add(user);
                     userAdapter.notifyDataSetChanged();
                 }
+            }
+            if (userDataList.size() == 0) {
+                noResultsTextView.setText(getResources().getString(R.string.no_results));
+            } else {
+                noResultsTextView.setText("");
             }
         }
     }
@@ -733,13 +748,16 @@ public class SearchFragment extends Fragment {
 
             //Set up profile pic
 
-            if (user.getProfile_picture() != null && !user.getProfile_picture().equals("")){
+            String profilePictureSting = user.getProfile_picture();
+            if (profilePictureSting != null && !profilePictureSting.equals("")){
 
                 ImageView profilePicView = view.findViewById(R.id.profile_view);
+
                 String profilePicString = user.getProfile_picture();
                 /*
+
                 Bitmap bm = photoAdapter.scaleBitmap(
-                        photoAdapter.stringToBitmap(profilePicString),
+                        photoAdapter.stringToBitmap(profilePictureSting),
                         profilePicView.getLayoutParams().width,
                         profilePicView.getLayoutParams().height);
                 Bitmap profilePicture = photoAdapter.makeCircularImage(bm, bm.getHeight());
