@@ -200,11 +200,11 @@ public class ProfileFragment extends Fragment {
         profilePic = (ImageView) view.findViewById(R.id.profile_pic);
 
         username.setText(user.getUsername());
-        textAddress.setText(user.getAddress());
+        textAddress.setText(user.getAddress().getTitle());
         phoneNum.setText(user.getPhone());
         email.setText(user.getEmail());
         photoString = user.getProfile_picture();
-        address = user.getAddress();
+        address = user.getAddress().getTitle();
         if (photoString!= "") {
             Bitmap bitmap;
             try {
@@ -275,8 +275,7 @@ public class ProfileFragment extends Fragment {
 
 
                     User current = new User();
-
-                    current.ownerEditProfile((String) newInfo.get("username"), address , photoString, (String)newInfo.get("phone"));
+                    current.ownerEditProfile((String) newInfo.get("username"), photoString, (String)newInfo.get("phone"));
 
 
                 }
