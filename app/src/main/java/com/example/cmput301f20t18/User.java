@@ -479,6 +479,7 @@ public class User {
 
     public void ownerSetPickupLocation(UserLocation location, int bookID) {
 
+        Log.d(TAG, "ownerSetPickupLocation: bookID:" + bookID);
         // find the transaction associated with this book
         transRef.whereEqualTo("bookID", bookID).whereGreaterThanOrEqualTo("status", Transaction.STATUS_ACCEPTED).whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED ).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @Override
@@ -486,7 +487,11 @@ public class User {
                 if (task.isSuccessful()) {
                     Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // must be unique
 
-                    transRef.document(Integer.toString(bookID)).update("location", location);
+
+                    Log.d(TAG,"setPickupLocation - Location title: " + location.getTitle());
+                    transRef.document(Integer.toString(transaction.getID())).update("location", location);
+
+                    // TODO: Notify the Borrowerb n
                 }
 
                 else {
