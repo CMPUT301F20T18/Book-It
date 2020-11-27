@@ -26,6 +26,7 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
 
     private ArrayList<Bitmap> photos;
+    private ArrayList<Bitmap> photoData;
     private MyBooksAddBook.addListener addListener;
 
 
@@ -88,7 +89,8 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
     public ArrayList<Bitmap> getPhotos() {
 
-        return (ArrayList<Bitmap>) photos.subList(0, photos.size()-1);
+        this.photos.remove(this.photos.size()-1);
+        return this.photos;
 
     }
 
