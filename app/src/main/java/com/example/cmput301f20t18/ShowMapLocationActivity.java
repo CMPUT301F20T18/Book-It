@@ -45,14 +45,6 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
 
     }
 
-    private UserLocation getPickupLocation() {
-        pickupLocation = new UserLocation(
-                getIntent().getStringExtra("INPUT_TITLE"),
-                getIntent().getDoubleExtra("INPUT_LATITUDE", 0),
-                getIntent().getDoubleExtra("INPUT_LONGITUDE", 0));
-        return pickupLocation;
-    }
-
     /**
      * Manipulates the map once available.
      * This callback is triggered when the map is ready to be used.
@@ -82,8 +74,9 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
 
                     mMap = googleMap;
 
-                    // Add a marker in Sydney and move the camera
-                    LatLng markerPosition = new LatLng(transaction.getLocation().getLatitude(), transaction.getLocation().getLongitude());
+                    LatLng markerPosition =
+                            new LatLng(transaction.getLocation().getLatitude(),
+                                    transaction.getLocation().getLongitude());
 
 
                     mMap.addMarker(new MarkerOptions().position(markerPosition)

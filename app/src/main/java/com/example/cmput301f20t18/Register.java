@@ -55,6 +55,7 @@ import java.util.Objects;
  */
 
 public class Register extends AppCompatActivity {
+    private UserLocation new_address;
 
     EditText username;
     EditText password;
@@ -138,10 +139,14 @@ public class Register extends AppCompatActivity {
                 String new_username = username.getText().toString();
                 String new_password = password.getText().toString();
                 String new_email= email.getText().toString();
-                String new_address = "";//address.getText().toString();
 
-                if (new_username.matches("") || new_email.matches("") || new_password.matches("") || new_address.matches("")) {
-                    Toast.makeText(Register.this, "Please fill all fields", Toast.LENGTH_LONG).show();
+
+                if (new_username.matches("") || new_email.matches("") || new_password.matches("")) {
+                    Toast.makeText(Register.this, "Please fill all fields!", Toast.LENGTH_LONG).show();
+                    return;
+                }
+                if (new_address == null){
+                    Toast.makeText(Register.this, "Please Select Location!", Toast.LENGTH_LONG).show();
                     return;
                 }
 
@@ -237,7 +242,7 @@ public class Register extends AppCompatActivity {
             double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
             double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
 
-            UserLocation location = new UserLocation(title, latitude, longitude);
+            new_address = new UserLocation(title, latitude, longitude);
         }
     }
 
