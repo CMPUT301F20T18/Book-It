@@ -49,7 +49,7 @@ public class Book implements Comparable<Book> {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, long isbn, String author, int id, int status, String owner, int year, String owner_dbID, String owner_username, ArrayList<String> photos) {
+    public Book(String title, long isbn, String author, int id, int status, int year, String owner_dbID, String owner_username, ArrayList<String> photos) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
