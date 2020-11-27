@@ -51,7 +51,7 @@
             android:text="@string/scan_button"
             android:textSize="20sp"
             android:background="@drawable/good_button_background"
-            android:textColor="@color/karryText"/>
+            android:textColor="@color/colorAccent"/>
 
         <!--TEMPORARY BUTTON-->
         <Button

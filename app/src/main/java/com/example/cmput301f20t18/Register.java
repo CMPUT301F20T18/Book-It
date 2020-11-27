@@ -4,6 +4,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Color;
 import android.location.Address;
@@ -92,7 +93,17 @@ public class Register extends AppCompatActivity {
         DB = FirebaseFirestore.getInstance();
         system = DB.collection("users");
 
-        String text = "Sign In";
+        signInRedirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent redirectIntent = new Intent(Register.this,Login.class);
+                startActivity(redirectIntent);
+                finish();
+            }
+        });
+
+        // Delete this later unless someone has a reason for it
+        /*String text = "Sign In";
 
         SpannableString redirectString = new SpannableString(text);
 
@@ -113,14 +124,10 @@ public class Register extends AppCompatActivity {
 
         redirectString.setSpan(redirect,0,7, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         signInRedirect.setText(redirectString);
-        signInRedirect.setMovementMethod(LinkMovementMethod.getInstance());
+        signInRedirect.setMovementMethod(LinkMovementMethod.getInstance());*/
 
-        address.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                // TODO: allow user to select location from map
-            }
-        });
+        AddressOnClickListener listener = new AddressOnClickListener(this);
+        address.setOnClickListener(listener);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -219,17 +226,33 @@ public class Register extends AppCompatActivity {
 
     }
 
-
     // set the users pickup location to be the location they choose
+    //TODO: Add UserLocation as address for user!
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
 
-        // TODO: Set the users first pickup location
+            String title = data.getStringExtra("OUTPUT_TITLE");
+            double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+            double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
 
-        // start new activity with current user
-        Intent intent = new Intent(getBaseContext(), MainActivity.class);
-        finish();
-        startActivityForResult(intent, 0);
+            UserLocation location = new UserLocation(title, latitude, longitude);
+        }
+    }
+
+    private class AddressOnClickListener implements View.OnClickListener{
+        private Context parentContext;
+        private final int SELECT_LOCATION_REQUEST_CODE = 0;
+
+        AddressOnClickListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
+        }
     }
 }

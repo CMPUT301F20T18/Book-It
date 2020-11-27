@@ -12,13 +12,12 @@
         android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintBottom_toTopOf="@id/frame_background"
-        android:text="Create an Account"
+        android:text="Create an account"
         android:layout_marginVertical="10dp"
         android:textAlignment="center"
-        android:textColor="@color/karryText"
+        android:fontFamily="@font/poppins_medium"
+        android:textColor="@color/colorAccent"
         android:textSize="28sp" />
-
-
 
         <FrameLayout
             android:id="@+id/frame_background"
@@ -40,33 +39,30 @@
                     android:id="@+id/text_username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:padding="5dp"
+                    android:padding="3dp"
                     android:text="Username"
                     android:textColor="@color/colorOrange"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="20sp" />
 
                 <EditText
                     android:id="@+id/username"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="8dp"
+                    android:padding="5dp"
                     android:background="@drawable/hinted_input"
                     android:inputType="textPersonName"
-                    android:textColor="@color/karryText"
+                    android:textColor="@color/colorAccent"
                     android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/text_password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="5dp"
+                    android:padding="3dp"
+                    android:layout_marginTop="10dp"
                     android:text="Password"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="20sp"
                     android:textColor="@color/colorOrange"/>
 
@@ -74,24 +70,20 @@
                     android:id="@+id/password"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="8dp"
+                    android:padding="5dp"
                     android:background="@drawable/hinted_input"
                     android:inputType="textPassword"
-                    android:textColor="@color/karryText"
+                    android:textColor="@color/colorAccent"
                     android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/text_email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="5dp"
+                    android:padding="3dp"
+                    android:layout_marginTop="10dp"
                     android:text="Email"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="20sp"
                     android:textColor="@color/colorOrange"/>
 
@@ -99,24 +91,20 @@
                     android:id="@+id/email"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="8dp"
+                    android:padding="5dp"
                     android:background="@drawable/hinted_input"
                     android:inputType="textEmailAddress"
-                    android:textColor="@color/karryText"
+                    android:textColor="@color/colorAccent"
                     android:textSize="20sp" />
 
                 <TextView
                     android:id="@+id/text_phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="5dp"
+                    android:padding="3dp"
+                    android:layout_marginTop="10dp"
                     android:text="Phone Number"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="20sp"
                     android:textColor="@color/colorOrange"/>
 
@@ -124,24 +112,20 @@
                     android:id="@+id/phone"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="5dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="8dp"
+                    android:padding="5dp"
                     android:background="@drawable/hinted_input"
                     android:inputType="number"
-                    android:textColor="@color/karryText"
+                    android:textColor="@color/colorAccent"
                     android:textSize="20sp"/>
 
                 <TextView
                     android:id="@+id/text_address"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingRight="5dp"
-                    android:paddingTop="15dp"
-                    android:paddingBottom="5dp"
-                    android:paddingLeft="5dp"
+                    android:padding="3dp"
+                    android:layout_marginTop="10dp"
                     android:text="Address"
+                    android:fontFamily="@font/poppins_medium"
                     android:textSize="20sp"
                     android:textColor="@color/colorOrange"/>
 
@@ -150,21 +134,22 @@
                     android:layout_width="match_parent"
                     android:layout_height="40dp"
                     android:text="Choose an Address"
-                    android:paddingBottom="2dp"
-                    android:paddingHorizontal="10dp"
+                    android:fontFamily="@font/poppins"
+                    android:layout_marginHorizontal="10dp"
                     android:background="@drawable/good_button_background"
-                    android:textColor="@color/karryText"
+                    android:textColor="@color/colorAccent"
                     android:textSize="20sp"/>
 
                     <Button
                         android:id="@+id/registerButton"
                         android:layout_width="180dp"
                         android:layout_height="48dp"
-                        android:layout_gravity="center_horizontal"
+                        android:layout_gravity="center"
                         android:layout_marginTop="36dp"
                         android:background="@drawable/good_button_blue"
                         android:text="Sign Up"
-                        android:textColor="@color/karryText"
+                        android:fontFamily="@font/poppins"
+                        android:textColor="@color/colorAccent"
                         android:textSize="22sp" />
 
 
@@ -181,17 +166,18 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Already have an account?"
-                        android:paddingLeft="20dp"
                         android:textSize="18sp"
+                        android:fontFamily="@font/poppins_medium"
                         android:textColor="@color/colorLightGray"/>
 
                     <TextView
                         android:id="@+id/redirect_sign_in"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_alignRight="@id/sign_in_question"
-                        android:paddingLeft="5dp"
+                        android:layout_marginStart="8dp"
+                        android:textColor="@color/colorOrange"
                         android:text="Sign In"
+                        android:fontFamily="@font/poppins_medium"
                         android:textSize="18sp" />
 
 

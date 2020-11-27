@@ -41,7 +41,7 @@
             android:background="@drawable/good_button_background"
             android:fontFamily="@font/poppins_medium"
             android:text="Dismiss"
-            android:textColor="@color/karryText"
+            android:textColor="@color/colorAccent"
             android:textSize="18sp" />
     </RelativeLayout>
 
