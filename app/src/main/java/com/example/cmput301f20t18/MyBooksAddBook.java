@@ -97,6 +97,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
     FirebaseFirestore DB;
 
+
     /**
      * This method has the purpose of creating the activity that prompts the user to add information
      * to be able to add a book of theirs into the collection
@@ -131,7 +132,10 @@ public class MyBooksAddBook extends AppCompatActivity {
         Log.d(TAG, "onCreate: isbn " + passed_isbn);
 
         if (type == ADD_BOOK || type == ADD_SCAN)  {
-            setContentView(R.layout.activity_my_books_add_book);
+            //setContentView(R.layout.activity_my_books_add_book);
+            setContentView(R.layout.activity_edit_books);
+            TextView title = findViewById(R.id.title_new_book);
+            title.setText("Add Book");
         }
         else if ( type == EDIT_BOOK) {
             setContentView(R.layout.activity_edit_books);
@@ -152,19 +156,13 @@ public class MyBooksAddBook extends AppCompatActivity {
         addPhoto = findViewById(R.id.add_image_button);
 
 
-        if ( type == EDIT_BOOK) {
-            imagesViewer = findViewById(R.id.image_recycler_view);
-            layoutManager = new GridLayoutManager(this, 3);
-            imagesViewer.setLayoutManager(layoutManager);
-            imagesViewer.setHasFixedSize(true);
-            imagesViewer.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    int pos = view.getVerticalScrollbarPosition();
-                }
-            });
+        //if ( type == EDIT_BOOK) {
+        imagesViewer = findViewById(R.id.image_recycler_view);
+        layoutManager = new GridLayoutManager(this, 3);
+        imagesViewer.setLayoutManager(layoutManager);
+        imagesViewer.setHasFixedSize(true);
             // Send the images to the recycler view adapter
-        }
+        //}
         photos = new ArrayList<>();
 
 
@@ -183,7 +181,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     isbn.setText(Long.toString(book.getISBN()));
                     photos = book.retrievePhotos();
                     Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
-                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos);
+                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
                     imagesViewer.setAdapter(imageRecyclerViewAdapter);
 
 
@@ -197,6 +195,12 @@ public class MyBooksAddBook extends AppCompatActivity {
             });
 
         }
+        else{
+            imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
+            imagesViewer.setAdapter(imageRecyclerViewAdapter);
+        }
+
+
 
         if (type == ADD_SCAN) {
             isbn.setText(Long.toString(passed_isbn));
@@ -223,7 +227,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                 List<String> stringPhotos = new ArrayList<String>() {
                 };
 
-                for (Bitmap bmp : photos){
+                for (Bitmap bmp : imageRecyclerViewAdapter.getPhotos()){
                     stringPhotos.add(photoAdapter.bitmapToString(bmp));
                 }
 
@@ -287,14 +291,7 @@ public class MyBooksAddBook extends AppCompatActivity {
          * At the moment, the addPhoto button changes to match the last image uploaded
          */
         if(addPhoto != null) {
-            addPhoto.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    Intent pickPicture = new Intent(Intent.ACTION_PICK,
-                            MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
-                }
-            });
+            addPhoto.setOnClickListener(new addListener());
         }
     }
 
@@ -309,7 +306,7 @@ public class MyBooksAddBook extends AppCompatActivity {
         defaultPhoto = coverPhoto;
     }
 
-    //Work in progress
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -325,9 +322,10 @@ public class MyBooksAddBook extends AppCompatActivity {
                     cursor.close();
                     Bitmap bitmap = BitmapFactory.decodeFile(picturePath);
 
-                    Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) addPhoto.getWidth(), (float) addPhoto.getHeight());
-                    photos.add(outMap);
-                    addPhoto.setImageBitmap(outMap);
+                    //Bitmap outMap = photoAdapter.scaleBitmap(bitmap, (float) addPhoto.getWidth(), (float) addPhoto.getHeight());
+                    imageRecyclerViewAdapter.addData(bitmap);
+                    //photos.add(outMap);
+                    //addPhoto.setImageBitmap(outMap);
                 }
         }
     }
@@ -430,6 +428,16 @@ public class MyBooksAddBook extends AppCompatActivity {
         @Override
         public void onErrorResponse(VolleyError error) {
             Log.e(TAG, error.toString());
+        }
+    }
+
+    public class addListener implements View.OnClickListener{
+
+        @Override
+        public void onClick(View view) {
+            Intent pickPicture = new Intent(Intent.ACTION_PICK,
+                    MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            startActivityForResult(pickPicture, RESULT_LOAD_IMAGE);
         }
     }
 }

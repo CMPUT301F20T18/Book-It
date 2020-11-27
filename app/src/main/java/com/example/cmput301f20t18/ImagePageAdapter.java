@@ -1,11 +1,14 @@
 package com.example.cmput301f20t18;
 
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+
+import java.util.ArrayList;
 
 //This needs to be where ever a cover book is at
 /*                mPager = findViewById(R.id.slider_viewer);
@@ -15,9 +18,9 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 public class ImagePageAdapter extends FragmentPagerAdapter {
 
-   //This is where the images of a book would be at
+   private ArrayList<Bitmap> photos;
 
-    public ImagePageAdapter(@NonNull FragmentManager fm, int behavior) {
+    public ImagePageAdapter(@NonNull FragmentManager fm, int behavior, ArrayList<Bitmap> photos) {
         super(fm, behavior);
     }
 
@@ -27,10 +30,10 @@ public class ImagePageAdapter extends FragmentPagerAdapter {
 
         ImageSliderFragment imgFrag = new ImageSliderFragment();
         //This is where the images would be bundle for the image slider fragment
-        /*
+
         Bundle imgBundle = new Bundle();
-        imgBundle.putString("Source",imageURLs[position]);
-        imgFrag.setArguments(imgBundle);*/
+        imgBundle.putParcelable("Photo", photos.get(position));
+        imgFrag.setArguments(imgBundle);
 
         return imgFrag;
     }

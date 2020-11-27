@@ -1,6 +1,7 @@
 package com.example.cmput301f20t18;
 
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.os.Bundle;
 
 import androidx.fragment.app.Fragment;
@@ -65,18 +66,31 @@ public class ImageSliderFragment extends Fragment {
 
         imgDisplay = view.findViewById(R.id.image_slider_view);
 
+        Bitmap bm = photoAdapter.scaleBitmap((Bitmap) getArguments().getParcelable("Photo"),
+                imgDisplay.getLayoutParams().width,
+                imgDisplay.getLayoutParams().height);
+
+        Bitmap photo = photoAdapter.makeCircularImage(bm, bm.getHeight());
+
+        imgDisplay.setImageBitmap(photo);
+
+
         imgDisplay.setOnLongClickListener(new View.OnLongClickListener() {
             @Override
             public boolean onLongClick(View v) {
 
-/*                Intent returnIntent = new Intent(getActivity(),MainActivity.class);
-                returnIntent.putExtra("url",getArguments().getString("Source"));
-                startActivity(returnIntent);*/
+              Intent returnIntent = new Intent(getActivity(), getParentFragment().getClass());
+                returnIntent.putExtra("Photo", (Bitmap) getArguments().getParcelable("Photo"));
+                startActivity(returnIntent);
+
 
                 return false;
             }
         });
 
+
         return view;
     }
+
+
 }
