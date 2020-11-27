@@ -146,7 +146,20 @@ public class ProfileFragment extends Fragment {
 
 
 
-        final String editAccountText = "Edit Account";
+        editAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent editIntent = new Intent(getContext(),EditProfile.class);
+                editIntent.putExtra("username", username.getText().toString());
+                editIntent.putExtra("address", address);
+                editIntent.putExtra("phone", phoneNum.getText().toString());
+                editIntent.putExtra("photo", photoString);
+
+                startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
+            }
+        });
+
+        /*final String editAccountText = "Edit Account";
 
         SpannableString  editProf = new SpannableString(editAccountText);
 
@@ -172,7 +185,7 @@ public class ProfileFragment extends Fragment {
 
         editProf.setSpan(redirect,0,12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         editAccount.setText(editProf);
-        editAccount.setMovementMethod(LinkMovementMethod.getInstance());
+        editAccount.setMovementMethod(LinkMovementMethod.getInstance());*/
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         Task<DocumentSnapshot> currentUser = FirebaseFirestore.getInstance()
