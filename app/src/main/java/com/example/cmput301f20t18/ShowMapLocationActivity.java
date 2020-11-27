@@ -75,8 +75,8 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
 
                     //NOTE DOES NOT WORK BECAUSE SOMEWHERE THE VALUES ARE FLIPPED FOR LAT AND LNG
                     LatLng markerPosition =
-                            new LatLng(transaction.getLocation().getLatitude(),
-                                    transaction.getLocation().getLongitude());
+                            new LatLng(transaction.getLocation().getLongitude(),
+                                    transaction.getLocation().getLatitude());
 
 
                     mMap.addMarker(new MarkerOptions().position(markerPosition)

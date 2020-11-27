@@ -78,13 +78,13 @@ public class User {
      * @param email The email used by the user
      * @param address The users address
      */
-    public User(String username, int appID, String DB_id, String email, UserLocation address) {
+    public User(String username, int appID, String DB_id, String email, UserLocation address, String phone) {
         this.username = username;
         this.appID = appID;
         this.dbID = DB_id;
         this.email = email;
         this.address = address;
-        this.phone = null;
+        this.phone = phone;
         this.profile_picture = "";
         this.instanceToken = null;
     }
@@ -415,7 +415,7 @@ public class User {
     }
 
     public void ownerAddLocation(UserLocation location) {
-        userRef.document(auth.getUid()).collection("pickup_locations").document().set(location);
+        userRef.document(auth.getUid()).collection("pickup_locations").document(location.getTitle().replace(' ', '_')).set(location);
     }
 
     public void ownerEditProfile(String username, String coverPhoto, String phone) {
@@ -515,7 +515,20 @@ public class User {
 
 
     public void ownerDeleteLocation(UserLocation location) {
+        userRef.document(auth.getUid()).collection("pickup_locations").whereEqualTo("title", location.getTitle()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+            @RequiresApi(api = Build.VERSION_CODES.N)
+            @Override
+            public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                if (task.isSuccessful()) {
+                    UserLocation spot = task.getResult().toObjects(UserLocation.class).get(0);
+                    userRef.document(auth.getUid()).collection("pickup_locations").document(location.getTitle().replace(' ', '_')).delete();
+                }
 
+                else {
+                    Log.d(TAG, "DeleteLocation - error finding pickup location");
+                }
+            }
+        });
     }
 
 

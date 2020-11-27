@@ -212,7 +212,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
                                 @Override
                                 public void onClick(DialogInterface dialog, int which) {
-                                    current.borrowerCancelRequest(bookID);
+                                    current.borrowerCancelPickup(bookID);
                                 }
                             })
                             .setNegativeButton("Back", null)
