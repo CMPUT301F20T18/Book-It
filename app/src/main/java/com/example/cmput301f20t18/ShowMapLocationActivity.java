@@ -74,8 +74,8 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
                     mMap = googleMap;
 
                     LatLng markerPosition =
-                            new LatLng(transaction.getLocation().getLongitude(),
-                                    transaction.getLocation().getLatitude());
+                            new LatLng(transaction.getLocation().getLatitude(),
+                                    transaction.getLocation().getLongitude());
 
 
                     mMap.addMarker(new MarkerOptions().position(markerPosition)
