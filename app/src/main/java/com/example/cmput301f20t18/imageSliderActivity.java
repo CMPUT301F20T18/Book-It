@@ -13,7 +13,7 @@ import android.widget.Button;
 
 import java.util.ArrayList;
 
-class ImageSliderActivity extends AppCompatActivity {
+ class ImageSliderActivity extends AppCompatActivity {
 
     ViewPager mPager;
     ImagePageAdapter imageAdapter;
