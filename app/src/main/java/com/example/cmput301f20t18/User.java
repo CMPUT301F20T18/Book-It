@@ -418,10 +418,8 @@ public class User {
         userRef.document(auth.getUid()).collection("pickup_locations").document().set(location);
     }
 
-    public void ownerEditProfile(String username, String address, String coverPhoto, String phone) {
-        if (!address.equals("")) {
-            userRef.document(auth.getUid()).update("address", address);
-        }
+    public void ownerEditProfile(String username, String coverPhoto, String phone) {
+
 
         if (!coverPhoto.equals("")) {
             userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
@@ -808,6 +806,11 @@ public class User {
                 }
             }
         });
+    }
+
+
+    public void userChangeAddress(UserLocation location) {
+        userRef.document(auth.getUid()).update("address", location);
     }
 
 

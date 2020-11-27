@@ -275,8 +275,7 @@ public class ProfileFragment extends Fragment {
 
 
                     User current = new User();
-
-                    current.ownerEditProfile((String) newInfo.get("username"), address , photoString, (String)newInfo.get("phone"));
+                    current.ownerEditProfile((String) newInfo.get("username"), photoString, (String)newInfo.get("phone"));
 
 
                 }

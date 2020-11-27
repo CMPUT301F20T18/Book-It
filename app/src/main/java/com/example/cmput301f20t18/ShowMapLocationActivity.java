@@ -31,7 +31,6 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
     // database info
     FirebaseAuth auth = FirebaseAuth.getInstance();
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
-    CollectionReference userRef = DB.collection("users");
     CollectionReference transRef = DB.collection("transactions");
 
 

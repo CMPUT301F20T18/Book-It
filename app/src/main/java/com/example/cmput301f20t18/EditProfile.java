@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.FragmentManager;
+import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -36,11 +37,15 @@ public class EditProfile extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_PROFILE_EDITED = 1;
-    private EditText usernameInput, phoneNumInput, addressInput;
+    private EditText usernameInput, phoneNumInput;
+    private Button addressInput;
     private TextView changePass;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
     private ImageView profilePic;
     private String photo;
+    private UserLocation location;
+
+    private final static String TAG = "EP_DEBUG";
 
 
     @RequiresApi(api = Build.VERSION_CODES.O)
@@ -56,8 +61,7 @@ public class EditProfile extends AppCompatActivity {
         phoneNumInput = findViewById(R.id.phone_input);
         phoneNumInput.setText((String) extras.get("phone"));
 
-        addressInput = findViewById(R.id.address_input);
-        addressInput.setText((String) extras.get("address"));
+        addressInput = findViewById(R.id.edit_address_button);
 
         profilePic  = findViewById(R.id.profile_pic);
         photo = (String) extras.get("photo");
@@ -91,7 +95,6 @@ public class EditProfile extends AppCompatActivity {
                 i.putExtra("photo", photo);
                 i.putExtra("username", usernameInput.getText().toString());
                 i.putExtra("phone", phoneNumInput.getText().toString());
-                i.putExtra("address", addressInput.getText().toString());
                 setResult(RESULT_OK, i);
                 finish();
 
@@ -135,6 +138,13 @@ public class EditProfile extends AppCompatActivity {
                 ds.setColor(getResources().getColor(R.color.colorLightGray));
             }
         };
+
+
+
+        EditProfile.AddressOnClickListener listener = new EditProfile.AddressOnClickListener(this);
+        addressInput.setOnClickListener(listener);
+
+
 
         redirectString.setSpan(redirect,0,15, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
         changePass.setText(redirectString);
@@ -193,6 +203,35 @@ public class EditProfile extends AppCompatActivity {
                     photo = photoAdapter.bitmapToString(outMap);
                     profilePic.setImageBitmap(circleImage);
                 }
+
+            default:
+                String title = data.getStringExtra("OUTPUT_TITLE");
+                double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+                double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+
+
+                location = new UserLocation(title, latitude, longitude);
+                Log.d(TAG, "CHECK 2: location: " + location.getTitle());
+
+                User current = new User();
+                current.userChangeAddress(location);
+
+        }
+
+    }
+
+    private class AddressOnClickListener implements View.OnClickListener{
+        private Context parentContext;
+        private final int SELECT_LOCATION_REQUEST_CODE = 0;
+
+        AddressOnClickListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }
 }
