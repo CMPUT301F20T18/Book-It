@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
@@ -16,10 +17,16 @@ import android.view.View;
 import android.widget.Button;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
+import com.google.firebase.firestore.QuerySnapshot;
+
+import org.w3c.dom.Document;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -143,7 +150,31 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
+            Task<DocumentSnapshot> userLocationTask = userRef.document(auth.getUid()).get();
+            userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener(parentContext));
+        }
+    }
+
+    private class UserQueryOnCompleteListener implements OnCompleteListener<DocumentSnapshot> {
+        private Context parentContext;
+
+        UserQueryOnCompleteListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            UserLocation location = new UserLocation("DEFAULT_LOCATION",
+                    0.0, 0.0);
+            if (task.isSuccessful()) {
+                DocumentSnapshot userSnapshot = task.getResult();
+                User user = userSnapshot.toObject(User.class);
+                location = user.getAddress();
+            }
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            intent.putExtra("INPUT_TITLE", location.getTitle());
+            intent.putExtra("INPUT_LATITUDE", location.getLatitude());
+            intent.putExtra("INPUT_LONGITUDE", location.getLongitude());
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }
