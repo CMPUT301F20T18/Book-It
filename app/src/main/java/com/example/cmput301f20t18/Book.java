@@ -277,6 +277,7 @@ public class Book implements Comparable<Book> {
         return photoList;
     }
 
+
     public ArrayList<String> getPhotos(){
         return this.photos;
     }
