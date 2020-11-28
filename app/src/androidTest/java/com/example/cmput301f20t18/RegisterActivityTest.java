@@ -2,6 +2,7 @@ package com.example.cmput301f20t18;
 
 import android.app.Activity;
 import android.widget.EditText;
+import android.widget.TextView;
 
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
@@ -13,13 +14,21 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class RegisterActivityTest {
+    public static final String DEFAULT_USERNAME = "RegisterBot";
+    public static final String DEFAULT_PASSWORD = "BotPass";
+    public static final String DEFAULT_EMAIL = "RegisterBot@RegisterBot.botnet";
+    public static final String DEFAULT_PHONE = "9999999999";
+
     private Solo solo;
     @Rule
-    public ActivityTestRule<Register> rule =
-            new ActivityTestRule<>(Register.class, true, true);
+    public ActivityTestRule<Login> rule =
+            new ActivityTestRule<>(Login.class, true, true);
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
+        solo.clickOnView((TextView) solo.getView(R.id.sign_up));
+        solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
+
     }
     @Test
     public void start() throws Exception{
@@ -29,10 +38,10 @@ public class RegisterActivityTest {
     public void enterAccountInformation(){
         solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
 
-        solo.enterText((EditText) solo.getView(R.id.username), "RegisterBot");
-        solo.enterText((EditText) solo.getView(R.id.password), "RoboPass");
-        solo.enterText((EditText) solo.getView(R.id.email), "RegisterBot@RegisterBot.bot");
-        solo.enterText((EditText) solo.getView(R.id.phone), "9999999999");
+        solo.enterText((EditText) solo.getView(R.id.username), DEFAULT_USERNAME);
+        solo.enterText((EditText) solo.getView(R.id.password), DEFAULT_PASSWORD);
+        solo.enterText((EditText) solo.getView(R.id.email), DEFAULT_EMAIL);
+        solo.enterText((EditText) solo.getView(R.id.phone), DEFAULT_PASSWORD);
 
         solo.clickOnButton("Choose an Address");
         solo.assertCurrentActivity("Wrong Activity (Should be SelectLocationActivity)",

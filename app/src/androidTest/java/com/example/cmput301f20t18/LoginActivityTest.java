@@ -29,8 +29,10 @@ public class LoginActivityTest {
     @Test
     public void login(){
         solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
-        solo.enterText((EditText)solo.getView(R.id.username), "RegisterBot@RegisterBot.bot");
-        solo.enterText((EditText)solo.getView(R.id.password), "RoboPass");
+        solo.enterText((EditText)solo.getView(R.id.username),
+                RegisterActivityTest.DEFAULT_EMAIL);
+        solo.enterText((EditText)solo.getView(R.id.password),
+                RegisterActivityTest.DEFAULT_PASSWORD);
 
         solo.clickOnButton("Sign in");
 
@@ -41,5 +43,20 @@ public class LoginActivityTest {
         solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
         solo.clickOnView((TextView) solo.getView(R.id.sign_up));
         solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
+    }
+
+    public static void Login(Solo solo){
+        solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
+        solo.enterText((EditText)solo.getView(R.id.username),
+                RegisterActivityTest.DEFAULT_EMAIL);
+        solo.enterText((EditText)solo.getView(R.id.password),
+                RegisterActivityTest.DEFAULT_PASSWORD);
+        solo.clickOnButton("Sign in");
+    }
+    public static void Login(Solo solo, String username, String password){
+        solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
+        solo.enterText((EditText)solo.getView(R.id.username), username);
+        solo.enterText((EditText)solo.getView(R.id.password), password);
+        solo.clickOnButton("Sign in");
     }
 }
