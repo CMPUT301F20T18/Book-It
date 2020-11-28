@@ -26,7 +26,7 @@ public class RegisterActivityTest {
         Activity activity = rule.getActivity();
     }
     @Test
-    public void EnterAccountInformation(){
+    public void enterAccountInformation(){
         solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
 
         solo.enterText((EditText) solo.getView(R.id.username), "RegisterBot");
@@ -42,5 +42,11 @@ public class RegisterActivityTest {
 
         solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
         solo.clickOnButton("Sign Up");
+    }
+    @Test
+    public void switchToLogin(){
+        solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
+        solo.clickOnView(solo.getView(R.id.redirect_sign_in));
+        solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
     }
 }
