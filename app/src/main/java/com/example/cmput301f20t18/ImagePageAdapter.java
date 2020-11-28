@@ -1,12 +1,17 @@
 package com.example.cmput301f20t18;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
+import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.ArrayList;
 
@@ -16,51 +21,45 @@ import java.util.ArrayList;
                 mPager.setAdapter(imageAdapter);    */
 
 
-public class ImagePageAdapter extends FragmentPagerAdapter {
+public class ImagePageAdapter extends PagerAdapter {
 
-   private ArrayList<Bitmap> photos;
+    private Context mContext;
+    private ArrayList<Bitmap> photos;
 
-    public ImagePageAdapter(@NonNull FragmentManager fm, int behavior, ArrayList<Bitmap> photos) {
-        super(fm, behavior);
-    }
-
-    @NonNull
-    @Override
-    public Fragment getItem(int position) {
-
-        ImageSliderFragment imgFrag = new ImageSliderFragment();
-        //This is where the images would be bundle for the image slider fragment
-
-        Bundle imgBundle = new Bundle();
-        imgBundle.putParcelable("Photo", photos.get(position));
-        imgFrag.setArguments(imgBundle);
-
-        return imgFrag;
+    public ImagePageAdapter(Context mContext, ArrayList<Bitmap> photos) {
+        this.mContext = mContext;
+        this.photos = photos;
     }
 
     @Override
     public int getCount() {
-        return 0; /*this would be the length of the image string array*/
+        return photos.size();
     }
+
+    @Override
+    public boolean isViewFromObject(@NonNull View view, @NonNull Object object) {
+        return view == object;
+    }
+
+    @NonNull
+    @Override
+    public Object instantiateItem(@NonNull ViewGroup container, int position) {
+        ImageView imageView = new ImageView(mContext);
+        imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+
+        Bitmap bm = photoAdapter.scaleBitmap(photos.get(position),
+                imageView.getLayoutParams().width,
+                imageView.getLayoutParams().height);
+
+        imageView.setImageBitmap(bm);
+        container.addView(imageView,0);
+
+        return imageView;
+    }
+
+    @Override
+    public void destroyItem(@NonNull ViewGroup container, int position, @NonNull Object object) {
+        container.removeView((ImageView) object);
+    }
+
 }
-
-/* <?xml version="1.0" encoding="utf-8"?>
-
-Also their needs to be a ViewPager layout like so...
-
-<androidx.constraintlayout.widget.ConstraintLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".MainActivity">
-
-    <androidx.viewpager.widget.ViewPager
-        android:id="@+id/slider_viewer"
-        android:layout_width="411dp"
-        android:layout_height="667dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
-</androidx.constraintlayout.widget.ConstraintLayout>*/
