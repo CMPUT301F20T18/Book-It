@@ -150,18 +150,13 @@ public class EditProfile extends AppCompatActivity {
                                 current.passwordReset();
 
                                 new AlertDialog.Builder(EditProfile.this, R.style.CustomDialogTheme)
-                                        .setMessage("We have emailed your password reset link!")
+                                        .setTitle("We have emailed your password reset link!")
                                         .setPositiveButton("OK",null)
                                         .show();
                             }
                         })
                         .setNeutralButton("Cancel", null)
                         .show();
-
-                TextView textView = (TextView)  dialog.findViewById(android.R.id.message);
-                Typeface face= Typeface.createFromAsset(getAssets(),"poppins.tff");
-                textView.setTypeface(face);
-                dialog.show();
             }
         });
         changePass.setOnTouchListener(new View.OnTouchListener() {
