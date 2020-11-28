@@ -5,12 +5,15 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.FragmentManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
@@ -21,12 +24,20 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * This is a class used to edit a user's profile information.
@@ -44,6 +55,7 @@ public class EditProfile extends AppCompatActivity {
     private ImageView profilePic;
     private String photo, address;
     private UserLocation location;
+    private String email;
 
     private final static String TAG = "EP_DEBUG";
 
@@ -125,8 +137,38 @@ public class EditProfile extends AppCompatActivity {
         changePass.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ChangePasswordDialog changePassword = new ChangePasswordDialog();
+                User current = new User();
+                /*ChangePasswordDialog changePassword = new ChangePasswordDialog();
                 changePassword.show(getSupportFragmentManager(), "dialog");
+                changePass.setBackgroundColor(getResources().getColor(R.color.colorGray2));*/
+                AlertDialog dialog = new AlertDialog.Builder(EditProfile.this, R.style.CustomDialogTheme)
+                        .setTitle("Reset password")
+                        .setMessage("Send password reset link to\n" + extras.get("email") + "?")
+                        .setPositiveButton("Send", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                current.passwordReset();
+
+                                new AlertDialog.Builder(EditProfile.this, R.style.CustomDialogTheme)
+                                        .setMessage("We have emailed your password reset link!")
+                                        .setPositiveButton("OK",null)
+                                        .show();
+                            }
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+
+                TextView textView = (TextView)  dialog.findViewById(android.R.id.message);
+                Typeface face= Typeface.createFromAsset(getAssets(),"poppins.tff");
+                textView.setTypeface(face);
+                dialog.show();
+            }
+        });
+        changePass.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                changePass.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                return false;
             }
         });
 

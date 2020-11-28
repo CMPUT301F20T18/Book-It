@@ -20,6 +20,18 @@
     <FrameLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent">
+
+        <ImageView
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="fill_parent"
+            android:layout_height="48dp"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_navigation_bar_2"
+            />
+
         <androidx.viewpager.widget.ViewPager
             android:id="@+id/borrowed_viewPager"
             android:layout_width="match_parent"
@@ -30,7 +42,7 @@
                 android:layout_height="wrap_content"
                 app:tabGravity="fill"
                 app:tabIndicatorGravity="bottom"
-                android:background="@drawable/ic_navigation_bar_2"
+                android:background="@color/transparent"
                 app:tabSelectedTextColor="@color/colorOrange"
                 app:tabTextColor="@color/colorAccent"
                 app:tabIndicatorColor="@color/colorOrange"
