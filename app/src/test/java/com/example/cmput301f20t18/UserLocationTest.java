@@ -1,9 +1,9 @@
 package com.example.cmput301f20t18;
 
-import org.testng.annotations.Test;
+import org.junit.jupiter.api.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 public class UserLocationTest {
     private String defaultTitle = "DEFAULT_TITLE";
@@ -12,7 +12,6 @@ public class UserLocationTest {
     private UserLocation mockUserLocation(){
         return new UserLocation(defaultTitle, defaultLatitiude, defaultLongitude);
     }
-
     @Test
     void testGetTitle(){
         UserLocation userLocation = mockUserLocation();
