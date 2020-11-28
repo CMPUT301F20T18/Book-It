@@ -6,6 +6,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -107,8 +108,21 @@ public class Login extends AppCompatActivity {
                 startActivityForResult(intent, RESULT_OK);
             }
         });
+        register.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                register.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                return false;
+            }
+        });
 
 
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        register.setBackgroundColor(getResources().getColor(R.color.colorGray2));
     }
 
     @Override

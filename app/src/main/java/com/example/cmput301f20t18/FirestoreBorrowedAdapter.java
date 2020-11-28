@@ -88,7 +88,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
             String uName = book.getOwner_username();
             holder.textViewUsername.setText(uName);
-            holder.textViewUserDescription.setText("");
+            holder.textViewUserDescription.setText("owner");
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference collection = db.collection("users");
@@ -163,7 +163,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 holder.buttonCancelRequest.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        AlertDialog dialog = (new AlertDialog.Builder(v.getContext())
+                        new android.app.AlertDialog.Builder(v.getContext(), R.style.CustomDialogTheme)
                                 .setTitle("Cancel request")
                                 .setMessage("Are you sure you want to cancel your request?")
                                 .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
@@ -176,12 +176,8 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
 
                                     }
                                 })
-                                .setNegativeButton("No", null)).show();
-
-                        Button buttonPositive = dialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                        buttonPositive.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
-                        Button buttonNegative = dialog.getButton(DialogInterface.BUTTON_NEGATIVE);
-                        buttonNegative.setTextColor(ContextCompat.getColor(v.getContext(), R.color.colorPrimaryDark));
+                                .setNeutralButton("No", null)
+                                .show();
                     }
                 });
                 break;
@@ -262,7 +258,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             case Book.STATUS_ACCEPTED:
                 return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
             case Book.STATUS_BORROWED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_borrowed_lending, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_lending, null));
             default: Log.d(TAG, "Error: Book status not found");
         }
 
