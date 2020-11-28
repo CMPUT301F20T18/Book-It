@@ -76,11 +76,13 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         setContentView(R.layout.activity_select_location);
 
         //get default location
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        CollectionReference userRef = FirebaseFirestore.getInstance().
-                collection("users");
-        Task<DocumentSnapshot> userLocationTask = userRef.document(auth.getUid()).get();
-        userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener());
+        if (getIntent().getBooleanExtra("CENTER_ADDRESS", false)) {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            CollectionReference userRef = FirebaseFirestore.getInstance().
+                    collection("users");
+            Task<DocumentSnapshot> userLocationTask = userRef.document(auth.getUid()).get();
+            userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener());
+        }
 
         // Setting the header title. This may be done in XML instead
         Toolbar toolbar = findViewById(R.id.mybooks_toolbar);

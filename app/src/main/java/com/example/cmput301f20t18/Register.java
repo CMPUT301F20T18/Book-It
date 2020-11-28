@@ -213,8 +213,8 @@ public class Register extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             String title = data.getStringExtra("OUTPUT_TITLE");
-            double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
-            double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+            double latitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+            double longitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
 
             new_address = new UserLocation(title, latitude, longitude);
         }

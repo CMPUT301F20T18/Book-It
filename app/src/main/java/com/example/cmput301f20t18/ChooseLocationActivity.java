@@ -146,6 +146,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            intent.putExtra("CENTER_ADDRESS", true);
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }
