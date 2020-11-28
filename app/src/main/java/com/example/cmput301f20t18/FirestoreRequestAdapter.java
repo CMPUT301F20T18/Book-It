@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -76,11 +77,11 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
         holder.accept_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                User current = new User();
-                current.ownerAcceptRequest(transaction.getID());
+                ((Activity)v.getContext()).finish();
 
                 Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
                 intent.putExtra("bookID", transaction.getBookID());
+                intent.putExtra("t_id", transaction.getID());
                 v.getContext().startActivity(intent);
             }
         });
