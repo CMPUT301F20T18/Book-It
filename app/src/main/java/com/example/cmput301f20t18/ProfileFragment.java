@@ -10,6 +10,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -140,7 +141,9 @@ public class ProfileFragment extends Fragment {
             @Override
             public void onClick(View v) {
                 User current = new User();
+                recyclerView.setAdapter(null);
                 current.userDeleteNotifications();
+                setUp();
             }
         });
 
@@ -154,38 +157,19 @@ public class ProfileFragment extends Fragment {
                 editIntent.putExtra("address", address);
                 editIntent.putExtra("phone", phoneNum.getText().toString());
                 editIntent.putExtra("photo", photoString);
+                editIntent.putExtra("email", email.getText().toString());
 
                 startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
+
             }
         });
-
-        /*final String editAccountText = "Edit Account";
-
-        SpannableString  editProf = new SpannableString(editAccountText);
-
-        ClickableSpan redirect = new ClickableSpan() {
+        editAccount.setOnTouchListener(new View.OnTouchListener() {
             @Override
-            public void onClick(@NonNull View widget) {
-
-                Intent editIntent = new Intent(getContext(),EditProfile.class);
-                editIntent.putExtra("username", username.getText().toString());
-                editIntent.putExtra("address", address);
-                editIntent.putExtra("phone", phoneNum.getText().toString());
-                editIntent.putExtra("photo", photoString);
-
-                startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
+            public boolean onTouch(View v, MotionEvent event) {
+                editAccount.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                return false;
             }
-
-            @Override
-            public void updateDrawState(@NonNull TextPaint ds) {
-                super.updateDrawState(ds);
-                ds.setColor(getResources().getColor(R.color.doveGray));
-            }
-        };
-
-        editProf.setSpan(redirect,0,12, Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
-        editAccount.setText(editProf);
-        editAccount.setMovementMethod(LinkMovementMethod.getInstance());*/
+        });
 
         FirebaseAuth auth = FirebaseAuth.getInstance();
         Task<DocumentSnapshot> currentUser = FirebaseFirestore.getInstance()
@@ -314,8 +298,7 @@ public class ProfileFragment extends Fragment {
         if (adapter != null) {
             adapter.startListening();
         }
-
-
+        editAccount.setBackgroundColor(getResources().getColor(R.color.colorGray2));
     }
     // tell our adapter to stop listening as soon as the fragment ends
     @Override

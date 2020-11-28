@@ -1,11 +1,9 @@
 package com.example.cmput301f20t18;
 
 import android.app.Activity;
-import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.os.Build;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -13,9 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
@@ -31,8 +27,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
-
-import static com.example.cmput301f20t18.photoAdapter.stringToByte;
 
 /**
  * Custom RecyclerView Adapter for Book objects in My Books.
@@ -273,7 +267,7 @@ public class FirestoreBookAdapter
             case Book.STATUS_ACCEPTED:
                 return new BookViewHolder(inflater.inflate(R.layout.card_pending, null));
             case Book.STATUS_BORROWED:
-                return new BookViewHolder(inflater.inflate(R.layout.card_mybooks_lending, null));
+                return new BookViewHolder(inflater.inflate(R.layout.card_lending, null));
             default: Log.d(TAG, "Error: Book status not found");
         }
 

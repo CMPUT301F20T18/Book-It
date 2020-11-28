@@ -42,7 +42,7 @@
                 android:textSize="30sp" />
             <Button
                 android:id="@+id/sign_out_button"
-                android:layout_width="70dp"
+                android:layout_width="wrap_content"
                 android:layout_height="33dp"
                 android:layout_alignParentEnd="true"
                 android:layout_centerInParent="true"
@@ -67,9 +67,18 @@
             tools:layout_editor_absoluteX="-1dp"
             tools:layout_editor_absoluteY="0dp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
+            app:layout_constraintTop_toTopOf="parent"/>
 
-        </FrameLayout>
+        <ImageView
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="fill_parent"
+            android:layout_height="55dp"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_navigation_bar_2"
+            />
 
         <FrameLayout
             android:id="@+id/frame_image"
@@ -199,16 +208,17 @@
         <Button
             android:id="@+id/button_clear_notifications"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
+            android:layout_height="33dp"
             app:layout_constraintBottom_toBottomOf="@id/frame_background"
             app:layout_constraintStart_toStartOf="parent"
             android:text="Clear notifications"
+            android:textColor="@color/colorAccent"
             android:textSize="16sp"
             android:paddingHorizontal="10dp"
-            android:paddingBottom="2dp"
             app:layout_constrainedHeight="true"
             app:layout_constraintHeight_max="40dp"
-            android:layout_margin="8dp"
+            android:layout_marginStart="8dp"
+            android:layout_marginBottom="12dp"
             android:background="@drawable/good_button_background"/>
 
     </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,15 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
         xmlns:app="http://schemas.android.com/apk/res-auto"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent">
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+    android:elevation="4dp">
 
         <androidx.cardview.widget.CardView
             android:id="@+id/image_view"
             android:layout_width="43dp"
             android:layout_height="43dp"
-            android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
             app:cardBackgroundColor="@color/colorBlue"
             app:cardCornerRadius="30dp">
 
@@ -33,25 +32,28 @@
 
         <TextView
             android:id="@+id/text_username"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="4dp"
-            android:layout_marginTop="4dp"
             android:layout_toEndOf="@id/image_view"
             android:fontFamily="@font/poppins_light"
-            android:text="text here"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="text hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
             android:textColor="@color/colorBlue"
             android:textSize="14sp" />
 
         <TextView
             android:id="@+id/text_user_description"
-            android:layout_width="match_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@id/text_username"
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/image_view"
             android:fontFamily="@font/poppins_light"
-            android:text="text here"
+            android:maxLines="1"
+            android:ellipsize="end"
+            android:text="text hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
             android:textColor="@color/colorText"
             android:textSize="14sp"
             android:textStyle="italic" />

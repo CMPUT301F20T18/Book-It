@@ -30,14 +30,24 @@
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:orientation="horizontal"
-        android:background="@color/colorGray2">
+        android:orientation="horizontal">
+        <ImageView
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="fill_parent"
+            android:layout_height="54dp"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_navigation_bar_2"
+            />
 
         <FrameLayout
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             android:id="@+id/spinner_layout"
+            android:layout_marginStart="10dp"
+            android:layout_marginTop="10dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content">
             <Spinner
@@ -63,6 +73,7 @@
             android:layout_width="0dp"
             android:layout_height="32dp"
             android:layout_gravity="center"
+            android:layout_marginTop="10dp"
             android:background="@color/colorWhite"
             android:hint="@string/search_book"
             android:imeOptions="actionSearch"
@@ -78,6 +89,8 @@
             android:id="@+id/search_button"
             android:layout_width="32dp"
             android:layout_height="32dp"
+            android:layout_marginEnd="10dp"
+            android:layout_marginTop="10dp"
             android:gravity="center_vertical"
             android:background="@drawable/search_button_background"
             app:layout_constraintTop_toTopOf="parent"

@@ -53,12 +53,12 @@
             android:background="@drawable/good_button_background"
             android:textColor="@color/colorAccent"/>
 
-        <!--TEMPORARY BUTTON-->
         <Button
             android:id="@+id/button_manual"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
+            android:visibility="gone"
             android:text="Manual"
             android:textSize="14sp"/>
     </LinearLayout>

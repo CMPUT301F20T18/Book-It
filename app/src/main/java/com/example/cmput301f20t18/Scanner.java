@@ -56,6 +56,9 @@ import java.util.concurrent.Executors;
  */
 public class Scanner extends AppCompatActivity {
 
+    private final boolean ENABLE_MANUAL = true;
+    //private final boolean ENABLE_MANUAL = false;
+
     private final int REQUEST_CODE_PERMISSIONS = 1001;
     private final int OPEN_POST = 0;
     private final int RETURN_ISBN = 1;
@@ -200,36 +203,34 @@ public class Scanner extends AppCompatActivity {
             }
         });
 
-        // temporary
-        // allows phlafoo to manually enter ISBN since he is a pleb and doesn't have an android
-        buttonManual.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                final EditText input = new EditText(v.getContext());
-                input.setInputType(InputType.TYPE_CLASS_NUMBER);
+        if (ENABLE_MANUAL) {
+            buttonManual.setVisibility(View.VISIBLE);
+            buttonManual.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    final EditText input = new EditText(v.getContext());
+                    input.setTextColor(getResources().getColor(R.color.colorBlue));
+                    input.setInputType(InputType.TYPE_CLASS_NUMBER);
 
-                android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(v.getContext())
-                        .setTitle("Enter ISBN")
-                        .setView(input)
-                        .setPositiveButton("GO", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                manualISBN(input.getText().toString());
-                            }
-                        })
-                        .setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                dialog.cancel();
-                            }
-                        })
-                        .show();
-                dialog.getButton(android.app.AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
-                dialog.getButton(android.app.AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
-            }
-        });
+                    android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(v.getContext(), R.style.CustomDialogTheme)
+                            .setTitle("Enter ISBN")
+                            .setView(input)
+                            .setPositiveButton("GO", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    manualISBN(input.getText().toString());
+                                }
+                            })
+                            .setNeutralButton("Cancel", new DialogInterface.OnClickListener() {
+                                @Override
+                                public void onClick(DialogInterface dialog, int which) {
+                                    dialog.cancel();
+                                }
+                            })
+                            .show();
+                }
+            });
+        }
     }
 
 
