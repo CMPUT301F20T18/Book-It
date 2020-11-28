@@ -11,6 +11,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -73,16 +74,16 @@ public class ShowMapLocationActivity extends FragmentActivity implements OnMapRe
 
                     mMap = googleMap;
 
-                    //NOTE DOES NOT WORK BECAUSE SOMEWHERE THE VALUES ARE FLIPPED FOR LAT AND LNG
                     LatLng markerPosition =
                             new LatLng(transaction.getLocation().getLatitude(),
                                     transaction.getLocation().getLongitude());
 
-
-                    mMap.addMarker(new MarkerOptions().position(markerPosition)
+                    Marker marker = mMap.addMarker(new MarkerOptions().position(markerPosition)
                             .title(transaction.getLocation().getTitle()));
+                    marker.showInfoWindow();
 
-                    mMap.moveCamera(CameraUpdateFactory.newLatLng(markerPosition));
+
+                    mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15));
                 }
             }
         });

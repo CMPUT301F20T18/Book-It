@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.FragmentActivity;
@@ -21,13 +22,20 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.JsonObjectRequest;
 import com.android.volley.toolbox.Volley;
+import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.DocumentSnapshot;
+import com.google.firebase.firestore.FirebaseFirestore;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -66,6 +74,15 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_select_location);
+
+        //get default location
+        if (getIntent().getBooleanExtra("CENTER_ADDRESS", false)) {
+            FirebaseAuth auth = FirebaseAuth.getInstance();
+            CollectionReference userRef = FirebaseFirestore.getInstance().
+                    collection("users");
+            Task<DocumentSnapshot> userLocationTask = userRef.document(auth.getUid()).get();
+            userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener());
+        }
 
         // Setting the header title. This may be done in XML instead
         Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
@@ -123,7 +140,8 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         public void onMapClick(LatLng latLng) {
             placeMarker(latLng);
             confirm.setImageAlpha(255);
-            confirm.setBackgroundTintList(ColorStateList.valueOf(getResources().getColor(R.color.colorBlue)));
+            confirm.setBackgroundTintList(ColorStateList.valueOf(getResources()
+                    .getColor(R.color.colorBlue)));
         }
 
         /**
@@ -339,6 +357,19 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
             @Override
             public void onErrorResponse(VolleyError error) {
                 Log.e(TAG, error.toString());
+            }
+        }
+    }
+
+    private class UserQueryOnCompleteListener implements OnCompleteListener<DocumentSnapshot> {
+        @Override
+        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+            if (task.isSuccessful()) {
+                DocumentSnapshot userSnapshot = task.getResult();
+                User user = userSnapshot.toObject(User.class);
+                LatLng latlng =
+                        new LatLng(user.getAddress().getLatitude(), user.getAddress().getLongitude());
+                mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(latlng, 15));
             }
         }
     }

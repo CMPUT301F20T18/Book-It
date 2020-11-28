@@ -47,7 +47,10 @@ public class ChooseLocationActivity extends AppCompatActivity {
     FirestoreLocationAdapter adapter;
     Button addLocation;
     int bookID;
+    int t_id;
     final static String TAG = "CLA_DEBUG";
+    Button cancel;
+
 
     private static final int SELECT_LOCATION_REQUEST_CODE = 0;
 
@@ -69,9 +72,19 @@ public class ChooseLocationActivity extends AppCompatActivity {
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
         bookID = getIntent().getIntExtra("bookID", 0);
+        t_id = getIntent().getIntExtra("t_id", 0);
+
         setUp();
 
         addLocation.setOnClickListener(new AddLocationOnClickListener(this));
+
+        cancel = findViewById(R.id.button_back);
+        cancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     /**
@@ -83,7 +96,7 @@ public class ChooseLocationActivity extends AppCompatActivity {
                 .setQuery(query, UserLocation.class)
                 .build();
 
-        adapter = new FirestoreLocationAdapter(options, bookID, ChooseLocationActivity.this);
+        adapter = new FirestoreLocationAdapter(options, bookID, ChooseLocationActivity.this, t_id);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getApplicationContext()));
         recyclerView.setAdapter(adapter);
     }
@@ -145,31 +158,8 @@ public class ChooseLocationActivity extends AppCompatActivity {
 
         @Override
         public void onClick(View v) {
-            Task<DocumentSnapshot> userLocationTask = userRef.document(auth.getUid()).get();
-            userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener(parentContext));
-        }
-    }
-
-    private class UserQueryOnCompleteListener implements OnCompleteListener<DocumentSnapshot> {
-        private Context parentContext;
-
-        UserQueryOnCompleteListener(Context parentContext){
-            this.parentContext = parentContext;
-        }
-
-        @Override
-        public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-            UserLocation location = new UserLocation("DEFAULT_LOCATION",
-                    0.0, 0.0);
-            if (task.isSuccessful()) {
-                DocumentSnapshot userSnapshot = task.getResult();
-                User user = userSnapshot.toObject(User.class);
-                location = user.getAddress();
-            }
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
-            intent.putExtra("INPUT_TITLE", location.getTitle());
-            intent.putExtra("INPUT_LATITUDE", location.getLatitude());
-            intent.putExtra("INPUT_LONGITUDE", location.getLongitude());
+            intent.putExtra("CENTER_ADDRESS", true);
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }

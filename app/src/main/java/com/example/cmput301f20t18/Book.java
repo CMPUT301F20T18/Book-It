@@ -22,7 +22,7 @@ import java.util.List;
  * @author deinum
  * @author Sean Butler
  */
-public class Book implements Comparable<Book> {
+public class Book{
 
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_REQUESTED = 1;
@@ -49,7 +49,7 @@ public class Book implements Comparable<Book> {
      * @param id The unique Book ID within our library
      * @param status The status of the book within our library
      */
-    public Book(String title, long isbn, String author, int id, int status, String owner, int year, String owner_dbID, String owner_username, ArrayList<String> photos) {
+    public Book(String title, long isbn, String author, int id, int status, int year, String owner_dbID, String owner_username, ArrayList<String> photos) {
         this.title = title;
         this.isbn = isbn;
         this.author = author;
@@ -87,14 +87,6 @@ public class Book implements Comparable<Book> {
     }
 
     /**
-     * Returns the ISBN of the book object
-     * @return The ISBN of the book, as an integer
-     */
-    public long getISBN() {
-        return isbn;
-    }
-
-    /**
      * returns the author of the book object
      * @return String representation of the author
      */
@@ -118,6 +110,13 @@ public class Book implements Comparable<Book> {
         return id;
     }
 
+    /**
+     * Set book ID to a new ID
+     * @param id the new ID for a book
+     */
+    public void setId(int id) {
+        this.id = id;
+    }
 
     /**
      * get the status of the current book object
@@ -135,6 +134,67 @@ public class Book implements Comparable<Book> {
         this.status = status;
     }
 
+    /**
+     * Get the year of the book
+     * @return the year of the book
+     */
+    public int getYear() { return year; }
+
+    /**
+     * Set the year of a book
+     * @param year The new year of the book
+     */
+    public void setYear(int year) { this.year = year; }
+
+    /**
+     * Returns the ISBN of the book object
+     * @return The ISBN of the book, as an integer
+     */
+    public long getISBN() {
+        return isbn;
+    }
+
+    /**
+     * Set the isbn for a book
+     * @param isbn The new isbn for the book
+     */
+    public void setIsbn(long isbn) {
+        this.isbn = isbn;
+    }
+
+    /**
+     * DO NOT USE
+     * FOR USE BY FIREBASE FIRESTORE FOR EASY CONVERSION TO BOOK OBJECT
+     * @return ArrayList of String objects representing encoded photos
+     */
+    public ArrayList<String> getPhotos(){
+        return this.photos;
+    }
+
+    /**
+     * DO NOT USE
+     * FOR USE BY FIREBASE FIRESTORE FOR EASY CONVERSION TO BOOK OBJECT
+     * @param photos An ArrayList of String objects representing encoded photos
+     */
+    public void setPhotos(ArrayList<String> photos){
+        this.photos = photos;
+    }
+
+    /**
+     * Gets the borrowers username
+     * @return String object representing borrowers username
+     */
+    public String getBorrower_username() {
+        return borrower_username;
+    }
+
+    /**
+     * Sets the borrowers username
+     * @param borrower_username A String object representing the new borrower's username
+     */
+    public void setBorrower_username(String borrower_username) {
+        this.borrower_username = borrower_username;
+    }
 
     /**
      * get the owner of the book object
@@ -153,97 +213,44 @@ public class Book implements Comparable<Book> {
         return owner_dbID;
     }
 
+//  May delete if no one needs this
+//    /**
+//     * Adds a photo to the arrayList of photos the book has, the first one is the cover
+//     * @param photoByte The byte representation of a book
+//     */
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public void addPhoto(byte[] photoByte) {
+//
+//        String photo = Base64
+//                .getEncoder()
+//                .encodeToString(photoByte);
+//        this.photos.add(photo);
+//    }
 
-    /**
-     * Set the year of a book
-     * @param year The new year of the book
-     */
-    public void setYear(int year) { this.year = year; }
+//    /**
+//     * Removes a photo to the arrayList of photos the book has
+//     * @param i is the index of the book to be removed
+//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+//     */
+//
+//    public void removePhoto(int i) {
+//        this.photos.remove(i);
+//    }
 
-    /**
-     * Get the year of the book
-     * @return the year of the book
-     */
-    public int getYear() { return year; }
-
-    /**
-     * Used for sorting books.
-     * Books in My Books>Available are sorted by status and then alphabetically by title.
-     * Anywhere else books are sorted alphabetically by title.
-     *
-     * @return -1 if this<o, 0 if this==o, 1 if this>o
-     */
-    @Override
-    public int compareTo(Book o) {
-        if (this.getStatus() == o.getStatus()) {
-            return this.getTitle().compareToIgnoreCase(o.getTitle()); // alphabetically
-        }
-        else if (this.getStatus() == STATUS_AVAILABLE) { // available > requested
-            return 1;
-        }
-        else {
-            return -1;
-        }
-    }
-
-
-    /**
-     * Set the isbn for a book
-     * @param isbn The new isbn for the book
-     */
-    public void setIsbn(long isbn) {
-        this.isbn = isbn;
-    }
-
-
-    /**
-     * Set book ID to a new ID
-     * @param id the new ID for a book
-     */
-    public void setId(int id) {
-        this.id = id;
-    }
-
-
-
-
-    /**
-     * Adds a photo to the arrayList of photos the book has, the first one is the cover
-     * @param photoByte The byte representation of a book
-     */
-    @RequiresApi(api = Build.VERSION_CODES.O)
-    public void addPhoto(byte[] photoByte) {
-
-        String photo = Base64
-                .getEncoder()
-                .encodeToString(photoByte);
-        this.photos.add(photo);
-    }
-
-    /**
-     * Removes a photo to the arrayList of photos the book has
-     * @param i is the index of the book to be removed
-     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
-     */
-
-    public void removePhoto(int i) {
-        this.photos.remove(i);
-    }
-
-    /**
-     * Changes which string is at position 0 of the ArrayList this.photos which represents the
-     * cover picture
-     * @param i is the index of the book that is to be the new cover
-     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
-     */
-
-    public void choseCover(int i) {
-        String cover = this.photos.remove(i);
-        ArrayList<String> newCover = new ArrayList<>();
-        newCover.add(cover);
-        newCover.addAll(this.photos);
-        this.photos = newCover;
-    }
+//    /**
+//     * Changes which string is at position 0 of the ArrayList this.photos which represents the
+//     * cover picture
+//     * @param i is the index of the book that is to be the new cover
+//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+//     */
+//
+//    public void choseCover(int i) {
+//        String cover = this.photos.remove(i);
+//        ArrayList<String> newCover = new ArrayList<>();
+//        newCover.add(cover);
+//        newCover.addAll(this.photos);
+//        this.photos = newCover;
+//    }
 
     /**
      * Check if a book has images
@@ -282,23 +289,5 @@ public class Book implements Comparable<Book> {
             photoList.add(photoAdapter.stringToBitmap(photo));
         }
         return photoList;
-    }
-
-
-    public ArrayList<String> getPhotos(){
-        return this.photos;
-    }
-
-    public void setPhotos(ArrayList<String> photos){
-        this.photos = photos;
-    }
-
-
-    public String getBorrower_username() {
-        return borrower_username;
-    }
-
-    public void setBorrower_username(String borrower_username) {
-        this.borrower_username = borrower_username;
     }
 }

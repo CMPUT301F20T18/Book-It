@@ -16,6 +16,7 @@ import android.text.TextPaint;
 import android.text.method.LinkMovementMethod;
 import android.text.style.ClickableSpan;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -94,12 +95,20 @@ public class Register extends AppCompatActivity {
         DB = FirebaseFirestore.getInstance();
         system = DB.collection("users");
 
+        signInRedirect.setBackgroundColor(getResources().getColor(R.color.colorGray2));
         signInRedirect.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent redirectIntent = new Intent(Register.this,Login.class);
                 startActivity(redirectIntent);
                 finish();
+            }
+        });
+        signInRedirect.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                signInRedirect.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                return false;
             }
         });
 
@@ -213,8 +222,8 @@ public class Register extends AppCompatActivity {
         if (resultCode == RESULT_OK) {
 
             String title = data.getStringExtra("OUTPUT_TITLE");
-            double longitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
-            double latitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+            double latitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+            double longitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
 
             new_address = new UserLocation(title, latitude, longitude);
         }

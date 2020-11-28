@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.os.Bundle;
 import android.util.Log;
+import android.view.View;
+import android.widget.Button;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -44,11 +46,15 @@ public class ViewRequestsActivity extends AppCompatActivity {
         bookID = getIntent().getIntExtra("bookID", 0);
         Log.d(TAG, "bookID value:" + bookID);
 
+
         Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
         toolbar.setTitle(getResources().getText(R.string.view_requests_header));
 
         recyclerView = findViewById(R.id.request_recycler);
         setUp();
+
+
+
     }
 
     /**

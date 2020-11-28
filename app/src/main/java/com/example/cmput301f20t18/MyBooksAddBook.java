@@ -159,7 +159,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         //if ( type == EDIT_BOOK) {
         imagesViewer = findViewById(R.id.image_recycler_view);
-        layoutManager = new GridLayoutManager(this, 3);
+        layoutManager = new GridLayoutManager(this, 2);
         imagesViewer.setLayoutManager(layoutManager);
         imagesViewer.setHasFixedSize(true);
             // Send the images to the recycler view adapter

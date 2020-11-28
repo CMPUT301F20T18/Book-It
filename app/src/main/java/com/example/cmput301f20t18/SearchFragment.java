@@ -1,6 +1,7 @@
 package com.example.cmput301f20t18;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -16,6 +17,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.Spinner;
@@ -73,7 +75,8 @@ public class SearchFragment extends Fragment {
      */
     @Nullable
     @Override
-    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
+    public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container,
+                             @Nullable Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
@@ -154,8 +157,6 @@ public class SearchFragment extends Fragment {
      *
      * @param searchKey String object containing user entered search key
      */
-    //TODO Populate adapter with query results
-    //TODO add parameter String[] searchField which determines what fields to check
     private void searchBooks(String searchKey, SearchFragBookAdapter adapter, boolean allBooks) {
         bookDataList.clear();
         final QueryBookListener listener = new QueryBookListener(allBooks);
@@ -495,20 +496,27 @@ public class SearchFragment extends Fragment {
 
         @Override
         public void onEvent(@Nullable QuerySnapshot querySnapshot, @Nullable FirebaseFirestoreException error) {
-            final int STATUS_AVAILABLE = 0;
 
             for (QueryDocumentSnapshot snapshot : querySnapshot) {
                 boolean add = true;
                 Book book = snapshot.toObject(Book.class);
                 Log.d(TAG, "Current Book: " + book.getTitle());
-                for (Book bookContained : bookDataList) {
-                    if (book.getId() == bookContained.getId()) {
-                        add = false;
+
+                int status = book.getStatus();
+                if (status != Book.STATUS_ACCEPTED && status != Book.STATUS_BORROWED) {
+
+                    int bookID = book.getId();
+
+                    for (Book bookContained : bookDataList) {
+                        if (bookID == bookContained.getId()) {
+                            add = false;
+                            break;
+                        }
                     }
-                }
-                if (add) {
-                    bookDataList.add(book);
-                    bookAdapter.notifyDataSetChanged();
+                    if (add) {
+                        bookDataList.add(book);
+                        bookAdapter.notifyDataSetChanged();
+                    }
                 }
             }
             if (bookDataList.size() == 0) {
@@ -606,7 +614,7 @@ public class SearchFragment extends Fragment {
                 view = LayoutInflater.from(context).inflate(R.layout.card_book_search_owned,
                         parent, false);
             } else if (requested) {
-                view = LayoutInflater.from(context).inflate(R.layout.card_book_search_requested,
+                view = LayoutInflater.from(context).inflate(R.layout.card_borrowed_requested,
                         parent, false);
             } else {
                 view = LayoutInflater.from(context).inflate(R.layout.card_book_search_request,
@@ -615,6 +623,48 @@ public class SearchFragment extends Fragment {
                 requestBook.setOnClickListener(new RequestBookButtonListener(book));
             }
 
+            // phlafoo
+            TextView owner = view.findViewById(R.id.text_username);
+            TextView description = view.findViewById(R.id.text_user_description);
+            Button buttonCancelRequest = view.findViewById(R.id.button_cancel_request);
+            ImageButton buttonProfile = view.findViewById(R.id.button_mybooks_user);
+
+            try {
+                owner.setText(book.getOwner_username());
+                description.setText("owner");
+            } catch(Exception ignore){}
+            try {
+                buttonCancelRequest.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new android.app.AlertDialog.Builder(v.getContext(), R.style.CustomDialogTheme)
+                                .setTitle("Cancel request")
+                                .setMessage("Are you sure you want to cancel your request?")
+                                .setPositiveButton("Yes", new DialogInterface.OnClickListener() {
+                                    @Override
+                                    public void onClick(DialogInterface dialog, int which) {
+                                        // find the transaction associated with this book for the current user
+                                        User current = new User();
+                                        Log.d(TAG, "onClick: " + book.getId());
+                                        current.borrowerCancelRequest(book.getId());
+
+                                    }
+                                })
+                                .setNeutralButton("No", null)
+                                .show();
+                    }
+                });
+            } catch(Exception ignore){}
+            try {
+                buttonProfile.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent intent = new Intent(view.getContext(), CheckProfileActivity.class);
+                        intent.putExtra("USERNAME", book.getOwner_username());
+                        view.getContext().startActivity(intent);
+                    }
+                });
+            } catch (Exception ignore){}
 
             TextView bookTitle = view.findViewById(R.id.text_book_title);
             TextView bookAuthor = view.findViewById(R.id.text_book_author);

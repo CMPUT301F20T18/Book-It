@@ -189,7 +189,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
             case CustomBottomSheetDialog.CANCEL_BUTTON:
 
                 if (owner) {
-                    dialog = new AlertDialog.Builder(HomeScreen.this)
+                    dialog = new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
                             .setTitle("Cancel pick up")
                             .setMessage("Are you sure you want to cancel this pick up?")
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -198,15 +198,11 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                                     current.ownerCancelPickup(bookID);
                                 }
                             })
-                            .setNegativeButton("Back", null)
+                            .setNeutralButton("Back", null)
                             .show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
-                            .getColor(R.color.colorPrimaryDark));
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
-                            .getColor(R.color.colorPrimaryDark));
                 }
                 else {
-                    dialog = new AlertDialog.Builder(HomeScreen.this)
+                    dialog = new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
                             .setTitle("Cancel pick up")
                             .setMessage("Are you sure you want to cancel this pick up?")
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -215,14 +211,11 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                                     current.borrowerCancelPickup(bookID);
                                 }
                             })
-                            .setNegativeButton("Back", null)
+                            .setNeutralButton("Back", null)
                             .show();
-                    dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
-                            .getColor(R.color.colorPrimaryDark));
-                    dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
-                            .getColor(R.color.colorPrimaryDark));
+
                 }
-                    break;
+                break;
 
 
             case CustomBottomSheetDialog.EDIT_BUTTON:
@@ -253,7 +246,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                                 "Are you sure you want to delete this book?";
                         break;
                 }
-                dialog = new AlertDialog.Builder(HomeScreen.this)
+                dialog = new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
                         .setTitle("Delete book")
                         .setMessage(alertMessage)
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -262,12 +255,8 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                                 current.ownerDeleteBook(bookID);
                             }
                         })
-                        .setNegativeButton("Cancel", null)
+                        .setNeutralButton("Cancel", null)
                         .show();
-                dialog.getButton(AlertDialog.BUTTON_POSITIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
-                dialog.getButton(AlertDialog.BUTTON_NEGATIVE).setTextColor(getResources()
-                        .getColor(R.color.colorPrimaryDark));
                 break;
             default:
                 Log.e(TAG, "onButtonClick: Invalid button ID");

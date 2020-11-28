@@ -25,13 +25,15 @@ import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocation, FirestoreLocationAdapter.locationViewHolder> {
 
     private int bookID;
+    private int t_id;
     static final String TAG = "FLA_DEBUG";
     Context context;
 
-    public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<UserLocation> options, int bookID, Context context) {
+    public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<UserLocation> options, int bookID, Context context, int t_id) {
         super(options);
         this.bookID = bookID;
         this.context = context;
+        this.t_id = t_id;
     }
 
     @Override
@@ -43,6 +45,7 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
                 @Override
                 public void onClick(View v) {
                     User current = new User();
+                    current.ownerAcceptRequest(t_id);
                     current.ownerSetPickupLocation(location, bookID);
                     ((Activity)context).finish();
 

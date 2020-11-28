@@ -76,6 +76,17 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"/>
 
+        <ImageView
+            app:layout_constraintBottom_toBottomOf="@id/frame_background"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="fill_parent"
+            android:layout_height="55dp"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_navigation_bar_2"
+            />
+
         <TextView
             android:id="@+id/book_title_prompt"
             android:layout_width="wrap_content"
