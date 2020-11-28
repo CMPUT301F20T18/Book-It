@@ -24,6 +24,10 @@ import java.util.Map;
  * @author deinum
  */
 public class Transaction {
+    public static final int NO_SCAN = 0;
+    public static final int FIRST_SCAN = 1;
+    public static final int SECOND_SCAN = 2;
+
     public static final int STATUS_AVAILABLE = 0;
     public static final int STATUS_REQUESTED = 1;
     public static final int STATUS_ACCEPTED = 2;

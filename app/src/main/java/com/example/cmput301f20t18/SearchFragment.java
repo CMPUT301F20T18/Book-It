@@ -155,8 +155,6 @@ public class SearchFragment extends Fragment {
      *
      * @param searchKey String object containing user entered search key
      */
-    //TODO Populate adapter with query results
-    //TODO add parameter String[] searchField which determines what fields to check
     private void searchBooks(String searchKey, SearchFragBookAdapter adapter, boolean allBooks) {
         bookDataList.clear();
         final QueryBookListener listener = new QueryBookListener(allBooks);
