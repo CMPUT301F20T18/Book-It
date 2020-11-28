@@ -144,7 +144,7 @@ public class User {
      * Accept a request for a book
      * @param t_id The transaction ID of the transaction to accept
      */
-    public void ownerAcceptRequest(int t_id) {
+    public void ownerAcceptRequest(int t_id, UserLocation location, int bookID) {
 
         transRef.whereEqualTo("id", t_id).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
@@ -177,6 +177,9 @@ public class User {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
                                 if (task1.isSuccessful()) {
                                     Book book = task1.getResult().toObject(Book.class);
+
+                                    User current = new User();
+                                    current.ownerSetPickupLocation(location, bookID);
 
                                     // send a notification
                                     Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
