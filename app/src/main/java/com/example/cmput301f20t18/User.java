@@ -336,7 +336,7 @@ public class User {
      * @param bookID The ID of the book to update
      * @param year The updated year
      */
-    void ownerEditBook(String title, String author, long ISBN, int bookID, int year){
+    void ownerEditBook(String title, String author, long ISBN, int bookID, int year, ArrayList<String> photos){
 
         Log.d(TAG, "onClick: Title " + title);
         Log.d(TAG, "onClick: Author " + author);
@@ -345,7 +345,7 @@ public class User {
         Log.d(TAG, "onClick: bookID " + bookID);
 
         // update global book
-        bookRef.document(Integer.toString(bookID)).update("title", title, "author", author, "isbn", ISBN, "year", year);
+        bookRef.document(Integer.toString(bookID)).update("title", title, "author", author, "isbn", ISBN, "year", year, "photos", photos);
     }
 
 

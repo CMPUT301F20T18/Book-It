@@ -182,6 +182,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     year.setText(Integer.toString(book.getYear()));
                     isbn.setText(Long.toString(book.getISBN()));
                     photos = book.retrievePhotos();
+                    outPhotos.addAll(photos);
                     Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
                     imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
                     imagesViewer.setAdapter(imageRecyclerViewAdapter);
@@ -268,7 +269,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                 }
 
                 else if (type == EDIT_BOOK) {
-                    current.ownerEditBook(book_title, book_author, isbn, bookID, year);
+                    current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
 
                 }
                 finish();
