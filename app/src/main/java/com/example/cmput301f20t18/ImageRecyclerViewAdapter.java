@@ -1,21 +1,15 @@
 package com.example.cmput301f20t18;
 
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.Drawable;
 import android.os.Build;
-import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.core.content.res.ResourcesCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,12 +21,12 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
     private ArrayList<Bitmap> photos;
     private ArrayList<Bitmap> photoData;
-    private MyBooksAddBook.addListener addListener;
+    private AddBookActivity.addListener addListener;
 
 
 
 
-    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos, MyBooksAddBook.addListener addListener){
+    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos, AddBookActivity.addListener addListener){
         this.photos = photos;
         this.photos.add(null);
         this.addListener = addListener;

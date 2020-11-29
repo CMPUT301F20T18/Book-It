@@ -16,7 +16,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 
-public class MyBooksAddBookTest {
+public class AddBookActivityTest {
     private Solo solo;
 
     @Rule
@@ -36,7 +36,7 @@ public class MyBooksAddBookTest {
     @Test
     public void addBookCancel(){
         solo.assertCurrentActivity("Wrong Activity - NOT MYBOOKSADDBOOKS",
-                MyBooksAddBook.class);
+                AddBookActivity.class);
 
         solo.enterText((EditText)solo.getView(R.id.title_input),
                 RobotiumUserBookManager.DEFAULT_BOOK_TITLE);
@@ -62,7 +62,7 @@ public class MyBooksAddBookTest {
     @Test
     public void addBookDone(){
         solo.assertCurrentActivity("Wrong Activity - NOT MYBOOKSADDBOOKS",
-                MyBooksAddBook.class);
+                AddBookActivity.class);
 
         solo.enterText((EditText)solo.getView(R.id.title_input),
                 RobotiumUserBookManager.DEFAULT_BOOK_TITLE);

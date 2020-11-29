@@ -30,11 +30,11 @@ public class EditProfileActivityTest {
     }
     @Test
     public void start(){
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
     }
     @Test
     public void changeDataCancel() {
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
 
         EditText usernameInput = (EditText) solo.getView(R.id.username_input);
         EditText phoneInput = (EditText) solo.getView(R.id.phone_input);
@@ -50,7 +50,7 @@ public class EditProfileActivityTest {
     }
     @Test
     public void changeUsername(){
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
         EditText usernameInput = (EditText) solo.getView(R.id.username_input);
 
         solo.clearEditText(usernameInput);
@@ -59,7 +59,7 @@ public class EditProfileActivityTest {
         assertTrue(solo.waitForText(NEW_USERNAME));
 
         solo.clickOnText("Edit Account");
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
 
         usernameInput = (EditText) solo.getView(R.id.username_input);
         solo.clearEditText(usernameInput);
@@ -69,7 +69,7 @@ public class EditProfileActivityTest {
     }
     @Test
     public void changePhone(){
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
 
         EditText phoneInput = (EditText) solo.getView(R.id.phone_input);
         solo.clearEditText(phoneInput);
@@ -78,7 +78,7 @@ public class EditProfileActivityTest {
         assertTrue(solo.waitForText(NEW_PHONE));
 
         solo.clickOnText("Edit Account");
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
 
         phoneInput = (EditText) solo.getView(R.id.phone_input);
         solo.clearEditText(phoneInput);

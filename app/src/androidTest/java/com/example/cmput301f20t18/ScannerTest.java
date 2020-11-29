@@ -66,7 +66,7 @@ public class ScannerTest {
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
         solo.clickOnButton("Add to My Books");
         solo.assertCurrentActivity("Wrong Activity - MY BOOKS ADD BOOK",
-                MyBooksAddBook.class);
+                AddBookActivity.class);
         solo.clickOnView(solo.getView(R.id.return_to_my_books));
         solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
                 PostScanActivity.class);
@@ -128,7 +128,7 @@ public class ScannerTest {
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
         solo.clickOnButton("Add to My Books");
         solo.assertCurrentActivity("Wrong Activity - MY BOOKS ADD BOOK",
-                MyBooksAddBook.class);
+                AddBookActivity.class);
         solo.sleep(500);
         solo.clickOnView(solo.getView(R.id.done_add_book));
         solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
