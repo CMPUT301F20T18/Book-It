@@ -13,7 +13,7 @@ import androidx.fragment.app.DialogFragment;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
-public class confirmedResetDialog extends DialogFragment {
+public class ConfirmedResetDialog extends DialogFragment {
     Button dismiss;
 
     @Override
