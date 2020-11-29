@@ -2,17 +2,10 @@ package com.example.cmput301f20t18;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.os.FileUtils;
 
 import androidx.annotation.RequiresApi;
 
-import com.google.firebase.firestore.Blob;
-
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
 
 
 /**
@@ -213,6 +206,44 @@ public class Book{
         return owner_dbID;
     }
 
+//  May delete if no one needs this
+//    /**
+//     * Adds a photo to the arrayList of photos the book has, the first one is the cover
+//     * @param photoByte The byte representation of a book
+//     */
+//    @RequiresApi(api = Build.VERSION_CODES.O)
+//    public void addPhoto(byte[] photoByte) {
+//
+//        String photo = Base64
+//                .getEncoder()
+//                .encodeToString(photoByte);
+//        this.photos.add(photo);
+//    }
+
+//    /**
+//     * Removes a photo to the arrayList of photos the book has
+//     * @param i is the index of the book to be removed
+//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+//     */
+//
+//    public void removePhoto(int i) {
+//        this.photos.remove(i);
+//    }
+
+//    /**
+//     * Changes which string is at position 0 of the ArrayList this.photos which represents the
+//     * cover picture
+//     * @param i is the index of the book that is to be the new cover
+//     * @exception IndexOutOfBoundsException is thrown if the given index i is out of range
+//     */
+//
+//    public void choseCover(int i) {
+//        String cover = this.photos.remove(i);
+//        ArrayList<String> newCover = new ArrayList<>();
+//        newCover.add(cover);
+//        newCover.addAll(this.photos);
+//        this.photos = newCover;
+//    }
 
     /**
      * Check if a book has images

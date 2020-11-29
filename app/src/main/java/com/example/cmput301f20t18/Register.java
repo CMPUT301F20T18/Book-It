@@ -4,17 +4,10 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
-import android.graphics.Color;
-import android.location.Address;
 import android.os.Bundle;
-import android.os.Parcelable;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -22,6 +15,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -36,13 +33,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.core.FirestoreClient;
-
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * Register allows a new user to create an account for our app
@@ -129,11 +119,19 @@ public class Register extends AppCompatActivity {
 
 
                 if (new_username.matches("") || new_email.matches("") || new_password.matches("") || new_phone.matches("")) {
-                    Toast.makeText(Register.this, "Please fill all fields!", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                            .setTitle("Please fill all fields!")
+                            .setMessage("")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
                 if (new_address == null){
-                    Toast.makeText(Register.this, "Please Select Location!", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                            .setTitle("Please select an address!")
+                            .setMessage("This address will not visible to other users")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
 
@@ -149,7 +147,11 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.hasChild(new_username)) {
-                            Toast.makeText(Register.this, "Username has been taken, please enter a different username", Toast.LENGTH_LONG).show();
+                            new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                                    .setTitle("Username has been taken, please enter a different username")
+                                    .setMessage("")
+                                    .setPositiveButton("OK", null)
+                                    .show();
                         }
 
                         else {
@@ -194,7 +196,6 @@ public class Register extends AppCompatActivity {
                                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                                 Toast.makeText(Register.this, "Failed Registration: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 return;
-
                                             }
 
                                         }

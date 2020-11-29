@@ -5,7 +5,7 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
-import android.app.VoiceInteractor;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,7 +15,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,10 +22,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,18 +36,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.api.LogDescriptor;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -67,7 +61,7 @@ import java.util.List;
  * @see    CollectionReference
  */
 
-public class MyBooksAddBook extends AppCompatActivity {
+public class AddBookActivity extends AppCompatActivity {
 
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
     EditText author;
@@ -134,12 +128,12 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         if (type == ADD_BOOK || type == ADD_SCAN)  {
             //setContentView(R.layout.activity_my_books_add_book);
-            setContentView(R.layout.activity_edit_books);
+            setContentView(R.layout.activity_add_book);
             TextView title = findViewById(R.id.title_new_book);
             title.setText("Add Book");
         }
         else if ( type == EDIT_BOOK) {
-            setContentView(R.layout.activity_edit_books);
+            setContentView(R.layout.activity_add_book);
         }
 
         labelAuthor = findViewById(R.id.author_prompt);
@@ -156,21 +150,15 @@ public class MyBooksAddBook extends AppCompatActivity {
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
 
-
         //if ( type == EDIT_BOOK) {
         imagesViewer = findViewById(R.id.image_recycler_view);
-        layoutManager = new GridLayoutManager(this, 2);
+        layoutManager = new GridLayoutManager(this, 3);
         imagesViewer.setLayoutManager(layoutManager);
         imagesViewer.setHasFixedSize(true);
             // Send the images to the recycler view adapter
         //}
         photos = new ArrayList<>();
         outPhotos = new ArrayList<>();
-
-
-
-
-
 
 
         if (type == EDIT_BOOK) {
@@ -184,7 +172,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     photos = book.retrievePhotos();
                     outPhotos.addAll(photos);
                     Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
-                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
+                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener(), this);
                     imagesViewer.setAdapter(imageRecyclerViewAdapter);
 
 
@@ -199,7 +187,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
         }
         else{
-            imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
+            imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener(), this);
             imagesViewer.setAdapter(imageRecyclerViewAdapter);
         }
 
@@ -245,8 +233,12 @@ public class MyBooksAddBook extends AppCompatActivity {
                 Log.d(TAG, "onClick: bookID " + bookID);
                 Log.d(TAG, "onClick: Type of Add " + type);
 
-                Long isbn = Long.parseLong(book_isbn);
-                Integer year = Integer.parseInt(book_year);
+                Long isbn = 0L;
+                Integer year = -1;
+                try {
+                    isbn = Long.parseLong(book_isbn);
+                    year = Integer.parseInt(book_year);
+                } catch (Exception ignore){}
 
                 ArrayList<String> photoStrings = new ArrayList<>();
                 for (Bitmap photo: imageRecyclerViewAdapter.getPhotos()){
@@ -261,21 +253,30 @@ public class MyBooksAddBook extends AppCompatActivity {
                     }
                 }
 
-                if (type == ADD_BOOK || type == ADD_SCAN) {
-                    if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
-
+                try {
+                    if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)) {
                         Log.d(TAG, "Validity check passed");
 
-                        current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
+                        if (type == ADD_BOOK || type == ADD_SCAN) {
+
+                            current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
+
+                        } else if (type == EDIT_BOOK) {
+
+                            current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
+                        }
+                        startActivity(new Intent(getBaseContext(), HomeScreen.class));
+                        finish();
+                    } else {
+                        throw new Exception("Please fill all fields!");
                     }
+                } catch (Exception e) {
+                    new AlertDialog.Builder(AddBookActivity.this, R.style.CustomDialogTheme)
+                            .setTitle(e.getMessage())
+                            .setMessage("")
+                            .setPositiveButton("OK",null)
+                            .show();
                 }
-
-                else if (type == EDIT_BOOK) {
-                    current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
-
-                }
-                startActivity(new Intent(getBaseContext(), HomeScreen.class));
-                finish();
             }
         });
 
@@ -312,6 +313,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
     private void setDefaultPhoto(Bitmap coverPhoto){
         defaultPhoto = coverPhoto;
+        imageRecyclerViewAdapter.addData(coverPhoto);
     }
 
     /*
@@ -433,6 +435,7 @@ public class MyBooksAddBook extends AppCompatActivity {
         @Override
         public void onResponse(Bitmap response) {
             setDefaultPhoto(response);
+
         }
     }
 
@@ -471,7 +474,7 @@ class CheckBookValidity {
      * will create a valid Book object
      */
     public static boolean bookValid(String bookTitle, String bookAuthor, String bookISBN,
-                                    String bookYear) {
+                                    String bookYear) throws CheckInput.OutOfRangeException {
         return CheckBookValidity.checkTitle(bookTitle)
                 && CheckBookValidity.checkAuthor(bookAuthor)
                 && CheckBookValidity.checkISBN(bookISBN)
@@ -510,25 +513,22 @@ class CheckBookValidity {
      * @return boolean object representing whether the text contained within the EditText is a
      * valid ISBN for a Book object
      */
-    private static boolean checkISBN(String bookISBN) {
+    private static boolean checkISBN(String bookISBN) throws CheckInput.OutOfRangeException {
         boolean valid = true;
         final long MIN_VAL = 10000000L;
         final long MAX_VAL = 9999999999999L;
 
         Long isbnNum = -1L;
+        CheckInput.OutOfRangeException e = new CheckInput.OutOfRangeException("ISBN is invalid!");
 
         try {
             isbnNum = Long.parseLong(bookISBN);
         } catch (NumberFormatException numberFormat) {
-            return false;
+            throw e;
         }
 
-        try {
-            if (!CheckInput.checkWithinRange(isbnNum, MIN_VAL, MAX_VAL)) {
-                throw new CheckInput.OutOfRangeException("ISBN is out of possible range");
-            }
-        } catch (CheckInput.OutOfRangeException outOfRange) {
-            return false;
+        if (!CheckInput.checkWithinRange(isbnNum, MIN_VAL, MAX_VAL)) {
+            throw e;
         }
 
         return true;
@@ -542,7 +542,7 @@ class CheckBookValidity {
      * @return boolean object representing whether the text contained within the EditText is a
      * valid publish date for a Book object
      */
-    private static boolean checkYear(String bookYear) {
+    private static boolean checkYear(String bookYear) throws CheckInput.OutOfRangeException {
         final int MIN_VAL = 0;
         final int MAX_VAL = Calendar.getInstance().get(Calendar.YEAR);
         int yearNum = -1;
@@ -553,12 +553,9 @@ class CheckBookValidity {
             return false;
         }
 
-        try {
-            if (!CheckInput.checkWithinRange(yearNum, MIN_VAL, MAX_VAL)) {
-                throw new CheckInput.OutOfRangeException("Year is out of possible range");
-            }
-        } catch (CheckInput.OutOfRangeException outOfRange) {
-            return false;
+
+        if (!CheckInput.checkWithinRange(yearNum, MIN_VAL, MAX_VAL)) {
+            throw new CheckInput.OutOfRangeException("Year is outside of possible range!");
         }
 
         return true;
