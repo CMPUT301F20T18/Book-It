@@ -485,7 +485,7 @@ public class User {
                                                              List<Transaction> list = task1.getResult().toObjects(Transaction.class);
                                                              for (int i = 0; i < list.size(); i++) {
                                                                  batch.update(transRef.document(Integer.toString(list.get(i).getID())), "owner_username", username);
-                                                                 batch.update(bookRef.document(Integer.toString(list.get(i).getBookID())), "owner_username", username);
+                                                                 batch.update(bookRef.document(Integer.toString(list.get(i).getBookID())), "borrower_username", username);
                                                              }
 
 
