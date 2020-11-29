@@ -26,6 +26,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
+
 /**
  * Custom RecyclerView Adapter for Book objects in Borrowed books.
  *
@@ -96,13 +98,16 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 @Override
                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
                     if (task.isSuccessful()) {
-                        User borrower = task.getResult().toObjects(User.class).get(0);
-                        String photoString = borrower.getProfile_picture();
-                        if(photoString != null && !photoString.equals("")) {
-                            Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                            Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
-                            holder.buttonUser.setImageBitmap(photo);
-                            Log.d(TAG, "Picture attached");
+                        List borrowers = task.getResult().toObjects(User.class);
+                        if (borrowers.size()>0) {
+                            User borrower = (User) borrowers.get(0);
+                            String photoString = borrower.getProfile_picture();
+                            if (photoString != null && !photoString.equals("")) {
+                                Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                                Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
+                                holder.buttonUser.setImageBitmap(photo);
+                                Log.d(TAG, "Picture attached");
+                            }
                         }
                     }
 
