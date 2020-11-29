@@ -24,6 +24,17 @@
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
         app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/title_search"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            style="@style/CustomHeaderTitle"
+            android:text="Search" />
+    </RelativeLayout>
+
 
     </FrameLayout>
 

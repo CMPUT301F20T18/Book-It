@@ -29,8 +29,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <include layout="@layout/component_book_more" />
-
         <Button
             android:id="@+id/DO_NOT_USE_FOR_NOW"
             android:layout_width="wrap_content"

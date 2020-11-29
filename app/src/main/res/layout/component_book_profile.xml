@@ -51,6 +51,8 @@
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/image_view"
             android:fontFamily="@font/poppins_light"
+            android:paddingEnd="3dp"
+            android:paddingStart="0dp"
             android:maxLines="1"
             android:ellipsize="end"
             android:text="text hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"

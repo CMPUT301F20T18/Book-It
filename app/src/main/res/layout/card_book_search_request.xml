@@ -29,8 +29,6 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
-        <include layout="@layout/component_book_more" />
-
         <Button
             android:id="@+id/button_request"
             android:layout_width="wrap_content"
