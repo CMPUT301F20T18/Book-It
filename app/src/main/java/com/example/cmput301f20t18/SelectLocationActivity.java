@@ -1,10 +1,5 @@
 package com.example.cmput301f20t18;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -266,7 +261,7 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
                 for (int i=0; i < addressComponents.length(); i++){
                     String addressComponent = getAddressComponent(addressComponents, i);
 
-                    if (!addressComponent.equals("")){
+                    if (!addressComponent.equals("") && !addressComponent.equals("Unnamed Road ")){
                         address += addressComponent;
                     }
                 }
