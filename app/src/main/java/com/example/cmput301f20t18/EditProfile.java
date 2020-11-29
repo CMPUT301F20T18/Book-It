@@ -119,6 +119,7 @@ public class EditProfile extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 profilePic.setImageDrawable(getDrawable(R.drawable.default_profile));
+                photo = "";
 
             }
         });

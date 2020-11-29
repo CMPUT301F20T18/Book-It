@@ -1,7 +1,6 @@
 package com.example.cmput301f20t18;
 
 
-import android.app.Activity;
 import android.view.View;
 import android.widget.EditText;
 
@@ -10,6 +9,7 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.robotium.solo.Solo;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -30,15 +30,15 @@ public class SearchFragmentTest {
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         LoginActivityTest.Login(solo);
+        MyBooksAddBookTest.addBook(solo);
     }
-    @Test
-    public void start(){
-        Activity activity = rule.getActivity();
+    @After
+    public void deleteAddedBooks(){
+        MyBooksAvailableFragmentTest.deleteAll(solo);
     }
     @Test
     public void searchBookOwnedExplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        MyBooksAddBookTest.addBook(solo);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
         assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
@@ -56,14 +56,10 @@ public class SearchFragmentTest {
         assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_ISBN));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
-
-
-        MyBooksAvailableFragmentTest.deleteAll(solo);
     }
     @Test
     public void searchBookOwnedImplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        MyBooksAddBookTest.addBook(solo);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
         for (int i=1; i<MyBooksAddBookTest.DEFAULT_BOOK_TITLE.length(); i+=5){
@@ -77,12 +73,10 @@ public class SearchFragmentTest {
                     MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR.substring(0,i)));
             assertTrue(solo.waitForText("Owned By You", 1, 2000));
         }
-        MyBooksAvailableFragmentTest.deleteAll(solo);
     }
     @Test
     public void searchBookUnownedExplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        MyBooksAddBookTest.addBook(solo);
         ProfileFragmentTest.signOut(solo);
 
         LoginActivityTest.Login(solo, EMAIL, PASSWORD);
@@ -106,13 +100,12 @@ public class SearchFragmentTest {
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
         ProfileFragmentTest.signOut(solo);
+        solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
         LoginActivityTest.Login(solo);
-        MyBooksAvailableFragmentTest.deleteAll(solo);
     }
     @Test
     public void searchBookUnownedImplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        MyBooksAddBookTest.addBook(solo);
         ProfileFragmentTest.signOut(solo);
 
         LoginActivityTest.Login(solo, EMAIL, PASSWORD);
@@ -133,23 +126,19 @@ public class SearchFragmentTest {
 
         ProfileFragmentTest.signOut(solo);
         LoginActivityTest.Login(solo);
-        MyBooksAvailableFragmentTest.deleteAll(solo);
     }
     @Test
     public void searchBookNonexistent(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        MyBooksAddBookTest.addBook(solo);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
         assertFalse(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "Hello"));
         assertFalse(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "1"));
 
-        MyBooksAvailableFragmentTest.deleteAll(solo);
     }
     @Test
     public void requestBookFromSearch(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        MyBooksAddBookTest.addBook(solo);
         ProfileFragmentTest.signOut(solo);
 
         LoginActivityTest.Login(solo, EMAIL, PASSWORD);
@@ -166,7 +155,6 @@ public class SearchFragmentTest {
 
         ProfileFragmentTest.signOut(solo);
         LoginActivityTest.Login(solo);
-        MyBooksAvailableFragmentTest.deleteAll(solo);
     }
 
 

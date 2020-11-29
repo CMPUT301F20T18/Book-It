@@ -18,6 +18,8 @@ import java.util.Base64;
 
 /**
  * A class used to reformat variable representing photos into different types
+ * Referenced https://www.baeldung.com/java-base64-image-string
+ * Referenced https://stackoverflow.com/questions/7620401/how-to-convert-byte-array-to-bitmap
  * @author Sean Butler
  */
 
