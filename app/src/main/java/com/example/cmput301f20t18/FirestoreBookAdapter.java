@@ -26,6 +26,13 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+
+
+import java.util.ArrayList;
+
+import java.util.List;
+
+
 /**
  * Custom RecyclerView Adapter for Book objects in My Books.
  * @see FirestoreRecyclerAdapter
@@ -153,6 +160,36 @@ public class FirestoreBookAdapter
 
         /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
+        try{
+            String uName = book.getBorrower_username();
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
+            CollectionReference collection = db.collection("users");
+            collection.whereEqualTo("username", uName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                @RequiresApi(api = Build.VERSION_CODES.O)
+                @Override
+                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                    if (task.isSuccessful()) {
+                        List borrowers = task.getResult().toObjects(User.class);
+                        if(borrowers.size()>0) {
+                            User borrower = (User) borrowers.get(0);
+                            String photoString = borrower.getProfile_picture();
+                            if (!photoString.equals("")) {
+                                Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                                Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
+                                holder.buttonUser.setImageBitmap(photo);
+                                Log.d(TAG, "Picture attached");
+                            }
+                        }
+                    }
+
+                    else {
+                        Log.d(TAG, "Error Querying for borrower information");
+                    }
+                }
+            });
+        } catch (Exception ignore) {
+
+        }
         switch (status) {
             case Book.STATUS_AVAILABLE:
                 break;
@@ -176,28 +213,7 @@ public class FirestoreBookAdapter
                 if (uName != null) {
                     holder.textViewUsername.setText(book.getBorrower_username());
                     Log.d(TAG, "Requester is " + uName);
-                    FirebaseFirestore db = FirebaseFirestore.getInstance();
-                    CollectionReference collection = db.collection("users");
-                    collection.whereEqualTo("username", uName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                        @RequiresApi(api = Build.VERSION_CODES.O)
-                        @Override
-                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                            if (task.isSuccessful()) {
-                                User borrower = task.getResult().toObjects(User.class).get(0);
-                                String photoString = borrower.getProfile_picture();
-                                if (!photoString.equals("")) {
-                                    Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                                    Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
-                                    holder.buttonUser.setImageBitmap(photo);
-                                    Log.d(TAG, "Picture attached");
-                                }
-                            }
 
-                            else {
-                                Log.d(TAG, "Error Querying for borrower information");
-                            }
-                        }
-                    });
                 }
                 holder.textViewUserDescription.setText(R.string.picking_up);
 
