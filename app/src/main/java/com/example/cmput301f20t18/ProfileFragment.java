@@ -1,7 +1,9 @@
 package com.example.cmput301f20t18;
 
 import android.content.Intent;
+import android.content.res.Resources;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
 import android.text.SpannableString;
@@ -114,6 +116,7 @@ public class ProfileFragment extends Fragment {
                              Bundle savedInstanceState) {
 
         View view = inflater.inflate(R.layout.fragment_profile, container, false);
+
 
         editAccount = (TextView) view.findViewById(R.id.edit_profile);
         recyclerView = view.findViewById(R.id.NotifRecyclerView);
@@ -273,6 +276,12 @@ public class ProfileFragment extends Fragment {
 
                     User current = new User();
                     current.ownerEditProfile((String) newInfo.get("username"), photoString, (String)newInfo.get("phone"));
+                    if(photoString.equals("")){
+
+                        profilePic
+                                .setImageDrawable(getContext()
+                                        .getDrawable(R.drawable.default_profile));
+                    }
 
 
                 }

@@ -420,9 +420,10 @@ public class User {
     public void ownerEditProfile(String username, String coverPhoto, String phone) {
 
 
-        if (!coverPhoto.equals("")) {
-            userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
-        }
+
+        userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
+
+
 
         if (!phone.equals("")) {
             userRef.document(auth.getUid()).update("phone", phone);
