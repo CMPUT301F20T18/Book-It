@@ -8,7 +8,6 @@ import androidx.test.rule.ActivityTestRule;
 
 import com.robotium.solo.Solo;
 
-import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -31,7 +30,7 @@ public class ScannerTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.Login(solo);
+        RobotiumLoginManager.loginOwner(solo);
         solo.clickOnView(solo.getView(R.id.tab_scan));
 
     }
@@ -85,7 +84,7 @@ public class ScannerTest {
     public void scanAddBookDone(){
 
         ScannerTest.addBook(solo);
-        MyBooksAvailableFragmentTest.deleteAll(solo);
+        RobotiumUserBookManager.deleteAll(solo);
 
     }
 
@@ -113,7 +112,7 @@ public class ScannerTest {
         assertTrue(solo.waitForText(DEMO_YEAR, 1, 2000));
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
 
-        MyBooksAvailableFragmentTest.deleteAll(solo);
+        RobotiumUserBookManager.deleteAll(solo);
 
     }
 
