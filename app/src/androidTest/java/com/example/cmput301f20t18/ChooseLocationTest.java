@@ -11,8 +11,9 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 
-public class ChooseLocation {
+public class ChooseLocationTest {
 
+    private static String DEMO_LOCATION = "";
     private Solo solo;
     @Rule
     public ActivityTestRule<Login> rule =
@@ -20,7 +21,7 @@ public class ChooseLocation {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.Login(solo);
+        RobotiumLoginManager.loginOwner(solo);
         solo.clickOnView(solo.getView(R.id.tab_scan));
 
     }
@@ -28,5 +29,9 @@ public class ChooseLocation {
     @Test
     public void start(){
         Activity activity = rule.getActivity();
+    }
+
+    @Test
+    public void chooseLocationEditBooks () {
     }
 }

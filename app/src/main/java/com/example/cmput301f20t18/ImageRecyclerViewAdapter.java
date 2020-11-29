@@ -20,7 +20,7 @@ import java.util.ArrayList;
  * This is the adapter that sets the option to add and present the image that will be add to books
  * The adapter is used in the class of MyBooksAddBook
  * @see Book
- * @see MyBooksAddBook
+ * @see AddBookActivity
  * @author Johnathon
  * @author Sean
  */
