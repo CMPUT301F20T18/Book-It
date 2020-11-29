@@ -211,6 +211,7 @@ public class Scanner extends AppCompatActivity {
                     final EditText input = new EditText(v.getContext());
                     input.setTextColor(getResources().getColor(R.color.colorBlue));
                     input.setInputType(InputType.TYPE_CLASS_NUMBER);
+                    input.setId(R.id.manual_isbn_input);
 
                     android.app.AlertDialog dialog = new android.app.AlertDialog.Builder(v.getContext(), R.style.CustomDialogTheme)
                             .setTitle("Enter ISBN")
