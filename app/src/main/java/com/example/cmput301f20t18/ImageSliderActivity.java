@@ -17,14 +17,6 @@ import java.lang.ref.Reference;
 import java.sql.Ref;
 import java.util.ArrayList;
 
-/**
- * This is activity is what presents the user with a image slider so such
- * user can see the photos for book
- * @see Book
- * @author Johnathon
- * @author Sean
- */
-
 public class ImageSliderActivity extends AppCompatActivity {
 
 

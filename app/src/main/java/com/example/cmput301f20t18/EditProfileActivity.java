@@ -1,43 +1,27 @@
 package com.example.cmput301f20t18;
 
-import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.FragmentManager;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.Typeface;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.text.SpannableString;
-import android.text.Spanned;
-import android.text.TextPaint;
-import android.text.method.LinkMovementMethod;
-import android.text.style.ClickableSpan;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.auth.FirebaseAuth;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
 
 /**
  * This is a class used to edit a user's profile information.
@@ -46,7 +30,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * @author Shuval De Villiers
  */
 
-public class EditProfile extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_PROFILE_EDITED = 1;
@@ -144,7 +128,7 @@ public class EditProfile extends AppCompatActivity {
                 /*ChangePasswordDialog changePassword = new ChangePasswordDialog();
                 changePassword.show(getSupportFragmentManager(), "dialog");
                 changePass.setBackgroundColor(getResources().getColor(R.color.colorGray2));*/
-                AlertDialog dialog = new AlertDialog.Builder(EditProfile.this, R.style.CustomDialogTheme)
+                AlertDialog dialog = new AlertDialog.Builder(EditProfileActivity.this, R.style.CustomDialogTheme)
                         .setTitle("Reset password")
                         .setMessage("Send password reset link to\n" + extras.get("email") + "?")
                         .setPositiveButton("Send", new DialogInterface.OnClickListener() {
@@ -152,7 +136,7 @@ public class EditProfile extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 current.passwordReset();
 
-                                new AlertDialog.Builder(EditProfile.this, R.style.CustomDialogTheme)
+                                new AlertDialog.Builder(EditProfileActivity.this, R.style.CustomDialogTheme)
                                         .setTitle("We have emailed your password reset link!")
                                         .setPositiveButton("OK",null)
                                         .show();
@@ -170,9 +154,27 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // User wants to delete account
+        deleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(EditProfileActivity.this, R.style.CustomDialogTheme)
+                        .setTitle("Delete account")
+                        .setMessage("Are you sure you want to permanently delete your account?\nThis action cannot be undone!")
+                        .setPositiveButton("Delete account", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: Delete account
+                            }
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+            }
+        });
+
         textAddress.setText(address);
 
-        EditProfile.AddressOnClickListener listener = new EditProfile.AddressOnClickListener(this);
+        EditProfileActivity.AddressOnClickListener listener = new EditProfileActivity.AddressOnClickListener(this);
         addressInput.setOnClickListener(listener);
 
     }
