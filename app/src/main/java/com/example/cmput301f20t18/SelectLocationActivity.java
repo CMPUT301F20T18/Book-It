@@ -1,10 +1,5 @@
 package com.example.cmput301f20t18;
 
-import androidx.annotation.NonNull;
-import androidx.appcompat.widget.Toolbar;
-import androidx.core.content.ContextCompat;
-import androidx.fragment.app.FragmentActivity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
@@ -106,13 +101,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
-    }
-
-    private UserLocation getDefaultUserLocation() {
-        String title = getIntent().getStringExtra("INPUT_TITLE");
-        Double latitude = getIntent().getDoubleExtra("INPUT_LATITUDE", Double.MAX_VALUE);
-        Double longitude = getIntent().getDoubleExtra("INPUT_LONGITUDE", Double.MIN_VALUE);
-        return new UserLocation(title, latitude, longitude);
     }
 
     /**
