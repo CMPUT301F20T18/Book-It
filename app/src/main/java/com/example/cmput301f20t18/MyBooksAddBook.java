@@ -255,7 +255,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                                 .add(photoAdapter.bitmapToString(photo));
                     }
                 }
-                if (photos.isEmpty()){
+                if (photoStrings.isEmpty()){
                     if (defaultPhoto != null) {
                         photoStrings.add(photoAdapter.bitmapToString(defaultPhoto));
                     }
