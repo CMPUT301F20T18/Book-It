@@ -313,7 +313,9 @@ public class MyBooksAddBook extends AppCompatActivity {
         defaultPhoto = coverPhoto;
     }
 
-
+    /*
+    Referenced https://www.youtube.com/watch?v=fVQIOq_lD9U&ab_channel=TihomirRAdeff
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
