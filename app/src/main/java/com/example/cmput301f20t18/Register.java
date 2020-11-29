@@ -48,7 +48,7 @@ import java.util.Objects;
  * Register allows a new user to create an account for our app
  * Register is launched through the log in activity
  * Each user must be registered with a minimum of a username, password, address, and email
- * @author Jacob Deinum
+ * @author deinum
  * UI contributions
  * @author Johnathon Gil
  * @see Login

@@ -25,6 +25,7 @@ import java.util.Map;
  * Represents a notification for a user
  * @see User
  * @author deinum
+ * https://www.androidauthority.com/android-push-notifications-with-firebase-cloud-messaging-925075/
  */
 public class Notification {
 
@@ -35,11 +36,7 @@ public class Notification {
     public static final int OWNER_DELETE = 5;
     public static final int CHANGE_LOCATION = 6;
 
-
-
     static final String TAG = "NOTIF_DEBUG";
-
-
 
     private final String sourceUsername;
     private final String targetUsername;
@@ -107,6 +104,7 @@ public class Notification {
 
     /**
      * Initiate the sending of the Notification by writing it to the database
+     * https://www.javatpoint.com/java-get-current-date
      */
     public void sendNotification() {
 
@@ -138,7 +136,7 @@ public class Notification {
 
                     userNotification notif = new userNotification(ID.replace('.', ':'), message);
 
-                    // write our notification to Firestore
+                    // write our notification to RTDB
                     userRef.document(target.getDbID()).collection("notifications").document(ID.replace('.', ':')).set(notif);
 
                 }

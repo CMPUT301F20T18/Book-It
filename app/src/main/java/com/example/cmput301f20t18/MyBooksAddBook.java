@@ -57,7 +57,7 @@ import java.util.List;
 
 /**
  * This is a class that creates a new book object through user input
- * @author  Jacob Deinum
+ * @author  deinum
  * @author Johnathon Gil
  * @author Sean Butler
  * @author Chase-Warwick
@@ -255,7 +255,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                                 .add(photoAdapter.bitmapToString(photo));
                     }
                 }
-                if (photos.isEmpty()){
+                if (photoStrings.isEmpty()){
                     if (defaultPhoto != null) {
                         photoStrings.add(photoAdapter.bitmapToString(defaultPhoto));
                     }
@@ -274,6 +274,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
 
                 }
+                startActivity(new Intent(getBaseContext(), HomeScreen.class));
                 finish();
             }
         });

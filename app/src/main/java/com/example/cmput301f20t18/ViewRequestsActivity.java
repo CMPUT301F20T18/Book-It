@@ -46,9 +46,13 @@ public class ViewRequestsActivity extends AppCompatActivity {
         bookID = getIntent().getIntExtra("bookID", 0);
         Log.d(TAG, "bookID value:" + bookID);
 
-
-        Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
-        toolbar.setTitle(getResources().getText(R.string.view_requests_header));
+        // Clicks back button
+        findViewById(R.id.back_requests).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         recyclerView = findViewById(R.id.request_recycler);
         setUp();

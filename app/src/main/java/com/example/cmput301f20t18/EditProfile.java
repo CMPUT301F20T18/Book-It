@@ -42,6 +42,8 @@ import com.google.firebase.firestore.FirebaseFirestore;
 /**
  * This is a class used to edit a user's profile information.
  * @author Sean Butler
+ * @author deinum
+ * @author Shuval De Villiers
  */
 
 public class EditProfile extends AppCompatActivity {

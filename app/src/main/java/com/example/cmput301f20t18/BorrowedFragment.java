@@ -18,7 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 
 /**
  * A Fragment that handles all sub-fragments for books that a user is borrowing
- * @author Shuval
+ * @author Shuval De Villiers
  * @author deinum
  */
 public class BorrowedFragment extends Fragment implements fragmentListener {
@@ -53,15 +53,6 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
     @Override
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-
-        // Setting the header title. This may be done in XML instead
-        Toolbar toolbar = view.findViewById(R.id.borrowed_toolbar);
-        toolbar.setTitle(getResources().getText(R.string.borrowed_header));
-
-        /* This is not being used right now but could be later */
-        TabItem tabRequested = view.findViewById(R.id.tab_borrowed_requested);
-        TabItem tabPending = view.findViewById(R.id.tab_borrowed_pending);
-        TabItem tabBorrowing = view.findViewById(R.id.tab_borrowed_borrowing);
         
         TabLayout tabLayout = view.findViewById(R.id.borrowed_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.borrowed_viewPager);

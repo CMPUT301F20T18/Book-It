@@ -1,5 +1,10 @@
 package com.example.cmput301f20t18;
 
+/**
+ * Represents a location within our system
+ * @author Chase Warwick
+ * @author deinum
+ */
 public class UserLocation {
     private String title;
     private Double latitude;

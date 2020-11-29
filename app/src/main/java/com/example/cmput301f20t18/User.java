@@ -96,9 +96,7 @@ public class User {
      * @param author The author of the new book
      * @param year The year the new book was released
      * @param photos The photos of the book in String form
-
      */
-
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -416,10 +414,21 @@ public class User {
 
     }
 
+    /**
+     * Adds a location to the owners pickup location list
+     * @param location The new location being added
+     */
     public void ownerAddLocation(UserLocation location) {
         userRef.document(auth.getUid()).collection("pickup_locations").document(location.getTitle().replace(' ', '_')).set(location);
     }
 
+
+    /**
+     * Edits the owners profile with new information
+     * @param username The new username for the user
+     * @param coverPhoto The new coverPhoto for the user
+     * @param phone The new phone number for the user
+     */
     public void ownerEditProfile(String username, String coverPhoto, String phone) {
 
 
@@ -474,12 +483,12 @@ public class User {
     }
 
 
-
-
-
-
+    /**
+     * Set the pickup location for a book
+     * @param location The location to assign to the transaction
+     * @param bookID The book ID of the book for the transaction
+     */
     public void ownerSetPickupLocation(UserLocation location, int bookID) {
-
         Log.d(TAG, "ownerSetPickupLocation: bookID:" + bookID);
         // find the transaction associated with this book
         transRef.whereEqualTo("bookID", bookID).whereGreaterThanOrEqualTo("status", Transaction.STATUS_ACCEPTED).whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED ).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -517,6 +526,10 @@ public class User {
     }
 
 
+    /**
+     * Delete a location from the users pickup location list
+     * @param location The location to remove
+     */
     public void ownerDeleteLocation(UserLocation location) {
         userRef.document(auth.getUid()).collection("pickup_locations").whereEqualTo("title", location.getTitle()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -844,17 +857,6 @@ public class User {
 
 
 
-
-
-
-
-
-
-
-
-    // setters and getters start here
-    // will finish the java doc once I find out if I can remove setters for variables we
-    // dont want to change
 
 
     /**

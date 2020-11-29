@@ -29,35 +29,19 @@
             android:layout_height="match_parent">
             <Button
                 android:id="@+id/return_to_my_profile"
-                android:layout_width="80dp"
-                android:layout_height="33dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:layout_marginStart="10dp"
-                android:background="@drawable/ic_goodcancelbutton" />
+                style="@style/CustomBackButton"
+                android:text="Cancel" />
             <TextView
                 android:id="@+id/title_edit_profile"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
                 android:layout_toEndOf="@id/return_to_my_profile"
-                android:layout_marginStart="10dp"
-                android:paddingTop="3dp"
-                android:fontFamily="@font/poppins_medium"
-                android:text="Edit Account"
-                android:textColor="@color/colorAccent"
-                android:textSize="30sp" />
+                style="@style/CustomHeaderTitle"
+                android:text="Edit Account" />
             <Button
                 android:id="@+id/done_edit_profile"
-                android:layout_width="70dp"
-                android:layout_height="33dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerInParent="true"
-                android:layout_marginEnd="8dp"
-                android:background="@drawable/good_button_blue"
-                android:text="Done"
-                android:textColor="@color/colorAccent"
-                android:textSize="15sp" />
+                style="@style/CustomDoneButton"
+                android:text="Done" />
         </RelativeLayout>
 
     </FrameLayout>
@@ -82,8 +66,8 @@
 
             <ImageView
                 android:id="@+id/profile_pic"
-                android:layout_width="match_parent"
-                android:layout_height="84dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
                 android:padding="2dp"
                 app:srcCompat="@drawable/default_profile" />
 
@@ -96,7 +80,6 @@
             android:layout_marginTop="4dp"
             android:layout_marginStart="12dp"
             android:background="@drawable/good_button_background"
-            android:fontFamily="@font/poppins"
             android:text="Change Photo"
             android:textColor="@color/colorAccent"
             android:textSize="15sp"
@@ -190,6 +173,7 @@
             android:paddingHorizontal="10dp"
             android:textColor="@color/colorAccent"
             android:text="Select New Address"
+            android:fontFamily="@font/poppins"
             android:textSize="15sp"
             app:layout_constraintStart_toEndOf="@+id/address_prompt"
             app:layout_constraintTop_toBottomOf="@+id/text_address" />
@@ -261,7 +245,7 @@
             android:layout_marginTop="32dp"
             android:layout_marginEnd="16dp"
             android:background="@drawable/gray_button_background"
-            android:backgroundTint="@color/colorPrimaryDark"
+            android:backgroundTint="@color/colorGray3"
             android:fontFamily="@font/poppins"
             android:text="Delete account"
             android:textColor="@color/colorRed"

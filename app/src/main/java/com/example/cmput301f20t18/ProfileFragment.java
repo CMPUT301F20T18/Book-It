@@ -49,6 +49,7 @@ import static android.app.Activity.RESULT_OK;
  * @author Johnathon Gil
  * @author Chase Warwick (class UserQueryTaskCompleteListener and function updateUserInfo)
  * @author Sean Butler
+ * @author deinum
  */
 
 public class ProfileFragment extends Fragment {
@@ -123,6 +124,8 @@ public class ProfileFragment extends Fragment {
         setUp();
 
         signOut = (Button) view.findViewById(R.id.sign_out_button);
+
+        // https://stackoverflow.com/questions/6330260/finish-all-previous-activities
         signOut.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {

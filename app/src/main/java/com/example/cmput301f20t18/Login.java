@@ -3,6 +3,7 @@ package com.example.cmput301f20t18;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -12,7 +13,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -59,6 +59,8 @@ public class Login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                /*login_user.setText("phlafoo@gmail.com");
+                login_password.setText("123456");*/
 
                 // get entered info
                 String username = login_user.getText().toString();
@@ -66,7 +68,11 @@ public class Login extends AppCompatActivity {
 
                 // ensure input not empty
                 if (username.matches("") || password.matches("")) {
-                    Toast.makeText(Login.this, "Please fill all fields", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(Login.this, R.style.CustomDialogTheme)
+                            .setTitle("Please fill out both fields")
+                            .setMessage("")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
 
@@ -86,7 +92,11 @@ public class Login extends AppCompatActivity {
                                 else {
                                     // If sign in fails, display a message to the user.
                                     FirebaseAuthException e = (FirebaseAuthException) task.getException();
-                                    Toast.makeText(Login.this, "Wrong username or password!", Toast.LENGTH_SHORT).show();
+                                    new AlertDialog.Builder(Login.this, R.style.CustomDialogTheme)
+                                            .setTitle("Sign in failed")
+                                            .setMessage("Incorrect email or password!")
+                                            .setPositiveButton("OK", null)
+                                            .show();
                                 }
                             }
                         });
