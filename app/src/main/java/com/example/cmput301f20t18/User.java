@@ -1,5 +1,7 @@
  package com.example.cmput301f20t18;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
@@ -20,9 +22,11 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableReference;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.google.firestore.v1.Write;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -96,9 +100,7 @@ public class User {
      * @param author The author of the new book
      * @param year The year the new book was released
      * @param photos The photos of the book in String form
-
      */
-
     public void ownerNewBook(Long isbn, String title, String author, int year, ArrayList<String> photos) {
 
         FirebaseDatabase db = FirebaseDatabase.getInstance();
@@ -144,8 +146,9 @@ public class User {
      * Accept a request for a book
      * @param t_id The transaction ID of the transaction to accept
      */
-    public void ownerAcceptRequest(int t_id) {
+    public void ownerAcceptRequest(int t_id, UserLocation location, int bookID) {
 
+        Log.d(TAG, "ownerAcceptRequest: t_id " + t_id);
         transRef.whereEqualTo("id", t_id).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // t_id is unique
@@ -177,6 +180,9 @@ public class User {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
                                 if (task1.isSuccessful()) {
                                     Book book = task1.getResult().toObject(Book.class);
+
+                                    User current = new User();
+                                    current.ownerSetPickupLocation(location, bookID);
 
                                     // send a notification
                                     Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
@@ -394,16 +400,19 @@ public class User {
 
                 // delete the book
                 bookRef.document(Integer.toString(bookID)).delete();
+                WriteBatch batch = DB.batch();
 
                 for (int i = 0 ; i < transactions.size() ; i++) {
 
                     // remove this book from requested for each requester
-                    userRef.document(transactions.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).delete();
+                    batch.delete(userRef.document(transactions.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)));
 
 
                     // delete each transaction associated with this book
-                    transRef.document(Integer.toString(transactions.get(i).getID())).delete();
+                    batch.delete(transRef.document(Integer.toString(transactions.get(i).getID())));
                 }
+
+                batch.commit();
             }
 
             else {
@@ -413,10 +422,21 @@ public class User {
 
     }
 
+    /**
+     * Adds a location to the owners pickup location list
+     * @param location The new location being added
+     */
     public void ownerAddLocation(UserLocation location) {
         userRef.document(auth.getUid()).collection("pickup_locations").document(location.getTitle().replace(' ', '_')).set(location);
     }
 
+
+    /**
+     * Edits the owners profile with new information
+     * @param username The new username for the user
+     * @param coverPhoto The new coverPhoto for the user
+     * @param phone The new phone number for the user
+     */
     public void ownerEditProfile(String username, String coverPhoto, String phone) {
 
 
@@ -471,12 +491,12 @@ public class User {
     }
 
 
-
-
-
-
+    /**
+     * Set the pickup location for a book
+     * @param location The location to assign to the transaction
+     * @param bookID The book ID of the book for the transaction
+     */
     public void ownerSetPickupLocation(UserLocation location, int bookID) {
-
         Log.d(TAG, "ownerSetPickupLocation: bookID:" + bookID);
         // find the transaction associated with this book
         transRef.whereEqualTo("bookID", bookID).whereGreaterThanOrEqualTo("status", Transaction.STATUS_ACCEPTED).whereLessThanOrEqualTo("status", Transaction.STATUS_BORROWED ).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -514,6 +534,10 @@ public class User {
     }
 
 
+    /**
+     * Delete a location from the users pickup location list
+     * @param location The location to remove
+     */
     public void ownerDeleteLocation(UserLocation location) {
         userRef.document(auth.getUid()).collection("pickup_locations").whereEqualTo("title", location.getTitle()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.N)
@@ -839,19 +863,128 @@ public class User {
     }
 
 
+    /**
+     * Delete a user from our system
+     * https://medium.com/firebase-tips-tricks/how-to-delete-users-from-firebase-the-right-way-b4c348b2f75f
+     * @param context The current context of the application
+     */
+    public void userDelete(Context context) {
+        WriteBatch ownerDelete = DB.batch();
+        userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User current = task.getResult().toObject(User.class);
+                    FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
+
+
+
+                    // delete all owner transactions associated with this user
+                    transRef.whereEqualTo("owner_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<Transaction> list = task.getResult().toObjects(Transaction.class);
+
+
+                                // delete owner transactions
+                                for (int i = 0 ; i < list.size() ; i++) {
+                                    ownerDelete.delete(userRef.document(list.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(list.get(i).getBookID())));
+                                    ownerDelete.delete(transRef.document(Integer.toString(list.get(i).getID())));
+                                }
+
+
+                                // delete the global books
+                                bookRef.whereEqualTo("owner_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            WriteBatch bookDelete = DB.batch();
+                                            List<Book> bookList = task.getResult().toObjects(Book.class);
+                                            for (int i = 0 ; i < bookList.size() ; i++) {
+                                                ownerDelete.delete(bookRef.document(Integer.toString(bookList.get(i).getId())));
+                                            }
+
+
+                                            // delete the borrower transactions
+                                            transRef.whereEqualTo("borrower_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        List<Transaction> requests = task.getResult().toObjects(Transaction.class);
+                                                        for (int i = 0 ; i < requests.size() ; i++) {
+                                                            Log.d(TAG, "Borrowed transaction: " + requests.get(i).getID() + "| status: " + requests.get(i).getStatus());
+
+                                                            if ((requests.get(i).getStatus() != Transaction.STATUS_REQUESTED)) {
+                                                                Log.d(TAG, "Borrower transaction: " + requests.get(i).getID());
+                                                                ownerDelete.update(bookRef.document(Integer.toString(requests.get(i).getBookID())), "status", Book.STATUS_AVAILABLE);
+                                                            }
+                                                            ownerDelete.delete(transRef.document(Integer.toString(requests.get(i).getID())));
+                                                        }
+
+
+                                                        // commit all our batches
+                                                        ownerDelete.commit();
+                                                    }
+                                                    else {
+                                                        Log.d(TAG, "Error finding transactions associated with the user");
+                                                    }
+                                                }
+                                            });
+
+
+                                        }
+                                        else {
+                                            Log.d(TAG, "Delete user - Error finding users books");
+                                        }
+                                    }
+                                });
+                            }
+
+                            else {
+                                Log.d(TAG, "Error finding all the users transactions!");
+                            }
+                        }
+                    });
 
 
 
 
 
+                    // free up the current users username
+                    // no listener needed, not depending on result
+                    RTDB.getReference().child("username_list").child(current.getUsername()).removeValue();
+
+                    // delete all the user info from firestore
+                    userRef.document(auth.getUid()).delete();
+
+                    // delete authentication info
+                    FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+
+                                // send user to the login screen
+                                // clear all previous activities
+                                Intent intent = new Intent(context, Login.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                            else {
+                                Log.d(TAG, "Delete User - Error deleting authentication info!");
+                            }
+                        }
+                    });
+                }
+
+                else {
+                    Log.d(TAG, "onComplete: Delete account- Error finding user");
+                }
+            }
+        });
+    }
 
 
-
-
-
-    // setters and getters start here
-    // will finish the java doc once I find out if I can remove setters for variables we
-    // dont want to change
 
 
     /**

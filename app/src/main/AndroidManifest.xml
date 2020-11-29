@@ -38,19 +38,19 @@
         <activity
             android:name=".ShowMapLocationActivity"
             android:label="@string/title_activity_show_map_location" />
-        <activity android:name=".ChangePasswordDialog" />
-        <activity android:name=".EditProfile" />
+        <activity android:name=".EditProfileActivity" />
         <activity android:name=".CheckProfileActivity" />
         <activity android:name=".PostScanActivity" />
         <activity
             android:name=".SelectLocationActivity"
             android:label="@string/title_activity_select_location" />
-        <activity android:name=".MyBooksAddBook" />
+        <activity android:name=".AddBookActivity" />
         <activity android:name=".ChooseLocationActivity" />
         <activity android:name=".ViewRequestsActivity" />
         <activity
             android:name=".SplashScreen"
-            android:theme="@style/SplashTheme">
+            android:theme="@style/SplashTheme"
+            android:label="BookIt">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 

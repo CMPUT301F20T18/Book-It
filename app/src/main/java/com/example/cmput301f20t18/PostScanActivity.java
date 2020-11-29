@@ -19,10 +19,9 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
+
 /**
  * This is a class that creates options for the use of the ISBN
- * The class is still under development so the elements that appear on screen are mostly visual
- * with the exception of cancel
  * @author Johnathon Gil
  * @author deinum
  */
@@ -152,12 +151,11 @@ public class PostScanActivity extends AppCompatActivity {
         addBook.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getApplicationContext(), MyBooksAddBook.class);
+                Intent intent = new Intent(getApplicationContext(), AddBookActivity.class);
                 Log.d(TAG, "ONLeave: ISBN =  " + passed_isbn);
                 intent.putExtra("filled_isbn", Long.parseLong(passed_isbn));
-                intent.putExtra("type", MyBooksAddBook.ADD_SCAN);
+                intent.putExtra("type", AddBookActivity.ADD_SCAN);
                 startActivityForResult(intent, 5);
-
 
             }
         });

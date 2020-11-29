@@ -1,16 +1,20 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.fragment.app.FragmentActivity;
+import androidx.viewpager.widget.ViewPager;
+
+import android.graphics.Bitmap;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-import androidx.viewpager.widget.ViewPager;
-
 import com.google.firebase.firestore.FirebaseFirestore;
 
+import java.lang.ref.Reference;
+import java.sql.Ref;
 import java.util.ArrayList;
 
 public class ImageSliderActivity extends AppCompatActivity {
@@ -41,10 +45,6 @@ public class ImageSliderActivity extends AppCompatActivity {
                 mPager.setAdapter(imageAdapter);
             }
         });
-
-
-
-
 
         sliderButton.setOnClickListener(new View.OnClickListener() {
             @Override

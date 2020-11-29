@@ -1,5 +1,10 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -33,7 +38,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
  * Register allows a new user to create an account for our app
  * Register is launched through the log in activity
  * Each user must be registered with a minimum of a username, password, address, and email
- * @author Jacob Deinum
+ * @author deinum
  * UI contributions
  * @author Johnathon Gil
  * @see Login
@@ -114,11 +119,19 @@ public class Register extends AppCompatActivity {
 
 
                 if (new_username.matches("") || new_email.matches("") || new_password.matches("") || new_phone.matches("")) {
-                    Toast.makeText(Register.this, "Please fill all fields!", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                            .setTitle("Please fill all fields!")
+                            .setMessage("")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
                 if (new_address == null){
-                    Toast.makeText(Register.this, "Please Select Location!", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                            .setTitle("Please select an address!")
+                            .setMessage("This address will not visible to other users")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
 
@@ -134,7 +147,11 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.hasChild(new_username)) {
-                            Toast.makeText(Register.this, "Username has been taken, please enter a different username", Toast.LENGTH_LONG).show();
+                            new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                                    .setTitle("Username has been taken, please enter a different username")
+                                    .setMessage("")
+                                    .setPositiveButton("OK", null)
+                                    .show();
                         }
 
                         else {
@@ -179,7 +196,6 @@ public class Register extends AppCompatActivity {
                                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
                                                 Toast.makeText(Register.this, "Failed Registration: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
                                                 return;
-
                                             }
 
                                         }

@@ -14,8 +14,8 @@ import org.junit.Test;
 import static org.junit.Assert.assertTrue;
 
 public class EditProfileActivityTest {
-    private final String USERNAME = "NOT_A_BOT!";
-    private final String PHONE = "1234567890";
+    private final String NEW_USERNAME = "NOT_A_BOT!";
+    private final String NEW_PHONE = "1234567890";
 
     private Solo solo;
     @Rule
@@ -24,68 +24,75 @@ public class EditProfileActivityTest {
     @Before
     public void setUp() throws Exception {
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.Login(solo);
+        RobotiumLoginManager.loginOwner(solo);
         solo.clickOnView(solo.getView(R.id.tab_profile));
         solo.clickOnText("Edit Account");
     }
     @Test
+    public void start(){
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
+    }
+    @Test
     public void changeDataCancel() {
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
 
         EditText usernameInput = (EditText) solo.getView(R.id.username_input);
         EditText phoneInput = (EditText) solo.getView(R.id.phone_input);
         solo.clearEditText(usernameInput);
         solo.clearEditText(phoneInput);
-        solo.enterText(usernameInput, USERNAME);
-        solo.enterText(phoneInput, PHONE);
+        solo.enterText(usernameInput, NEW_USERNAME);
+        solo.enterText(phoneInput, NEW_PHONE);
 
         solo.clickOnView(solo.getView(R.id.return_to_my_profile));
 
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_USERNAME));
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_PHONE));
+        assertTrue(solo.waitForText(RobotiumLoginManager.owner.getUsername()));
+        assertTrue(solo.waitForText(RobotiumLoginManager.owner.getPhoneNum()));
     }
     @Test
     public void changeUsername(){
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
         EditText usernameInput = (EditText) solo.getView(R.id.username_input);
 
         solo.clearEditText(usernameInput);
-        solo.enterText(usernameInput, USERNAME);
+        solo.enterText(usernameInput, NEW_USERNAME);
         solo.clickOnButton("Done");
-        assertTrue(solo.waitForText(USERNAME));
+        assertTrue(solo.waitForText(NEW_USERNAME));
 
         solo.clickOnText("Edit Account");
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
+
         usernameInput = (EditText) solo.getView(R.id.username_input);
         solo.clearEditText(usernameInput);
-        solo.enterText(usernameInput, RegisterActivityTest.DEFAULT_USERNAME);
+        solo.enterText(usernameInput, RobotiumLoginManager.owner.getUsername());
         solo.clickOnButton("Done");
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_USERNAME));
+        assertTrue(solo.waitForText(RobotiumLoginManager.owner.getUsername()));
     }
     @Test
     public void changePhone(){
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
 
         EditText phoneInput = (EditText) solo.getView(R.id.phone_input);
         solo.clearEditText(phoneInput);
-        solo.enterText(phoneInput, PHONE);
+        solo.enterText(phoneInput, NEW_PHONE);
         solo.clickOnButton("Done");
-        assertTrue(solo.waitForText(PHONE));
+        assertTrue(solo.waitForText(NEW_PHONE));
 
         solo.clickOnText("Edit Account");
-        phoneInput = (EditText) solo.getView(R.id.phone_input);
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
-        solo.enterText(phoneInput, RegisterActivityTest.DEFAULT_PHONE);
-        solo.clickOnButton("Done");
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_PHONE));
-    }
-    @Test
-    public void changeAddress(){
-        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfileActivity.class);
 
-        solo.clickOnButton("Select New Address");
-        solo.assertCurrentActivity("Wrong Activity - NOT SELECTLOCATIONACTIVITY",
-                SelectLocationActivity.class);
+        phoneInput = (EditText) solo.getView(R.id.phone_input);
+        solo.clearEditText(phoneInput);
+        solo.enterText(phoneInput, RobotiumLoginManager.owner.getPhoneNum());
+        solo.clickOnButton("Done");
+        assertTrue(solo.waitForText(RobotiumLoginManager.owner.getPhoneNum()));
     }
+//    @Test
+//    public void changeAddress(){
+//        solo.assertCurrentActivity("Wrong Activity - NOT EDITPROFILE", EditProfile.class);
+//
+//        solo.clickOnButton("Select New Address");
+//        solo.assertCurrentActivity("Wrong Activity - NOT SELECTLOCATIONACTIVITY",
+//                SelectLocationActivity.class);
+//    }
 
 }

@@ -35,7 +35,7 @@ import java.util.List;
  * @see BorrowedRequestedFragment
  * @see BorrowedPendingFragment
  * @see BorrowedBorrowingFragment
- * @author Shuval
+ * @author Shuval De Villiers
  * @author deinum
  */
 public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.BookViewHolder> {
@@ -89,7 +89,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
             String uName = book.getOwner_username();
             holder.textViewUsername.setText(uName);
-            holder.textViewUserDescription.setText("owner");
+            holder.textViewUserDescription.setText(R.string.owner);
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference collection = db.collection("users");
@@ -129,11 +129,11 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 @Override
                 public void onClick(View view) {
 
-                    Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-                    slider.putExtra("ID", book.getId());
-                    Activity activity = (Activity) view.getContext();
-
-                    activity.startActivity(slider);
+//                    Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+//                    slider.putExtra("ID", book.getId());
+//                    Activity activity = (Activity) view.getContext();
+//
+//                    activity.startActivity(slider);
 
                 }
             });

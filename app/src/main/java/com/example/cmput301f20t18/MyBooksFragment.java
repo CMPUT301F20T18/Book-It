@@ -12,11 +12,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 /**
@@ -63,15 +61,6 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Setting the header title. This may be done in XML instead
-        Toolbar toolbar = view.findViewById(R.id.mybooks_toolbar);
-        toolbar.setTitle(getResources().getText(R.string.mybooks_header));
-
-        /* This is not being used right now but could be later */
-        TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
-        TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);
-        TabItem tabLending = view.findViewById(R.id.tab_mybooks_lending);
-
         TabLayout tabLayout = view.findViewById(R.id.mybooks_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.mybooks_viewPager);
 
@@ -84,8 +73,8 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         addBooks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addIntent = new Intent(getContext(),MyBooksAddBook.class);
-                addIntent.putExtra("type", MyBooksAddBook.ADD_BOOK);
+                Intent addIntent = new Intent(getContext(), AddBookActivity.class);
+                addIntent.putExtra("type", AddBookActivity.ADD_BOOK);
                 startActivityForResult(addIntent,0);
             }
         });
@@ -111,7 +100,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
-        if (expected_isbn.equals(isbn)) {
+//        if (expected_isbn.equals(isbn)) {
             User current = new User();
 
             switch (requestCode) {
@@ -124,14 +113,14 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
                     current.ownerConfirmPickup(bookID);
                     break;
             }
-        }
-        else {
-            // using getContext() here instead of mContext will sometimes cause a crash since this
-            // fragment may not have been attached to HomeScreen yet
-            Toast.makeText(mContext, "Scanned ISBN does not match book's ISBN",
-                    Toast.LENGTH_LONG).show();
-            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
-        }
+//        }
+//        else {
+//            // using getContext() here instead of mContext will sometimes cause a crash since this
+//            // fragment may not have been attached to HomeScreen yet
+//            Toast.makeText(mContext, "Scanned ISBN does not match book's ISBN",
+//                    Toast.LENGTH_LONG).show();
+//            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
+//        }
     }
 
 }

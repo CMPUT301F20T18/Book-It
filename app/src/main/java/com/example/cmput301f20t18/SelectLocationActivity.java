@@ -1,5 +1,11 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -7,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -47,6 +52,7 @@ import java.util.Arrays;
  * select a location on the map (places a marker at the location they clicked)
  * display the address of said location (so long as the phone has access to a geocoder)
  * confirm that this is the correct location and click a button to exit
+ * @author Chase Warwick
  */
 public class SelectLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -175,8 +181,11 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         public void onClick(View v) {
 
             if (returnUserLocation == null){
-                Toast.makeText(getApplicationContext(), "Please tap to choose a location",
-                        Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(SelectLocationActivity.this, R.style.CustomDialogTheme)
+                        .setTitle("Please tap to choose a location")
+                        .setMessage("")
+                        .setPositiveButton("OK", null)
+                        .show();
             }
             else {
                 Intent returnIntent = new Intent();

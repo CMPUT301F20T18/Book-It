@@ -5,7 +5,7 @@ package com.example.cmput301f20t18;
  * interactions that two people can have within the app
  * requesting books, declining requests, transferring of books
  * between users and returning the book to it's original owner
- * @author warwick
+ * @author Chase Warwick
  * @author deinum
  */
 public class Transaction {

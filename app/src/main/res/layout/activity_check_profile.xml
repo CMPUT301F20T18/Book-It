@@ -5,7 +5,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MyBooksAddBook"
+    tools:context=".AddBookActivity"
     android:orientation="vertical">
 
     <FrameLayout
@@ -26,36 +26,25 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:paddingLeft="10dp">
-
+            android:layout_height="match_parent">
             <Button
                 android:id="@+id/back_profile"
-                android:layout_width="68dp"
-                android:layout_height="41dp"
-                android:layout_alignParentStart="true"
-                android:layout_centerInParent="true"
-                android:background="@drawable/ic_goodbackbutton" />
-
+                style="@style/CustomBackButton"
+                android:text="Cancel" />
             <TextView
                 android:id="@+id/profile_title"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="80dp"
-                android:fontFamily="@font/poppins_medium"
-                android:paddingTop="3dp"
-                android:text="Profile"
-                android:textColor="@color/colorAccent"
-                android:textSize="30sp" />
-
+                android:layout_toEndOf="@id/back_profile"
+                style="@style/CustomHeaderTitle"
+                android:text="Profile" />
         </RelativeLayout>
+
     </FrameLayout>
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="2dp">
+        android:layout_height="wrap_content">
 
         <FrameLayout
             android:id="@+id/frame_background"
@@ -63,12 +52,21 @@
             android:layout_height="180dp"
             android:background="@color/colorGray2"
             android:padding="20dp"
-            tools:layout_editor_absoluteX="-1dp"
-            tools:layout_editor_absoluteY="0dp"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent">
 
         </FrameLayout>
+
+        <ImageView
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:layout_width="fill_parent"
+            android:layout_height="55dp"
+            android:scaleType="fitXY"
+            android:adjustViewBounds="true"
+            android:src="@drawable/ic_navigation_bar_2"
+            />
 
         <FrameLayout
             android:id="@+id/frame_image_user"
@@ -97,7 +95,6 @@
             android:layout_marginStart="15dp"
             android:layout_marginTop="40dp"
             android:fontFamily="@font/poppins_medium"
-            android:text="Username"
             android:textColor="@color/colorBlue"
             android:textSize="30sp"
             app:layout_constraintStart_toEndOf="@+id/frame_image_user"
@@ -126,7 +123,6 @@
             android:layout_height="wrap_content"
             android:padding="15dp"
             android:fontFamily="@font/poppins"
-            android:text="780 986 1873"
             android:textColor="@color/colorAccent"
             android:textSize="20sp"
             android:layout_alignParentRight="true" />
@@ -156,7 +152,6 @@
             android:layout_height="wrap_content"
             android:padding="15dp"
             android:fontFamily="@font/poppins"
-            android:text="not_you_average_joe@gmail.com"
             android:textColor="@color/colorAccent"
             android:textSize="15sp"
             android:layout_alignParentRight="true"/>

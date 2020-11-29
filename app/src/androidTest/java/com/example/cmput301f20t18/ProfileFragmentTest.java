@@ -19,16 +19,18 @@ public class ProfileFragmentTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.Login(solo);
+        RobotiumLoginManager.loginOwner(solo);
         solo.clickOnView(solo.getView(R.id.tab_profile));
     }
     @Test
     public void checkUserData(){
+        RobotiumUser owner = RobotiumLoginManager.owner;
+
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
 
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_USERNAME, 1, 2000));
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_PHONE, 1, 2000));
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_EMAIL, 1, 2000));
+        assertTrue(solo.waitForText(owner.getUsername(), 1, 2000));
+        assertTrue(solo.waitForText(owner.getPhoneNum(), 1, 2000));
+        assertTrue(solo.waitForText(owner.getEmail(), 1, 2000));
     }
     @Test
     public void signOut(){

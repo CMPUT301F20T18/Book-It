@@ -81,12 +81,6 @@ public class SearchFragment extends Fragment {
 
         View view = inflater.inflate(R.layout.fragment_search, container, false);
 
-
-        // Setting the header title. This may be done in XML instead
-        Toolbar toolbar = view.findViewById(R.id.search_toolbar);
-        //toolbar.setTitle(getResources().getText(R.string.mybooks_header));
-        toolbar.setTitle("Search");
-
         bookAdapter = new SearchFragBookAdapter(this.getContext(), bookDataList);
         userAdapter = new SearchFragUserAdapter(this.getContext(), userDataList);
 
@@ -632,7 +626,7 @@ public class SearchFragment extends Fragment {
 
             try {
                 owner.setText(book.getOwner_username());
-                description.setText("owner");
+                description.setText(R.string.owner);
             } catch(Exception ignore){}
             try {
                 buttonCancelRequest.setOnClickListener(new View.OnClickListener() {
@@ -706,11 +700,11 @@ public class SearchFragment extends Fragment {
                     public void onClick(View view) {
                         ArrayList<String> photos = book.getPhotos();
 
-                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-                        slider.putExtra("ID", book.getId());
+//                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+//                        slider.putExtra("ID", book.getId());
                         Activity activity = (Activity) view.getContext();
 
-                        activity.startActivity(slider);
+//                        activity.startActivity(slider);
 
                     }
                 });

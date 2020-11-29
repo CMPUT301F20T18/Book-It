@@ -14,10 +14,6 @@ import org.junit.Rule;
 import org.junit.Test;
 
 public class RegisterActivityTest {
-    public static final String DEFAULT_USERNAME = "RegisterBot";
-    public static final String DEFAULT_PASSWORD = "BotPass";
-    public static final String DEFAULT_EMAIL = "RegisterBot@RegisterBot.botnet";
-    public static final String DEFAULT_PHONE = "9999999999";
 
     private Solo solo;
     @Rule
@@ -38,10 +34,14 @@ public class RegisterActivityTest {
     public void enterAccountInformation(){
         solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
 
-        solo.enterText((EditText) solo.getView(R.id.username), DEFAULT_USERNAME);
-        solo.enterText((EditText) solo.getView(R.id.password), DEFAULT_PASSWORD);
-        solo.enterText((EditText) solo.getView(R.id.email), DEFAULT_EMAIL);
-        solo.enterText((EditText) solo.getView(R.id.phone), DEFAULT_PASSWORD);
+        solo.enterText((EditText) solo.getView(R.id.username),
+                RobotiumLoginManager.owner.getUsername());
+        solo.enterText((EditText) solo.getView(R.id.password),
+                RobotiumLoginManager.owner.getPassword());
+        solo.enterText((EditText) solo.getView(R.id.email),
+                RobotiumLoginManager.owner.getEmail());
+        solo.enterText((EditText) solo.getView(R.id.phone),
+                RobotiumLoginManager.owner.getPhoneNum());
 
         solo.clickOnButton("Choose an Address");
         solo.assertCurrentActivity("Wrong Activity (Should be SelectLocationActivity)",

@@ -27,6 +27,7 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
 
+
 import java.util.ArrayList;
 
 import java.util.List;
@@ -102,13 +103,13 @@ public class FirestoreBookAdapter
                 holder.imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ArrayList<String> photos = book.getPhotos();
-
-                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-                        slider.putExtra("ID", book.getId());
-                        Activity activity = (Activity) view.getContext();
-
-                        activity.startActivity(slider);
+//                        ArrayList<String> photos = book.getPhotos();
+//
+//                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+//                        slider.putExtra("ID", book.getId());
+//                        Activity activity = (Activity) view.getContext();
+//
+//                        activity.startActivity(slider);
 
                         //Start slider activity here, photos is the list of Bitmaps needed
                     }
@@ -237,7 +238,7 @@ public class FirestoreBookAdapter
 
             case Book.STATUS_BORROWED:
                 /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
-                holder.textViewUsername.setText(book.getOwner_username());
+                holder.textViewUsername.setText(book.getBorrower_username());
                 holder.textViewUserDescription.setText(R.string.borrowing);
 
                 /* User clicks the "Confirm return" button */

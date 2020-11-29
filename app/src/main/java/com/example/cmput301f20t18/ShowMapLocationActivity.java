@@ -20,6 +20,10 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+/**
+ * Displays the location chosen by the book owner for a borrower
+ * @author Chase Warwick
+ */
 public class ShowMapLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 
     private GoogleMap mMap;

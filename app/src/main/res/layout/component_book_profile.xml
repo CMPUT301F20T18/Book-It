@@ -39,7 +39,7 @@
             android:fontFamily="@font/poppins_light"
             android:maxLines="1"
             android:ellipsize="end"
-            android:text="text hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            android:text="text here"
             android:textColor="@color/colorBlue"
             android:textSize="14sp" />
 
@@ -51,9 +51,11 @@
             android:layout_marginStart="4dp"
             android:layout_toEndOf="@id/image_view"
             android:fontFamily="@font/poppins_light"
+            android:paddingEnd="3dp"
+            android:paddingStart="0dp"
             android:maxLines="1"
             android:ellipsize="end"
-            android:text="text hereeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee"
+            android:text="text here"
             android:textColor="@color/colorText"
             android:textSize="14sp"
             android:textStyle="italic" />

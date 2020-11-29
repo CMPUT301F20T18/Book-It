@@ -22,15 +22,21 @@
 
         </androidx.appcompat.widget.Toolbar>
 
-        <Button
-            android:id="@+id/button_add_book"
-            android:layout_width="wrap_content"
-            android:layout_height="33dp"
-            android:layout_gravity="end|center_vertical"
-            android:layout_marginEnd="8dp"
-            android:text="Add book"
-            android:textColor="@color/colorWhite"
-            android:background="@drawable/good_button_blue"/>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <TextView
+                android:id="@+id/title_mybooks"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                style="@style/CustomHeaderTitle"
+                android:text="My Books" />
+            <Button
+                android:id="@+id/button_add_book"
+                style="@style/CustomDoneButton"
+                android:layout_width="wrap_content"
+                android:text="Add book" />
+        </RelativeLayout>
 
     </FrameLayout>
 

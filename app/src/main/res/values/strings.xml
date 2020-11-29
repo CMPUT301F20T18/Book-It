@@ -31,9 +31,9 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="view_requests_header">Requests</string>
     <string name="choose_location_header">Choose location</string>
-    <string name="picking_up">picking up</string>
-    <string name="borrowing">borrowing</string>
-    <string name="owner">owner</string>
+    <string name="picking_up">picking up\u0020</string>
+    <string name="borrowing">borrowing\u0020</string>
+    <string name="owner">owner\u0020</string>
     <string name="edit_profile"><u>Edit Account</u></string>
     <string name="my_account_header">My Account</string>
     <string name="sign_out_button">Sign Out</string>

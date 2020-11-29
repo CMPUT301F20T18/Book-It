@@ -37,7 +37,7 @@
             android:layout_height="33dp"
             android:layout_marginBottom="8dp"
             android:layout_marginEnd="6dp"
-            android:paddingHorizontal="10dp"
+            android:paddingHorizontal="6dp"
             android:background="@drawable/bad_button_background"
             style="?android:attr/borderlessButtonStyle"
             android:fontFamily="@font/poppins"

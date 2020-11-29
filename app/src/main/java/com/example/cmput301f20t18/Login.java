@@ -1,5 +1,9 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.MotionEvent;
@@ -8,7 +12,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -53,12 +56,6 @@ public class Login extends AppCompatActivity {
         login_user = (EditText) findViewById(R.id.username);
         login_password = (EditText) findViewById(R.id.password);
 
-        //usernameT = (TextView) findViewById(R.id.textView_username);
-        //passwordT = (TextView) findViewById(R.id.textView_password);
-        //loginArt = (ImageView) findViewById(R.id.login_image);
-        //signIn = (TextView) findViewById(R.id.sign_in);
-        //projectLogo = (ImageView) findViewById(R.id.login_image);
-
         // user clicks on login button
         login.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -70,7 +67,11 @@ public class Login extends AppCompatActivity {
 
                 // ensure input not empty
                 if (username.matches("") || password.matches("")) {
-                    Toast.makeText(Login.this, "Please fill all fields", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(Login.this, R.style.CustomDialogTheme)
+                            .setTitle("Please fill out both fields")
+                            .setMessage("")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
 
@@ -90,7 +91,11 @@ public class Login extends AppCompatActivity {
                                 else {
                                     // If sign in fails, display a message to the user.
                                     FirebaseAuthException e = (FirebaseAuthException) task.getException();
-                                    Toast.makeText(Login.this, "Wrong username or password!", Toast.LENGTH_SHORT).show();
+                                    new AlertDialog.Builder(Login.this, R.style.CustomDialogTheme)
+                                            .setTitle("Sign in failed")
+                                            .setMessage("Incorrect email or password!")
+                                            .setPositiveButton("OK", null)
+                                            .show();
                                 }
                             }
                         });
