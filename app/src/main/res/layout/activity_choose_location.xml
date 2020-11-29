@@ -7,45 +7,44 @@
     android:orientation="vertical"
     tools:context=".ChooseLocationActivity">
 
-    <androidx.appcompat.widget.Toolbar
-        android:id="@+id/mybooks_toolbar"
+    <FrameLayout
+        android:id="@+id/toolbar_frame"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/ic_blank_header"
-        android:minHeight="?attr/actionBarSize"
-        android:theme="?attr/actionBarTheme"
-        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
-        app:theme="@style/ThemeOverlay.AppCompat.Dark" />
+        android:layout_height="wrap_content">
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/mybooks_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_blank_header"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark" />
 
 
-    <Button
-        android:id="@+id/button_back"
-        android:layout_width="80dp"
-        android:layout_height="33dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="11dp"
-        android:background="@drawable/ic_goodcancelbutton" />
-
-    <androidx.appcompat.widget.AppCompatTextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_alignParentTop="true"
-        android:layout_toEndOf="@id/button_back"
-        android:text="@string/choose_location_header"
-        android:fontFamily="@font/poppins_semibold"
-        android:textSize="24sp"
-        android:layout_marginTop="9dp"
-        android:layout_marginStart="9dp"
-        android:elevation="2dp"
-        android:textColor="@color/colorAccent"
-        />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/button_back"
+                style="@style/CustomBackButton"
+                android:text="Cancel" />
+            <TextView
+                android:id="@+id/title_edit_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/button_back"
+                style="@style/CustomHeaderTitle"
+                android:text="@string/choose_location_header" />
+        </RelativeLayout>
+    </FrameLayout>
 
         <Button
             android:id="@+id/addLocationButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_alignParentBottom="true"
-            android:textColor="@color/colorWhite"
+            android:textColor="@color/colorAccent"
             android:background="@drawable/good_button_blue"
             android:text="Add New Location"
             android:textSize="16sp" />
@@ -55,14 +54,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:layout_above="@id/addLocationButton"
-            android:layout_below="@id/mybooks_toolbar"/>
-
-
-
-
-
-
-
+            android:layout_below="@id/toolbar_frame"/>
 
 
 </RelativeLayout>
