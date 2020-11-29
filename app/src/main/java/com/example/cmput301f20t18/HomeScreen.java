@@ -263,6 +263,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
         }
         if (ContextCompat.checkSelfPermission(HomeScreen.this,
                 Manifest.permission.READ_EXTERNAL_STORAGE) == PackageManager.PERMISSION_DENIED){
+            Log.d(TAG, "checkPermissionExternalData: Failed");
             ActivityCompat.requestPermissions(HomeScreen.this,
                     new String[] {Manifest.permission.READ_EXTERNAL_STORAGE},
                     permissionStorageReadCode);

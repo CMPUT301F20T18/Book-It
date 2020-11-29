@@ -470,8 +470,11 @@ public class User {
                                     RTDB.getReference().child("username_list").child(current.username).removeValue();
                                     RTDB.getReference().child("username_list").child(username).setValue(username);
 
+
                                     // update username in firestore
                                     userRef.document(auth.getUid()).update("username", username);
+
+                                    
                                 }
                                 else {
                                     Log.d(TAG, "ownerEditProfile - Error finding current user");
