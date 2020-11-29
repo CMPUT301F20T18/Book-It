@@ -100,7 +100,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
-        if (expected_isbn.equals(isbn)) {
+//        if (expected_isbn.equals(isbn)) {
             User current = new User();
 
             switch (requestCode) {
@@ -113,14 +113,14 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
                     current.ownerConfirmPickup(bookID);
                     break;
             }
-        }
-        else {
-            // using getContext() here instead of mContext will sometimes cause a crash since this
-            // fragment may not have been attached to HomeScreen yet
-            Toast.makeText(mContext, "Scanned ISBN does not match book's ISBN",
-                    Toast.LENGTH_LONG).show();
-            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
-        }
+//        }
+//        else {
+//            // using getContext() here instead of mContext will sometimes cause a crash since this
+//            // fragment may not have been attached to HomeScreen yet
+//            Toast.makeText(mContext, "Scanned ISBN does not match book's ISBN",
+//                    Toast.LENGTH_LONG).show();
+//            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
+//        }
     }
 
 }
