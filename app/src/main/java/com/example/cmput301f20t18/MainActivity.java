@@ -27,9 +27,6 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //get permission for storing and reading data to system
-
-
 
         // start the main Activity
         Intent loginIntent = new Intent(MainActivity.this, Login.class);

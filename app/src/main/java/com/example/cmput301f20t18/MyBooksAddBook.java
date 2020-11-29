@@ -57,7 +57,7 @@ import java.util.List;
 
 /**
  * This is a class that creates a new book object through user input
- * @author  Jacob Deinum
+ * @author  deinum
  * @author Johnathon Gil
  * @author Sean Butler
  * @author Chase-Warwick

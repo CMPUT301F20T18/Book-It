@@ -29,6 +29,13 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
     static final String TAG = "FLA_DEBUG";
     Context context;
 
+    /**
+     * Default constructor for the object
+     * @param options Options for the adapter
+     * @param bookID The bookID of the book
+     * @param context The context where the adapter is used in
+     * @param t_id The transaction ID to update the location of
+     */
     public FirestoreLocationAdapter(@NonNull FirestoreRecyclerOptions<UserLocation> options, int bookID, Context context, int t_id) {
         super(options);
         this.bookID = bookID;
@@ -36,6 +43,12 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
         this.t_id = t_id;
     }
 
+    /**
+     * Binds values to our view
+     * @param holder The view object
+     * @param position The position in the list
+     * @param location The location object being binded to the view
+     */
     @Override
     protected void onBindViewHolder(@NonNull FirestoreLocationAdapter.locationViewHolder holder, int position, @NonNull UserLocation location) {
 
@@ -63,6 +76,12 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
         }
 
 
+    /**
+     * Specify our view
+     * @param parent The parent view
+     * @param viewType The viewtype for this view
+     * @return The view for a list element
+     */
     @NonNull
     @Override
     public FirestoreLocationAdapter.locationViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -70,12 +89,19 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
         return new locationViewHolder(inflater.inflate(R.layout.card_location, null));
     }
 
+    /**
+     * Specifies the elements in our view
+     */
     public class locationViewHolder extends RecyclerView.ViewHolder {
         TextView pickup_location;
         Button selectLocation;
         Button deleteLocation;
 
 
+        /**
+         * Find the elements to update for our view
+         * @param itemView
+         */
         public locationViewHolder(@NonNull View itemView) {
             super(itemView);
             pickup_location = itemView.findViewById(R.id.text_address);

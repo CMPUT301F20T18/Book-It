@@ -38,7 +38,7 @@ import java.util.ArrayList;
  * @see BorrowedRequestedFragment
  * @see BorrowedPendingFragment
  * @see BorrowedBorrowingFragment
- * @author Shuval
+ * @author Shuval De Villiers
  * @author deinum
  */
 public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.BookViewHolder> {

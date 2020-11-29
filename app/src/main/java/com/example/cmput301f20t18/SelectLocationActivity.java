@@ -49,6 +49,7 @@ import java.util.Arrays;
  * select a location on the map (places a marker at the location they clicked)
  * display the address of said location (so long as the phone has access to a geocoder)
  * confirm that this is the correct location and click a button to exit
+ * @author Chase Warwick
  */
 public class SelectLocationActivity extends FragmentActivity implements OnMapReadyCallback {
 

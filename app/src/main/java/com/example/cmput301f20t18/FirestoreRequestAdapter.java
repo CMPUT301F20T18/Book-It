@@ -27,21 +27,27 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.Objects;
 
 /**
- * Handles display the requests for a book a user owns
+ * Displays all the requests a user has for a book, updates in real time
+ * Using a firestore query
  * @see User
  * @see Book
  * @author deinum
+ * @author butter
  */
 public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transaction, FirestoreRequestAdapter.requestViewHolder> {
 
     final static String TAG = "FRA_DEBUG";
-
-
-
     public FirestoreRequestAdapter(@NonNull FirestoreRecyclerOptions<Transaction> options) {
         super(options);
     }
 
+
+    /**
+     *
+     * @param holder The view object we are binding to
+     * @param position The position in our list
+     * @param transaction The transaction we are binding
+     */
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onBindViewHolder(@NonNull FirestoreRequestAdapter.requestViewHolder holder, int position, @NonNull Transaction transaction) {
@@ -64,7 +70,6 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
                             holder.profile_pic.setImageBitmap(photo);
                             Log.d(TAG, "Picture attached");
                         }
-
                 }
 
                 else {
@@ -96,6 +101,13 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
         });
     }
 
+
+    /**
+     * Returns the view for a particular element
+     * @param parent The parent view
+     * @param viewType The view type for this element
+     * @return A view
+     */
     @NonNull
     @Override
     public requestViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
@@ -104,8 +116,9 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
     }
 
 
-
-
+    /**
+     * Defines a view for a request
+     */
     public class requestViewHolder extends RecyclerView.ViewHolder {
 
         Button delete_button;
@@ -114,6 +127,10 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
         ImageView profile_pic;
 
 
+        /**
+         * Find elements for our view
+         * @param itemView Access to our views and elements
+         */
         public requestViewHolder(@NonNull View itemView) {
             super(itemView);
             delete_button = itemView.findViewById(R.id.button_delete_request);

@@ -51,6 +51,7 @@ import java.util.concurrent.Executors;
 /**
  * This activity implements an ISBN scanner and returns the ISBN calling this activity
  * This activity must be called with startActivityForResult to function properly
+ * https://medium.com/analytics-vidhya/creating-a-barcode-scanner-using-android-studio-71cff11800a2
  * @see Book
  * @author deinum
  */

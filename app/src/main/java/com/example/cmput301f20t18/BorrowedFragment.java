@@ -18,7 +18,7 @@ import com.google.android.material.tabs.TabLayout;
 
 /**
  * A Fragment that handles all sub-fragments for books that a user is borrowing
- * @author Shuval
+ * @author Shuval De Villiers
  * @author deinum
  */
 public class BorrowedFragment extends Fragment implements fragmentListener {
