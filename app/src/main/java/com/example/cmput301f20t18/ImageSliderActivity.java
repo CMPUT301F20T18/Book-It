@@ -1,4 +1,4 @@
-/*package com.example.cmput301f20t18;
+package com.example.cmput301f20t18;
 
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
@@ -56,4 +56,4 @@ public class ImageSliderActivity extends AppCompatActivity {
 
 
     }
-}*/
+}

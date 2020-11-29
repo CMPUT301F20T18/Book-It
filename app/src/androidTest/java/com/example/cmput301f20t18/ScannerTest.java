@@ -26,13 +26,14 @@ public class ScannerTest {
 
     private Solo solo;
     @Rule
-    public ActivityTestRule<Scanner> rule =
-            new ActivityTestRule<>(Scanner.class, true, true);
+    public ActivityTestRule<Login> rule =
+            new ActivityTestRule<>(Login.class, true, true);
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
         LoginActivityTest.Login(solo);
         solo.clickOnView(solo.getView(R.id.tab_scan));
+
     }
     @Test
     public void start(){
@@ -43,32 +44,36 @@ public class ScannerTest {
     public void scan(){
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
                 Scanner.class);
-        solo.clickOnButton(R.id.button_manual);
+        solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
-        solo.clearEditText((EditText) solo.getView(R.id.manual_isbn_input));
         solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
                 PostScanActivity.class);
-        solo.clickOnButton(R.id.back);
+        assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
+        solo.clickOnView(solo.getView(R.id.back));
+        solo.assertCurrentActivity("Wrong Activity - HOMESCREEN",
+                HomeScreen.class);
     }
 
     @Test
     public void scanAddBookCancel(){
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
                 Scanner.class);
-        solo.clickOnButton(R.id.button_manual);
+        solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
-        solo.clearEditText((EditText) solo.getView(R.id.manual_isbn_input));
         solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
                 PostScanActivity.class);
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
-        solo.clickOnButton(R.id.done_add_book);
-        solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
+        solo.clickOnButton("Add to My Books");
+        solo.assertCurrentActivity("Wrong Activity - MY BOOKS ADD BOOK",
                 MyBooksAddBook.class);
-        solo.clickOnButton(R.id.return_to_my_books);
+        solo.clickOnView(solo.getView(R.id.return_to_my_books));
         solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
-                MyBooksFragment.class);
+                PostScanActivity.class);
+        solo.clickOnView(solo.getView(R.id.back));
+        solo.assertCurrentActivity("Wrong Activity - HOMESCREEN",
+                HomeScreen.class);
         assertFalse(solo.waitForText(DEMO_BOOK_TITLE, 1, 2000));
         assertFalse(solo.waitForText(DEMO_AUTHOR, 1, 2000));
         assertFalse(solo.waitForText(DEMO_YEAR, 1, 2000));
@@ -81,6 +86,7 @@ public class ScannerTest {
 
         ScannerTest.addBook(solo);
         MyBooksAvailableFragmentTest.deleteAll(solo);
+
     }
 
     @Test
@@ -91,18 +97,17 @@ public class ScannerTest {
         solo.clickOnView(solo.getView(R.id.tab_scan));
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
                 Scanner.class);
-        solo.clickOnButton(R.id.button_manual);
+        solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
-        solo.clearEditText((EditText) solo.getView(R.id.manual_isbn_input));
         solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
                 PostScanActivity.class);
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
-        solo.clickOnButton(R.id.search_copies);
-        solo.assertCurrentActivity("Wrong Activity - SEARCH FRAGMENT",
-                SearchFragment.class);
+        solo.clickOnView(solo.getView(R.id.search_copies));
+        solo.assertCurrentActivity("Wrong Activity - HOMESCREEN",
+                HomeScreen.class);
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
-        solo.clickOnButton(R.id.search_button);
+        solo.clickOnView(solo.getView(R.id.search_button));
         assertTrue(solo.waitForText(DEMO_BOOK_TITLE, 1, 2000));
         assertTrue(solo.waitForText(DEMO_AUTHOR, 1, 2000));
         assertTrue(solo.waitForText(DEMO_YEAR, 1, 2000));
@@ -116,17 +121,22 @@ public class ScannerTest {
 
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
                 Scanner.class);
-        solo.clickOnButton(R.id.button_manual);
+        solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
-        solo.clearEditText((EditText) solo.getView(R.id.manual_isbn_input));
         solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
                 PostScanActivity.class);
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
-        solo.clickOnButton(R.id.add_book_isbn);
+        solo.clickOnButton("Add to My Books");
         solo.assertCurrentActivity("Wrong Activity - MY BOOKS ADD BOOK",
                 MyBooksAddBook.class);
-        solo.clickOnButton(R.id.done_add_book);
+        solo.sleep(500);
+        solo.clickOnView(solo.getView(R.id.done_add_book));
+        solo.assertCurrentActivity("Wrong Activity - NOT POST SCAN ACTIVITY",
+                PostScanActivity.class);
+        solo.clickOnView(solo.getView(R.id.back));
+        solo.assertCurrentActivity("Wrong Activity - HOMESCREEN",
+                HomeScreen.class);
         assertTrue(solo.waitForText(DEMO_BOOK_TITLE, 1, 2000));
         assertTrue(solo.waitForText(DEMO_AUTHOR, 1, 2000));
         assertTrue(solo.waitForText(DEMO_YEAR, 1, 2000));
