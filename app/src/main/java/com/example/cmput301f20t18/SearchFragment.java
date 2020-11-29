@@ -698,13 +698,12 @@ public class SearchFragment extends Fragment {
                 bookImageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ArrayList<String> photos = book.getPhotos();
 
-//                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-//                        slider.putExtra("ID", book.getId());
+                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+                        slider.putExtra("ID", book.getId());
                         Activity activity = (Activity) view.getContext();
 
-//                        activity.startActivity(slider);
+                        activity.startActivity(slider);
 
                     }
                 });
