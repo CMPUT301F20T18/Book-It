@@ -12,4 +12,5 @@ public class RobotiumTransactionManager {
         return solo.waitForText("Cancel Request");
     }
 
+
 }
