@@ -5,9 +5,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.os.Bundle;
 import android.util.Log;
-import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,8 +25,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
 
 /**
  * Custom RecyclerView Adapter for Book objects in My Books.
@@ -100,13 +96,13 @@ public class FirestoreBookAdapter
                 holder.imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        ArrayList<String> photos = book.getPhotos();
-
-                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-                        slider.putExtra("ID", book.getId());
-                        Activity activity = (Activity) view.getContext();
-
-                        activity.startActivity(slider);
+//                        ArrayList<String> photos = book.getPhotos();
+//
+//                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+//                        slider.putExtra("ID", book.getId());
+//                        Activity activity = (Activity) view.getContext();
+//
+//                        activity.startActivity(slider);
 
                         //Start slider activity here, photos is the list of Bitmaps needed
                     }

@@ -23,14 +23,15 @@ public class CheckProfileActivityTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.login(solo, EMAIL, PASSWORD);
+        RobotiumLoginManager.loginBorrower(solo);
 
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
 
-        SearchFragmentTest.searchUser()
+        String username = RobotiumLoginManager.owner.getUsername();
+        SearchFragmentTest.searchUser(solo, username, username);
 
         solo.clickOnButton("View Profile");
     }
@@ -41,10 +42,11 @@ public class CheckProfileActivityTest {
     }
     @Test
     public void checkData(){
+        RobotiumUser owner = RobotiumLoginManager.owner;
         solo.assertCurrentActivity("Wrong Activity - NOT CHECKPROFILEACTIVITY",
                 CheckProfileActivity.class);
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_USERNAME, 1, 2000));
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_PHONE, 1, 2000));
-        assertTrue(solo.waitForText(RegisterActivityTest.DEFAULT_EMAIL, 1, 2000));
+        assertTrue(solo.waitForText(owner.getUsername(), 1, 2000));
+        assertTrue(solo.waitForText(owner.getPhoneNum(), 1, 2000));
+        assertTrue(solo.waitForText(owner.getEmail(), 1, 2000));
     }
 }

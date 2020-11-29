@@ -22,6 +22,13 @@ public class SearchFragmentTest {
 
     private static final String EMAIL = "OtherBot@OtherBot.botnet";
     private static final String PASSWORD = "BotPass";
+    private static final String USERNAME = RobotiumLoginManager.owner.getUsername();
+
+    private static final String TITLE = RobotiumUserBookManager.DEFAULT_BOOK_TITLE;
+    private static final String AUTHOR = RobotiumUserBookManager.DEFAULT_BOOK_AUTHOR;
+    private static final String YEAR = RobotiumUserBookManager.DEFAULT_BOOK_YEAR;
+    private static final String ISBN = RobotiumUserBookManager.DEFAULT_BOOK_ISBN;
+
 
     @Rule
     public ActivityTestRule<Login> rule =
@@ -29,32 +36,32 @@ public class SearchFragmentTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.login(solo);
-        MyBooksAddBookTest.addBook(solo);
+        RobotiumLoginManager.loginOwner(solo);
+        RobotiumUserBookManager.add(solo);
     }
     @After
     public void deleteAddedBooks(){
-        MyBooksAvailableFragmentTest.deleteAll(solo);
+        RobotiumUserBookManager.deleteAll(solo);
     }
     @Test
     public void searchBookOwnedExplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_TITLE));
+        assertTrue(searchBook(solo, TITLE,
+                TITLE));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR));
+        assertTrue(searchBook(solo, TITLE,
+                AUTHOR));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_YEAR));
+        assertTrue(searchBook(solo, TITLE,
+                YEAR));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_ISBN));
+        assertTrue(searchBook(solo, TITLE,
+                ISBN));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
     }
     @Test
@@ -62,90 +69,84 @@ public class SearchFragmentTest {
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        for (int i=1; i<MyBooksAddBookTest.DEFAULT_BOOK_TITLE.length(); i+=5){
-            assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                    MyBooksAddBookTest.DEFAULT_BOOK_TITLE.substring(0,i)));
+        for (int i=1; i<TITLE.length(); i+=5){
+            assertTrue(searchBook(solo, TITLE,
+                    TITLE.substring(0,i)));
             assertTrue(solo.waitForText("Owned By You", 1, 2000));
         }
 
-        for (int i=1; i<MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR.length(); i+=5){
-            assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                    MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR.substring(0,i)));
+        for (int i=1; i<AUTHOR.length(); i+=5){
+            assertTrue(searchBook(solo, TITLE,
+                    AUTHOR.substring(0,i)));
             assertTrue(solo.waitForText("Owned By You", 1, 2000));
         }
     }
     @Test
     public void searchBookUnownedExplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        ProfileFragmentTest.signOut(solo);
+        RobotiumLoginManager.signOut(solo);
 
-        LoginActivityTest.login(solo, EMAIL, PASSWORD);
+        RobotiumLoginManager.loginBorrower(solo);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_TITLE));
+        assertTrue(searchBook(solo, TITLE, TITLE));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR));
+        assertTrue(searchBook(solo, TITLE, AUTHOR));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_YEAR));
+        assertTrue(searchBook(solo, TITLE, YEAR));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_ISBN));
+        assertTrue(searchBook(solo, TITLE, ISBN));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        ProfileFragmentTest.signOut(solo);
+        RobotiumLoginManager.signOut(solo);
         solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
-        LoginActivityTest.login(solo);
+        RobotiumLoginManager.loginOwner(solo);
     }
     @Test
     public void searchBookUnownedImplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        ProfileFragmentTest.signOut(solo);
+        RobotiumLoginManager.signOut(solo);
 
-        LoginActivityTest.login(solo, EMAIL, PASSWORD);
+        RobotiumLoginManager.loginBorrower(solo);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        for (int i=1; i<MyBooksAddBookTest.DEFAULT_BOOK_TITLE.length(); i+=5){
-            assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                    MyBooksAddBookTest.DEFAULT_BOOK_TITLE.substring(0,i)));
+        for (int i=1; i<TITLE.length(); i+=5){
+            assertTrue(searchBook(solo, TITLE, TITLE.substring(0,i)));
             assertTrue(solo.waitForText("Request Book", 1, 2000));
         }
 
-        for (int i=1; i<MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR.length(); i+=5){
-            assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                    MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR.substring(0,i)));
+        for (int i=1; i<AUTHOR.length(); i+=5){
+            assertTrue(searchBook(solo, TITLE, AUTHOR.substring(0,i)));
             assertTrue(solo.waitForText("Request Book", 1, 2000));
         }
 
-        ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.login(solo);
+        RobotiumLoginManager.signOut(solo);
+        RobotiumLoginManager.loginOwner(solo);
     }
     @Test
     public void searchBookNonexistent(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        assertFalse(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "Hello"));
-        assertFalse(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "1"));
+        assertFalse(searchBook(solo, TITLE, "Hello"));
+        assertFalse(searchBook(solo, TITLE, "1"));
 
     }
     @Test
     public void requestBookFromSearch(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-        ProfileFragmentTest.signOut(solo);
+        RobotiumLoginManager.signOut(solo);
 
-        LoginActivityTest.login(solo, EMAIL, PASSWORD);
+        RobotiumLoginManager.loginBorrower(solo);
 
         //Test Making request and prompt on cancelling request within search
-        assertTrue(requestBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
-                MyBooksAddBookTest.DEFAULT_BOOK_TITLE));
+        assertTrue(requestBook(solo, TITLE,
+                TITLE));
         solo.clickOnButton("Cancel Request");
         solo.clickOnButton("No");
         assertTrue(solo.waitForText("Cancel Request", 1, 2000));
@@ -153,8 +154,8 @@ public class SearchFragmentTest {
         solo.clickOnButton("Yes");
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.login(solo);
+        RobotiumLoginManager.signOut(solo);
+        RobotiumLoginManager.loginOwner(solo);
     }
 
 
@@ -166,7 +167,7 @@ public class SearchFragmentTest {
         solo.clickOnText("Users");
 
         assertTrue(searchUser(solo,
-                RegisterActivityTest.DEFAULT_USERNAME, RegisterActivityTest.DEFAULT_USERNAME));
+                USERNAME, USERNAME));
     }
     @Test
     public void searchUserSelfImplicit(){
@@ -175,37 +176,37 @@ public class SearchFragmentTest {
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
 
-        for (int i=1; i<RegisterActivityTest.DEFAULT_USERNAME.length(); i+=5){
-            assertTrue(searchUser(solo, RegisterActivityTest.DEFAULT_USERNAME,
-                    RegisterActivityTest.DEFAULT_USERNAME.substring(0,i)));
+        for (int i=1; i<USERNAME.length(); i+=5){
+            assertTrue(searchUser(solo, USERNAME,
+                    USERNAME.substring(0,i)));
         }
     }
 
     @Test
     public void searchUserOtherExplicit(){
-        ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.login(solo, EMAIL, PASSWORD);
+        RobotiumLoginManager.signOut(solo);
+        RobotiumLoginManager.loginBorrower(solo);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
 
         solo.clickOnView(solo.getView(R.id.tab_search));
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
 
-        assertTrue(searchUser(solo, RegisterActivityTest.DEFAULT_USERNAME,
-                RegisterActivityTest.DEFAULT_USERNAME));
+        assertTrue(searchUser(solo, USERNAME,
+                USERNAME));
     }
     @Test
     public void searchUserOtherImplicit(){
-        ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.login(solo, EMAIL, PASSWORD);
+        RobotiumLoginManager.signOut(solo);
+        RobotiumLoginManager.loginBorrower(solo);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
 
         solo.clickOnView(solo.getView(R.id.tab_search));
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
-        for (int i=1; i<RegisterActivityTest.DEFAULT_USERNAME.length(); i+=5){
-            assertTrue(searchUser(solo, RegisterActivityTest.DEFAULT_USERNAME,
-                    RegisterActivityTest.DEFAULT_USERNAME.substring(0,i)));
+        for (int i=1; i<USERNAME.length(); i+=5){
+            assertTrue(searchUser(solo, USERNAME,
+                    USERNAME.substring(0,i)));
         }
     }
 
@@ -223,12 +224,12 @@ public class SearchFragmentTest {
     public static Boolean requestBook(Solo solo, String bookTitle, String searchKey){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
-        searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE, MyBooksAddBookTest.DEFAULT_BOOK_TITLE);
+        searchBook(solo, TITLE, TITLE);
         solo.clickOnButton("Request Book");
         return solo.waitForText("Cancel Request");
     }
 
-    public static Boolean searchUser(Solo solo, String username, String searchKey){
+    public static Boolean searchUser(Solo solo, String USERNAME, String searchKey){
         EditText searchEditText = (EditText)solo.getView(R.id.search_edit_text);
         View searchButton = solo.getView(R.id.search_button);
 
@@ -236,7 +237,7 @@ public class SearchFragmentTest {
         solo.clickOnView(searchButton);
         solo.clearEditText(searchEditText);
 
-        return solo.waitForText(username, 1, 2000);
+        return solo.waitForText(USERNAME, 1, 2000);
     }
 
 }
