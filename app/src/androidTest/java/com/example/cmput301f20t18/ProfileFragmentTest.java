@@ -19,7 +19,7 @@ public class ProfileFragmentTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.Login(solo);
+        LoginActivityTest.login(solo);
         solo.clickOnView(solo.getView(R.id.tab_profile));
     }
     @Test

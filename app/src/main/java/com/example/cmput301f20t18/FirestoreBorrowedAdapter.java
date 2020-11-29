@@ -11,14 +11,11 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.ImageButton;
-import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -28,8 +25,6 @@ import com.google.android.gms.tasks.Task;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.ArrayList;
 
 /**
  * Custom RecyclerView Adapter for Book objects in Borrowed books.
@@ -129,11 +124,11 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 @Override
                 public void onClick(View view) {
 
-                    Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-                    slider.putExtra("ID", book.getId());
-                    Activity activity = (Activity) view.getContext();
-
-                    activity.startActivity(slider);
+//                    Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+//                    slider.putExtra("ID", book.getId());
+//                    Activity activity = (Activity) view.getContext();
+//
+//                    activity.startActivity(slider);
 
                 }
             });

@@ -45,7 +45,7 @@ public class LoginActivityTest {
         solo.assertCurrentActivity("Wrong Activity - NOT REGISTER", Register.class);
     }
 
-    public static void Login(Solo solo){
+    public static void login(Solo solo){
         solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
         solo.enterText((EditText)solo.getView(R.id.username),
                 RegisterActivityTest.DEFAULT_EMAIL);
@@ -53,7 +53,7 @@ public class LoginActivityTest {
                 RegisterActivityTest.DEFAULT_PASSWORD);
         solo.clickOnButton("Sign in");
     }
-    public static void Login(Solo solo, String username, String password){
+    public static void login(Solo solo, String username, String password){
         solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
         solo.enterText((EditText)solo.getView(R.id.username), username);
         solo.enterText((EditText)solo.getView(R.id.password), password);

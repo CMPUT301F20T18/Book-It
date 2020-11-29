@@ -1,8 +1,5 @@
 package com.example.cmput301f20t18;
 
-import android.view.View;
-import android.widget.EditText;
-
 import androidx.test.platform.app.InstrumentationRegistry;
 import androidx.test.rule.ActivityTestRule;
 
@@ -26,20 +23,14 @@ public class CheckProfileActivityTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.Login(solo, EMAIL, PASSWORD);
+        LoginActivityTest.login(solo, EMAIL, PASSWORD);
 
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
 
-        EditText searchEditText = (EditText)solo.getView(R.id.search_edit_text);
-        View searchButton = solo.getView(R.id.search_button);
-
-
-        solo.enterText(searchEditText, RegisterActivityTest.DEFAULT_USERNAME);
-        solo.clickOnView(searchButton);
-        solo.clearEditText(searchEditText);
+        SearchFragmentTest.searchUser()
 
         solo.clickOnButton("View Profile");
     }

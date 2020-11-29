@@ -20,8 +20,8 @@ import static org.junit.Assert.assertTrue;
 public class SearchFragmentTest {
     private Solo solo;
 
-    public static final String EMAIL = "OtherBot@OtherBot.botnet";
-    public static final String PASSWORD = "BotPass";
+    private static final String EMAIL = "OtherBot@OtherBot.botnet";
+    private static final String PASSWORD = "BotPass";
 
     @Rule
     public ActivityTestRule<Login> rule =
@@ -29,7 +29,7 @@ public class SearchFragmentTest {
     @Before
     public void setUp() throws Exception{
         solo = new Solo(InstrumentationRegistry.getInstrumentation(), rule.getActivity());
-        LoginActivityTest.Login(solo);
+        LoginActivityTest.login(solo);
         MyBooksAddBookTest.addBook(solo);
     }
     @After
@@ -41,19 +41,19 @@ public class SearchFragmentTest {
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_TITLE));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_YEAR));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_ISBN));
         assertTrue(solo.waitForText("Owned By You", 1, 2000));
     }
@@ -63,13 +63,13 @@ public class SearchFragmentTest {
         solo.clickOnView(solo.getView(R.id.tab_search));
 
         for (int i=1; i<MyBooksAddBookTest.DEFAULT_BOOK_TITLE.length(); i+=5){
-            assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+            assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                     MyBooksAddBookTest.DEFAULT_BOOK_TITLE.substring(0,i)));
             assertTrue(solo.waitForText("Owned By You", 1, 2000));
         }
 
         for (int i=1; i<MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR.length(); i+=5){
-            assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+            assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                     MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR.substring(0,i)));
             assertTrue(solo.waitForText("Owned By You", 1, 2000));
         }
@@ -79,36 +79,36 @@ public class SearchFragmentTest {
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         ProfileFragmentTest.signOut(solo);
 
-        LoginActivityTest.Login(solo, EMAIL, PASSWORD);
+        LoginActivityTest.login(solo, EMAIL, PASSWORD);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_TITLE));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_AUTHOR));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_YEAR));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
-        assertTrue(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_ISBN));
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
         ProfileFragmentTest.signOut(solo);
         solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
-        LoginActivityTest.Login(solo);
+        LoginActivityTest.login(solo);
     }
     @Test
     public void searchBookUnownedImplicit(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         ProfileFragmentTest.signOut(solo);
 
-        LoginActivityTest.Login(solo, EMAIL, PASSWORD);
+        LoginActivityTest.login(solo, EMAIL, PASSWORD);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
@@ -125,15 +125,15 @@ public class SearchFragmentTest {
         }
 
         ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.Login(solo);
+        LoginActivityTest.login(solo);
     }
     @Test
     public void searchBookNonexistent(){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
 
-        assertFalse(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "Hello"));
-        assertFalse(searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "1"));
+        assertFalse(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "Hello"));
+        assertFalse(searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE, "1"));
 
     }
     @Test
@@ -141,10 +141,10 @@ public class SearchFragmentTest {
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         ProfileFragmentTest.signOut(solo);
 
-        LoginActivityTest.Login(solo, EMAIL, PASSWORD);
+        LoginActivityTest.login(solo, EMAIL, PASSWORD);
 
         //Test Making request and prompt on cancelling request within search
-        assertTrue(requestBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
+        assertTrue(requestBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE,
                 MyBooksAddBookTest.DEFAULT_BOOK_TITLE));
         solo.clickOnButton("Cancel Request");
         solo.clickOnButton("No");
@@ -154,7 +154,7 @@ public class SearchFragmentTest {
         assertTrue(solo.waitForText("Request Book", 1, 2000));
 
         ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.Login(solo);
+        LoginActivityTest.login(solo);
     }
 
 
@@ -165,7 +165,8 @@ public class SearchFragmentTest {
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
 
-        assertTrue(searchUser(RegisterActivityTest.DEFAULT_USERNAME, RegisterActivityTest.DEFAULT_USERNAME));
+        assertTrue(searchUser(solo,
+                RegisterActivityTest.DEFAULT_USERNAME, RegisterActivityTest.DEFAULT_USERNAME));
     }
     @Test
     public void searchUserSelfImplicit(){
@@ -175,7 +176,7 @@ public class SearchFragmentTest {
         solo.clickOnText("Users");
 
         for (int i=1; i<RegisterActivityTest.DEFAULT_USERNAME.length(); i+=5){
-            assertTrue(searchUser(RegisterActivityTest.DEFAULT_USERNAME,
+            assertTrue(searchUser(solo, RegisterActivityTest.DEFAULT_USERNAME,
                     RegisterActivityTest.DEFAULT_USERNAME.substring(0,i)));
         }
     }
@@ -183,32 +184,32 @@ public class SearchFragmentTest {
     @Test
     public void searchUserOtherExplicit(){
         ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.Login(solo, EMAIL, PASSWORD);
+        LoginActivityTest.login(solo, EMAIL, PASSWORD);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
 
         solo.clickOnView(solo.getView(R.id.tab_search));
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
 
-        assertTrue(searchUser(RegisterActivityTest.DEFAULT_USERNAME,
+        assertTrue(searchUser(solo, RegisterActivityTest.DEFAULT_USERNAME,
                 RegisterActivityTest.DEFAULT_USERNAME));
     }
     @Test
     public void searchUserOtherImplicit(){
         ProfileFragmentTest.signOut(solo);
-        LoginActivityTest.Login(solo, EMAIL, PASSWORD);
+        LoginActivityTest.login(solo, EMAIL, PASSWORD);
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
 
         solo.clickOnView(solo.getView(R.id.tab_search));
         solo.clickOnView(solo.getView(R.id.search_spinner));
         solo.clickOnText("Users");
         for (int i=1; i<RegisterActivityTest.DEFAULT_USERNAME.length(); i+=5){
-            assertTrue(searchUser(RegisterActivityTest.DEFAULT_USERNAME,
+            assertTrue(searchUser(solo, RegisterActivityTest.DEFAULT_USERNAME,
                     RegisterActivityTest.DEFAULT_USERNAME.substring(0,i)));
         }
     }
 
-    private Boolean searchBook(String bookTitle, String searchKey){
+    private static Boolean searchBook(Solo solo, String bookTitle, String searchKey){
         EditText searchEditText = (EditText)solo.getView(R.id.search_edit_text);
         View searchButton = solo.getView(R.id.search_button);
 
@@ -219,15 +220,15 @@ public class SearchFragmentTest {
         return solo.waitForText(bookTitle, 1, 2000);
     }
 
-    private Boolean requestBook(String bookTitle, String searchKey){
+    public static Boolean requestBook(Solo solo, String bookTitle, String searchKey){
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_search));
-        searchBook(MyBooksAddBookTest.DEFAULT_BOOK_TITLE, MyBooksAddBookTest.DEFAULT_BOOK_TITLE);
+        searchBook(solo, MyBooksAddBookTest.DEFAULT_BOOK_TITLE, MyBooksAddBookTest.DEFAULT_BOOK_TITLE);
         solo.clickOnButton("Request Book");
         return solo.waitForText("Cancel Request");
     }
 
-    private Boolean searchUser(String username, String searchKey){
+    public static Boolean searchUser(Solo solo, String username, String searchKey){
         EditText searchEditText = (EditText)solo.getView(R.id.search_edit_text);
         View searchButton = solo.getView(R.id.search_button);
 
