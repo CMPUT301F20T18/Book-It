@@ -182,6 +182,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     year.setText(Integer.toString(book.getYear()));
                     isbn.setText(Long.toString(book.getISBN()));
                     photos = book.retrievePhotos();
+                    outPhotos.addAll(photos);
                     Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
                     imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
                     imagesViewer.setAdapter(imageRecyclerViewAdapter);
@@ -230,7 +231,9 @@ public class MyBooksAddBook extends AppCompatActivity {
                 };
 
                 for (Bitmap bmp : imageRecyclerViewAdapter.getPhotos()){
-                    stringPhotos.add(photoAdapter.bitmapToString(bmp));
+                    if (bmp!= null) {
+                        stringPhotos.add(photoAdapter.bitmapToString(bmp));
+                    }
                 }
 
 
@@ -246,7 +249,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                 Integer year = Integer.parseInt(book_year);
 
                 ArrayList<String> photoStrings = new ArrayList<>();
-                for (Bitmap photo: outPhotos){
+                for (Bitmap photo: imageRecyclerViewAdapter.getPhotos()){
                     if (photo != null) {
                         photoStrings
                                 .add(photoAdapter.bitmapToString(photo));
@@ -268,7 +271,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                 }
 
                 else if (type == EDIT_BOOK) {
-                    current.ownerEditBook(book_title, book_author, isbn, bookID, year);
+                    current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
 
                 }
                 finish();
@@ -310,7 +313,9 @@ public class MyBooksAddBook extends AppCompatActivity {
         defaultPhoto = coverPhoto;
     }
 
-
+    /*
+    Referenced https://www.youtube.com/watch?v=fVQIOq_lD9U&ab_channel=TihomirRAdeff
+     */
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -329,8 +334,8 @@ public class MyBooksAddBook extends AppCompatActivity {
 
                     imageRecyclerViewAdapter.addData(bitmap);
                     View view = findViewById(R.id.book_image_view);
-                    Bitmap outmap = photoAdapter.scaleBitmap(bitmap, view.getLayoutParams().width, view.getLayoutParams().height);
-                    outPhotos.add(outmap);
+                    //Bitmap outmap = photoAdapter.scaleBitmap(bitmap, view.getLayoutParams().width, view.getLayoutParams().height);
+                    //outPhotos.add(outmap);
                     //addPhoto.setImageBitmap(outMap);
                 }
         }

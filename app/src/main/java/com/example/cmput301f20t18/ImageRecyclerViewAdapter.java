@@ -36,6 +36,8 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
         this.photos = photos;
         this.photos.add(null);
         this.addListener = addListener;
+        this.photoData = new ArrayList<Bitmap>();
+
     }
 
     @NonNull
@@ -58,6 +60,7 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
         if (position < this.photos.size() -1) {
             Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getLayoutParams().width, imageView.getLayoutParams().height);
+            photoData.add(bm);
             imageView.setImageBitmap(bm);
             button.show();
             button.setOnClickListener(new View.OnClickListener() {
@@ -67,6 +70,7 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
                     photos.remove(photos.size()-1);
                     photos.remove(position);
                     photos.add(null);
+                    photoData.clear();
                     notifyDataSetChanged();
 
                 }
@@ -89,13 +93,13 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
     public ArrayList<Bitmap> getPhotos() {
 
-        this.photos.remove(this.photos.size()-1);
-        return this.photos;
+        return this.photoData;
 
     }
 
     public void addData(Bitmap bm){
         this.photos.add(this.photos.size()-1, bm);
+        this.photoData = new ArrayList<Bitmap>();
         notifyDataSetChanged();
     }
 
