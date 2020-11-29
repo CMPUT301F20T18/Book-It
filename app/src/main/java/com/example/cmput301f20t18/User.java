@@ -22,6 +22,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
+import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableReference;
 import com.google.firebase.functions.HttpsCallableResult;
@@ -397,16 +398,19 @@ public class User {
 
                 // delete the book
                 bookRef.document(Integer.toString(bookID)).delete();
+                WriteBatch batch = DB.batch();
 
                 for (int i = 0 ; i < transactions.size() ; i++) {
 
                     // remove this book from requested for each requester
-                    userRef.document(transactions.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)).delete();
+                    batch.delete(userRef.document(transactions.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(bookID)));
 
 
                     // delete each transaction associated with this book
-                    transRef.document(Integer.toString(transactions.get(i).getID())).delete();
+                    batch.delete(transRef.document(Integer.toString(transactions.get(i).getID())));
                 }
+
+                batch.commit();
             }
 
             else {
@@ -869,6 +873,52 @@ public class User {
                 if (task.isSuccessful()) {
                     User current = task.getResult().toObject(User.class);
                     FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
+
+                    // delete all transactions associated with this user
+                    transRef.whereEqualTo("owner_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                        @Override
+                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                            if (task.isSuccessful()) {
+                                List<Transaction> list = task.getResult().toObjects(Transaction.class);
+
+                                WriteBatch batch = DB.batch();
+
+                                for (int i = 0 ; i < list.size() ; i++) {
+                                    // delete requested books and transactions
+                                    batch.delete(userRef.document(list.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(list.get(i).getBookID())));
+                                    batch.delete(transRef.document(Integer.toString(list.get(i).getID())));
+                                }
+
+
+
+                                // delete the global books
+                                bookRef.whereEqualTo("owner_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    @Override
+                                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                        if (task.isSuccessful()) {
+                                            WriteBatch bookDelete = DB.batch();
+                                            List<Book> bookList = task.getResult().toObjects(Book.class);
+                                            for (int i = 0 ; i < bookList.size() ; i++) {
+                                                bookDelete.delete(bookRef.document(Integer.toString(bookList.get(i).getId())));
+                                            }
+
+                                            // commit the results
+                                            bookDelete.commit();
+                                            batch.commit();
+                                        }
+                                        else {
+                                            Log.d(TAG, "Delete user - Error finding users books");
+                                        }
+                                    }
+                                });
+                            }
+
+                            else {
+                                Log.d(TAG, "Error finding all the users transactions!");
+                            }
+                        }
+                    });
+
 
                     // free up the current users username
                     // no listener needed, not depending on result

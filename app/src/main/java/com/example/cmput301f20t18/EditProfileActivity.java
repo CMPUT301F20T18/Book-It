@@ -164,7 +164,8 @@ public class EditProfileActivity extends AppCompatActivity {
                         .setPositiveButton("Delete account", new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialog, int which) {
-                                // TODO: Delete account
+                                User current = new User();
+                                current.userDelete(EditProfileActivity.this);
                             }
                         })
                         .setNeutralButton("Cancel", null)
