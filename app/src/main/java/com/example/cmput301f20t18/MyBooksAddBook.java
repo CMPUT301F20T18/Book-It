@@ -260,19 +260,17 @@ public class MyBooksAddBook extends AppCompatActivity {
                         photoStrings.add(photoAdapter.bitmapToString(defaultPhoto));
                     }
                 }
+                if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)) {
+                    Log.d(TAG, "Validity check passed");
 
-                if (type == ADD_BOOK || type == ADD_SCAN) {
-                    if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)){
-
-                        Log.d(TAG, "Validity check passed");
+                    if (type == ADD_BOOK || type == ADD_SCAN) {
 
                         current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
+
+                    } else if (type == EDIT_BOOK) {
+
+                        current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
                     }
-                }
-
-                else if (type == EDIT_BOOK) {
-                    current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
-
                 }
                 startActivity(new Intent(getBaseContext(), HomeScreen.class));
                 finish();
