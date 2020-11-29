@@ -1,7 +1,6 @@
 package com.example.cmput301f20t18;
 
 import android.os.Build;
-import android.os.Message;
 import android.util.Log;
 
 import androidx.annotation.NonNull;
@@ -15,8 +14,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
-import java.time.format.DateTimeFormatter;
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
 import java.util.Map;
 

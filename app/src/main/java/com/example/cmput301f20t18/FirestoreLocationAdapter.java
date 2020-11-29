@@ -2,7 +2,6 @@ package com.example.cmput301f20t18;
 
 import android.app.Activity;
 import android.content.Context;
-import android.location.Address;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
