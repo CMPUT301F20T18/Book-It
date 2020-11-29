@@ -49,8 +49,7 @@ public class ImageSliderActivity extends AppCompatActivity {
         sliderButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                finishActivity(1);
-
+                finish();
             }
         });
 
