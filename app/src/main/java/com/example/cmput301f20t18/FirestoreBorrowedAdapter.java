@@ -83,6 +83,8 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
+
+
         /* TODO: Implement cancel pick up UI and functionality (for "accepted" books) */
 
         try {
