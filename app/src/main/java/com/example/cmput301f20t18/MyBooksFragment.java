@@ -12,11 +12,9 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 /**
@@ -75,8 +73,8 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         addBooks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addIntent = new Intent(getContext(),MyBooksAddBook.class);
-                addIntent.putExtra("type", MyBooksAddBook.ADD_BOOK);
+                Intent addIntent = new Intent(getContext(), AddBookActivity.class);
+                addIntent.putExtra("type", AddBookActivity.ADD_BOOK);
                 startActivityForResult(addIntent,0);
             }
         });

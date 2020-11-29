@@ -1,5 +1,11 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
+import androidx.core.content.ContextCompat;
+import androidx.fragment.app.FragmentActivity;
+
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.res.ColorStateList;
@@ -7,7 +13,6 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.widget.Toolbar;
@@ -176,8 +181,11 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
         public void onClick(View v) {
 
             if (returnUserLocation == null){
-                Toast.makeText(getApplicationContext(), "Please tap to choose a location",
-                        Toast.LENGTH_SHORT).show();
+                new AlertDialog.Builder(SelectLocationActivity.this, R.style.CustomDialogTheme)
+                        .setTitle("Please tap to choose a location")
+                        .setMessage("")
+                        .setPositiveButton("OK", null)
+                        .show();
             }
             else {
                 Intent returnIntent = new Intent();

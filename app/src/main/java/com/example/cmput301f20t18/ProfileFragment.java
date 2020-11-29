@@ -145,7 +145,7 @@ public class ProfileFragment extends Fragment {
         editAccount.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent editIntent = new Intent(getContext(),EditProfile.class);
+                Intent editIntent = new Intent(getContext(), EditProfileActivity.class);
                 editIntent.putExtra("username", username.getText().toString());
                 editIntent.putExtra("address", address);
                 editIntent.putExtra("phone", phoneNum.getText().toString());

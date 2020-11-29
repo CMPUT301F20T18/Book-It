@@ -1,5 +1,9 @@
 package com.example.cmput301f20t18;
 
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
+
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -19,10 +23,6 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 /**
  * This is a class used to edit a user's profile information.
  * @author Sean Butler
@@ -30,7 +30,7 @@ import androidx.appcompat.app.AppCompatActivity;
  * @author Shuval De Villiers
  */
 
-public class EditProfile extends AppCompatActivity {
+public class EditProfileActivity extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_PROFILE_EDITED = 1;
@@ -128,7 +128,7 @@ public class EditProfile extends AppCompatActivity {
                 /*ChangePasswordDialog changePassword = new ChangePasswordDialog();
                 changePassword.show(getSupportFragmentManager(), "dialog");
                 changePass.setBackgroundColor(getResources().getColor(R.color.colorGray2));*/
-                AlertDialog dialog = new AlertDialog.Builder(EditProfile.this, R.style.CustomDialogTheme)
+                AlertDialog dialog = new AlertDialog.Builder(EditProfileActivity.this, R.style.CustomDialogTheme)
                         .setTitle("Reset password")
                         .setMessage("Send password reset link to\n" + extras.get("email") + "?")
                         .setPositiveButton("Send", new DialogInterface.OnClickListener() {
@@ -136,7 +136,7 @@ public class EditProfile extends AppCompatActivity {
                             public void onClick(DialogInterface dialog, int which) {
                                 current.passwordReset();
 
-                                new AlertDialog.Builder(EditProfile.this, R.style.CustomDialogTheme)
+                                new AlertDialog.Builder(EditProfileActivity.this, R.style.CustomDialogTheme)
                                         .setTitle("We have emailed your password reset link!")
                                         .setPositiveButton("OK",null)
                                         .show();
@@ -154,9 +154,27 @@ public class EditProfile extends AppCompatActivity {
             }
         });
 
+        // User wants to delete account
+        deleteAccount.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                new AlertDialog.Builder(EditProfileActivity.this, R.style.CustomDialogTheme)
+                        .setTitle("Delete account")
+                        .setMessage("Are you sure you want to permanently delete your account?\nThis action cannot be undone!")
+                        .setPositiveButton("Delete account", new DialogInterface.OnClickListener() {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which) {
+                                // TODO: Delete account
+                            }
+                        })
+                        .setNeutralButton("Cancel", null)
+                        .show();
+            }
+        });
+
         textAddress.setText(address);
 
-        EditProfile.AddressOnClickListener listener = new EditProfile.AddressOnClickListener(this);
+        EditProfileActivity.AddressOnClickListener listener = new EditProfileActivity.AddressOnClickListener(this);
         addressInput.setOnClickListener(listener);
 
     }

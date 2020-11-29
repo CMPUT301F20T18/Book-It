@@ -21,12 +21,12 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
 
     private ArrayList<Bitmap> photos;
     private ArrayList<Bitmap> photoData;
-    private MyBooksAddBook.addListener addListener;
+    private AddBookActivity.addListener addListener;
 
 
 
 
-    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos, MyBooksAddBook.addListener addListener){
+    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos, AddBookActivity.addListener addListener){
         this.photos = photos;
         this.photos.add(null);
         this.addListener = addListener;
