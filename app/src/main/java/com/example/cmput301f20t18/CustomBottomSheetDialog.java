@@ -1,8 +1,6 @@
 package com.example.cmput301f20t18;
 
-import android.app.AlertDialog;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;

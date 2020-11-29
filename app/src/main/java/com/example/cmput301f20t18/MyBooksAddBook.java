@@ -1,11 +1,6 @@
 package com.example.cmput301f20t18;
 
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
-import android.app.VoiceInteractor;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
@@ -15,7 +10,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
@@ -23,10 +17,13 @@ import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-
 
 import com.android.volley.Request;
 import com.android.volley.RequestQueue;
@@ -34,18 +31,10 @@ import com.android.volley.Response;
 import com.android.volley.VolleyError;
 import com.android.volley.toolbox.ImageRequest;
 import com.android.volley.toolbox.JsonObjectRequest;
-import com.android.volley.toolbox.StringRequest;
 import com.android.volley.toolbox.Volley;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.api.LogDescriptor;
-
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.gson.JsonObject;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -312,6 +301,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
     private void setDefaultPhoto(Bitmap coverPhoto){
         defaultPhoto = coverPhoto;
+        imageRecyclerViewAdapter.addData(coverPhoto);
     }
 
     /*
@@ -433,6 +423,7 @@ public class MyBooksAddBook extends AppCompatActivity {
         @Override
         public void onResponse(Bitmap response) {
             setDefaultPhoto(response);
+
         }
     }
 
