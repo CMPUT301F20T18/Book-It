@@ -100,7 +100,7 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
         }
         else{
 
-            imageView.setImageDrawable(imageView.getContext().getDrawable(R.drawable.ic_activeaddimage));
+            imageView.setImageDrawable(imageView.getContext().getDrawable(R.drawable.add_book));
             button.hide();
 
             imageView.setOnClickListener(addListener);
