@@ -1,5 +1,7 @@
  package com.example.cmput301f20t18;
 
+import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.util.Log;
 
@@ -855,6 +857,51 @@ public class User {
     }
 
 
+    /**
+     * Delete a user from our system
+     * https://medium.com/firebase-tips-tricks/how-to-delete-users-from-firebase-the-right-way-b4c348b2f75f
+     * @param context The current context of the application
+     */
+    public void userDelete(Context context) {
+        userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
+            @Override
+            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
+                if (task.isSuccessful()) {
+                    User current = task.getResult().toObject(User.class);
+                    FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
+
+                    // free up the current users username
+                    // no listener needed, not depending on result
+                    RTDB.getReference().child("username_list").child(current.getUsername()).removeValue();
+
+                    // delete all the user info from firestore
+                    userRef.document(auth.getUid()).delete();
+
+                    // delete authentication info
+                    FirebaseAuth.getInstance().getCurrentUser().delete().addOnCompleteListener(new OnCompleteListener<Void>() {
+                        @Override
+                        public void onComplete(@NonNull Task<Void> task) {
+                            if (task.isSuccessful()) {
+
+                                // send user to the login screen
+                                // clear all previous activities
+                                Intent intent = new Intent(context, Login.class);
+                                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TASK|Intent.FLAG_ACTIVITY_NEW_TASK);
+                                context.startActivity(intent);
+                            }
+                            else {
+                                Log.d(TAG, "Delete User - Error deleting authentication info!");
+                            }
+                        }
+                    });
+                }
+
+                else {
+                    Log.d(TAG, "onComplete: Delete account- Error finding user");
+                }
+            }
+        });
+    }
 
 
 
