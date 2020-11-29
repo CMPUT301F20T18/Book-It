@@ -486,6 +486,8 @@ public class User {
                                                              for (int i = 0; i < list.size(); i++) {
                                                                  batch.update(transRef.document(Integer.toString(list.get(i).getID())), "owner_username", username);
                                                                  batch.update(bookRef.document(Integer.toString(list.get(i).getBookID())), "borrower_username", username);
+                                                                 String string = list.get(i).getBorrower_dbID();
+                                                                 batch.update(userRef.document(string).collection("requested_books").document(Integer.toString(list.get(i).getBookID())), "owner_username", username);
                                                              }
 
 

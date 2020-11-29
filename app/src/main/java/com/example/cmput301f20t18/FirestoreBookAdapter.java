@@ -196,6 +196,7 @@ public class FirestoreBookAdapter
                         intent.putExtra("bookID", book.getId());
                         Activity main = (Activity) v.getContext();
                         main.startActivity(intent);
+
                     }
                 });
                 break;
