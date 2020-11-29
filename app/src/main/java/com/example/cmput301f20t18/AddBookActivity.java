@@ -6,9 +6,7 @@ import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.AlertDialog;
-import android.app.VoiceInteractor;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -130,12 +128,12 @@ public class AddBookActivity extends AppCompatActivity {
 
         if (type == ADD_BOOK || type == ADD_SCAN)  {
             //setContentView(R.layout.activity_my_books_add_book);
-            setContentView(R.layout.activity_edit_books);
+            setContentView(R.layout.activity_add_book);
             TextView title = findViewById(R.id.title_new_book);
             title.setText("Add Book");
         }
         else if ( type == EDIT_BOOK) {
-            setContentView(R.layout.activity_edit_books);
+            setContentView(R.layout.activity_add_book);
         }
 
         labelAuthor = findViewById(R.id.author_prompt);
@@ -180,7 +178,7 @@ public class AddBookActivity extends AppCompatActivity {
                     photos = book.retrievePhotos();
                     outPhotos.addAll(photos);
                     Log.d(TAG, "onCreate: Parsed in edit book: "+ photos.size());
-                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
+                    imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener(), this);
                     imagesViewer.setAdapter(imageRecyclerViewAdapter);
 
 
@@ -195,7 +193,7 @@ public class AddBookActivity extends AppCompatActivity {
 
         }
         else{
-            imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener());
+            imageRecyclerViewAdapter = new ImageRecyclerViewAdapter(photos, new addListener(), this);
             imagesViewer.setAdapter(imageRecyclerViewAdapter);
         }
 

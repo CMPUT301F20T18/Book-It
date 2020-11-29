@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.util.Log;
@@ -10,6 +11,7 @@ import android.widget.ImageButton;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.core.content.ContextCompat;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
@@ -27,7 +29,7 @@ import java.util.ArrayList;
 
 public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecyclerViewAdapter.ImageViewHolder> {
 
-
+    private Context context;
     private ArrayList<Bitmap> photos;
     private ArrayList<Bitmap> photoData;
     private AddBookActivity.addListener addListener;
@@ -38,12 +40,12 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
      * @param photos The photos of a book
      */
 
-    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos, AddBookActivity.addListener addListener){
+    public ImageRecyclerViewAdapter(ArrayList<Bitmap> photos, AddBookActivity.addListener addListener, Context context){
         this.photos = photos;
         this.photos.add(null);
         this.addListener = addListener;
         this.photoData = new ArrayList<Bitmap>();
-
+        this.context = context;
     }
 
     /**
@@ -80,6 +82,10 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
             Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getLayoutParams().width, imageView.getLayoutParams().height);
             photoData.add(bm);
             imageView.setImageBitmap(bm);
+
+            button.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_clear_button));
+            button.setImageAlpha(90);
+            button.setAlpha(0.75f);
             button.show();
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
