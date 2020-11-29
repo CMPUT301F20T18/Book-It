@@ -18,7 +18,7 @@ import java.util.Base64;
 
 /**
  * A class used to reformat variable representing photos into different types
- *
+ * @author Sean Butler
  */
 
 public class photoAdapter {
@@ -72,20 +72,25 @@ public class photoAdapter {
      * @param newHeight The new height of the Bitmap
      */
     public static Bitmap scaleBitmap(Bitmap bitmap, float newWidth, float newHeight){
-        int width = bitmap.getWidth();
-        int height = bitmap.getHeight();
+        if(bitmap != null) {
+            int width = bitmap.getWidth();
+            int height = bitmap.getHeight();
 
-        float scaleWidth = newWidth / width;
-        float scaleHeight = newHeight / height;
+            float scaleWidth = newWidth / width;
+            float scaleHeight = newHeight / height;
 
-        Matrix matrix = new Matrix();
-        matrix.postScale(scaleWidth, scaleHeight);
+            Matrix matrix = new Matrix();
+            matrix.postScale(scaleWidth, scaleHeight);
 
-        Bitmap finalMap = Bitmap
-                .createBitmap(bitmap, 0, 0, width, height, matrix, false)
-                .copy(Bitmap.Config.ARGB_8888, true);
+            Bitmap finalMap = Bitmap
+                    .createBitmap(bitmap, 0, 0, width, height, matrix, false)
+                    .copy(Bitmap.Config.ARGB_8888, true);
 
-        return finalMap;
+            return finalMap;
+        }
+        else{
+            return null;
+        }
 
     }
 

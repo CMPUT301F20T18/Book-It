@@ -2,12 +2,14 @@ package com.example.cmput301f20t18;
 
 import android.content.Context;
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.RequiresApi;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 import androidx.fragment.app.FragmentPagerAdapter;
@@ -24,9 +26,9 @@ import java.util.ArrayList;
 public class ImagePageAdapter extends PagerAdapter {
 
     private Context mContext;
-    private ArrayList<Bitmap> photos;
+    private ArrayList<String> photos;
 
-    public ImagePageAdapter(Context mContext, ArrayList<Bitmap> photos) {
+    public ImagePageAdapter(Context mContext, ArrayList<String> photos) {
         this.mContext = mContext;
         this.photos = photos;
     }
@@ -41,15 +43,17 @@ public class ImagePageAdapter extends PagerAdapter {
         return view == object;
     }
 
+    @RequiresApi(api = Build.VERSION_CODES.O)
     @NonNull
     @Override
     public Object instantiateItem(@NonNull ViewGroup container, int position) {
         ImageView imageView = new ImageView(mContext);
         imageView.setScaleType(ImageView.ScaleType.CENTER_CROP);
+        Bitmap photo = photoAdapter.stringToBitmap(photos.get(position));
 
-        Bitmap bm = photoAdapter.scaleBitmap(photos.get(position),
-                imageView.getLayoutParams().width,
-                imageView.getLayoutParams().height);
+        Bitmap bm = photoAdapter.scaleBitmap(photo,
+                411, //imageView.getLayoutParams().width,
+                 667);// imageView.getLayoutParams().height);
 
         imageView.setImageBitmap(bm);
         container.addView(imageView,0);

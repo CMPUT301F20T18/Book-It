@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -30,6 +31,8 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
+import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.Task;
 import com.google.android.material.tabs.TabLayout;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.CollectionReference;
@@ -666,16 +669,53 @@ public class SearchFragment extends Fragment {
                 });
             } catch (Exception ignore){}
 
+            if (buttonProfile != null) {
+                FirebaseFirestore db = FirebaseFirestore.getInstance();
+                CollectionReference collection = db.collection("users");
+                collection.whereEqualTo("username", book.getOwner_username()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @RequiresApi(api = Build.VERSION_CODES.O)
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()) {
+                            User borrower = task.getResult().toObjects(User.class).get(0);
+                            String photoString = borrower.getProfile_picture();
+                            if (photoString != null && !photoString.equals("")) {
+                                Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                                Bitmap photo = photoAdapter.makeCircularImage(bm, buttonProfile.getHeight());
+                                buttonProfile.setImageBitmap(photo);
+                                Log.d(TAG, "Picture attached");
+                            }
+                        } else {
+                            Log.d(TAG, "Error Querying for borrower information");
+                        }
+                    }
+                });
+            }
+
             TextView bookTitle = view.findViewById(R.id.text_book_title);
             TextView bookAuthor = view.findViewById(R.id.text_book_author);
             TextView bookISBN = view.findViewById(R.id.text_book_isbn);
             TextView bookYear = view.findViewById(R.id.text_book_year);
 
             if (book.hasPhotos()) {
-                ImageView bookImageView = view.findViewById(R.id.image_view);
+                ImageButton bookImageView = view.findViewById(R.id.image_view);
                 Bitmap bookCoverImage = photoAdapter.scaleBitmap(book.retrieveCover(),
                         bookImageView.getLayoutParams().width, bookImageView.getLayoutParams().height);
                 bookImageView.setImageBitmap(bookCoverImage);
+
+                bookImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<String> photos = book.getPhotos();
+
+                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+                        slider.putExtra("ID", book.getId());
+                        Activity activity = (Activity) view.getContext();
+
+                        activity.startActivity(slider);
+
+                    }
+                });
             }
 
             bookTitle.setText(book.getTitle());
@@ -804,15 +844,15 @@ public class SearchFragment extends Fragment {
                 ImageView profilePicView = view.findViewById(R.id.profile_view);
 
                 String profilePicString = user.getProfile_picture();
-                /*
 
+                /*
                 Bitmap bm = photoAdapter.scaleBitmap(
                         photoAdapter.stringToBitmap(profilePictureSting),
                         profilePicView.getLayoutParams().width,
                         profilePicView.getLayoutParams().height);
                 Bitmap profilePicture = photoAdapter.makeCircularImage(bm, bm.getHeight());
+                */
 
-                 */
                 profilePicView.setImageBitmap(photoAdapter.stringToBitmap(profilePicString));
             }
 
