@@ -150,21 +150,15 @@ public class AddBookActivity extends AppCompatActivity {
         cancel = findViewById(R.id.return_to_my_books);
         addPhoto = findViewById(R.id.add_image_button);
 
-
         //if ( type == EDIT_BOOK) {
         imagesViewer = findViewById(R.id.image_recycler_view);
-        layoutManager = new GridLayoutManager(this, 2);
+        layoutManager = new GridLayoutManager(this, 3);
         imagesViewer.setLayoutManager(layoutManager);
         imagesViewer.setHasFixedSize(true);
             // Send the images to the recycler view adapter
         //}
         photos = new ArrayList<>();
         outPhotos = new ArrayList<>();
-
-
-
-
-
 
 
         if (type == EDIT_BOOK) {

@@ -22,7 +22,7 @@ import java.util.ArrayList;
  * This is the adapter that sets the option to add and present the image that will be add to books
  * The adapter is used in the class of MyBooksAddBook
  * @see Book
- * @see MyBooksAddBook
+ * @see AddBookActivity
  * @author Johnathon
  * @author Sean
  */
@@ -83,9 +83,6 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
             photoData.add(bm);
             imageView.setImageBitmap(bm);
 
-            button.setImageDrawable(ContextCompat.getDrawable(context, R.drawable.ic_clear_button));
-            button.setImageAlpha(90);
-            button.setAlpha(0.75f);
             button.show();
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
