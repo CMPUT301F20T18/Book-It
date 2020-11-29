@@ -60,8 +60,6 @@ public class Login extends AppCompatActivity {
         login.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                login_user.setText("phlafoo@gmail.com");
-                login_password.setText("123456");
 
                 // get entered info
                 String username = login_user.getText().toString();
