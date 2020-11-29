@@ -148,6 +148,7 @@ public class User {
      */
     public void ownerAcceptRequest(int t_id, UserLocation location, int bookID) {
 
+        Log.d(TAG, "ownerAcceptRequest: t_id " + t_id);
         transRef.whereEqualTo("id", t_id).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Transaction transaction = task.getResult().toObjects(Transaction.class).get(0); // t_id is unique
