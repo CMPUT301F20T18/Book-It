@@ -13,7 +13,6 @@ import android.os.Build;
 import androidx.annotation.RequiresApi;
 
 import java.io.ByteArrayOutputStream;
-import java.util.ArrayList;
 import java.util.Base64;
 
 /**
