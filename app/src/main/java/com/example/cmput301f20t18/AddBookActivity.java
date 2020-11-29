@@ -5,8 +5,10 @@ import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.VoiceInteractor;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Bitmap;
@@ -67,7 +69,7 @@ import java.util.List;
  * @see    CollectionReference
  */
 
-public class MyBooksAddBook extends AppCompatActivity {
+public class AddBookActivity extends AppCompatActivity {
 
     TextView labelAuthor, labelTitle, labelYear, labelISBN;
     EditText author;
@@ -245,8 +247,12 @@ public class MyBooksAddBook extends AppCompatActivity {
                 Log.d(TAG, "onClick: bookID " + bookID);
                 Log.d(TAG, "onClick: Type of Add " + type);
 
-                Long isbn = Long.parseLong(book_isbn);
-                Integer year = Integer.parseInt(book_year);
+                Long isbn = 0L;
+                Integer year = -1;
+                try {
+                    isbn = Long.parseLong(book_isbn);
+                    year = Integer.parseInt(book_year);
+                } catch (Exception ignore){}
 
                 ArrayList<String> photoStrings = new ArrayList<>();
                 for (Bitmap photo: imageRecyclerViewAdapter.getPhotos()){
@@ -260,20 +266,31 @@ public class MyBooksAddBook extends AppCompatActivity {
                         photoStrings.add(photoAdapter.bitmapToString(defaultPhoto));
                     }
                 }
-                if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)) {
-                    Log.d(TAG, "Validity check passed");
 
-                    if (type == ADD_BOOK || type == ADD_SCAN) {
+                try {
+                    if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)) {
+                        Log.d(TAG, "Validity check passed");
 
-                        current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
+                        if (type == ADD_BOOK || type == ADD_SCAN) {
 
-                    } else if (type == EDIT_BOOK) {
+                            current.ownerNewBook(isbn, book_title, book_author, year, photoStrings);
 
-                        current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
+                        } else if (type == EDIT_BOOK) {
+
+                            current.ownerEditBook(book_title, book_author, isbn, bookID, year, photoStrings);
+                        }
+                        startActivity(new Intent(getBaseContext(), HomeScreen.class));
+                        finish();
+                    } else {
+                        throw new Exception("Please fill all fields!");
                     }
+                } catch (Exception e) {
+                    new AlertDialog.Builder(AddBookActivity.this, R.style.CustomDialogTheme)
+                            .setTitle(e.getMessage())
+                            .setMessage("")
+                            .setPositiveButton("OK",null)
+                            .show();
                 }
-                startActivity(new Intent(getBaseContext(), HomeScreen.class));
-                finish();
             }
         });
 
@@ -469,7 +486,7 @@ class CheckBookValidity {
      * will create a valid Book object
      */
     public static boolean bookValid(String bookTitle, String bookAuthor, String bookISBN,
-                                    String bookYear) {
+                                    String bookYear) throws CheckInput.OutOfRangeException {
         return CheckBookValidity.checkTitle(bookTitle)
                 && CheckBookValidity.checkAuthor(bookAuthor)
                 && CheckBookValidity.checkISBN(bookISBN)
@@ -508,25 +525,22 @@ class CheckBookValidity {
      * @return boolean object representing whether the text contained within the EditText is a
      * valid ISBN for a Book object
      */
-    private static boolean checkISBN(String bookISBN) {
+    private static boolean checkISBN(String bookISBN) throws CheckInput.OutOfRangeException {
         boolean valid = true;
         final long MIN_VAL = 10000000L;
         final long MAX_VAL = 9999999999999L;
 
         Long isbnNum = -1L;
+        CheckInput.OutOfRangeException e = new CheckInput.OutOfRangeException("ISBN is invalid!");
 
         try {
             isbnNum = Long.parseLong(bookISBN);
         } catch (NumberFormatException numberFormat) {
-            return false;
+            throw e;
         }
 
-        try {
-            if (!CheckInput.checkWithinRange(isbnNum, MIN_VAL, MAX_VAL)) {
-                throw new CheckInput.OutOfRangeException("ISBN is out of possible range");
-            }
-        } catch (CheckInput.OutOfRangeException outOfRange) {
-            return false;
+        if (!CheckInput.checkWithinRange(isbnNum, MIN_VAL, MAX_VAL)) {
+            throw e;
         }
 
         return true;
@@ -540,7 +554,7 @@ class CheckBookValidity {
      * @return boolean object representing whether the text contained within the EditText is a
      * valid publish date for a Book object
      */
-    private static boolean checkYear(String bookYear) {
+    private static boolean checkYear(String bookYear) throws CheckInput.OutOfRangeException {
         final int MIN_VAL = 0;
         final int MAX_VAL = Calendar.getInstance().get(Calendar.YEAR);
         int yearNum = -1;
@@ -551,12 +565,9 @@ class CheckBookValidity {
             return false;
         }
 
-        try {
-            if (!CheckInput.checkWithinRange(yearNum, MIN_VAL, MAX_VAL)) {
-                throw new CheckInput.OutOfRangeException("Year is out of possible range");
-            }
-        } catch (CheckInput.OutOfRangeException outOfRange) {
-            return false;
+
+        if (!CheckInput.checkWithinRange(yearNum, MIN_VAL, MAX_VAL)) {
+            throw new CheckInput.OutOfRangeException("Year is outside of possible range!");
         }
 
         return true;
