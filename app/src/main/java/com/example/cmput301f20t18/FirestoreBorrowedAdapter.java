@@ -88,7 +88,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
             String uName = book.getOwner_username();
             holder.textViewUsername.setText(uName);
-            holder.textViewUserDescription.setText("owner");
+            holder.textViewUserDescription.setText(R.string.owner);
 
             FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference collection = db.collection("users");

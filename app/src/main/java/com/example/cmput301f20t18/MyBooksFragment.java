@@ -64,15 +64,6 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Setting the header title. This may be done in XML instead
-        Toolbar toolbar = view.findViewById(R.id.mybooks_toolbar);
-        toolbar.setTitle(getResources().getText(R.string.mybooks_header));
-
-        /* This is not being used right now but could be later */
-        TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
-        TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);
-        TabItem tabLending = view.findViewById(R.id.tab_mybooks_lending);
-
         TabLayout tabLayout = view.findViewById(R.id.mybooks_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.mybooks_viewPager);
 

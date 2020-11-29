@@ -158,7 +158,6 @@ public class PostScanActivity extends AppCompatActivity {
                 intent.putExtra("type", MyBooksAddBook.ADD_SCAN);
                 startActivityForResult(intent, 5);
 
-
             }
         });
 

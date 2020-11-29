@@ -252,7 +252,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                                 .add(photoAdapter.bitmapToString(photo));
                     }
                 }
-                if (photos.isEmpty()){
+                if (photoStrings.isEmpty()){
                     if (defaultPhoto != null) {
                         photoStrings.add(photoAdapter.bitmapToString(defaultPhoto));
                     }
@@ -271,6 +271,7 @@ public class MyBooksAddBook extends AppCompatActivity {
                     current.ownerEditBook(book_title, book_author, isbn, bookID, year);
 
                 }
+                startActivity(new Intent(getBaseContext(), HomeScreen.class));
                 finish();
             }
         });
