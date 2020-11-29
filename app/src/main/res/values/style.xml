@@ -44,8 +44,8 @@
         <!-- fontFamily doesn't work here and it is a known bug -->
         <item name="android:fontFamily">@font/poppins</item>
         <item name="android:windowBackground">@drawable/input_register_background</item>
-        <item name="android:windowMinWidthMajor">0dp</item>
-        <item name="android:windowMinWidthMinor">0dp</item>
+        <item name="android:windowMinWidthMajor">314dp</item>
+        <item name="android:windowMinWidthMinor">314dp</item>
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorAccent</item>
         <item name="android:buttonBarPositiveButtonStyle">@style/PositiveButton</item>
