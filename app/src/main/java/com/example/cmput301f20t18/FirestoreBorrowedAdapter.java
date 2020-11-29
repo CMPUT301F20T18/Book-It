@@ -29,6 +29,8 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
+
 /**
  * Custom RecyclerView Adapter for Book objects in Borrowed books.
  *
@@ -121,6 +123,18 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             Bitmap bm = book.retrieveCover();
             Bitmap cover = photoAdapter.scaleBitmap(bm, holder.imageView.getLayoutParams().width, holder.imageView.getLayoutParams().height);
             holder.imageView.setImageBitmap(cover);
+            holder.imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                    Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+                    slider.putExtra("ID", book.getId());
+                    Activity activity = (Activity) view.getContext();
+
+                    activity.startActivity(slider);
+
+                }
+            });
         }
 
         // This is used to open up a user's profile when clicking on their profile photo
@@ -273,7 +287,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         /* Not all layout files will have all of these views, so some may be null.
          * The switch in onBindViewHolder() ensures that this is not an issue. */
 
-        ImageView imageView;
+        ImageButton imageView;
         TextView textViewTitle;
         TextView textViewAuthor;
         TextView textViewYear;

@@ -6,10 +6,15 @@ import androidx.fragment.app.FragmentActivity;
 import androidx.viewpager.widget.ViewPager;
 
 import android.graphics.Bitmap;
+import android.os.Build;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 
+import com.google.firebase.firestore.FirebaseFirestore;
+
+import java.lang.ref.Reference;
+import java.sql.Ref;
 import java.util.ArrayList;
 
 public class ImageSliderActivity extends AppCompatActivity {
@@ -19,19 +24,31 @@ public class ImageSliderActivity extends AppCompatActivity {
     ImagePageAdapter imageAdapter;
     Button sliderButton;
 
+    FirebaseFirestore DB;
+
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_image_slider);
 
-        ArrayList<Bitmap> photos = (ArrayList<Bitmap>) getIntent().getExtras().get("Photos");
-
         sliderButton = findViewById(R.id.slider_return_button);
 
         mPager = findViewById(R.id.slider_viewer);
-        imageAdapter = new ImagePageAdapter (this, photos);
-        mPager.setAdapter(imageAdapter);
+        int bookID = (int) getIntent().getExtras().get("ID");
+        DB = FirebaseFirestore.getInstance();
+        DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
+            if (task.isSuccessful()) {
+                Book book = task.getResult().toObject(Book.class);
+                ArrayList<String> photos = book.getPhotos();
+                imageAdapter = new ImagePageAdapter(this, photos);
+                mPager.setAdapter(imageAdapter);
+            }
+        });
+
+
+
+
 
         sliderButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -40,6 +57,7 @@ public class ImageSliderActivity extends AppCompatActivity {
 
             }
         });
+
 
     }
 }

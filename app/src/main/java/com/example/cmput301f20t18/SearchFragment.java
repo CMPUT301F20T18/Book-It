@@ -1,5 +1,6 @@
 package com.example.cmput301f20t18;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -672,10 +673,24 @@ public class SearchFragment extends Fragment {
             TextView bookYear = view.findViewById(R.id.text_book_year);
 
             if (book.hasPhotos()) {
-                ImageView bookImageView = view.findViewById(R.id.image_view);
+                ImageButton bookImageView = view.findViewById(R.id.image_view);
                 Bitmap bookCoverImage = photoAdapter.scaleBitmap(book.retrieveCover(),
                         bookImageView.getLayoutParams().width, bookImageView.getLayoutParams().height);
                 bookImageView.setImageBitmap(bookCoverImage);
+
+                bookImageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        ArrayList<String> photos = book.getPhotos();
+
+                        Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+                        slider.putExtra("ID", book.getId());
+                        Activity activity = (Activity) view.getContext();
+
+                        activity.startActivity(slider);
+
+                    }
+                });
             }
 
             bookTitle.setText(book.getTitle());

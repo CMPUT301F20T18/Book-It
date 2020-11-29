@@ -5,7 +5,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.os.Bundle;
 import android.util.Log;
+import android.util.LruCache;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +47,10 @@ public class FirestoreBookAdapter
     final static int FRAG_LENDING = 1;
     final static int FRAG_IMAGE = 4;
 
-    private Context context;
+
+
+
+     private Context context;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See
@@ -86,6 +91,7 @@ public class FirestoreBookAdapter
     @Override
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
         /* TODO: Retrieve cover photo from database and assign it to imageView. */
+
         if(book!= null) {
             if (book.hasPhotos()) {
                 Bitmap bitmap = book.retrieveCover();
@@ -95,13 +101,19 @@ public class FirestoreBookAdapter
                     @Override
                     public void onClick(View view) {
                         ArrayList<String> photos = book.getPhotos();
+
                         Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-                        slider.putExtra("Photos", photos);
+                        slider.putExtra("ID", book.getId());
                         Activity activity = (Activity) view.getContext();
+
                         activity.startActivity(slider);
+
                         //Start slider activity here, photos is the list of Bitmaps needed
                     }
                 });
+            }
+            else{
+                holder.imageView.setImageDrawable(context.getDrawable(R.drawable.default_cover));
             }
         }
 
@@ -339,6 +351,8 @@ public class FirestoreBookAdapter
         }
 
     }
+
+
 
 }
 
