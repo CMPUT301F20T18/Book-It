@@ -84,7 +84,6 @@ public class MyBooksAddBookTest {
                 1, 2000));
         assertTrue(solo.waitForText(RobotiumUserBookManager.DEFAULT_BOOK_ISBN,
                 1, 2000));
-
         RobotiumUserBookManager.deleteAll(solo);
     }
 }

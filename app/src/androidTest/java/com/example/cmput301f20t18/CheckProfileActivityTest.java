@@ -31,7 +31,7 @@ public class CheckProfileActivityTest {
         solo.clickOnText("Users");
 
         String username = RobotiumLoginManager.owner.getUsername();
-        SearchFragmentTest.searchUser(solo, username, username);
+        RobotiumSearchManager.searchUser(solo, username, username);
 
         solo.clickOnButton("View Profile");
     }
