@@ -2,17 +2,10 @@ package com.example.cmput301f20t18;
 
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.os.FileUtils;
 
 import androidx.annotation.RequiresApi;
 
-import com.google.firebase.firestore.Blob;
-
-import java.io.File;
-import java.lang.reflect.Array;
 import java.util.ArrayList;
-import java.util.Base64;
-import java.util.List;
 
 
 /**

@@ -3,16 +3,12 @@ package com.example.cmput301f20t18;
 import android.content.Context;
 import android.graphics.Bitmap;
 import android.os.Build;
-import android.os.Bundle;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
-import androidx.fragment.app.FragmentPagerAdapter;
 import androidx.viewpager.widget.PagerAdapter;
 
 import java.util.ArrayList;
