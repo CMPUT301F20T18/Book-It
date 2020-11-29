@@ -19,10 +19,11 @@ import static org.junit.Assert.assertTrue;
 public class MyBooksAddBookTest {
     private Solo solo;
 
-    public final String DEFAULT_BOOK_TITLE = "Robots Can't Read!";
-    public final String DEFAULT_BOOK_AUTHOR = "AuthorBot9000";
-    public final String DEFAULT_BOOK_YEAR = "2020";
-    public final String DEFAULT_BOOK_ISBN = "1001001101110";
+    public static final String DEFAULT_BOOK_TITLE = "Robots Can't Read!";
+    public static final String DEFAULT_BOOK_AUTHOR = "AuthorBot9000";
+    public static final String DEFAULT_BOOK_YEAR = "2020";
+    public static final String DEFAULT_BOOK_ISBN = "1001001101110";
+
     @Rule
     public ActivityTestRule<Login> rule =
             new ActivityTestRule<>(Login.class, true, true);
@@ -76,17 +77,14 @@ public class MyBooksAddBookTest {
         MyBooksAvailableFragmentTest.deleteAll(solo);
     }
 
-//    public static void addBook(Solo solo){
-//        solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
-//        solo.clickOnButton("Add book");
-//        solo.enterText((EditText)solo.getView(R.id.title_input), "Robot's Can't Read!");
-//        solo.enterText((EditText)solo.getView(R.id.author_input), "RoboAuthor");
-//        solo.enterText((EditText)solo.getView(R.id.year_input), "2020");
-//        solo.enterText((EditText)solo.getView(R.id.isbn_input), "1001001101110");
-//        solo.clickOnButton("Done");
-//    }
-//    public static void deleteBook(Solo solo){
-//        solo.clickOnView(solo.getView(R.id.tab_mybooks));
-//        solo.clickOnView(solo.getView(R.id.button_book_more));
-//    }
+    public static void addBook(Solo solo){
+        solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
+        solo.clickOnView(solo.getView(R.id.tab_mybooks));
+        solo.clickOnButton("Add book");
+        solo.enterText((EditText)solo.getView(R.id.title_input), DEFAULT_BOOK_TITLE);
+        solo.enterText((EditText)solo.getView(R.id.author_input), DEFAULT_BOOK_AUTHOR);
+        solo.enterText((EditText)solo.getView(R.id.year_input), DEFAULT_BOOK_YEAR);
+        solo.enterText((EditText)solo.getView(R.id.isbn_input), DEFAULT_BOOK_ISBN);
+        solo.clickOnButton("Done");
+    }
 }

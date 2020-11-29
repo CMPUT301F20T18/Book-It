@@ -36,4 +36,11 @@ public class ProfileFragmentTest {
         solo.clickOnButton("Sign Out");
         solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
     }
+
+    public static void signOut(Solo solo){
+        solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
+        solo.clickOnView(solo.getView(R.id.tab_profile));
+        solo.clickOnButton("Sign Out");
+        solo.assertCurrentActivity("Wrong Activity - NOT LOGIN", Login.class);
+    }
 }
