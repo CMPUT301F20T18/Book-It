@@ -26,6 +26,7 @@ import com.google.firebase.firestore.WriteBatch;
 import com.google.firebase.functions.FirebaseFunctions;
 import com.google.firebase.functions.HttpsCallableReference;
 import com.google.firebase.functions.HttpsCallableResult;
+import com.google.firestore.v1.Write;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -867,6 +868,7 @@ public class User {
      * @param context The current context of the application
      */
     public void userDelete(Context context) {
+        WriteBatch ownerDelete = DB.batch();
         userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
             @Override
             public void onComplete(@NonNull Task<DocumentSnapshot> task) {
@@ -874,21 +876,21 @@ public class User {
                     User current = task.getResult().toObject(User.class);
                     FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
 
-                    // delete all transactions associated with this user
+
+
+                    // delete all owner transactions associated with this user
                     transRef.whereEqualTo("owner_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                         @Override
                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                             if (task.isSuccessful()) {
                                 List<Transaction> list = task.getResult().toObjects(Transaction.class);
 
-                                WriteBatch batch = DB.batch();
 
+                                // delete owner transactions
                                 for (int i = 0 ; i < list.size() ; i++) {
-                                    // delete requested books and transactions
-                                    batch.delete(userRef.document(list.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(list.get(i).getBookID())));
-                                    batch.delete(transRef.document(Integer.toString(list.get(i).getID())));
+                                    ownerDelete.delete(userRef.document(list.get(i).getBorrower_dbID()).collection("requested_books").document(Integer.toString(list.get(i).getBookID())));
+                                    ownerDelete.delete(transRef.document(Integer.toString(list.get(i).getID())));
                                 }
-
 
 
                                 // delete the global books
@@ -899,12 +901,37 @@ public class User {
                                             WriteBatch bookDelete = DB.batch();
                                             List<Book> bookList = task.getResult().toObjects(Book.class);
                                             for (int i = 0 ; i < bookList.size() ; i++) {
-                                                bookDelete.delete(bookRef.document(Integer.toString(bookList.get(i).getId())));
+                                                ownerDelete.delete(bookRef.document(Integer.toString(bookList.get(i).getId())));
                                             }
 
-                                            // commit the results
-                                            bookDelete.commit();
-                                            batch.commit();
+
+                                            // delete the borrower transactions
+                                            transRef.whereEqualTo("borrower_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                @Override
+                                                public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                    if (task.isSuccessful()) {
+                                                        List<Transaction> requests = task.getResult().toObjects(Transaction.class);
+                                                        for (int i = 0 ; i < requests.size() ; i++) {
+                                                            Log.d(TAG, "Borrowed transaction: " + requests.get(i).getID() + "| status: " + requests.get(i).getStatus());
+
+                                                            if ((requests.get(i).getStatus() != Transaction.STATUS_REQUESTED)) {
+                                                                Log.d(TAG, "Borrower transaction: " + requests.get(i).getID());
+                                                                ownerDelete.update(bookRef.document(Integer.toString(requests.get(i).getBookID())), "status", Book.STATUS_AVAILABLE);
+                                                            }
+                                                            ownerDelete.delete(transRef.document(Integer.toString(requests.get(i).getID())));
+                                                        }
+
+
+                                                        // commit all our batches
+                                                        ownerDelete.commit();
+                                                    }
+                                                    else {
+                                                        Log.d(TAG, "Error finding transactions associated with the user");
+                                                    }
+                                                }
+                                            });
+
+
                                         }
                                         else {
                                             Log.d(TAG, "Delete user - Error finding users books");
@@ -918,6 +945,9 @@ public class User {
                             }
                         }
                     });
+
+
+
 
 
                     // free up the current users username
