@@ -129,11 +129,11 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 @Override
                 public void onClick(View view) {
 
-//                    Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
-//                    slider.putExtra("ID", book.getId());
-//                    Activity activity = (Activity) view.getContext();
-//
-//                    activity.startActivity(slider);
+                    Intent slider = new Intent(view.getContext(), ImageSliderActivity.class);
+                    slider.putExtra("ID", book.getId());
+                    Activity activity = (Activity) view.getContext();
+
+                    activity.startActivity(slider);
 
                 }
             });
