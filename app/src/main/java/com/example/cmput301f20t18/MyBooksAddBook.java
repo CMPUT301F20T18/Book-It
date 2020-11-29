@@ -311,6 +311,7 @@ public class MyBooksAddBook extends AppCompatActivity {
 
     private void setDefaultPhoto(Bitmap coverPhoto){
         defaultPhoto = coverPhoto;
+        imageRecyclerViewAdapter.addData(coverPhoto);
     }
 
     /*
@@ -432,6 +433,7 @@ public class MyBooksAddBook extends AppCompatActivity {
         @Override
         public void onResponse(Bitmap response) {
             setDefaultPhoto(response);
+
         }
     }
 
