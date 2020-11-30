@@ -43,8 +43,12 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
     final static int FRAG_PICKUP = 2;
     final static int FRAG_RETURN = 1;
 
-
-
+    /**
+     * Create a new RecyclerView adapter that listens to a Firestore Query.  See
+     * {@link FirestoreRecyclerOptions} for configuration options.
+     *
+     * @param options options to configure
+     */
     public FirestoreBorrowedAdapter(FirestoreRecyclerOptions options) {
         super(options);
     }
@@ -72,21 +76,15 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
-        /* TODO: Retrieve cover photo from database and assign it to imageView. */
-        //holder.imageView.setImageResource(R.drawable.default_cover);
 
+        // setting book description
         holder.textViewTitle.setText(book.getTitle());
         holder.textViewAuthor.setText(book.getAuthor());
         holder.textViewYear.setText(String.valueOf(book.getYear()));
         holder.textViewISBN.setText(String.valueOf(book.getISBN()));
 
-
-
-        /* TODO: Implement cancel pick up UI and functionality (for "accepted" books) */
-
         try {
             /* These two TextViews will be null if the book status is "Available" */
-            /* TODO: Retrieve username of borrower and assign it to textViewUsername. */
             String uName = book.getOwner_username();
             holder.textViewUsername.setText(uName);
             holder.textViewUserDescription.setText(R.string.owner);
@@ -151,7 +149,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             }
         });
 
-        try {
+        if (holder.buttonMap != null) {
             // This is used to view the pick up location when clicking the map button
             holder.buttonMap.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -162,13 +160,8 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 }
             });
         }
-        catch (Exception e) {
-            Log.d(TAG, e.toString());
-        }
 
-
-
-                /* holder will be updated differently depending on Book status. */
+        /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
         switch (status) {
             case Book.STATUS_AVAILABLE:
@@ -230,6 +223,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 break;
 
             case Book.STATUS_BORROWED:
+                holder.buttonMore.setVisibility(View.INVISIBLE);
 
                 /* User clicks the "Confirm return" button */
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {
@@ -266,7 +260,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
     @Override
     public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        Log.d(TAG, "viewType: : " + Integer.toString(viewType));
+        Log.d(TAG, "viewType: : " + viewType);
 
         switch (viewType) {
             case Book.STATUS_AVAILABLE:
@@ -300,10 +294,6 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
         TextView textViewUsername;
         TextView textViewUserDescription;
 
-
-
-        Button profilePic;
-
         Button buttonCancelRequest;
         Button buttonConfirmPickUp;
         Button buttonMap;
@@ -325,8 +315,6 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
             textViewAuthor = itemView.findViewById(R.id.text_book_author);
             textViewYear = itemView.findViewById(R.id.text_book_year);
             textViewISBN = itemView.findViewById(R.id.text_book_isbn);
-
-
 
             textViewUsername = itemView.findViewById(R.id.text_username);
             textViewUserDescription = itemView.findViewById(R.id.text_user_description);

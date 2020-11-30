@@ -5,6 +5,11 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.Intent;
 import android.os.Bundle;
 
+
+/**
+ * The solve purpose of this activity is to initialize the login screen
+ */
+
 public class MainActivity extends AppCompatActivity {
 
     @Override

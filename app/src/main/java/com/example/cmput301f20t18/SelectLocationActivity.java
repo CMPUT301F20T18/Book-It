@@ -83,10 +83,6 @@ public class SelectLocationActivity extends FragmentActivity implements OnMapRea
             userLocationTask.addOnCompleteListener(new UserQueryOnCompleteListener());
         }
 
-        // Setting the header title. This may be done in XML instead
-        Toolbar toolbar = findViewById(R.id.mybooks_toolbar);
-        //toolbar.setTitle("Select an address");
-
         Button buttonBack = findViewById(R.id.button_back);
         buttonBack.setOnClickListener(v -> finish());
 

@@ -48,22 +48,18 @@ public class FirestoreMyBooksAdapter
     final static int FRAG_LENDING = 1;
     final static int FRAG_IMAGE = 4;
 
-
-
-
-     private Context context;
+    private final Context context;
 
     /**
      * Create a new RecyclerView adapter that listens to a Firestore Query.  See
      * {@link FirestoreRecyclerOptions} for configuration options.
      *
-     * @param options
+     * @param options options to configure
      */
     public FirestoreMyBooksAdapter(FirestoreRecyclerOptions options, Context context) {
         super(options);
         this.context = context;
     }
-
 
     /**
      * This allows {@link #onCreateViewHolder(ViewGroup, int)} to change the recycler layout based
@@ -89,9 +85,8 @@ public class FirestoreMyBooksAdapter
     @RequiresApi(api = Build.VERSION_CODES.O)
     @Override
     protected void onBindViewHolder(BookViewHolder holder, int i, Book book) {
-        /* TODO: Retrieve cover photo from database and assign it to imageView. */
 
-        if(book!= null) {
+        if(book != null) {
             if (book.hasPhotos()) {
                 Bitmap bitmap = book.retrieveCover();
                 Bitmap photo = photoAdapter.scaleBitmap(bitmap, (float) holder.imageView.getLayoutParams().width, (float) holder.imageView.getLayoutParams().height);
@@ -280,7 +275,7 @@ public class FirestoreMyBooksAdapter
     public BookViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
 
         LayoutInflater inflater = LayoutInflater.from(parent.getContext());
-        Log.d(TAG, "viewType: : " + Integer.toString(viewType));
+        Log.d(TAG, "viewType: : " + viewType);
 
         /* viewType holds the status of the Book. The switch assigns the appropriate layout file. */
         switch (viewType) {
@@ -300,8 +295,6 @@ public class FirestoreMyBooksAdapter
         return null;
 
     }
-
-
 
     /**
      * Caches Views from layout file.
@@ -354,9 +347,6 @@ public class FirestoreMyBooksAdapter
             buttonUser = itemView.findViewById(R.id.button_mybooks_user);
             buttonConfirmReturn = itemView.findViewById(R.id.button_confirm_return);
             buttonMore = itemView.findViewById(R.id.button_book_more);
-
-
-            Log.d(TAG, "onCreateBookViewHolder: End!!");
         }
 
     }

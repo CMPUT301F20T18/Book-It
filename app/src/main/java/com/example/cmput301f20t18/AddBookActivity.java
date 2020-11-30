@@ -126,6 +126,7 @@ public class AddBookActivity extends AppCompatActivity {
         Log.d(TAG, "onCreate: bookID " + bookID);
         Log.d(TAG, "onCreate: isbn " + passed_isbn);
 
+        // This is indicative of which format is used to add or edit info to a book object
         if (type == ADD_BOOK || type == ADD_SCAN)  {
             //setContentView(R.layout.activity_my_books_add_book);
             setContentView(R.layout.activity_add_book);
@@ -160,7 +161,7 @@ public class AddBookActivity extends AppCompatActivity {
         photos = new ArrayList<>();
         outPhotos = new ArrayList<>();
 
-
+        //Here is preforming an alteration of the a prexisting book
         if (type == EDIT_BOOK) {
             DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
                 if(task.isSuccessful()) {

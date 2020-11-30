@@ -40,7 +40,7 @@ import java.util.Objects;
 public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transaction, FirestoreRequestAdapter.requestViewHolder> {
 
     final static String TAG = "FRA_DEBUG";
-    private Context context;
+    private final Context context;
 
     public FirestoreRequestAdapter(@NonNull FirestoreRecyclerOptions<Transaction> options, Context context) {
         super(options);

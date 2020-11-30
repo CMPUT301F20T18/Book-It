@@ -16,7 +16,6 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.Query;
 
-import java.util.List;
 
 /**
  * A {@link Fragment} subclass that is responsible for displaying books a user owns
@@ -25,62 +24,27 @@ import java.util.List;
  * @see MyBooksPendingFragment
  * @see FirestoreMyBooksAdapter
  * @author deinum
- * @author Shuval De Villiers
+ * @author shuval
  */
 public class MyBooksLendingFragment extends Fragment {
 
     RecyclerView recyclerView;
     TextView noResultsTextView;
-    List<Book> bookList;
     Query query;
     FirestoreMyBooksAdapter adapter;
     final static String TAG = "MBLF";
-
-    // TODO: Rename parameter arguments, choose names that match
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     CollectionReference bookRef = DB.collection("books");
 
-
-
-
     public MyBooksLendingFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyBooksLendingFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyBooksLendingFragment newInstance(String param1, String param2) {
-        MyBooksLendingFragment fragment = new MyBooksLendingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     /**

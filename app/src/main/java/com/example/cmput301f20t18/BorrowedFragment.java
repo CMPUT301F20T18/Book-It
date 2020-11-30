@@ -77,7 +77,10 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
      */
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         String isbn_string = data.getStringExtra("ISBN");
-        Long isbn = Long.parseLong(isbn_string);
+        Long isbn = 0L;
+        if (!isbn_string.equals("")) {
+            isbn = Long.parseLong(isbn_string);
+        }
         int bookID = data.getIntExtra("bookID", 0);
         Long expected_isbn = data.getLongExtra("eISBN", 0);
 
@@ -86,7 +89,7 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
-        if (ScannerActivity.CHECK_ISBN) {
+        if (!ScannerActivity.CHECK_ISBN || expected_isbn.equals(isbn)) {
             User current = new User();
             switch (requestCode) {
 

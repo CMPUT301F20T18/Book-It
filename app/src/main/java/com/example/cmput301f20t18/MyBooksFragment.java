@@ -23,7 +23,7 @@ import com.google.android.material.tabs.TabLayout;
  * @see MyBooksLendingFragment
  * @see MyBooksAvailableFragment
  * @see MyBooksPendingFragment
- * @author Shuval
+ * @author shuval
  * @author deinum
  */
 public class MyBooksFragment extends Fragment implements fragmentListener {
@@ -92,7 +92,11 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
             return;
         }
         String isbn_string = data.getStringExtra("ISBN");
-        Long isbn = Long.parseLong(isbn_string);
+        Long isbn = 0L;
+        if (!isbn_string.equals("")) {
+            isbn = Long.parseLong(isbn_string);
+        }
+
         int bookID = data.getIntExtra("bookID", 0);
         Long expected_isbn = data.getLongExtra("eISBN", 0);
 
@@ -100,7 +104,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
-
+        if (!ScannerActivity.CHECK_ISBN || expected_isbn.equals(isbn)) {
             User current = new User();
 
             switch (requestCode) {
@@ -113,19 +117,17 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
                     current.ownerConfirmPickup(bookID);
                     break;
             }
-
-
-
-
+        }
+        else {
             // using getContext() here instead of mContext will sometimes cause a crash since this
             // fragment may not have been attached to HomeScreen yet
-//            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
-//            new AlertDialog.Builder(mContext, R.style.CustomDialogTheme)
-//                    .setTitle("Error!")
-//                    .setMessage("Scanned ISBN does not match book's ISBN")
-//                    .setPositiveButton("OK", null)
-//                    .show();
-//
+            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
+            new AlertDialog.Builder(mContext, R.style.CustomDialogTheme)
+                    .setTitle("Error!")
+                    .setMessage("Scanned ISBN does not match book's ISBN")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
     }
 
 }

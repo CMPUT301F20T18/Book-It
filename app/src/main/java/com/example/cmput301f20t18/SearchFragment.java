@@ -51,6 +51,7 @@ import java.util.List;
  * @author Chase Warwick
  * UI contrabutions
  * @author Johnathon Gil
+ * @author shuval
  */
 @RequiresApi(api = Build.VERSION_CODES.M)
 public class SearchFragment extends Fragment {
@@ -110,13 +111,7 @@ public class SearchFragment extends Fragment {
 
 
         SearchResultList = view.findViewById(R.id.search_result_list);
-        return view;
-    }
 
-    // this is for when a user clicks "search for available copies" in postscan
-    @Override
-    public void onStart() {
-        super.onStart();
         if (getArguments() != null) {
             String ISBN = getArguments().getString("ISBN");
             if (ISBN != null) {
@@ -125,6 +120,26 @@ public class SearchFragment extends Fragment {
             }
             noResultsTextView.setText(""); // this has to be here for some reason
         }
+        return view;
+    }
+
+    // this is for when a user clicks "search for available copies" in postscan
+    @Override
+    public void onStart() {
+        super.onStart();
+        /*if (getArguments() != null) {
+            String ISBN = getArguments().getString("ISBN");
+            if (ISBN != null) {
+                searchEditText.setText(ISBN);
+                searchButton.performClick();
+            }
+            noResultsTextView.setText(""); // this has to be here for some reason
+        }*/
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
     }
 
     /**
@@ -604,6 +619,7 @@ public class SearchFragment extends Fragment {
             for (Transaction transaction : transactionDataList) {
                 if (transaction.getBookID() == bookID) {
                     requested = true;
+                    break;
                 }
             }
 
@@ -620,17 +636,19 @@ public class SearchFragment extends Fragment {
                 requestBook.setOnClickListener(new RequestBookButtonListener(book));
             }
 
-            // phlafoo
             TextView owner = view.findViewById(R.id.text_username);
             TextView description = view.findViewById(R.id.text_user_description);
             Button buttonCancelRequest = view.findViewById(R.id.button_cancel_request);
             ImageButton buttonProfile = view.findViewById(R.id.button_mybooks_user);
 
-            try {
+            // set the user details
+            if (owner != null && description != null) {
                 owner.setText(book.getOwner_username());
                 description.setText(R.string.owner);
-            } catch(Exception ignore){}
-            try {
+            }
+
+            // Books that the user has requested will have a cancel request button
+            if (buttonCancelRequest != null) {
                 buttonCancelRequest.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -651,8 +669,10 @@ public class SearchFragment extends Fragment {
                                 .show();
                     }
                 });
-            } catch(Exception ignore){}
-            try {
+            }
+
+            // Not all cards will have a profile pic button
+            if (buttonProfile != null) {
                 buttonProfile.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
@@ -661,9 +681,7 @@ public class SearchFragment extends Fragment {
                         view.getContext().startActivity(intent);
                     }
                 });
-            } catch (Exception ignore){}
 
-            if (buttonProfile != null) {
                 FirebaseFirestore db = FirebaseFirestore.getInstance();
                 CollectionReference collection = db.collection("users");
                 collection.whereEqualTo("username", book.getOwner_username()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
@@ -718,8 +736,6 @@ public class SearchFragment extends Fragment {
             bookAuthor.setText(book.getAuthor());
             bookISBN.setText(Long.toString(book.getISBN()));
             bookYear.setText(Integer.toString(book.getYear()));
-
-
 
             return view;
         }
@@ -866,7 +882,6 @@ public class SearchFragment extends Fragment {
         /**
          * ViewProfileButtonListener is an OnClickListener for the request button
          */
-        //TODO Add profile picture to intent
         public class ViewProfileButtonListener implements View.OnClickListener {
             private User user;
 
