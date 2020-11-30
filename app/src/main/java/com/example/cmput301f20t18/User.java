@@ -467,7 +467,7 @@ public class User {
 
                                     // update the transactions with the new user
                                     WriteBatch batch = DB.batch();
-                                    transRef.whereEqualTo("borrower_username", current.username).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                    transRef.whereEqualTo("borrower_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                         @Override
                                         public void onComplete(@NonNull Task<QuerySnapshot> task) {
                                              if (task.isSuccessful()) {
@@ -477,7 +477,7 @@ public class User {
                                                      batch.update(bookRef.document(Integer.toString(list.get(i).getBookID())), "borrower_username", username);
                                                  }
 
-                                                 transRef.whereEqualTo("owner_username", current.username).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                 transRef.whereEqualTo("owner_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                                                      @Override
                                                      public void onComplete(@NonNull Task<QuerySnapshot> task1) {
                                                          if (task1.isSuccessful()) {
