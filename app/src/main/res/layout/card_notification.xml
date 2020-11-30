@@ -40,7 +40,7 @@
                     android:text="!"
                     android:fontFamily="@font/poppins_semibold"
                     android:textColor="@color/colorGray2"
-                    android:textSize="18sp"/>
+                    android:textSize="18dp"/>
             </FrameLayout>
 
             <TextView
@@ -53,7 +53,7 @@
                 android:fontFamily="@font/poppins"
                 android:textColor="@color/colorAccent"
                 android:layout_toEndOf="@id/notification_icon"
-                android:textSize="18sp"/>
+                android:textSize="18dp"/>
 
         </RelativeLayout>
 

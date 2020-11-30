@@ -56,7 +56,7 @@
                 android:maxLines="1"
                 android:ellipsize="end"
                 android:textColor="@color/colorBlue"
-                android:textSize="18sp" />
+                android:textSize="18dp" />
 
             <TextView
                 android:id="@+id/text_request"
@@ -69,7 +69,7 @@
                 android:textStyle="italic"
                 android:fontFamily="@font/poppins_light"
                 android:textColor="@color/colorText"
-                android:textSize="15sp"/>
+                android:textSize="15dp"/>
 
             <Button
                 android:id="@+id/button_accept_request"
@@ -82,7 +82,7 @@
                 style="?android:attr/borderlessButtonStyle"
                 android:fontFamily="@font/poppins"
                 android:text="Accept"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:textColor="@color/colorAccent"
                 android:layout_alignParentBottom="true"
                 android:layout_toStartOf="@id/button_delete_request"/>

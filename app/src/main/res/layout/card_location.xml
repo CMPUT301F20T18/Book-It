@@ -28,7 +28,7 @@
                 android:fontFamily="@font/poppins_light"
                 android:text="Address"
                 android:textColor="@color/colorOrange"
-                android:textSize="18sp" />
+                android:textSize="18dp" />
 
             <Button
                 android:id="@+id/button_select_location"
@@ -41,7 +41,7 @@
                 style="?android:attr/borderlessButtonStyle"
                 android:fontFamily="@font/poppins"
                 android:text="Select"
-                android:textSize="15sp"
+                android:textSize="15dp"
                 android:textColor="@color/colorAccent"
                 android:layout_alignParentBottom="true"
                 android:layout_toStartOf="@id/button_delete_location"/>

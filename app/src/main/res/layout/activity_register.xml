@@ -17,7 +17,7 @@
         android:textAlignment="center"
         android:fontFamily="@font/poppins_medium"
         android:textColor="@color/colorAccent"
-        android:textSize="28sp" />
+        android:textSize="28dp" />
 
         <FrameLayout
             android:id="@+id/frame_background"
@@ -43,7 +43,7 @@
                     android:text="Username"
                     android:textColor="@color/colorOrange"
                     android:fontFamily="@font/poppins_medium"
-                    android:textSize="20sp" />
+                    android:textSize="20dp" />
 
                 <EditText
                     android:id="@+id/username"
@@ -63,7 +63,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Password"
                     android:fontFamily="@font/poppins_medium"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textColor="@color/colorOrange"/>
 
                 <EditText
@@ -74,7 +74,7 @@
                     android:background="@drawable/hinted_input"
                     android:inputType="textPassword"
                     android:textColor="@color/colorAccent"
-                    android:textSize="20sp"/>
+                    android:textSize="20dp"/>
 
                 <TextView
                     android:id="@+id/text_email"
@@ -84,7 +84,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Email"
                     android:fontFamily="@font/poppins_medium"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textColor="@color/colorOrange"/>
 
                 <EditText
@@ -95,7 +95,7 @@
                     android:background="@drawable/hinted_input"
                     android:inputType="textEmailAddress"
                     android:textColor="@color/colorAccent"
-                    android:textSize="20sp" />
+                    android:textSize="20dp" />
 
                 <TextView
                     android:id="@+id/text_phone"
@@ -105,7 +105,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Phone Number"
                     android:fontFamily="@font/poppins_medium"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textColor="@color/colorOrange"/>
 
                 <EditText
@@ -116,7 +116,7 @@
                     android:background="@drawable/hinted_input"
                     android:inputType="number"
                     android:textColor="@color/colorAccent"
-                    android:textSize="20sp"/>
+                    android:textSize="20dp"/>
 
                 <TextView
                     android:id="@+id/text_address"
@@ -126,7 +126,7 @@
                     android:layout_marginTop="10dp"
                     android:text="Address"
                     android:fontFamily="@font/poppins_medium"
-                    android:textSize="20sp"
+                    android:textSize="20dp"
                     android:textColor="@color/colorOrange"/>
 
                 <Button
@@ -138,7 +138,7 @@
                     android:layout_marginHorizontal="10dp"
                     android:background="@drawable/good_button_background"
                     android:textColor="@color/colorAccent"
-                    android:textSize="20sp"/>
+                    android:textSize="20dp"/>
 
                     <Button
                         android:id="@+id/registerButton"
@@ -150,7 +150,7 @@
                         android:text="Sign Up"
                         android:fontFamily="@font/poppins"
                         android:textColor="@color/colorAccent"
-                        android:textSize="22sp" />
+                        android:textSize="22dp" />
 
 
                 <LinearLayout
@@ -166,7 +166,7 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="Already have an account?"
-                        android:textSize="18sp"
+                        android:textSize="18dp"
                         android:fontFamily="@font/poppins_medium"
                         android:textColor="@color/colorLightGray"/>
 
@@ -178,7 +178,7 @@
                         android:textColor="@color/colorOrange"
                         android:text="Sign In"
                         android:fontFamily="@font/poppins_medium"
-                        android:textSize="18sp" />
+                        android:textSize="18dp" />
 
 
                 </LinearLayout>

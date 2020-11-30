@@ -49,7 +49,7 @@
                 android:ellipsize="end"
                 android:text="Username"
                 android:textColor="@color/colorBlue"
-                android:textSize="18sp" />
+                android:textSize="18dp" />
 
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
