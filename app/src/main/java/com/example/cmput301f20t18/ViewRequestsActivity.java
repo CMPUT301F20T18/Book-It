@@ -62,7 +62,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
         noResultsTextView = findViewById(R.id.no_results);
         noResultsTextView.setText(R.string.requests_empty);
 
-        // display message if list of books is empty
+        // display message if list of locations is empty
         adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
             @Override
             public void onItemRangeInserted(int positionStart, int itemCount) {

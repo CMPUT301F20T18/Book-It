@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
@@ -27,6 +28,7 @@ public class InitializeLocationActivity extends AppCompatActivity {
     int t_id;
     final static String TAG = "CLA_DEBUG";
     Button cancel;
+    TextView noResultsTextView;
 
 
     private static final int SELECT_LOCATION_REQUEST_CODE = 0;
@@ -52,6 +54,23 @@ public class InitializeLocationActivity extends AppCompatActivity {
         t_id = getIntent().getIntExtra("t_id", 0);
 
         setUp();
+
+        noResultsTextView = findViewById(R.id.no_results_location);
+        noResultsTextView.setText(R.string.location_empty);
+
+        // display message if list of locations is empty
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                noResultsTextView.setText("");
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    noResultsTextView.setText(R.string.location_empty);
+                }
+            }
+        });
 
         addLocation.setOnClickListener(new InitializeLocationActivity.AddLocationOnClickListener(this));
 
