@@ -34,7 +34,7 @@ public class EditProfileActivity extends AppCompatActivity {
 
     private static final int RESULT_LOAD_IMAGE = 1;
     private static final int RESULT_PROFILE_EDITED = 1;
-    private EditText usernameInput, phoneNumInput;
+    private EditText phoneNumInput;
     private Button addressInput;
     private TextView changePass, textAddress;
     private Button changePhoto, deletePhoto, deleteAccount, editDone, myProfileReturn;
@@ -53,8 +53,6 @@ public class EditProfileActivity extends AppCompatActivity {
         setContentView(R.layout.activity_edit_profile);
         Bundle extras = getIntent().getExtras();
 
-        usernameInput = findViewById(R.id.username_input);
-        usernameInput.setText((String) extras.get("username"));
 
         phoneNumInput = findViewById(R.id.phone_input);
         phoneNumInput.setText((String) extras.get("phone"));
@@ -87,11 +85,9 @@ public class EditProfileActivity extends AppCompatActivity {
         editDone.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Todo: Add Intent return
 
                 Intent i = getIntent();
                 i.putExtra("photo", photo);
-                i.putExtra("username", usernameInput.getText().toString());
                 i.putExtra("phone", phoneNumInput.getText().toString());
                 i.putExtra("address", textAddress.getText().toString());
                 setResult(RESULT_OK, i);

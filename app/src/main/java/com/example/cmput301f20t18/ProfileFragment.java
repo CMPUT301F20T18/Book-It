@@ -190,7 +190,6 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onClick(View v) {
                         Intent editIntent = new Intent(getContext(), EditProfileActivity.class);
-                        editIntent.putExtra("username", username.getText().toString());
                         editIntent.putExtra("address", address);
                         editIntent.putExtra("phone", phoneNum.getText().toString());
                         editIntent.putExtra("photo", photoString);
@@ -235,14 +234,13 @@ public class ProfileFragment extends Fragment {
                         profilePic.setImageBitmap(circleImage);
                     }
 
-                    username.setText((String)newInfo.get("username"));
                     textAddress.setText((String)newInfo.get("address"));
                     phoneNum.setText((String)newInfo.get("phone"));
                     address = (String)newInfo.get("address");
 
 
                     User current = new User();
-                    current.ownerEditProfile((String) newInfo.get("username"), photoString, (String)newInfo.get("phone"));
+                    current.ownerEditProfile("username", photoString, (String)newInfo.get("phone"));
                     if(photoString.equals("")){
 
                         profilePic
