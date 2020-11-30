@@ -108,7 +108,7 @@ public class Notification {
     public void sendNotification() {
 
         // find the instance token of the targeted user
-        userRef.whereEqualTo("dbID", target_dbID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        userRef.whereEqualTo("DBid", target_dbID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {

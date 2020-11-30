@@ -611,7 +611,7 @@ public class User {
 
 
                                                     // notify the user
-                                                    Notification notification = new Notification(request.getBorrower_username(), request.getOwner_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
+                                                    Notification notification = new Notification(request.getBorrower_username(), request.getOwner_dbID(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
                                                     notification.prepareMessage();
                                                     notification.sendNotification();
 
