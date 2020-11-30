@@ -154,6 +154,7 @@ public class FirestoreBookAdapter
         /* holder will be updated differently depending on Book status. */
         int status = book.getStatus();
 
+        // buttonUser will be null for "requested" or "available" books
         if (holder.buttonUser != null) {
             try{
                 String uName = book.getBorrower_username();
