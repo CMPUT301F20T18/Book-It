@@ -183,7 +183,7 @@ public class User {
                                     Book book = task1.getResult().toObject(Book.class);
 
                                     // send a notification
-                                    Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
+                                    Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_dbID(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
                                     notification.prepareMessage();
                                     notification.sendNotification();
                                 }
@@ -615,12 +615,10 @@ public class User {
                                                         userRef.document(auth.getUid()).collection("requested_books").document(Integer.toString(bookID)).set(book);
                                                         bookRef.document(Integer.toString(bookID)).update("status", Book.STATUS_REQUESTED);
 
-
                                                         // notify the user
                                                         Notification notification = new Notification(request.getBorrower_username(), request.getOwner_username(), book.getTitle(), Notification.BORROW_REQUEST_BOOK);
                                                         notification.prepareMessage();
                                                         notification.sendNotification();
-
 
                                                     } else {
                                                         Log.d(TAG, "borrowerRequestBook - Error finding borrower info");
