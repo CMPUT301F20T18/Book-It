@@ -18,6 +18,7 @@ import java.util.ArrayList;
  * through the different photos
  * @see Book
  * @author Johnathon
+ *Referenced https://www.youtube.com/watch?v=Q2FPDI99-as&t=232s
  * */
 
 
