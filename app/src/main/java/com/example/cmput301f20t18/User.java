@@ -184,7 +184,7 @@ public class User {
                                     Book book = task1.getResult().toObject(Book.class);
 
                                     // send a notification
-                                    Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
+                                    Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_dbID(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
                                     notification.prepareMessage();
                                     notification.sendNotification();
                                 }
