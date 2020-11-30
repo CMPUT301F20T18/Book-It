@@ -208,7 +208,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                         Log.d(TAG, " bookID: " + book.getId());
                         Log.d(TAG, " book ISBN:  " + book.getISBN());
 
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        Intent intent = new Intent(v.getContext(), ScannerActivity.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         intent.putExtra("eISBN", book.getISBN());
@@ -238,7 +238,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                         Log.d(TAG, " bookID: " + book.getId());
                         Log.d(TAG, " book ISBN:  " + book.getISBN());
 
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        Intent intent = new Intent(v.getContext(), ScannerActivity.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         intent.putExtra("eISBN", book.getISBN());

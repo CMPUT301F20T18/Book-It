@@ -23,7 +23,7 @@ import com.google.firebase.firestore.Query;
  * @see BorrowedRequestedFragment
  * @see FirestoreBorrowedAdapter
  * @author deinum
- * @author Shuval De Villiers
+ * @author shuval
  */
 public class BorrowedBorrowingFragment extends Fragment {
     RecyclerView recyclerView;
@@ -36,45 +36,13 @@ public class BorrowedBorrowingFragment extends Fragment {
     FirebaseAuth auth = FirebaseAuth.getInstance();
     CollectionReference userRef = DB.collection("users");
 
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
     public BorrowedBorrowingFragment() {
         // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment BorrowedRequestedFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static BorrowedBorrowingFragment newInstance(String param1, String param2) {
-        BorrowedBorrowingFragment fragment = new BorrowedBorrowingFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     /**

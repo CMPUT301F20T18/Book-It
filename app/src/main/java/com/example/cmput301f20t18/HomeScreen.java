@@ -10,8 +10,6 @@ import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 
 import android.Manifest;
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Build;
@@ -143,7 +141,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                             FragTag = "SEARCH";
                             break;
                         case R.id.tab_scan:
-                            Intent intent = new Intent(HomeScreen.this, Scanner.class);
+                            Intent intent = new Intent(HomeScreen.this, ScannerActivity.class);
                             intent.putExtra("type", 0);
                             startActivityForResult(intent, RESULT_OK);
                             break;

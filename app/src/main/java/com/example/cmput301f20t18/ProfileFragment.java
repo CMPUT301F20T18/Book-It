@@ -157,7 +157,12 @@ public class ProfileFragment extends Fragment {
             }
         });
 
-
+        FirebaseAuth auth = FirebaseAuth.getInstance();
+        Task<DocumentSnapshot> currentUser = FirebaseFirestore.getInstance()
+                .collection("users")
+                .document(auth.getUid())
+                .get()
+                .addOnCompleteListener(new UserQueryTaskCompleteListener(view));
 
         editAccount.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -180,13 +185,6 @@ public class ProfileFragment extends Fragment {
                 return false;
             }
         });
-
-        FirebaseAuth auth = FirebaseAuth.getInstance();
-        Task<DocumentSnapshot> currentUser = FirebaseFirestore.getInstance()
-                .collection("users")
-                .document(auth.getUid())
-                .get()
-                .addOnCompleteListener(new UserQueryTaskCompleteListener(view));
 
         return view;
     }

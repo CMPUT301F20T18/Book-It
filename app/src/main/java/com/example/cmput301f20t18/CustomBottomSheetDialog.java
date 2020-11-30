@@ -18,6 +18,13 @@ import androidx.annotation.Nullable;
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment;
 
 /**
+ * Dialog that appears at the bottom of the screen when hitting the 3 dots or "more" button on a
+ * book card.
+ *
+ * @author shuval
+ * @see HomeScreen
+ * @see PostScanActivity
+ *
  * reference: https://www.youtube.com/watch?v=IfpRL2K1hJk
  */
 public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
@@ -27,22 +34,39 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
     public static final int EDIT_BUTTON = 1;
     public static final int DELETE_BUTTON = 2;
 
-    private BottomSheetListener mListener;
-    private boolean owner;
-    private int status;
-    private int bookID;
+    private final boolean owner;
+    private final int status;
+    private final int bookID;
 
+    private BottomSheetListener mListener;
+
+    /**
+     * Class constructor.
+     *
+     * @param owner Whether or not the book in question is owned by the user.
+     * @param status The book's status.
+     * @param bookID The book's ID.
+     */
     public CustomBottomSheetDialog(boolean owner, int status, int bookID) {
         this.owner = owner;
         this.status = status;
         this.bookID = bookID;
     }
 
+    /**
+     * Instantiates view.
+     *
+     * @param inflater Used to inflate view
+     * @param container Parent view
+     * @param savedInstanceState If non-null, this fragment is being re-constructed
+     *                           from a previous saved state as given here.
+     * @return Return the View
+     */
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
 
-        View view;
+        View view;  // View to be returned
 
         Button buttonCancel;
         Button buttonEdit;

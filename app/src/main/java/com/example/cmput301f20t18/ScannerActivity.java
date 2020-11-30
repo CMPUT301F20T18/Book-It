@@ -54,8 +54,9 @@ import java.util.concurrent.Executors;
  * @see Book
  * @author deinum
  */
-public class Scanner extends AppCompatActivity {
+public class ScannerActivity extends AppCompatActivity {
 
+    public static final boolean CHECK_ISBN = true;
     private final boolean ENABLE_MANUAL = true;
     //private final boolean ENABLE_MANUAL = false;
 
@@ -64,8 +65,8 @@ public class Scanner extends AppCompatActivity {
     private final int RETURN_ISBN = 1;
     private final String[] REQUIRED_PERMISSIONS = new String[]{"android.permission.CAMERA"};
     private ListenableFuture<ProcessCameraProvider> cameraProviderFuture;
-    public PreviewView previewView;
-    public Button cap;
+    private PreviewView previewView;
+    private Button cap;
     private Executor executor = Executors.newSingleThreadExecutor();
     private int mode;
     private int bookID;
@@ -149,7 +150,7 @@ public class Scanner extends AppCompatActivity {
             public void run() {
                 try {
                     ProcessCameraProvider cameraProvider = cameraProviderFuture.get();
-                    Scanner.this.bindPreview(cameraProvider);
+                    ScannerActivity.this.bindPreview(cameraProvider);
                 } catch (ExecutionException | InterruptedException e) {
                 }
             }
@@ -269,7 +270,7 @@ public class Scanner extends AppCompatActivity {
                             if (valueType == Barcode.TYPE_ISBN && rawValue != null) {
                                 Intent intent;
                                 if (mode == OPEN_POST) {
-                                    intent = new Intent(Scanner.this, PostScanActivity.class);
+                                    intent = new Intent(ScannerActivity.this, PostScanActivity.class);
                                     intent.putExtra("ISBN", rawValue);
                                     setResult(RESULT_OK, intent);
                                     finish();
@@ -308,7 +309,7 @@ public class Scanner extends AppCompatActivity {
         if (rawValue != null) {
             Intent intent;
             if (mode == OPEN_POST) {
-                intent = new Intent(Scanner.this, PostScanActivity.class);
+                intent = new Intent(ScannerActivity.this, PostScanActivity.class);
                 intent.putExtra("ISBN", rawValue);
                 setResult(RESULT_OK, intent);
                 finish();

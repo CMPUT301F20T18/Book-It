@@ -1,5 +1,7 @@
 package com.example.cmput301f20t18;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
@@ -9,20 +11,19 @@ import android.view.ViewGroup;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 /**
  * A Fragment that handles all sub-fragments for books that a user is borrowing
- * @author Shuval De Villiers
+ * @author shuval
  * @author deinum
  */
 public class BorrowedFragment extends Fragment implements fragmentListener {
     private final static String TAG = "BF_DEBUG";
+    private Context mContext;
 
     /**
      * Instantiates view. The documentation recommends only inflating the layout here and doing
@@ -62,6 +63,11 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
 
     }
 
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
 
     /**
      * Process results from called activities
@@ -80,20 +86,29 @@ public class BorrowedFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
+        if (ScannerActivity.CHECK_ISBN && expected_isbn.equals(isbn)) {
+            User current = new User();
+            switch (requestCode) {
 
+                case 1:
+                    current.borrowerDropOffBook(bookID);
+                    break;
 
-        User current = new User();
-        switch (requestCode) {
-
-            case 1:
-                // TODO: Implement ISBN check?
-                current.borrowerDropOffBook(bookID);
-                break;
-
-            case 2:
-                // TODO: Implement ISBN check?
-                current.borrowerPickupBook(bookID);
-                break;
+                case 2:
+                    current.borrowerPickupBook(bookID);
+                    break;
+            }
         }
+        else {
+            // using getContext() here instead of mContext will sometimes cause a crash since this
+            // fragment may not have been attached to HomeScreen yet
+            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
+            new AlertDialog.Builder(mContext, R.style.CustomDialogTheme)
+                    .setTitle("Error!")
+                    .setMessage("Scanned ISBN does not match book's ISBN")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
+
     }
 }

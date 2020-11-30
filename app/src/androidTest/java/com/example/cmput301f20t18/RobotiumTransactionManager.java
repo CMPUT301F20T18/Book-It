@@ -23,7 +23,7 @@ public class RobotiumTransactionManager {
         solo.assertCurrentActivity("Wrong Activity - NOT HOMESCREEN", HomeScreen.class);
         solo.clickOnView(solo.getView(R.id.tab_scan));
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
-                Scanner.class);
+                ScannerActivity.class);
         solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
@@ -32,7 +32,7 @@ public class RobotiumTransactionManager {
         assertTrue(solo.waitForText(DEMO_ISBN, 1, 2000));
         solo.clickOnButton("Confirm pick up");
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
-                Scanner.class);
+                ScannerActivity.class);
         solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
