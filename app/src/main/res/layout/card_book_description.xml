@@ -18,7 +18,7 @@
                 android:fontFamily="@font/poppins_semibold"
                 android:lineSpacingMultiplier="0.9"
                 android:textColor="@color/colorOrange"
-                android:textSize="18sp"/>
+                android:textSize="18dp"/>
 
             <TextView
                 android:id="@+id/text_label_by"
@@ -31,7 +31,7 @@
                 android:text="by"
                 android:fontFamily="@font/poppins_medium"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp"/>
+                android:textSize="14dp"/>
 
             <TextView
                 android:id="@+id/text_book_author"
@@ -46,7 +46,7 @@
                 android:text="Author"
                 android:fontFamily="@font/poppins_medium"
                 android:textColor="@color/colorAccent"
-                android:textSize="14sp"/>
+                android:textSize="14dp"/>
 
             <TextView
                 android:id="@+id/text_book_year"
@@ -59,7 +59,7 @@
                 android:text="Year"
                 android:fontFamily="@font/poppins_medium"
                 android:textColor="@color/colorText"
-                android:textSize="14sp"/>
+                android:textSize="14dp"/>
 
             <TextView
                 android:id="@+id/text_label_isbn"
@@ -72,7 +72,7 @@
                 android:text="ISBN:"
 
                 android:textColor="@color/colorText"
-                android:textSize="10sp"/>
+                android:textSize="10dp"/>
 
             <TextView
                 android:id="@+id/text_book_isbn"
@@ -84,7 +84,7 @@
                 android:layout_marginTop=".5dp"
                 android:text="0000000000000"
                 android:textColor="@color/colorText"
-                android:textSize="10sp"/>
+                android:textSize="10dp"/>
 
             <ImageView
                 android:id="@+id/vc_spacer"
