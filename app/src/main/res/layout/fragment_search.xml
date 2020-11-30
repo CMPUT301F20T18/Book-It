@@ -127,7 +127,8 @@
             android:layout_marginTop="80dp"
             android:textAlignment="center"
             android:text="@string/no_results"
-            android:textSize="18sp"/>
+            android:fontFamily="@font/poppins"
+            android:textSize="17sp"/>
 
     </FrameLayout>
 

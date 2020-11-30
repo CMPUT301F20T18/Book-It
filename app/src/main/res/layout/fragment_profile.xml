@@ -215,11 +215,24 @@
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <!-- ListView or RecyclerView goes here for the notifications -->
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/NotifRecyclerView"
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/no_results"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="50dp"
+            android:textAlignment="center"
+            android:fontFamily="@font/poppins"
+            android:layout_alignParentTop="true"
+            android:textSize="17sp"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/NotifRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+    </FrameLayout>
 
 
 </LinearLayout>

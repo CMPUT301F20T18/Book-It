@@ -60,5 +60,6 @@
     <string name="change_password"><u>Change password</u></string>
     <string name="requests_empty">This book has no requests!</string>
     <string name="location_empty">Hit \"Add New Location\" to set the pick up location!</string>
+    <string name="notifications_empty">You have no notifications</string>
 
 </resources>

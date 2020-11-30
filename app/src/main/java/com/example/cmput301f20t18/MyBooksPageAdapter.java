@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * Allows user to swipe between tabs in My Books
+ * Reference: https://www.codingdemos.com/android-tablayout-example-viewpager/
  */
 public class MyBooksPageAdapter extends FragmentPagerAdapter {
 

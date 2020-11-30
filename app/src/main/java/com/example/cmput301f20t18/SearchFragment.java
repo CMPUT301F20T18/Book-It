@@ -746,6 +746,9 @@ public class SearchFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
+                book.setStatus(Book.STATUS_REQUESTED);
+                bookAdapter.notifyDataSetChanged();
+
                 User current = new User();
                 Log.d(TAG, "User is attempting to request " + book.getTitle()
                         + " from user " + book.getOwner_username());

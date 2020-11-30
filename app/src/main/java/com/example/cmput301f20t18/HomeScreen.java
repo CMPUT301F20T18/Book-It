@@ -30,7 +30,9 @@ import com.google.firebase.messaging.FirebaseMessaging;
 /**
  * Homescreen is the first object a user sees upon signing in, and will contain all the books
  * borrowed by the user.
- * Homescreen also manages fragments, and provides a mean for two fragments to interact
+ * Homescreen also manages fragments, and provides a mean for two fragments to interact.
+ *
+ * reference for BottomNavigationView: https://www.youtube.com/watch?v=tPV8xA7m-iw
  * @see User
  * @see Book
  * @author Shuval
@@ -56,8 +58,8 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
     // this is for when a user clicks "search for available copies" in postscan
     @RequiresApi(api = Build.VERSION_CODES.M)
     @Override
-    protected void onStart() {
-        super.onStart();
+    public void onAttachedToWindow() {
+        super.onAttachedToWindow();
         if (getIntent() != null) {
             String ISBN = getIntent().getStringExtra("ISBN");
             if (ISBN != null) {
@@ -69,8 +71,10 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                 Fragment fragment = new SearchFragment();
                 fragment.setArguments(bundle);
 
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.fragment_container, fragment).commit();
+                getSupportFragmentManager()
+                        .beginTransaction()
+                        .replace(R.id.fragment_container, fragment)
+                        .commit();
             }
         }
     }
@@ -170,7 +174,8 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
     @Override
     public void onButtonClick(int button, int status, int bookID, boolean owner) {
-        User current = new User();
+        CustomBottomSheetDialog.buttonAction(button, status, bookID, owner, HomeScreen.this);
+        /*User current = new User();
         switch (button) {
             case CustomBottomSheetDialog.CANCEL_BUTTON:
 
@@ -246,7 +251,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                 break;
             default:
                 Log.e(TAG, "onButtonClick: Invalid button ID");
-        }
+        }*/
     }
 
     public static void test(int button, int status, int bookID, boolean owner) {

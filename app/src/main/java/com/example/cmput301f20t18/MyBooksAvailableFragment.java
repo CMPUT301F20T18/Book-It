@@ -21,7 +21,7 @@ import com.google.firebase.firestore.Query;
  * Firebase manages this adapter and will update in real time based on writes to firestore.
  * @see MyBooksLendingFragment
  * @see MyBooksPendingFragment
- * @see FirestoreBookAdapter
+ * @see FirestoreMyBooksAdapter
  * @author deinum
  * @author Shuval De Villiers
  */
@@ -30,7 +30,7 @@ public class MyBooksAvailableFragment extends Fragment {
     RecyclerView recyclerView;
     TextView noResultsTextView;
     Query query;
-    FirestoreBookAdapter adapter;
+    FirestoreMyBooksAdapter adapter;
 
     /* Everything below here and above onCreateView() is auto-inserted boilerplate */
 
@@ -148,7 +148,7 @@ public class MyBooksAvailableFragment extends Fragment {
                 .setQuery(query, Book.class)
                 .build();
 
-        adapter = new FirestoreBookAdapter(options, getContext());
+        adapter = new FirestoreMyBooksAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }

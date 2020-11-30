@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
-    TextView username, textAddress, phoneNum, email, editAccount;
+    TextView username, textAddress, phoneNum, email, editAccount, noResultsTextView;
     Button signOut, clearNotifications;
     ImageView profilePic;
     String photoString, address;
@@ -109,6 +109,23 @@ public class ProfileFragment extends Fragment {
         editAccount = (TextView) view.findViewById(R.id.edit_profile);
         recyclerView = view.findViewById(R.id.NotifRecyclerView);
         setUp();
+
+        noResultsTextView = view.findViewById(R.id.no_results);
+        noResultsTextView.setText(R.string.notifications_empty);
+
+        // display message if list of books is empty
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                noResultsTextView.setText("");
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    noResultsTextView.setText(R.string.notifications_empty);
+                }
+            }
+        });
 
         signOut = (Button) view.findViewById(R.id.sign_out_button);
 

@@ -32,7 +32,7 @@ public class PostScanActivity extends AppCompatActivity implements CustomBottomS
 
     Query query;
     RecyclerView recyclerViewMyBooks;
-    FirestoreBookAdapter adapterMyBooks;
+    FirestoreMyBooksAdapter adapterMyBooks;
     RecyclerView recyclerViewBorrowed;
     FirestoreBorrowedAdapter adapterBorrowed;
 
@@ -143,6 +143,7 @@ public class PostScanActivity extends AppCompatActivity implements CustomBottomS
                 Intent intent = new Intent(getBaseContext(), HomeScreen.class);
                 intent.putExtra("ISBN", passed_isbn);
                 startActivity(intent);
+                finish();
             }
         });
 
@@ -195,7 +196,7 @@ public class PostScanActivity extends AppCompatActivity implements CustomBottomS
                 .setQuery(query, Book.class)
                 .build();
 
-        adapterMyBooks = new FirestoreBookAdapter(optionsMyBooks, this);
+        adapterMyBooks = new FirestoreMyBooksAdapter(optionsMyBooks, this);
         recyclerViewMyBooks.setLayoutManager(new LinearLayoutManager(this));
         recyclerViewMyBooks.setAdapter(adapterMyBooks);
 
@@ -212,7 +213,8 @@ public class PostScanActivity extends AppCompatActivity implements CustomBottomS
 
     @Override
     public void onButtonClick(int button, int status, int bookID, boolean owner) {
-        User current = new User();
+        CustomBottomSheetDialog.buttonAction(button, status, bookID, owner, PostScanActivity.this);
+        /*User current = new User();
         switch (button) {
             case CustomBottomSheetDialog.CANCEL_BUTTON:
 
@@ -287,7 +289,7 @@ public class PostScanActivity extends AppCompatActivity implements CustomBottomS
                         .show();
                 break;
             default:
-                Log.e(TAG, "onButtonClick: Invalid button ID");
-        }
+                Log.e(TAG, "onButtonClick: Invalid button ID");*/
+
     }
 }
