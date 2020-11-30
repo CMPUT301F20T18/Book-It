@@ -164,28 +164,6 @@ public class ProfileFragment extends Fragment {
                 .get()
                 .addOnCompleteListener(new UserQueryTaskCompleteListener(view));
 
-        editAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent editIntent = new Intent(getContext(), EditProfileActivity.class);
-                editIntent.putExtra("username", username.getText().toString());
-                editIntent.putExtra("address", address);
-                editIntent.putExtra("phone", phoneNum.getText().toString());
-                editIntent.putExtra("photo", photoString);
-                editIntent.putExtra("email", email.getText().toString());
-
-                startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
-
-            }
-        });
-        editAccount.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                editAccount.setBackgroundColor(getResources().getColor(R.color.colorGray1));
-                return false;
-            }
-        });
-
         return view;
     }
 
@@ -245,6 +223,28 @@ public class ProfileFragment extends Fragment {
                 DocumentSnapshot UserDocument = (DocumentSnapshot) task.getResult();
                 User user = UserDocument.toObject(User.class);
                 updateUserData(user, view);
+
+                editAccount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent editIntent = new Intent(getContext(), EditProfileActivity.class);
+                        editIntent.putExtra("username", username.getText().toString());
+                        editIntent.putExtra("address", address);
+                        editIntent.putExtra("phone", phoneNum.getText().toString());
+                        editIntent.putExtra("photo", photoString);
+                        editIntent.putExtra("email", email.getText().toString());
+
+                        startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
+
+                    }
+                });
+                editAccount.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        editAccount.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                        return false;
+                    }
+                });
             }
         }
     }
