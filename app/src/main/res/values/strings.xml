@@ -58,5 +58,7 @@
     <string name="sign_up_question">Don\'t have an account?</string>
     <string name="sign_up">Sign up</string>
     <string name="change_password"><u>Change password</u></string>
+    <string name="requests_empty">This book has no requests!</string>
+    <string name="location_empty">Hit \"Add New Location\" to set the pick up location!</string>
 
 </resources>

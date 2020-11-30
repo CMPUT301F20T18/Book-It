@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.TextView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 import com.google.firebase.auth.FirebaseAuth;
@@ -28,6 +29,7 @@ import java.util.List;
 public class ViewRequestsActivity extends AppCompatActivity {
     static final String TAG = "VRA_DEBUG";
 
+    TextView noResultsTextView;
     RecyclerView recyclerView;
     FirestoreRequestAdapter adapter;
     Query query;
@@ -57,7 +59,22 @@ public class ViewRequestsActivity extends AppCompatActivity {
         recyclerView = findViewById(R.id.request_recycler);
         setUp();
 
+        noResultsTextView = findViewById(R.id.no_results);
+        noResultsTextView.setText(R.string.requests_empty);
 
+        // display message if list of books is empty
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                noResultsTextView.setText("");
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    noResultsTextView.setText(R.string.requests_empty);
+                }
+            }
+        });
 
     }
 

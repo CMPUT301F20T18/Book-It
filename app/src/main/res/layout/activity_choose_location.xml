@@ -39,6 +39,15 @@
         </RelativeLayout>
     </FrameLayout>
 
+    <TextView
+        android:id="@+id/no_results"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="80dp"
+        android:textAlignment="center"
+        android:layout_below="@id/toolbar_frame"
+        android:textSize="18sp"/>
+
         <Button
             android:id="@+id/addLocationButton"
             android:layout_width="match_parent"
