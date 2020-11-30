@@ -18,6 +18,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.MenuItem;
+import android.view.WindowManager;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -45,6 +46,12 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
     Fragment selectedFragment;
     final String TAG = "HOMESCREEN_DEBUG";
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_ADJUST_NOTHING);
+    }
 
     // this is for when a user clicks "search for available copies" in postscan
     @RequiresApi(api = Build.VERSION_CODES.M)
