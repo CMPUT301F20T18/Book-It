@@ -155,7 +155,7 @@ public class FirestoreBookAdapter
         int status = book.getStatus();
         try{
             String uName = book.getBorrower_username();
-            FirebaseFirestore db = FirebaseFirestore.getInstance(); 
+            FirebaseFirestore db = FirebaseFirestore.getInstance();
             CollectionReference collection = db.collection("users");
             collection.whereEqualTo("username", uName).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
                 @RequiresApi(api = Build.VERSION_CODES.O)
