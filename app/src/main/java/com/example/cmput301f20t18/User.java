@@ -489,6 +489,16 @@ public class User {
                                                                  batch.update(userRef.document(string).collection("requested_books").document(Integer.toString(list.get(i).getBookID())), "owner_username", username);
                                                              }
 
+                                                             bookRef.whereEqualTo("borrower_username", current.getUsername()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                                                                 @Override
+                                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                                                                    List<Book> books = task.getResult().toObjects(Book.class);
+                                                                    for (int i = 0 ; i < books.size() ; i++) {
+                                                                        batch.update(bookRef.document(Integer.toString(books.get(i).getId())), "borrower_username", username);
+                                                                    }
+                                                                 }
+                                                             });
+
 
 
                                                              batch.commit();
