@@ -139,7 +139,11 @@ public class MyBooksAvailableFragment extends Fragment {
 
 
     public void setUp() {
-        query = bookRef.whereEqualTo("owner_dbID", auth.getUid()).whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE ).whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED);
+        query = bookRef.whereEqualTo("owner_dbID", auth.getUid())
+                .whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE )
+                .whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED)
+                .orderBy("status", Query.Direction.DESCENDING);
+
         FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
                 .setQuery(query, Book.class)
                 .build();

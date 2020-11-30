@@ -148,8 +148,8 @@ public class Register extends AppCompatActivity {
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.hasChild(new_username)) {
                             new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
-                                    .setTitle("Username has been taken, please enter a different username")
-                                    .setMessage("")
+                                    .setTitle("Username has been taken!")
+                                    .setMessage("Please enter a different username")
                                     .setPositiveButton("OK", null)
                                     .show();
                         }
