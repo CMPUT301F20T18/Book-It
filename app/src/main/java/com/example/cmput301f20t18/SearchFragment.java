@@ -122,8 +122,8 @@ public class SearchFragment extends Fragment {
             if (ISBN != null) {
                 searchEditText.setText(ISBN);
                 searchButton.performClick();
-                noResultsTextView.setText(""); // this has to be here for some reason
             }
+            noResultsTextView.setText(""); // this has to be here for some reason
         }
     }
 

@@ -170,13 +170,12 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
 
     @Override
     public void onButtonClick(int button, int status, int bookID, boolean owner) {
-        AlertDialog dialog;
         User current = new User();
         switch (button) {
             case CustomBottomSheetDialog.CANCEL_BUTTON:
 
                 if (owner) {
-                    dialog = new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
+                    new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
                             .setTitle("Cancel pick up")
                             .setMessage("Are you sure you want to cancel this pick up?")
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -189,7 +188,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                             .show();
                 }
                 else {
-                    dialog = new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
+                    new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
                             .setTitle("Cancel pick up")
                             .setMessage("Are you sure you want to cancel this pick up?")
                             .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
@@ -233,7 +232,7 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                                 "Are you sure you want to delete this book?";
                         break;
                 }
-                dialog = new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
+                new AlertDialog.Builder(HomeScreen.this, R.style.CustomDialogTheme)
                         .setTitle("Delete book")
                         .setMessage(alertMessage)
                         .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
@@ -248,6 +247,10 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
             default:
                 Log.e(TAG, "onButtonClick: Invalid button ID");
         }
+    }
+
+    public static void test(int button, int status, int bookID, boolean owner) {
+
     }
 
     // handles activity results by sending the result where it needs to go
