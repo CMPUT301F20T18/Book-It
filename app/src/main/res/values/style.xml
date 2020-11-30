@@ -16,6 +16,7 @@
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:textSize">27sp</item>
+        <item name="android:paddingTop">4dp</item>
     </style>
     <style name="CustomBackButton" parent="Widget.AppCompat.Button">
         <item name="android:layout_width">80dp</item>
