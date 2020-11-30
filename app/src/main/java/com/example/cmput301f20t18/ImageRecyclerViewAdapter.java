@@ -82,7 +82,7 @@ public class ImageRecyclerViewAdapter extends RecyclerView.Adapter<ImageRecycler
             Bitmap bm = photoAdapter.scaleBitmap(photos.get(position), imageView.getLayoutParams().width, imageView.getLayoutParams().height);
             photoData.add(bm);
             imageView.setImageBitmap(bm);
-
+            imageView.setOnClickListener(null);
             button.show();
             button.setOnClickListener(new View.OnClickListener() {
                 @Override
