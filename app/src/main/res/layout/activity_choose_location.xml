@@ -40,12 +40,13 @@
     </FrameLayout>
 
     <TextView
-        android:id="@+id/no_results"
+        android:id="@+id/no_results_location"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="80dp"
         android:textAlignment="center"
         android:layout_below="@id/toolbar_frame"
+        android:text="YOU BET"
         android:fontFamily="@font/poppins"
         android:textSize="17sp"/>
 

@@ -230,6 +230,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                 break;
 
             case Book.STATUS_BORROWED:
+                holder.buttonMore.setVisibility(View.INVISIBLE);
 
                 /* User clicks the "Confirm return" button */
                 holder.buttonConfirmReturn.setOnClickListener(new View.OnClickListener() {

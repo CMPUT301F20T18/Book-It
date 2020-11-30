@@ -57,7 +57,7 @@ import java.util.concurrent.Executors;
 public class ScannerActivity extends AppCompatActivity {
 
     public static final boolean CHECK_ISBN = true;
-    private final boolean ENABLE_MANUAL = true;
+    private static final boolean ENABLE_MANUAL = true;
     //private final boolean ENABLE_MANUAL = false;
 
     private final int REQUEST_CODE_PERMISSIONS = 1001;

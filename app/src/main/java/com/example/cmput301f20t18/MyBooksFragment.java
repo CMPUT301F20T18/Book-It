@@ -100,7 +100,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
-        if (ScannerActivity.CHECK_ISBN && expected_isbn.equals(isbn)) {
+        if (!ScannerActivity.CHECK_ISBN || expected_isbn.equals(isbn)) {
             User current = new User();
 
             switch (requestCode) {
