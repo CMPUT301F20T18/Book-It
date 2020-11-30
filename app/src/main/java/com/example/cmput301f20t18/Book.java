@@ -256,7 +256,7 @@ public class Book{
 
     /**
      * Retrieve the cover photo of the book
-     * @ Bitmap Representation of the photo
+     * Bitmap Representation of the photo
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
     public Bitmap retrieveCover() {

@@ -17,15 +17,14 @@ import java.lang.ref.Reference;
 import java.sql.Ref;
 import java.util.ArrayList;
 
+/**
+ * This is the main activity for the ImageSlider in which we will enlarge the photos
+ * from a particular book so the user can go through them
+ * @author Johnathon Gil
+ * @author Sean Butler
+ * @see Book
+ * */
 public class ImageSliderActivity extends AppCompatActivity {
-
-    /**
-     * This is the main activity for the ImageSlider in which we will enlarge the photos
-     * from a particular book so the user can go through them
-     * @author Johnathon Gil
-     * @author Sean Butler
-     * @see Book
-     * */
 
     ViewPager mPager;
     ImagePageAdapter imageAdapter;

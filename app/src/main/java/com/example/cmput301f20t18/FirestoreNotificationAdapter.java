@@ -11,13 +11,15 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
+/**
+ * Notification adapter that listens in real time for changes to the query result
+ * @author deinum
+ */
 public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<UserNotification, FirestoreNotificationAdapter.NotifViewHolder> {
 
-
     /**
-     * Notification adapter that listens in real time for changes to the query result
-     * @author deinum
-     * @param options Options (including query) for the adapter
+     * Class constructor
+     * @param options Options to configure
      */
     public FirestoreNotificationAdapter(@NonNull FirestoreRecyclerOptions<UserNotification> options) {
         super(options);
@@ -38,7 +40,7 @@ public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<UserN
      * Specify our view
      * @param parent
      * @param viewType
-     * @return
+     * @return View holder
      */
     @NonNull
     @Override

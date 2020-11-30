@@ -137,7 +137,6 @@ public class ProfileFragment extends Fragment {
      * updateUserData is called after the query to the db for user information is complete
      * and updates the fields filling them with the data recieved
      *
-     * @author Chase Warwick
      * @param user The user currently using the app!
      */
     @RequiresApi(api = Build.VERSION_CODES.O)
