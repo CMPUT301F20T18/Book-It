@@ -55,49 +55,15 @@ public class ProfileFragment extends Fragment {
     FirebaseAuth auth = FirebaseAuth.getInstance();
     CollectionReference userRef = DB.collection("users");
 
-
-    //Bitmap userPhoto;
-
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
     private static final int RESULT_PROFILE_EDITED = 1;
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
     public ProfileFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyBooksAvailableFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static ProfileFragment newInstance(String param1, String param2) {
-        ProfileFragment fragment = new ProfileFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -188,7 +154,7 @@ public class ProfileFragment extends Fragment {
         email.setText(user.getEmail());
         photoString = user.getProfile_picture();
         address = user.getAddress().getTitle();
-        if (photoString!= "") {
+        if (!photoString.equals("")) {
             Bitmap bitmap;
             try {
                bitmap = photoAdapter.stringToBitmap(photoString);
@@ -197,10 +163,7 @@ public class ProfileFragment extends Fragment {
                 e.printStackTrace();
                 photoString = "";
             }
-
         }
-
-
     }
 
     /**
@@ -295,8 +258,8 @@ public class ProfileFragment extends Fragment {
 
     public void setUp() {
         query = userRef.document(auth.getUid()).collection("notifications");
-        FirestoreRecyclerOptions<userNotification> options = new FirestoreRecyclerOptions.Builder<userNotification>()
-                .setQuery(query, userNotification.class)
+        FirestoreRecyclerOptions<UserNotification> options = new FirestoreRecyclerOptions.Builder<UserNotification>()
+                .setQuery(query, UserNotification.class)
                 .build();
 
         adapter = new FirestoreNotificationAdapter(options);

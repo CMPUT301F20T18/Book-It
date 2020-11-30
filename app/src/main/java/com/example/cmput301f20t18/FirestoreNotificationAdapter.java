@@ -11,7 +11,7 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
 import com.firebase.ui.firestore.FirestoreRecyclerOptions;
 
-public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<userNotification, FirestoreNotificationAdapter.NotifViewHolder> {
+public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<UserNotification, FirestoreNotificationAdapter.NotifViewHolder> {
 
 
     /**
@@ -19,7 +19,7 @@ public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<userN
      * @author deinum
      * @param options Options (including query) for the adapter
      */
-    public FirestoreNotificationAdapter(@NonNull FirestoreRecyclerOptions<userNotification> options) {
+    public FirestoreNotificationAdapter(@NonNull FirestoreRecyclerOptions<UserNotification> options) {
         super(options);
     }
 
@@ -30,7 +30,7 @@ public class FirestoreNotificationAdapter extends FirestoreRecyclerAdapter<userN
      * @param model Our notification being binded
      */
     @Override
-    protected void onBindViewHolder(@NonNull NotifViewHolder holder, int position, @NonNull userNotification model) {
+    protected void onBindViewHolder(@NonNull NotifViewHolder holder, int position, @NonNull UserNotification model) {
         holder.notification_text.setText(model.getMessage());
     }
 

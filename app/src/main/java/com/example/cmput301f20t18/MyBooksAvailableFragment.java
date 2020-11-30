@@ -23,7 +23,7 @@ import com.google.firebase.firestore.Query;
  * @see MyBooksPendingFragment
  * @see FirestoreMyBooksAdapter
  * @author deinum
- * @author Shuval De Villiers
+ * @author shuval
  */
 public class MyBooksAvailableFragment extends Fragment {
 

@@ -23,7 +23,7 @@ import com.google.android.material.tabs.TabLayout;
  * @see MyBooksLendingFragment
  * @see MyBooksAvailableFragment
  * @see MyBooksPendingFragment
- * @author Shuval
+ * @author shuval
  * @author deinum
  */
 public class MyBooksFragment extends Fragment implements fragmentListener {

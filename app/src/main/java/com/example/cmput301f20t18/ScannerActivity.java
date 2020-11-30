@@ -56,9 +56,10 @@ import java.util.concurrent.Executors;
  */
 public class ScannerActivity extends AppCompatActivity {
 
-    public static final boolean CHECK_ISBN = true;
-    private static final boolean ENABLE_MANUAL = true;
-    //private final boolean ENABLE_MANUAL = false;
+    public static final boolean CHECK_ISBN = true;      // Set to false to not check ISBN when
+                                                        // scanning for confirm pick up/return.
+    private static final boolean ENABLE_MANUAL = true;  // Set to false to disable the manual ISBN
+                                                        // button.
 
     private final int REQUEST_CODE_PERMISSIONS = 1001;
     private final int OPEN_POST = 0;
@@ -73,9 +74,7 @@ public class ScannerActivity extends AppCompatActivity {
     private Long expected_isbn;
     String TAG = "SCANNER_DEBUG";
 
-    // TODO: don't forget to remove temporary button
-    private Button buttonManual; // delete this
-    private String inputISBN; // delete this too
+    private Button buttonManual;
 
 
     @Override
@@ -304,7 +303,7 @@ public class ScannerActivity extends AppCompatActivity {
         return 0;
     }
 
-    // TEMPORARY
+    // Send manually entered ISBN to PostScanActivity
     public void manualISBN(String rawValue) {
         if (rawValue != null) {
             Intent intent;

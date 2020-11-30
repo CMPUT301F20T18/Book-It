@@ -7,7 +7,7 @@ package com.example.cmput301f20t18;
  * @see Notification
  * @author deinum
  */
-public class userNotification {
+public class UserNotification {
     private String id;
     private String message;
 
@@ -16,7 +16,7 @@ public class userNotification {
      * @param id The notification ID
      * @param message The notification message
      */
-    public userNotification(String id, String message) {
+    public UserNotification(String id, String message) {
         this.id = id;
         this.message = message;
     }
@@ -24,7 +24,7 @@ public class userNotification {
     /**
      * Empty constructor for firestore
      */
-    public userNotification() {
+    public UserNotification() {
     }
 
     /**

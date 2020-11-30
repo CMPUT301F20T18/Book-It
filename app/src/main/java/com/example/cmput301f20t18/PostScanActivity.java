@@ -26,6 +26,7 @@ import com.google.firebase.firestore.Query;
  * This is a class that creates options for the use of the ISBN
  * @author Johnathon Gil
  * @author deinum
+ * @author shuval
  */
 
 public class PostScanActivity extends AppCompatActivity implements CustomBottomSheetDialog.BottomSheetListener {
@@ -214,82 +215,5 @@ public class PostScanActivity extends AppCompatActivity implements CustomBottomS
     @Override
     public void onButtonClick(int button, int status, int bookID, boolean owner) {
         CustomBottomSheetDialog.buttonAction(button, status, bookID, owner, PostScanActivity.this);
-        /*User current = new User();
-        switch (button) {
-            case CustomBottomSheetDialog.CANCEL_BUTTON:
-
-                if (owner) {
-                    new AlertDialog.Builder(PostScanActivity.this, R.style.CustomDialogTheme)
-                            .setTitle("Cancel pick up")
-                            .setMessage("Are you sure you want to cancel this pick up?")
-                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    current.ownerCancelPickup(bookID);
-                                }
-                            })
-                            .setNeutralButton("Back", null)
-                            .show();
-                }
-                else {
-                    new AlertDialog.Builder(PostScanActivity.this, R.style.CustomDialogTheme)
-                            .setTitle("Cancel pick up")
-                            .setMessage("Are you sure you want to cancel this pick up?")
-                            .setPositiveButton("Confirm", new DialogInterface.OnClickListener() {
-                                @Override
-                                public void onClick(DialogInterface dialog, int which) {
-                                    current.borrowerCancelPickup(bookID);
-                                }
-                            })
-                            .setNeutralButton("Back", null)
-                            .show();
-
-                }
-                break;
-
-
-            case CustomBottomSheetDialog.EDIT_BUTTON:
-                Intent intent = new Intent(getApplicationContext(), AddBookActivity.class);
-                intent.putExtra("bookID", bookID);
-                intent.putExtra("type", AddBookActivity.EDIT_BOOK);
-                startActivityForResult(intent, 5);
-                break;
-
-            case CustomBottomSheetDialog.DELETE_BUTTON:
-                String alertMessage = "";
-                switch (status) {
-                    case Book.STATUS_AVAILABLE:
-                        alertMessage = "Are you sure you want to delete this book?";
-                        break;
-
-                    case Book.STATUS_REQUESTED:
-                        alertMessage = "Deleting this book will decline all requests.\n" +
-                                "Are you sure you want to delete this book?";
-                        break;
-
-                    case Book.STATUS_ACCEPTED:
-                        alertMessage = "Deleting this book will cancel the pick up.\n" +
-                                "Are you sure you want to delete this book?";
-                        break;
-                    case Book.STATUS_BORROWED:
-                        alertMessage = "This book is currently being borrowed.\n" +
-                                "Are you sure you want to delete this book?";
-                        break;
-                }
-                new AlertDialog.Builder(PostScanActivity.this, R.style.CustomDialogTheme)
-                        .setTitle("Delete book")
-                        .setMessage(alertMessage)
-                        .setPositiveButton("Delete", new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                                current.ownerDeleteBook(bookID);
-                            }
-                        })
-                        .setNeutralButton("Cancel", null)
-                        .show();
-                break;
-            default:
-                Log.e(TAG, "onButtonClick: Invalid button ID");*/
-
     }
 }

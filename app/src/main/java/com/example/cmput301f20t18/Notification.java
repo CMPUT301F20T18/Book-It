@@ -133,7 +133,7 @@ public class Notification {
                     RTDB.getReference().child("Notifications").child(ID.replace('.', ':')).setValue(notification);
 
 
-                    userNotification notif = new userNotification(ID.replace('.', ':'), message);
+                    UserNotification notif = new UserNotification(ID.replace('.', ':'), message);
 
                     // write our notification to RTDB
                     userRef.document(target.getDbID()).collection("notifications").document(ID.replace('.', ':')).set(notif);

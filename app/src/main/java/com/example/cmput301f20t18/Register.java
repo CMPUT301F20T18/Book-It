@@ -219,7 +219,6 @@ public class Register extends AppCompatActivity {
     }
 
     // set the users pickup location to be the location they choose
-    //TODO: Add UserLocation as address for user!
     @Override
     protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
