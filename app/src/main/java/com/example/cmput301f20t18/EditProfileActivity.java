@@ -1,9 +1,5 @@
 package com.example.cmput301f20t18;
 
-import androidx.annotation.Nullable;
-import androidx.annotation.RequiresApi;
-import androidx.appcompat.app.AppCompatActivity;
-
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
@@ -22,6 +18,10 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+
+import androidx.annotation.Nullable;
+import androidx.annotation.RequiresApi;
+import androidx.appcompat.app.AppCompatActivity;
 
 /**
  * This is a class used to edit a user's profile information.
@@ -263,6 +263,7 @@ public class EditProfileActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
             Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            intent.putExtra("CENTER_ADDRESS", true);
             startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
         }
     }
