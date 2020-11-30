@@ -436,110 +436,12 @@ public class User {
      * @param coverPhoto The new coverPhoto for the user
      * @param phone The new phone number for the user
      */
+
     public void ownerEditProfile(String username, String coverPhoto, String phone) {
-
-
-
         userRef.document(auth.getUid()).update("profile_picture", coverPhoto);
-
-
 
         if (!phone.equals("")) {
             userRef.document(auth.getUid()).update("phone", phone);
-        }
-
-        if (!username.equals("")) {
-            // check if the username is already taken
-            FirebaseDatabase RTDB = FirebaseDatabase.getInstance();
-            RTDB.getReference("username_list").child(username).addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(@NonNull DataSnapshot snapshot) {
-                    if (snapshot.exists()) {
-                        // username exists, cannot get that username
-                        Log.d(TAG, "ownerChangeUsername - Username already taken");
-                    }
-                    else {
-                        userRef.document(auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<DocumentSnapshot>() {
-                            @Override
-                            public void onComplete(@NonNull Task<DocumentSnapshot> task) {
-                                if (task.isSuccessful()) {
-                                    User current = task.getResult().toObject(User.class);
-
-                                    // update the transactions with the new user
-                                    WriteBatch batch = DB.batch();
-                                    transRef.whereEqualTo("borrower_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                        @Override
-                                        public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                             if (task.isSuccessful()) {
-                                                 List<Transaction> list = task.getResult().toObjects(Transaction.class);
-                                                 for (int i = 0 ; i < list.size() ; i++) {
-                                                     batch.update(transRef.document(Integer.toString(list.get(i).getID())), "borrower_username", username);
-                                                     batch.update(bookRef.document(Integer.toString(list.get(i).getBookID())), "borrower_username", username);
-                                                 }
-
-                                                 transRef.whereEqualTo("owner_dbID", auth.getUid()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                     @Override
-                                                     public void onComplete(@NonNull Task<QuerySnapshot> task1) {
-                                                         if (task1.isSuccessful()) {
-                                                             List<Transaction> list = task1.getResult().toObjects(Transaction.class);
-                                                             for (int i = 0; i < list.size(); i++) {
-                                                                 batch.update(transRef.document(Integer.toString(list.get(i).getID())), "owner_username", username);
-                                                                 batch.update(bookRef.document(Integer.toString(list.get(i).getBookID())), "owner_username", username);
-                                                                 String string = list.get(i).getBorrower_dbID();
-                                                                 batch.update(userRef.document(string).collection("requested_books").document(Integer.toString(list.get(i).getBookID())), "owner_username", username);
-                                                             }
-
-                                                             bookRef.whereEqualTo("borrower_username", current.getUsername()).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
-                                                                 @Override
-                                                                 public void onComplete(@NonNull Task<QuerySnapshot> task) {
-                                                                    List<Book> books = task.getResult().toObjects(Book.class);
-                                                                    for (int i = 0 ; i < books.size() ; i++) {
-                                                                        batch.update(bookRef.document(Integer.toString(books.get(i).getId())), "borrower_username", username);
-                                                                    }
-                                                                 }
-                                                             });
-
-
-
-                                                             batch.commit();
-
-                                                             // delete old username from list and add the new one
-                                                             RTDB.getReference().child("username_list").child(current.username).removeValue();
-                                                             RTDB.getReference().child("username_list").child(username).setValue(username);
-
-
-                                                             // update username in firestore
-                                                             userRef.document(auth.getUid()).update("username", username);
-
-
-
-                                                         } else {
-                                                             Log.d(TAG, "EditProfile 2 Error");
-                                                         }
-                                                     }
-
-                                                 });
-                                             }
-                                             else {
-                                                 Log.d(TAG, "EditProfile 1 Error");
-                                             }
-                                        }
-                                    });
-                                }
-                                else {
-                                    Log.d(TAG, "ownerEditProfile - Error finding current user");
-                                }
-                            }
-                        });
-                    }
-                }
-
-
-                @Override
-                public void onCancelled(@NonNull DatabaseError error) {
-
-                }
-            });
         }
     }
 
