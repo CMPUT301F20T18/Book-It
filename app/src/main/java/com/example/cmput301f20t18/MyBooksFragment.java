@@ -92,7 +92,11 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
             return;
         }
         String isbn_string = data.getStringExtra("ISBN");
-        Long isbn = Long.parseLong(isbn_string);
+        Long isbn = 0L;
+        if (!isbn_string.equals("")) {
+            isbn = Long.parseLong(isbn_string);
+        }
+
         int bookID = data.getIntExtra("bookID", 0);
         Long expected_isbn = data.getLongExtra("eISBN", 0);
 

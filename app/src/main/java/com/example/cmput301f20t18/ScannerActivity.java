@@ -56,7 +56,7 @@ import java.util.concurrent.Executors;
  */
 public class ScannerActivity extends AppCompatActivity {
 
-    public static final boolean CHECK_ISBN = true;      // Set to false to not check ISBN when
+    public static final boolean CHECK_ISBN = false;      // Set to false to not check ISBN when
                                                         // scanning for confirm pick up/return.
     private static final boolean ENABLE_MANUAL = true;  // Set to false to disable the manual ISBN
                                                         // button.
