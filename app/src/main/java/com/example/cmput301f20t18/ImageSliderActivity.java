@@ -19,6 +19,11 @@ import java.util.ArrayList;
 
 public class ImageSliderActivity extends AppCompatActivity {
 
+    /**
+     * This is the main activity for the ImageSlider in which we will enlarge the photos
+     * from a particular book so the user can go through them
+     * @see Book
+     * */
 
     ViewPager mPager;
     ImagePageAdapter imageAdapter;
@@ -37,6 +42,7 @@ public class ImageSliderActivity extends AppCompatActivity {
         mPager = findViewById(R.id.slider_viewer);
         int bookID = (int) getIntent().getExtras().get("ID");
         DB = FirebaseFirestore.getInstance();
+        //This finds the particular book wanting to view the pictures of
         DB.collection("books").document(Integer.toString(bookID)).get().addOnCompleteListener(task -> {
             if (task.isSuccessful()) {
                 Book book = task.getResult().toObject(Book.class);
