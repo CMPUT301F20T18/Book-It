@@ -38,7 +38,7 @@ public class Notification {
     static final String TAG = "NOTIF_DEBUG";
 
     private final String sourceUsername;
-    private final String targetUsername;
+    private final String target_dbID;
     private final String bookTitle;
     private final int type;
     private String message;
@@ -54,13 +54,13 @@ public class Notification {
     /**
      * Contructor for a notification
      * @param sourceUsername The user whose action sends a notification
-     * @param targetUsername The user who the notification is being sent to
+     * @param target_dbID The user who the notification is being sent to
      * @param bookTitle The title of the book used within the notification
      * @param type The type of notification being sent
      */
-    public Notification(String sourceUsername, String targetUsername, String bookTitle, int type) {
+    public Notification(String sourceUsername, String target_dbID, String bookTitle, int type) {
         this.sourceUsername = sourceUsername;
-        this.targetUsername = targetUsername;
+        this.target_dbID = target_dbID;
         this.bookTitle = bookTitle;
         this.type = type;
         this.message = "";
@@ -108,16 +108,18 @@ public class Notification {
     public void sendNotification() {
 
         // find the instance token of the targeted user
-        userRef.whereEqualTo("username", targetUsername).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+        userRef.whereEqualTo("dbID", target_dbID).get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
             @RequiresApi(api = Build.VERSION_CODES.O)
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
                     User target = task.getResult().toObjects(User.class).get(0); // username is unique and non null
 
+
                     // find the current date
                     DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
                     LocalDateTime now = LocalDateTime.now();
+
 
                     // create the ID for the notification
                     String ID = target.getUsername() + "-" + now.toString();
