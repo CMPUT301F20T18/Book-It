@@ -1,74 +1,63 @@
 package com.example.cmput301f20t18;
 
 import android.os.Bundle;
+import android.view.LayoutInflater;
+import android.view.View;
+import android.view.ViewGroup;
+import android.widget.TextView;
 
-import androidx.annotation.NonNull;
-import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
-import android.util.Log;
-import android.view.ContextMenu;
-import android.view.LayoutInflater;
-import android.view.MenuItem;
-import android.view.View;
-import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.Toast;
-
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
+import com.firebase.ui.firestore.FirestoreRecyclerOptions;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.firestore.CollectionReference;
+import com.google.firebase.firestore.FirebaseFirestore;
+import com.google.firebase.firestore.Query;
 
 /**
- * A {@link Fragment} subclass that is responsible for creating the list of books to be displayed
- * in My Books>Available.
+ * A {@link Fragment} subclass that is responsible for displaying books a user owns
+ * Firebase manages this adapter and will update in real time based on writes to firestore.
+ * @see MyBooksLendingFragment
+ * @see MyBooksPendingFragment
+ * @see FirestoreMyBooksAdapter
+ * @author deinum
+ * @author shuval
  */
 public class MyBooksAvailableFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    List<Book> bookList;
+    RecyclerView recyclerView;  // displays list of books
+    TextView noResultsTextView; // is displayed when there are no books
+    Query query;
+    FirestoreMyBooksAdapter adapter;
 
-    /* Everything below here and above onCreateView() is auto-inserted boilerplate */
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    FirebaseFirestore DB = FirebaseFirestore.getInstance();
+    FirebaseAuth auth = FirebaseAuth.getInstance();
+    CollectionReference bookRef = DB.collection("books");
 
     public MyBooksAvailableFragment() {
         // Required empty public constructor
     }
 
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyBooksAvailableFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyBooksAvailableFragment newInstance(String param1, String param2) {
-        MyBooksAvailableFragment fragment = new MyBooksAvailableFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (adapter != null) {
+            adapter.startListening();
+        }
+    }
+
+    @Override
+    public void onStop() {
+        super.onStop();
+        if (adapter != null) {
+            adapter.stopListening();
         }
     }
 
@@ -85,41 +74,44 @@ public class MyBooksAvailableFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        return inflater.inflate(R.layout.fragment_my_books_available, container, false);
+
+        View view = inflater.inflate(R.layout.fragment_my_books_available, container, false);
+        recyclerView = view.findViewById(R.id.recyclerView);
+        setUp();
+
+        noResultsTextView = view.findViewById(R.id.no_results);
+        noResultsTextView.setText(R.string.mybooks_available_empty);
+
+        // display message if list of books is empty
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                noResultsTextView.setText("");
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    noResultsTextView.setText(R.string.mybooks_available_empty);
+                }
+            }
+        });
+
+        return view;
     }
 
-    /**
-     * Populates bookList and sets up adapter to display the list.
-     * Called immediately after {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)} has
-     * returned, but before any saved state has been restored in to the view.
-     *
-     * @param view The View returned by {@link #onCreateView(LayoutInflater, ViewGroup, Bundle)}.
-     * @param savedInstanceState If non-null, this fragment is being re-constructed
-     *                           from a previous saved state as given here.
-     */
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
-        super.onViewCreated(view, savedInstanceState);
 
-        recyclerView = view.findViewById(R.id.recyclerView);
-        recyclerView.setHasFixedSize(true);
-        recyclerView.setLayoutManager(new LinearLayoutManager(view.getContext()));
+    public void setUp() {
+        query = bookRef.whereEqualTo("owner_dbID", auth.getUid())
+                .whereGreaterThanOrEqualTo("status", Book.STATUS_AVAILABLE )
+                .whereLessThanOrEqualTo("status", Book.STATUS_REQUESTED)
+                .orderBy("status", Query.Direction.DESCENDING);
 
-        // hardcoded some books
-        bookList = new ArrayList<>();
-        bookList.add(new Book("The Great Gatsby", 9780684801520L, "F. Scott Fitzgerald",
-                420, Book.STATUS_REQUESTED, null, 1995));
-        bookList.add(new Book("To Kill a Mockingbird", 9781973907985L, "Harper Lee",
-                421, Book.STATUS_AVAILABLE, null, 1960));
-        bookList.add(new Book("Jane Eyre", 9780194241762L, "Charlotte Bronte",
-                422, Book.STATUS_REQUESTED, null, 1979));
-        bookList.add(new Book("A Passage to India", 9780140180763L, "E. M. Forster",
-                423, Book.STATUS_AVAILABLE, null, 1989));
+        FirestoreRecyclerOptions<Book> options = new FirestoreRecyclerOptions.Builder<Book>()
+                .setQuery(query, Book.class)
+                .build();
 
-        Collections.sort(bookList);
-
-        MyBooksRecyclerViewAdapter myBooksRecyclerViewAdapter = new MyBooksRecyclerViewAdapter(view.getContext(), bookList, this);
-        recyclerView.setAdapter(myBooksRecyclerViewAdapter);
-
+        adapter = new FirestoreMyBooksAdapter(options, getContext());
+        recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
+        recyclerView.setAdapter(adapter);
     }
 }

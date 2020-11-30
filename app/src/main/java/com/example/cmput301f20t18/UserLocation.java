@@ -1,45 +1,87 @@
 package com.example.cmput301f20t18;
 
-import android.location.Address;
-
-import com.google.android.gms.maps.model.LatLng;
-
+/**
+ * Represents a location within our system
+ * @author Chase Warwick
+ * @author deinum
+ */
 public class UserLocation {
     private String title;
-    private Address address;
-    private LatLng latlng;
+    private Double latitude;
+    private Double longitude;
 
-    public UserLocation(String title, Address address, LatLng latlng){
+    /**
+     * Default constructor for UserLocation
+     * @param title The title for the location
+     * @param latitude The latitude of the location
+     * @param longitude The longitude of the location
+     */
+    public UserLocation(String title, Double latitude, Double longitude){
         this.title = title;
-        this.address = address;
-        this.latlng = latlng;
-    }
-    public UserLocation(Address address, LatLng latlng){
-        this.address = address;
-        this.latlng = latlng;
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
+    /**
+     * Empty constructor for firestore
+     */
+    public UserLocation(){
+
+    }
+
+    public UserLocation(String title) {
+        this.title = title;
+        this.latitude = 0.0;
+        this.longitude = 0.0;
+    }
+
+    /**
+     * Get the title of a location
+     * @return String representation of the title
+     */
     public String getTitle() {
         return title;
     }
 
+    /**
+     * Set the title for a location
+     * @param title The new title for the location
+     */
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public Address getAddress() {
-        return address;
+
+    /**
+     * Get the locations latitude
+     * @return Double representing the locations latitude
+     */
+    public Double getLatitude() {
+        return latitude;
     }
 
-    public void setAddress(Address address) {
-        this.address = address;
+    /**
+     * Set the locations latitude
+     * @param latitude The new latitude for the location
+     */
+    public void setLatitude(Double latitude) {
+        this.latitude = latitude;
     }
 
-    public LatLng getLatlng() {
-        return latlng;
+    /**
+     * Get the locations longitude
+     * @return Double representation of the longituide for the location
+     */
+    public Double getLongitude() {
+        return longitude;
     }
 
-    public void setLatlng(LatLng latlng) {
-        this.latlng = latlng;
+
+    /**
+     * Set the longitude for the location
+     * @param longitude The new longitude for the location
+     */
+    public void setLongitude(Double longitude) {
+        this.longitude = longitude;
     }
 }

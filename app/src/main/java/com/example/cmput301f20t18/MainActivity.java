@@ -1,17 +1,14 @@
 package com.example.cmput301f20t18;
 
-import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.view.View;
-import android.widget.Button;
-import android.widget.Toast;
 
-import com.google.firebase.database.DatabaseReference;
-import com.google.firebase.database.FirebaseDatabase;
-import com.google.firebase.firestore.FirebaseFirestore;
+
+/**
+ * The solve purpose of this activity is to initialize the login screen
+ */
 
 public class MainActivity extends AppCompatActivity {
 
@@ -20,15 +17,15 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        //Intent loginIntent = new Intent(MainActivity.this, Login.class);
-        //startActivity(loginIntent);
+        // start the main Activity
+        Intent loginIntent = new Intent(MainActivity.this, Login.class);
+        startActivity(loginIntent);
+    }
 
-        /* Testing bottom navigation menu */
-
-        Intent homeScreenIntent = new Intent(MainActivity.this, HomeScreen.class);
-        startActivity(homeScreenIntent);
-
-        //Intent intent = new Intent(MainActivity.this, SelectLocationActivity.class);
-        //startActivity(intent);
+    @Override
+    public void onBackPressed() {
+        // this prevents user from going back
     }
 }
+
+

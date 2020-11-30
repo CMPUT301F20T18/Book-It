@@ -36,7 +36,7 @@
         android:layout_marginEnd="8dp"
         android:layout_marginBottom="8dp"
         android:gravity="center_horizontal"
-        android:orientation="horizontal"
+        android:orientation="vertical"
         android:weightSum="3"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
@@ -48,9 +48,22 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="Scan"
+            android:text="@string/scan_button"
+            android:textSize="20dp"
+            android:paddingHorizontal="40dp"
             android:background="@drawable/good_button_background"
-            android:textColor="@color/karryText"/>
+            android:textColor="@color/colorAccent"/>
+
+        <Button
+            android:id="@+id/button_manual"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_weight="1"
+            android:layout_marginVertical="10dp"
+            android:visibility="gone"
+            android:background="@drawable/gray_button_background"
+            android:text="Manual"
+            android:textSize="14dp"/>
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

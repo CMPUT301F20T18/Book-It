@@ -3,27 +3,33 @@ package com.example.cmput301f20t18;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
-import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseAuthException;
-import com.google.firebase.auth.FirebaseUser;
 
 /**
- * Allows the users to sign in / register for the application
+ * Allows the users to sign in / opt to register for the application
  * @author Jacob Deinum
  * UI contributions
+ *
+ * The image used on this page is from Undraw.co
+ * License: Copyright 2020 Katerina Limpitsouni (https://undraw.co/license)
+ *
  * @author Johnathon Gil
  * @see Register
  * @see User
@@ -33,7 +39,7 @@ public class Login extends AppCompatActivity {
 
     private FirebaseAuth mAuth;
     Button login;
-    Button register;
+    TextView register;
     EditText login_user;
     EditText login_password;
     TextView usernameT;
@@ -50,14 +56,9 @@ public class Login extends AppCompatActivity {
         // register parameters
         mAuth = FirebaseAuth.getInstance();
         login = (Button) findViewById(R.id.login);
-        register = (Button) findViewById(R.id.Register);
+        register = (TextView) findViewById(R.id.sign_up);
         login_user = (EditText) findViewById(R.id.username);
         login_password = (EditText) findViewById(R.id.password);
-        usernameT = (TextView) findViewById(R.id.textView_username);
-        passwordT = (TextView) findViewById(R.id.textView_password);
-        loginArt = (ImageView) findViewById(R.id.login_image);
-        signIn = (TextView) findViewById(R.id.sign_in);
-        projectLogo = (ImageView) findViewById(R.id.login_image);
 
         // user clicks on login button
         login.setOnClickListener(new View.OnClickListener() {
@@ -70,7 +71,11 @@ public class Login extends AppCompatActivity {
 
                 // ensure input not empty
                 if (username.matches("") || password.matches("")) {
-                    Toast.makeText(Login.this, "Please fill all fields", Toast.LENGTH_LONG).show();
+                    new AlertDialog.Builder(Login.this, R.style.CustomDialogTheme)
+                            .setTitle("Please fill out both fields")
+                            .setMessage("")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
 
@@ -84,13 +89,17 @@ public class Login extends AppCompatActivity {
 
                                     // start new activity with current user
                                     Intent intent = new Intent(getBaseContext(), HomeScreen.class);
+                                    finish();
                                     startActivityForResult(intent, 0);
                                 }
                                 else {
                                     // If sign in fails, display a message to the user.
-                                    FirebaseAuthException e = (FirebaseAuthException)task.getException();
-                                    Toast.makeText(Login.this, "Wrong username or password!" , Toast.LENGTH_SHORT).show();
-
+                                    FirebaseAuthException e = (FirebaseAuthException) task.getException();
+                                    new AlertDialog.Builder(Login.this, R.style.CustomDialogTheme)
+                                            .setTitle("Sign in failed")
+                                            .setMessage("Incorrect email or password!")
+                                            .setPositiveButton("OK", null)
+                                            .show();
                                 }
                             }
                         });
@@ -106,20 +115,29 @@ public class Login extends AppCompatActivity {
                 startActivityForResult(intent, RESULT_OK);
             }
         });
-
+        register.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                register.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                return false;
+            }
+        });
 
 
     }
 
-// TODO: IMPLEMENT ONSTART
+    @Override
+    protected void onStart() {
+        super.onStart();
+        register.setBackgroundColor(getResources().getColor(R.color.colorGray2));
+    }
 
-//    @Override
-//    protected void onStart() {
-//        super.onStart();
-//        FirebaseUser current_user = mAuth.getCurrentUser();
-//
-//        // start the Homescreen, get all the users books later
-//        Intent intent = new Intent(getBaseContext(), HomeScreen.class);
-//        startActivityForResult(intent, 0);
-//    }
+    @Override
+    public void onBackPressed()
+    {
+
+    }
+
 }
+
+

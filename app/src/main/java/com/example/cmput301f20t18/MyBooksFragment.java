@@ -1,7 +1,10 @@
 package com.example.cmput301f20t18;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,19 +12,24 @@ import android.widget.Button;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
-import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import androidx.viewpager.widget.ViewPager;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-import com.google.android.material.tabs.TabItem;
 import com.google.android.material.tabs.TabLayout;
 
 /**
  * A {@link Fragment} subclass that is responsible for the page the user sees when in the
  * "My Books" section.
+ * @see MyBooksLendingFragment
+ * @see MyBooksAvailableFragment
+ * @see MyBooksPendingFragment
+ * @author shuval
+ * @author deinum
  */
-public class MyBooksFragment extends Fragment {
+public class MyBooksFragment extends Fragment implements fragmentListener {
+    final static String TAG = "MBF";
+    private Context mContext;
+
 
     /**
      * Instantiates view. The documentation recommends only inflating the layout here and doing
@@ -53,15 +61,6 @@ public class MyBooksFragment extends Fragment {
     public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
 
-        // Setting the header title. This may be done in XML instead
-        Toolbar toolbar = view.findViewById(R.id.mybooks_toolbar);
-        toolbar.setTitle(getResources().getText(R.string.mybooks_header));
-
-        /* This is not being used right now but could be later */
-        //TabItem tabAvailable = view.findViewById(R.id.tab_mybooks_available);
-        //TabItem tabPending = view.findViewById(R.id.tab_mybooks_pending);
-        //TabItem tabLending = view.findViewById(R.id.tab_mybooks_lending);
-
         TabLayout tabLayout = view.findViewById(R.id.mybooks_tab_layout);
         ViewPager viewPager = view.findViewById(R.id.mybooks_viewPager);
 
@@ -74,9 +73,61 @@ public class MyBooksFragment extends Fragment {
         addBooks.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent addIntent = new Intent(getContext(),MyBooksAddBook.class);
-                startActivityForResult(addIntent,1);
+                Intent addIntent = new Intent(getContext(), AddBookActivity.class);
+                addIntent.putExtra("type", AddBookActivity.ADD_BOOK);
+                startActivityForResult(addIntent,0);
             }
         });
     }
+
+    @Override
+    public void onAttach(@NonNull Context context) {
+        super.onAttach(context);
+        mContext = context;
+    }
+
+    // handle results from link fragments
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == 0) {
+            return;
+        }
+        String isbn_string = data.getStringExtra("ISBN");
+        Long isbn = 0L;
+        if (!isbn_string.equals("")) {
+            isbn = Long.parseLong(isbn_string);
+        }
+
+        int bookID = data.getIntExtra("bookID", 0);
+        Long expected_isbn = data.getLongExtra("eISBN", 0);
+
+        Log.d(TAG, "bookID: " + Integer.toString(bookID));
+        Log.d(TAG, "ISBN: " + isbn);
+        Log.d(TAG, "Expected ISBN: " + expected_isbn);
+
+        if (!ScannerActivity.CHECK_ISBN || expected_isbn.equals(isbn)) {
+            User current = new User();
+
+            switch (requestCode) {
+
+                case 1:
+                    current.ownerSignOff(bookID);
+                    break;
+
+                case 2:
+                    current.ownerConfirmPickup(bookID);
+                    break;
+            }
+        }
+        else {
+            // using getContext() here instead of mContext will sometimes cause a crash since this
+            // fragment may not have been attached to HomeScreen yet
+            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
+            new AlertDialog.Builder(mContext, R.style.CustomDialogTheme)
+                    .setTitle("Error!")
+                    .setMessage("Scanned ISBN does not match book's ISBN")
+                    .setPositiveButton("OK", null)
+                    .show();
+        }
+    }
+
 }

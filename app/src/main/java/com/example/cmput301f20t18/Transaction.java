@@ -1,166 +1,238 @@
 package com.example.cmput301f20t18;
 
-import androidx.annotation.NonNull;
-
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
-import com.google.firebase.firestore.CollectionReference;
-import com.google.firebase.firestore.DocumentReference;
-import com.google.firebase.firestore.DocumentSnapshot;
-import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.QuerySnapshot;
-
-import java.util.Map;
-
 /**
  * A Transaction object represents various
  * interactions that two people can have within the app
  * requesting books, declining requests, transferring of books
  * between users and returning the book to it's original owner
+ * @author Chase Warwick
+ * @author deinum
  */
-public abstract class Transaction {
-    private String bookOwner;
-    private String bookBorrower;
+public class Transaction {
+    public static final int NO_SCAN = 0;
+    public static final int FIRST_SCAN = 1;
+    public static final int SECOND_SCAN = 2;
+
+    public static final int STATUS_AVAILABLE = 0;
+    public static final int STATUS_REQUESTED = 1;
+    public static final int STATUS_ACCEPTED = 2;
+    public static final int STATUS_BORROWED = 3;
+    public static final int CONFIRMED_LOCATION = 4;
+
+    public static final String TAG = "TRANS_DEBUG";
+
+
+    // Transaction information
     private Integer ID;
+    private int ownerFlag;
+    private int borrowerFlag;
+    private int status;
+
+
+    // book info
     private Integer bookID;
-    private String status;
 
-    //private static TransactionLibrary transactionLib = new TransactionLibrary();
 
-    /**
-     * This is used to create a new object of type transaction
-     *
-     * @param bookOwner    The user who owns the book
-     * @param bookBorrower The user who is borrowing the book
-     * @param bookID       The id of the book which is being borrowed
-     */
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID) {
-        FirebaseFirestore db = FirebaseFirestore.getInstance();
-        TransactionOnCompleteListener listener = new TransactionOnCompleteListener();
+    // users info
+    private String borrower_username;
+    private String owner_username;
+    private String borrower_dbID;
+    private String owner_dbID;
 
-        Task transactionMax = db.collection("MAX")
-                .document("transaction")
-                .get()
-                .addOnCompleteListener(listener);
-        this.bookOwner = bookOwner;
-        this.bookBorrower = bookBorrower;
-        this.bookID = bookID;
-        this.status = "request";
-        this.ID = listener.returnData();
+    // location info
+    private UserLocation location;
 
-        //this.transactionLib.addTransaction(this);
-    }
 
     /**
-     * This is the constructor used to change the status of
-     * a transaction
-     *
-     * @param bookOwner    The user who owns the book
-     * @param bookBorrower The user who is borrowing the book
-     * @param bookID       The id of the book being borrowed
-     * @param ID           The id of the transaction
-     *                     (assigned on creation)
-     * @param status       The current state of the book
-     *                     (request, exchange, borrow, declined)
+     * Constructor for creating a transaction object
+     * @param ID The ID # of a transaction
+     * @param bookID The book ID of the book the transaction deals with
+     * @param borrower_username The borrowers username
+     * @param owner_username The book owners username
+     * @param borrower_dbID The borrowers database ID
+     * @param owner_dbID The book owners database ID
      */
-    //For use in changing the status of a transaction
-    public Transaction(String bookOwner, String bookBorrower, Integer bookID, Integer ID, String status) {
-        this.bookOwner = bookOwner;
-        this.bookBorrower = bookBorrower;
-        this.bookID = bookID;
+    public Transaction(Integer ID, Integer bookID, String borrower_username, String owner_username, String borrower_dbID, String owner_dbID) {
         this.ID = ID;
-        this.status = status;
+        this.bookID = bookID;
+        this.borrower_username = borrower_username;
+        this.owner_username = owner_username;
+        this.borrower_dbID = borrower_dbID;
+        this.owner_dbID = owner_dbID;
+        this.borrowerFlag = 0;
+        this.ownerFlag = 0;
+        this.status = Transaction.STATUS_REQUESTED;
+        this.location = null;
     }
 
     /**
-     * This is used to change the status of a transaction
-     *
-     * @param status The status that transaction should become
-     * @return the type of transaction specified by status
+     * Empty constructor used for serialization within firestore
      */
-    public Transaction changeStatus(String status) {
-        if (status.equals("exchange")) {
-            return new ExchangeTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("borrow")) {
-            return new BorrowTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        } else if (status.equals("declined")) {
-            return new DeclinedTransaction(this.bookOwner, this.bookBorrower, this.bookID, this.ID, status);
-        }
-        return this;
+    public Transaction() {
+
     }
 
-    /**
-     * Used to get the status of a transaction
-     *
-     * @return status of transaction
-     */
-    public String getStatus() {
-        return status;
-    }
 
     /**
-     * Used to get the ID of a transaction
-     *
-     * @return ID of transaction
+     * get the ID number of the transaction
+     * @return Integer representing the ID number of the transaction
      */
     public Integer getID() {
         return ID;
     }
 
     /**
-     * Used to get the ID of the
-     * book being borrowed
-     *
-     * @return ID of Book
+     * set the transaction ID number
+     * used by firestore during serialization
+     * DO NOT USE THIS
+     * @param ID The new ID of the transaction
+     */
+    public void setID(Integer ID) {
+        this.ID = ID;
+    }
+
+
+    /**
+     * Returns the value of the owner flag for the transaction
+     * @return Integer value of the owners flag
+     */
+    public int getOwnerFlag() {
+        return ownerFlag;
+    }
+
+    /**
+     * Set the owner flag for a transaction
+     * @param ownerFlag The value of the owner flag
+     */
+    public void setOwnerFlag(int ownerFlag) {
+        this.ownerFlag = ownerFlag;
+    }
+
+    /**
+     * Get the value of the borrower flag for the transaction
+     * @return Integer value of the borrower flag
+     */
+    public int getBorrowerFlag() {
+        return borrowerFlag;
+    }
+
+    /**
+     * Set the borrower flag for the transaction
+     * @param borrowerFlag The new value for the borrower flag
+     */
+    public void setBorrowerFlag(int borrowerFlag) {
+        this.borrowerFlag = borrowerFlag;
+    }
+
+    /**
+     * Get the current status of the transaction
+     * @return Integer value of the current status
+     */
+    public int getStatus() {
+        return status;
+    }
+
+    /**
+     * Set the status for a transaction
+     * @param status The new status for the transaction
+     */
+    public void setStatus(int status) {
+        this.status = status;
+    }
+
+    /**
+     * Get the book ID for a transaction
+     * @return Integer representing the book ID of the transaction
      */
     public Integer getBookID() {
         return bookID;
     }
 
     /**
-     * Used to get the User who owns the book
-     *
-     * @return User who owns the book
+     * Set the bookID for a transaction
+     * @param bookID The new bookID
      */
-    public String getBookOwner() {
-        return bookOwner;
+    public void setBookID(Integer bookID) {
+        this.bookID = bookID;
     }
 
     /**
-     * Used to get the User who is borrowing
-     * or would like to borrow the book
-     *
-     * @return User who is borrowing the book
+     * Get the borrowers username
+     * @return String representing the borrowers username for a transaction
      */
-    public String getBookBorrower() {
-        return bookBorrower;
+    public String getBorrower_username() {
+        return borrower_username;
     }
 
-    private class TransactionOnCompleteListener implements OnCompleteListener {
-        Integer ID;
+    /**
+     * Set the borrowers username
+     * used by firestore to serialize objects
+     * DO NOT USE
+     * @param borrower_username The new borrower username
+     */
+    public void setBorrower_username(String borrower_username) {
+        this.borrower_username = borrower_username;
+    }
 
+    /**
+     * Get the book owners username
+     * @return String representing the book owners username
+     */
+    public String getOwner_username() {
+        return owner_username;
+    }
 
-        @Override
-        public void onComplete(@NonNull Task task) {
-            if (task.isSuccessful()) {
-                DocumentSnapshot queryResult = (DocumentSnapshot) task.getResult();
-                Map<String, Object> data = queryResult.getData();
-                this.ID = (Integer) data.get("transaction");
-                this.updateDB();
-            } else {
-                throw new RuntimeException("Database query failed");
-            }
-        }
+    /**
+     * Set the owners username for a transaction
+     * used by firstore during serialization
+     * DO NOT USE
+     * @param owner_username New username for the owner
+     */
+    public void setOwner_username(String owner_username) {
+        this.owner_username = owner_username;
+    }
 
-        public void updateDB(){
-            FirebaseFirestore.getInstance()
-                    .collection("MAX")
-                    .document("transaction")
-                    .set(this.ID+1);
-        }
+    /**
+     * Get the borrower database ID
+     * @return String representing the database ID for the borrower
+     */
+    public String getBorrower_dbID() {
+        return borrower_dbID;
+    }
 
-        public Integer returnData() {
-            return this.ID;
-        }
+    /**
+     * Set the borrower database ID for a transaction
+     * used by firestore during serialization
+     * DO NOT USE
+     * @param borrower_dbID New database ID for the borrower
+     */
+    public void setBorrower_dbID(String borrower_dbID) {
+        this.borrower_dbID = borrower_dbID;
+    }
+
+    /**
+     * Get the owner database ID
+     * @return String representing the owners database ID
+     */
+    public String getOwner_dbID() {
+        return owner_dbID;
+    }
+
+    /**
+     * Set the owners database ID for a transaction
+     * required by firestore during object serialization
+     * DO NOT USE
+     * @param owner_dbID The new owner database ID for the transaction
+     */
+    public void setOwner_dbID(String owner_dbID) {
+        this.owner_dbID = owner_dbID;
+    }
+
+    public UserLocation getLocation() {
+        return location;
+    }
+
+    public void setLocation(UserLocation location) {
+        this.location = location;
     }
 }

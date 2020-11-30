@@ -6,10 +6,13 @@
     <color name="colorWhite">#FFFFFF</color>
     <color name="colorLightGray">#DDDDDD</color>
     <color name="colorOrange">#FC6E20</color>
-    <color name="karryText">#FFE7D0</color>
     <color name="colorBlue">#2D9CDB</color>
+    <color name="colorFab">#BB2B2B2B</color>
     <color name="colorGray1">#2B2B2B</color>
     <color name="colorGray2">#1B1B1B</color>
+    <color name="colorGray3">#0F0F0F</color>
+    <color name="colorGray4">#40000000</color>
+    <color name="colorRed">#EB5757</color>
     <color name="colorText">#8D8176</color>
     <color name="doveGray">#707070</color>
     <color name="transparent">#00000000</color>

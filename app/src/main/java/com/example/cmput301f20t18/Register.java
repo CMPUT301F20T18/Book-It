@@ -1,16 +1,24 @@
 package com.example.cmput301f20t18;
 
 import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.appcompat.app.AppCompatActivity;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -25,19 +33,12 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.core.FirestoreClient;
-
-
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Objects;
 
 /**
  * Register allows a new user to create an account for our app
  * Register is launched through the log in activity
  * Each user must be registered with a minimum of a username, password, address, and email
- * @author Jacob Deinum
+ * @author deinum
  * UI contributions
  * @author Johnathon Gil
  * @see Login
@@ -45,12 +46,15 @@ import java.util.Objects;
  */
 
 public class Register extends AppCompatActivity {
+    private UserLocation new_address;
 
     EditText username;
     EditText password;
     EditText email;
-    EditText address;
-    private TextView accountCreate, usernameText, passwordText, emailText, addressText;
+    EditText phone;
+    Button address;
+
+    private TextView accountCreate, usernameText, passwordText, emailText, addressText, signInRedirect;
     Button register;
     FirebaseAuth mAuth;
     FirebaseFirestore DB;
@@ -66,21 +70,41 @@ public class Register extends AppCompatActivity {
         username = (EditText) findViewById(R.id.username);
         password = (EditText) findViewById(R.id.password);
         email = (EditText) findViewById(R.id.email);
-        address = (EditText) findViewById(R.id.address);
+        address = (Button) findViewById(R.id.address);
+        phone = (EditText) findViewById(R.id.phone);
         register = (Button) findViewById(R.id.registerButton);
         accountCreate = (TextView) findViewById(R.id.text_Create_Account);
         usernameText = (TextView) findViewById(R.id.text_username);
         passwordText = (TextView) findViewById(R.id.text_password);
         emailText = (TextView) findViewById(R.id.text_email);
         addressText = (TextView) findViewById(R.id.text_address);
+        signInRedirect = (TextView) findViewById(R.id.redirect_sign_in);
 
+        // Database info
         mAuth = FirebaseAuth.getInstance();
-
-
-
         DB = FirebaseFirestore.getInstance();
-        system = DB.collection("system");
+        system = DB.collection("users");
 
+        signInRedirect.setBackgroundColor(getResources().getColor(R.color.colorGray2));
+        signInRedirect.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent redirectIntent = new Intent(Register.this,Login.class);
+                startActivity(redirectIntent);
+                finish();
+            }
+        });
+        signInRedirect.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View v, MotionEvent event) {
+                signInRedirect.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                return false;
+            }
+        });
+
+
+        AddressOnClickListener listener = new AddressOnClickListener(this);
+        address.setOnClickListener(listener);
 
         register.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -91,10 +115,23 @@ public class Register extends AppCompatActivity {
                 String new_username = username.getText().toString();
                 String new_password = password.getText().toString();
                 String new_email= email.getText().toString();
-                String new_address = address.getText().toString();
+                String new_phone = phone.getText().toString();
 
-                if (new_username.matches("") || new_email.matches("") || new_password.matches("") || new_address.matches("")) {
-                    Toast.makeText(Register.this, "Please fill all fields", Toast.LENGTH_LONG).show();
+
+                if (new_username.matches("") || new_email.matches("") || new_password.matches("") || new_phone.matches("")) {
+                    new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                            .setTitle("Please fill all fields!")
+                            .setMessage("")
+                            .setPositiveButton("OK", null)
+                            .show();
+                    return;
+                }
+                if (new_address == null){
+                    new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                            .setTitle("Please select an address!")
+                            .setMessage("This address will not visible to other users")
+                            .setPositiveButton("OK", null)
+                            .show();
                     return;
                 }
 
@@ -110,7 +147,11 @@ public class Register extends AppCompatActivity {
                     @Override
                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                         if (snapshot.hasChild(new_username)) {
-                            Toast.makeText(Register.this, "Username has been taken, please enter a different username", Toast.LENGTH_LONG).show();
+                            new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                                    .setTitle("Username has been taken!")
+                                    .setMessage("Please enter a different username")
+                                    .setPositiveButton("OK", null)
+                                    .show();
                         }
 
                         else {
@@ -132,8 +173,8 @@ public class Register extends AppCompatActivity {
                                                     public void onDataChange(@NonNull DataSnapshot snapshot) {
                                                         Integer val = snapshot.getValue(Integer.class);
                                                         // add the user to the collection
-                                                        User person = new User(new_username, val, mAuth.getUid(), new_email, new_address);
-                                                        system.document("System").collection("users").document(user.getUid()).set(person);
+                                                        User person = new User(new_username, val, mAuth.getUid(), new_email, new_address, new_phone);
+                                                        system.document(user.getUid()).set(person);
 
 
 
@@ -147,17 +188,17 @@ public class Register extends AppCompatActivity {
                                                     }
                                                 });
 
-
-
-                                                // start new activity with current user
-                                                Intent intent = new Intent(getBaseContext(), HomeScreen.class);
-                                                startActivityForResult(intent, 0);
+                                                // sign current user in
+                                                mAuth.signInWithEmailAndPassword(new_email, new_password);
+                                                finish();
                                             }
                                             else {
                                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
-                                                Toast.makeText(Register.this, "Failed Registration: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                return;
-
+                                                new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                                                        .setTitle("Registration failed")
+                                                        .setMessage(e.getMessage())
+                                                        .setPositiveButton("OK", null)
+                                                        .show();
                                             }
 
                                         }
@@ -177,4 +218,32 @@ public class Register extends AppCompatActivity {
 
     }
 
+    // set the users pickup location to be the location they choose
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, @Nullable Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (resultCode == RESULT_OK) {
+
+            String title = data.getStringExtra("OUTPUT_TITLE");
+            double latitude = data.getDoubleExtra("OUTPUT_LATITUDE", 0);
+            double longitude = data.getDoubleExtra("OUTPUT_LONGITUDE", 0);
+
+            new_address = new UserLocation(title, latitude, longitude);
+        }
+    }
+
+    private class AddressOnClickListener implements View.OnClickListener{
+        private Context parentContext;
+        private final int SELECT_LOCATION_REQUEST_CODE = 0;
+
+        AddressOnClickListener(Context parentContext){
+            this.parentContext = parentContext;
+        }
+
+        @Override
+        public void onClick(View v) {
+            Intent intent = new Intent(parentContext, SelectLocationActivity.class);
+            startActivityForResult(intent, SELECT_LOCATION_REQUEST_CODE);
+        }
+    }
 }

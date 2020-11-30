@@ -1,0 +1,232 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".EditProfileActivity"
+    android:orientation="vertical">
+
+    <FrameLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <androidx.appcompat.widget.Toolbar
+            android:id="@+id/edit_profile_toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@drawable/ic_blank_header"
+            android:minHeight="?attr/actionBarSize"
+            android:theme="?attr/actionBarTheme"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+            app:theme="@style/ThemeOverlay.AppCompat.Dark"/>
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+            <Button
+                android:id="@+id/return_to_my_profile"
+                style="@style/CustomBackButton"
+                android:text="Cancel" />
+            <TextView
+                android:id="@+id/title_edit_profile"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/return_to_my_profile"
+                style="@style/CustomHeaderTitle"
+                android:text="Edit Account" />
+            <Button
+                android:id="@+id/done_edit_profile"
+                style="@style/CustomDoneButton"
+                android:text="Done" />
+        </RelativeLayout>
+
+    </FrameLayout>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray2"
+        android:paddingBottom="20dp">
+
+        <FrameLayout
+            android:id="@+id/frame_image"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginStart="15dp"
+            android:layout_marginTop="15dp"
+            android:background="@drawable/circle_outline"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
+            <!--Circular Image View-->
+
+            <ImageView
+                android:id="@+id/profile_pic"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="2dp"
+                app:srcCompat="@drawable/default_profile" />
+
+        </FrameLayout>
+
+        <Button
+            android:id="@+id/change_photo"
+            android:layout_width="135dp"
+            android:layout_height="35dp"
+            android:layout_marginTop="4dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/good_button_background"
+            android:text="Change Photo"
+            android:textColor="@color/colorAccent"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/frame_image"
+            app:layout_constraintTop_toTopOf="@id/frame_image" />
+
+        <Button
+            android:id="@+id/delete_photo"
+            android:layout_width="135dp"
+            android:layout_height="35dp"
+            android:layout_marginBottom="4dp"
+            android:layout_marginStart="12dp"
+            android:background="@drawable/bad_button_background"
+            android:fontFamily="@font/poppins"
+            android:text="Remove Photo"
+            android:textColor="@color/colorOrange"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@id/frame_image"
+            app:layout_constraintBottom_toBottomOf="@id/frame_image" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View style="@style/Divider.Horizontal"/>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/colorGray2"
+        android:paddingBottom="10dp">
+
+        <TextView
+            android:id="@+id/address_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:fontFamily="@font/poppins"
+            android:text="Address"
+            android:textColor="@color/colorOrange"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/password_text_view"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/text_address"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="18dp"
+            android:maxHeight="74dp"
+            android:layout_marginHorizontal="11dp"
+            android:textColor="@color/colorAccent"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/address_prompt"
+            app:layout_constraintTop_toTopOf="parent"
+            />
+
+        <Button
+            android:id="@+id/edit_address_button"
+            android:layout_width="wrap_content"
+            android:layout_height="35dp"
+            android:layout_marginTop="10dp"
+            android:layout_marginStart="10dp"
+            android:background="@drawable/good_button_background"
+            android:paddingHorizontal="10dp"
+            android:textColor="@color/colorAccent"
+            android:text="Select New Address"
+            android:fontFamily="@font/poppins"
+            android:textSize="15sp"
+            app:layout_constraintStart_toEndOf="@+id/address_prompt"
+            app:layout_constraintTop_toBottomOf="@+id/text_address" />
+
+        <TextView
+            android:id="@+id/phone_prompt"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:fontFamily="@font/poppins"
+            android:text="Phone"
+            android:textColor="@color/colorOrange"
+            android:textSize="20sp"
+            app:layout_constraintEnd_toEndOf="@id/password_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/edit_address_button" />
+
+        <EditText
+            android:id="@+id/phone_input"
+            android:layout_width="0dp"
+            android:layout_height="35dp"
+            android:layout_marginHorizontal="5dp"
+            android:layout_marginTop="22dp"
+            android:background="@color/colorGray1"
+            android:inputType="number"
+            android:paddingHorizontal="6dp"
+            android:textColor="@color/colorAccent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@+id/password_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/edit_address_button" />
+
+        <TextView
+            android:id="@+id/password_text_view"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="22dp"
+            android:fontFamily="@font/poppins"
+            android:layout_marginStart="6dp"
+            android:text="Password"
+            android:textColor="@color/colorOrange"
+            android:textSize="20sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/phone_input" />
+
+        <TextView
+            android:id="@+id/password_change"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="11dp"
+            android:layout_marginTop="22dp"
+            android:text="@string/change_password"
+            android:textColor="@color/doveGray"
+            android:textSize="20sp"
+            app:layout_constraintStart_toEndOf="@+id/password_text_view"
+            app:layout_constraintTop_toBottomOf="@+id/phone_input" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <View style="@style/Divider.Horizontal" />
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@color/colorGray2">
+
+
+        <Button
+            android:id="@+id/delete_account"
+            android:layout_width="151dp"
+            android:layout_height="38dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/gray_button_background"
+            android:backgroundTint="@color/colorGray3"
+            android:fontFamily="@font/poppins"
+            android:text="Delete account"
+            android:textColor="@color/colorRed"
+            android:textSize="15sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</LinearLayout>
