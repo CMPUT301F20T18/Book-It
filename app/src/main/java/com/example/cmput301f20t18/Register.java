@@ -194,8 +194,11 @@ public class Register extends AppCompatActivity {
                                             }
                                             else {
                                                 FirebaseAuthException e = (FirebaseAuthException)task.getException();
-                                                Toast.makeText(Register.this, "Failed Registration: "+ e.getMessage(), Toast.LENGTH_SHORT).show();
-                                                return;
+                                                new AlertDialog.Builder(Register.this, R.style.CustomDialogTheme)
+                                                        .setTitle("Registration failed")
+                                                        .setMessage(e.getMessage())
+                                                        .setPositiveButton("OK", null)
+                                                        .show();
                                             }
 
                                         }
