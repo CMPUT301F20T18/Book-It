@@ -21,64 +21,28 @@ import com.google.firebase.firestore.Query;
  * Firebase manages this adapter and will update in real time based on writes to firestore.
  * @see MyBooksLendingFragment
  * @see MyBooksPendingFragment
- * @see FirestoreBookAdapter
+ * @see FirestoreMyBooksAdapter
  * @author deinum
  * @author Shuval De Villiers
  */
 public class MyBooksAvailableFragment extends Fragment {
 
-    RecyclerView recyclerView;
-    TextView noResultsTextView;
+    RecyclerView recyclerView;  // displays list of books
+    TextView noResultsTextView; // is displayed when there are no books
     Query query;
-    FirestoreBookAdapter adapter;
-
-    /* Everything below here and above onCreateView() is auto-inserted boilerplate */
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
+    FirestoreMyBooksAdapter adapter;
 
     FirebaseFirestore DB = FirebaseFirestore.getInstance();
     FirebaseAuth auth = FirebaseAuth.getInstance();
     CollectionReference bookRef = DB.collection("books");
 
-
-
     public MyBooksAvailableFragment() {
         // Required empty public constructor
-    }
-
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment MyBooksAvailableFragment.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static MyBooksAvailableFragment newInstance(String param1, String param2) {
-        MyBooksAvailableFragment fragment = new MyBooksAvailableFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
@@ -87,8 +51,6 @@ public class MyBooksAvailableFragment extends Fragment {
         if (adapter != null) {
             adapter.startListening();
         }
-
-
     }
 
     @Override
@@ -148,7 +110,7 @@ public class MyBooksAvailableFragment extends Fragment {
                 .setQuery(query, Book.class)
                 .build();
 
-        adapter = new FirestoreBookAdapter(options, getContext());
+        adapter = new FirestoreMyBooksAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }

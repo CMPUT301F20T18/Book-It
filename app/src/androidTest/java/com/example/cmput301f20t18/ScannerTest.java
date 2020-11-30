@@ -42,7 +42,7 @@ public class ScannerTest {
     @Test
     public void scan(){
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
-                Scanner.class);
+                ScannerActivity.class);
         solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
@@ -57,7 +57,7 @@ public class ScannerTest {
     @Test
     public void scanAddBookCancel(){
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
-                Scanner.class);
+                ScannerActivity.class);
         solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
@@ -95,7 +95,7 @@ public class ScannerTest {
         ScannerTest.addBook(solo);
         solo.clickOnView(solo.getView(R.id.tab_scan));
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
-                Scanner.class);
+                ScannerActivity.class);
         solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");
@@ -119,7 +119,7 @@ public class ScannerTest {
     private static void addBook (Solo solo){
 
         solo.assertCurrentActivity("Wrong Activity - NOT SCANNER",
-                Scanner.class);
+                ScannerActivity.class);
         solo.clickOnButton("Manual");
         solo.enterText((EditText)solo.getView(R.id.manual_isbn_input), DEMO_ISBN);
         solo.clickOnButton("GO");

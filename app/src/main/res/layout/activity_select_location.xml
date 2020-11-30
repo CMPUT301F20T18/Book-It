@@ -32,7 +32,7 @@
         android:layout_toEndOf="@id/button_back"
         android:text="@string/select_an_address"
         android:fontFamily="@font/poppins_semibold"
-        android:textSize="24sp"
+        android:textSize="24dp"
         android:layout_marginTop="9dp"
         android:layout_marginStart="9dp"
         android:elevation="2dp"

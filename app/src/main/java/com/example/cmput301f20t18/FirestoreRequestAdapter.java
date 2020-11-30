@@ -1,6 +1,7 @@
 package com.example.cmput301f20t18;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.Build;
@@ -14,6 +15,7 @@ import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.annotation.RequiresApi;
+import androidx.cardview.widget.CardView;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.firebase.ui.firestore.FirestoreRecyclerAdapter;
@@ -24,6 +26,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -37,8 +40,11 @@ import java.util.Objects;
 public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transaction, FirestoreRequestAdapter.requestViewHolder> {
 
     final static String TAG = "FRA_DEBUG";
-    public FirestoreRequestAdapter(@NonNull FirestoreRecyclerOptions<Transaction> options) {
+    private Context context;
+
+    public FirestoreRequestAdapter(@NonNull FirestoreRecyclerOptions<Transaction> options, Context context) {
         super(options);
+        this.context = context;
     }
 
 
@@ -52,7 +58,6 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
     @Override
     protected void onBindViewHolder(@NonNull FirestoreRequestAdapter.requestViewHolder holder, int position, @NonNull Transaction transaction) {
         holder.borrower_name.setText(transaction.getBorrower_username());
-
         String requestName = transaction.getBorrower_username();
         Log.d(TAG, "Requester is " + requestName);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -61,14 +66,27 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    User borrower = task.getResult().toObjects(User.class).get(0);
-                    String photoString = borrower.getProfile_picture();
+                    List borrowers = task.getResult().toObjects(User.class);
+                        if(borrowers.size()>0) {
+                            User borrower = (User) borrowers.get(0);
+                            String photoString = borrower.getProfile_picture();
 
-                        if(!photoString.equals("") && photoString!=null) {
-                            Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                            Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
-                            holder.profile_pic.setImageBitmap(photo);
-                            Log.d(TAG, "Picture attached");
+                            if (!photoString.equals("") && photoString != null) {
+                                Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                                Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
+                                holder.profile_pic.setImageBitmap(photo);
+                                Log.d(TAG, "Picture attached");
+                            }
+
+                            holder.cardRequest.setOnClickListener(new View.OnClickListener() {
+                                @Override
+                                public void onClick(View v) {
+                                    Intent viewProfileIntent = new Intent(v.getContext(), CheckProfileActivity.class);
+                                    viewProfileIntent.putExtra("USERNAME", borrower.getUsername());
+
+                                    context.startActivity(viewProfileIntent);
+                                }
+                            });
                         }
                 }
 
@@ -78,13 +96,14 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
             }
         });
 
+
+
         // hits the accept button
         holder.accept_button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 ((Activity)v.getContext()).finish();
-
-                Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                Intent intent = new Intent(v.getContext(), InitializeLocationActivity.class);
                 intent.putExtra("bookID", transaction.getBookID());
                 intent.putExtra("t_id", transaction.getID());
                 v.getContext().startActivity(intent);
@@ -125,6 +144,7 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
         Button accept_button;
         TextView borrower_name;
         ImageView profile_pic;
+        CardView cardRequest;
 
 
         /**
@@ -137,6 +157,7 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
             accept_button = itemView.findViewById(R.id.button_accept_request);
             borrower_name = itemView.findViewById(R.id.text_username);
             profile_pic = itemView.findViewById(R.id.profile_view);
+            cardRequest = itemView.findViewById(R.id.request_card);
 
         }
     }

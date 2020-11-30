@@ -35,7 +35,7 @@ import java.util.List;
  * @see BorrowedRequestedFragment
  * @see BorrowedPendingFragment
  * @see BorrowedBorrowingFragment
- * @author Shuval De Villiers
+ * @author shuval
  * @author deinum
  */
 public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, FirestoreBorrowedAdapter.BookViewHolder> {
@@ -58,7 +58,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
      */
     @Override
     public int getItemViewType(int position) {
-        return getItem(position).getStatus();
+        return getItem(position).getStatus(); // Book status determines which layout file to use
     }
 
     /**
@@ -104,9 +104,11 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                             String photoString = borrower.getProfile_picture();
                             if (photoString != null && !photoString.equals("")) {
                                 Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                                Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
-                                holder.buttonUser.setImageBitmap(photo);
-                                Log.d(TAG, "Picture attached");
+                                if(holder.buttonUser.getHeight()>0) {
+                                    Bitmap photo = photoAdapter.makeCircularImage(bm, holder.buttonUser.getHeight());
+                                    holder.buttonUser.setImageBitmap(photo);
+                                    Log.d(TAG, "Picture attached");
+                                }
                             }
                         }
                     }
@@ -206,7 +208,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                         Log.d(TAG, " bookID: " + book.getId());
                         Log.d(TAG, " book ISBN:  " + book.getISBN());
 
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        Intent intent = new Intent(v.getContext(), ScannerActivity.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         intent.putExtra("eISBN", book.getISBN());
@@ -236,7 +238,7 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
                         Log.d(TAG, " bookID: " + book.getId());
                         Log.d(TAG, " book ISBN:  " + book.getISBN());
 
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        Intent intent = new Intent(v.getContext(), ScannerActivity.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         intent.putExtra("eISBN", book.getISBN());
@@ -249,14 +251,14 @@ public class FirestoreBorrowedAdapter extends FirestoreRecyclerAdapter<Book, Fir
     }
 
     /**
-     * Called when RecyclerView needs a new {@link FirestoreBookAdapter.BookViewHolder} of the
+     * Called when RecyclerView needs a new {@link FirestoreMyBooksAdapter.BookViewHolder} of the
      * given type to represent a Book.
      *
      * @param parent The ViewGroup into which the new View will be added after it is bound to an
      *               adapter position.
      * @param viewType The view type of the new View, based on the book status.
      * @return A new BookViewHolder that holds a View of the given view type.
-     * @see FirestoreBookAdapter.BookViewHolder
+     * @see FirestoreMyBooksAdapter.BookViewHolder
      * @see #getItemViewType(int)
      * @see #onBindViewHolder(FirestoreBorrowedAdapter.BookViewHolder, int, Book)
      */

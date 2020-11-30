@@ -75,7 +75,7 @@ public class CheckProfileActivity extends AppCompatActivity {
                     email.setText(borrower.getEmail());
                     String photoString = borrower.getProfile_picture();
 
-                    if(photoString!="" && photoString != null) {
+                    if(photoString != null && !photoString.equals("")) {
                         Bitmap photo = photoAdapter.scaleBitmap(photoAdapter.stringToBitmap(photoString),
                                 profilePic.getWidth(),
                                 profilePic.getHeight());
@@ -91,14 +91,9 @@ public class CheckProfileActivity extends AppCompatActivity {
         });
 
 
-
-
-
-
         username.setText(currentActivity.getStringExtra("USERNAME"));
         phoneNum.setText(currentActivity.getStringExtra("PHONE"));
         email.setText(currentActivity.getStringExtra("EMAIL"));
-
 
         backButton.setOnClickListener(new View.OnClickListener() {
             @Override

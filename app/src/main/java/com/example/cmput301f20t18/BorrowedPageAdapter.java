@@ -10,6 +10,7 @@ import androidx.fragment.app.FragmentPagerAdapter;
 
 /**
  * A {@link FragmentPagerAdapter} subclass that allows the user to swipe between tabs in Borrowed.
+ * Reference: https://www.codingdemos.com/android-tablayout-example-viewpager/
  */
 public class BorrowedPageAdapter extends FragmentPagerAdapter {
 

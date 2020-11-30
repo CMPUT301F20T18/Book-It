@@ -15,7 +15,7 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:layout_marginStart">10dp</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">27sp</item>
+        <item name="android:textSize">27dp</item>
         <item name="android:paddingTop">4dp</item>
     </style>
     <style name="CustomBackButton" parent="Widget.AppCompat.Button">
@@ -28,7 +28,7 @@
         <item name="android:textColor">@color/colorOrange</item>
         <item name="android:layout_marginStart">8dp</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">15dp</item>
     </style>
     <style name="CustomDoneButton" parent="Widget.AppCompat.Button">
         <item name="android:layout_width">70dp</item>
@@ -38,7 +38,7 @@
         <item name="android:textColor">@color/colorAccent</item>
         <item name="android:layout_marginEnd">8dp</item>
         <item name="android:layout_centerVertical">true</item>
-        <item name="android:textSize">15sp</item>
+        <item name="android:textSize">15dp</item>
     </style>
 
     <style name="CustomDialogTheme" parent="Theme.AppCompat.Light.Dialog.Alert">
@@ -63,7 +63,7 @@
         <item name="android:scaleX">0.8</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="NeutralButton" parent="Widget.AppCompat.Button">
@@ -75,7 +75,7 @@
         <item name="android:scaleX">0.8</item>
         <item name="android:paddingStart">16dp</item>
         <item name="android:paddingEnd">16dp</item>
-        <item name="android:textSize">20sp</item>
+        <item name="android:textSize">20dp</item>
     </style>
 
     <style name="Button" parent="Widget.AppCompat.Button">
@@ -85,15 +85,9 @@
 
     <style name="ToolbarTheme" parent="ThemeOverlay.AppCompat.Light">
         <item name="android:fontFamily">@font/poppins_semibold</item>
-        <item name="android:textSize">14sp</item>
+        <item name="android:textSize">14dp</item>
         <item name="android:textColor">@color/colorAccent</item>
     </style>
-
-    <!--<style name="ToolbarTheme" parent="android:TextAppearance">
-        <item name="android:fontFamily">@font/poppins_semibold</item>
-        <item name="android:textSize">14sp</item>
-        <item name="android:textColor">@color/colorAccent</item>
-    </style>-->
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen</item>

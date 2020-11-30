@@ -23,7 +23,7 @@ import java.util.List;
  * Firebase manages this adapter and will update in real time based on writes to firestore.
  * @see MyBooksAvailableFragment
  * @see MyBooksPendingFragment
- * @see FirestoreBookAdapter
+ * @see FirestoreMyBooksAdapter
  * @author deinum
  * @author Shuval De Villiers
  */
@@ -33,7 +33,7 @@ public class MyBooksLendingFragment extends Fragment {
     TextView noResultsTextView;
     List<Book> bookList;
     Query query;
-    FirestoreBookAdapter adapter;
+    FirestoreMyBooksAdapter adapter;
     final static String TAG = "MBLF";
 
     // TODO: Rename parameter arguments, choose names that match
@@ -150,7 +150,7 @@ public class MyBooksLendingFragment extends Fragment {
                 .setQuery(query, Book.class)
                 .build();
 
-        adapter = new FirestoreBookAdapter(options, getContext());
+        adapter = new FirestoreMyBooksAdapter(options, getContext());
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         recyclerView.setAdapter(adapter);
     }

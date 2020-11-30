@@ -46,7 +46,8 @@
         android:layout_marginTop="80dp"
         android:textAlignment="center"
         android:layout_below="@id/toolbar_frame"
-        android:textSize="18sp"/>
+        android:fontFamily="@font/poppins"
+        android:textSize="17sp"/>
 
         <Button
             android:id="@+id/addLocationButton"

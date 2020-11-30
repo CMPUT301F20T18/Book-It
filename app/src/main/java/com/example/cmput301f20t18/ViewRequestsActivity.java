@@ -87,7 +87,7 @@ public class ViewRequestsActivity extends AppCompatActivity {
                 .setQuery(query, Transaction.class)
                 .build();
 
-        adapter = new FirestoreRequestAdapter(options);
+        adapter = new FirestoreRequestAdapter(options, ViewRequestsActivity.this);
         recyclerView.setLayoutManager(new LinearLayoutManager(this.getBaseContext()));
         recyclerView.setAdapter(adapter);
     }

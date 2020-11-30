@@ -155,6 +155,8 @@ public class User {
 
                 // update the transaction
                 transRef.document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
+                transRef.document(Integer.toString(t_id)).update("location", location);
+
 
 
                 // update the user book
@@ -180,9 +182,6 @@ public class User {
                             public void onComplete(@NonNull Task<DocumentSnapshot> task1) {
                                 if (task1.isSuccessful()) {
                                     Book book = task1.getResult().toObject(Book.class);
-
-                                    User current = new User();
-                                    current.ownerSetPickupLocation(location, bookID);
 
                                     // send a notification
                                     Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );

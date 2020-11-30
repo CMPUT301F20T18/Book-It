@@ -28,6 +28,7 @@ import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.annotation.RequiresApi;
 import androidx.appcompat.widget.Toolbar;
+import androidx.cardview.widget.CardView;
 import androidx.fragment.app.Fragment;
 
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -121,8 +122,8 @@ public class SearchFragment extends Fragment {
             if (ISBN != null) {
                 searchEditText.setText(ISBN);
                 searchButton.performClick();
-                noResultsTextView.setText(""); // this has to be here for some reason
             }
+            noResultsTextView.setText(""); // this has to be here for some reason
         }
     }
 
@@ -745,6 +746,9 @@ public class SearchFragment extends Fragment {
              */
             @Override
             public void onClick(View v) {
+                book.setStatus(Book.STATUS_REQUESTED);
+                bookAdapter.notifyDataSetChanged();
+
                 User current = new User();
                 Log.d(TAG, "User is attempting to request " + book.getTitle()
                         + " from user " + book.getOwner_username());
@@ -829,14 +833,13 @@ public class SearchFragment extends Fragment {
             User user = users.get(position);
 
             TextView userName = view.findViewById(R.id.text_username);
-            Button viewProfile = view.findViewById(R.id.button_view_profile);
+            CardView card = view.findViewById(R.id.profile_card);
+            ImageView profilePicView = view.findViewById(R.id.profile_view);
 
             //Set up profile pic
 
             String profilePictureSting = user.getProfile_picture();
             if (profilePictureSting != null && !profilePictureSting.equals("")){
-
-                ImageView profilePicView = view.findViewById(R.id.profile_view);
 
                 String profilePicString = user.getProfile_picture();
 
@@ -852,10 +855,8 @@ public class SearchFragment extends Fragment {
             }
 
 
-
-
             userName.setText(user.getUsername());
-            viewProfile.setOnClickListener(new ViewProfileButtonListener(user));
+            card.setOnClickListener(new ViewProfileButtonListener(user));
 
             return view;
         }
@@ -866,7 +867,7 @@ public class SearchFragment extends Fragment {
          * ViewProfileButtonListener is an OnClickListener for the request button
          */
         //TODO Add profile picture to intent
-        private class ViewProfileButtonListener implements View.OnClickListener {
+        public class ViewProfileButtonListener implements View.OnClickListener {
             private User user;
 
             /**

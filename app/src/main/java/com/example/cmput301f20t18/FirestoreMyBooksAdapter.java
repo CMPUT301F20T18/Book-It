@@ -30,14 +30,17 @@ import java.util.List;
 
 /**
  * Custom RecyclerView Adapter for Book objects in My Books.
+ * Reference: https://www.simplifiedcoding.net/android-recyclerview-cardview-tutorial/
+ *
  * @see FirestoreRecyclerAdapter
  * @see MyBooksAvailableFragment
  * @see MyBooksPendingFragment
  * @see MyBooksLendingFragment
  * @author deinum
+ * @author shuval
  */
-public class FirestoreBookAdapter
-        extends FirestoreRecyclerAdapter<Book, FirestoreBookAdapter.BookViewHolder>
+public class FirestoreMyBooksAdapter
+        extends FirestoreRecyclerAdapter<Book, FirestoreMyBooksAdapter.BookViewHolder>
          {
     final static String TAG = "FBA_DEBUG_OWNED";
     final static int VIEW_REQUESTS = 3;
@@ -56,7 +59,7 @@ public class FirestoreBookAdapter
      *
      * @param options
      */
-    public FirestoreBookAdapter(FirestoreRecyclerOptions options, Context context) {
+    public FirestoreMyBooksAdapter(FirestoreRecyclerOptions options, Context context) {
         super(options);
         this.context = context;
     }
@@ -72,9 +75,7 @@ public class FirestoreBookAdapter
      */
     @Override
     public int getItemViewType(int position) {
-        Log.d(TAG, "getItemViewType: Position of " + position);
-        Book book = getItem(position);
-        return book.getStatus();
+        return getItem(position).getStatus(); // Book status determines which layout file to use
     }
 
     /**
@@ -220,7 +221,7 @@ public class FirestoreBookAdapter
                         Log.d(TAG, " bookID: " + book.getId());
                         Log.d(TAG, " book ISBN:  " + book.getISBN());
 
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        Intent intent = new Intent(v.getContext(), ScannerActivity.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         intent.putExtra("eISBN", book.getISBN());
@@ -244,7 +245,7 @@ public class FirestoreBookAdapter
                         Log.d(TAG, " bookID: " + book.getId());
                         Log.d(TAG, " book ISBN:  " + book.getISBN());
 
-                        Intent intent = new Intent(v.getContext(), Scanner.class);
+                        Intent intent = new Intent(v.getContext(), ScannerActivity.class);
                         intent.putExtra("bookID", book.getId());
                         intent.putExtra("type", 1);
                         intent.putExtra("eISBN", book.getISBN());
@@ -263,16 +264,16 @@ public class FirestoreBookAdapter
     }
 
     /**
-     * Called when RecyclerView needs a new {@link FirestoreBookAdapter.BookViewHolder} of the
+     * Called when RecyclerView needs a new {@link FirestoreMyBooksAdapter.BookViewHolder} of the
      * given type to represent a Book.
      *
      * @param parent The ViewGroup into which the new View will be added after it is bound to an
      *               adapter position.
      * @param viewType The view type of the new View, based on the book status.
      * @return A new BookViewHolder that holds a View of the given view type.
-     * @see FirestoreBookAdapter.BookViewHolder
+     * @see FirestoreMyBooksAdapter.BookViewHolder
      * @see #getItemViewType(int)
-     * @see #onBindViewHolder(FirestoreBookAdapter.BookViewHolder, int, Book)
+     * @see #onBindViewHolder(FirestoreMyBooksAdapter.BookViewHolder, int, Book)
      */
     @NonNull
     @Override

@@ -41,7 +41,7 @@ import static android.app.Activity.RESULT_OK;
 
 public class ProfileFragment extends Fragment {
 
-    TextView username, textAddress, phoneNum, email, editAccount;
+    TextView username, textAddress, phoneNum, email, editAccount, noResultsTextView;
     Button signOut, clearNotifications;
     ImageView profilePic;
     String photoString, address;
@@ -110,6 +110,23 @@ public class ProfileFragment extends Fragment {
         recyclerView = view.findViewById(R.id.NotifRecyclerView);
         setUp();
 
+        noResultsTextView = view.findViewById(R.id.no_results);
+        noResultsTextView.setText(R.string.notifications_empty);
+
+        // display message if list of books is empty
+        adapter.registerAdapterDataObserver(new RecyclerView.AdapterDataObserver() {
+            @Override
+            public void onItemRangeInserted(int positionStart, int itemCount) {
+                noResultsTextView.setText("");
+            }
+            @Override
+            public void onItemRangeRemoved(int positionStart, int itemCount) {
+                if (adapter.getItemCount() == 0) {
+                    noResultsTextView.setText(R.string.notifications_empty);
+                }
+            }
+        });
+
         signOut = (Button) view.findViewById(R.id.sign_out_button);
 
         // https://stackoverflow.com/questions/6330260/finish-all-previous-activities
@@ -137,30 +154,6 @@ public class ProfileFragment extends Fragment {
                 recyclerView.setAdapter(null);
                 current.userDeleteNotifications();
                 setUp();
-            }
-        });
-
-
-
-        editAccount.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent editIntent = new Intent(getContext(), EditProfileActivity.class);
-                editIntent.putExtra("username", username.getText().toString());
-                editIntent.putExtra("address", address);
-                editIntent.putExtra("phone", phoneNum.getText().toString());
-                editIntent.putExtra("photo", photoString);
-                editIntent.putExtra("email", email.getText().toString());
-
-                startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
-
-            }
-        });
-        editAccount.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View v, MotionEvent event) {
-                editAccount.setBackgroundColor(getResources().getColor(R.color.colorGray1));
-                return false;
             }
         });
 
@@ -230,6 +223,28 @@ public class ProfileFragment extends Fragment {
                 DocumentSnapshot UserDocument = (DocumentSnapshot) task.getResult();
                 User user = UserDocument.toObject(User.class);
                 updateUserData(user, view);
+
+                editAccount.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Intent editIntent = new Intent(getContext(), EditProfileActivity.class);
+                        editIntent.putExtra("username", username.getText().toString());
+                        editIntent.putExtra("address", address);
+                        editIntent.putExtra("phone", phoneNum.getText().toString());
+                        editIntent.putExtra("photo", photoString);
+                        editIntent.putExtra("email", email.getText().toString());
+
+                        startActivityForResult(editIntent, RESULT_PROFILE_EDITED);
+
+                    }
+                });
+                editAccount.setOnTouchListener(new View.OnTouchListener() {
+                    @Override
+                    public boolean onTouch(View v, MotionEvent event) {
+                        editAccount.setBackgroundColor(getResources().getColor(R.color.colorGray1));
+                        return false;
+                    }
+                });
             }
         }
     }
