@@ -100,7 +100,7 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
         Log.d(TAG, "ISBN: " + isbn);
         Log.d(TAG, "Expected ISBN: " + expected_isbn);
 
-        if (ScannerActivity.CHECK_ISBN && expected_isbn.equals(isbn)) {
+
             User current = new User();
 
             switch (requestCode) {
@@ -113,17 +113,19 @@ public class MyBooksFragment extends Fragment implements fragmentListener {
                     current.ownerConfirmPickup(bookID);
                     break;
             }
-        }
-        else {
+
+
+
+
             // using getContext() here instead of mContext will sometimes cause a crash since this
             // fragment may not have been attached to HomeScreen yet
-            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
-            new AlertDialog.Builder(mContext, R.style.CustomDialogTheme)
-                    .setTitle("Error!")
-                    .setMessage("Scanned ISBN does not match book's ISBN")
-                    .setPositiveButton("OK", null)
-                    .show();
-        }
+//            Log.d(TAG, "onActivityResult: Scanned ISBN does not match expected ISBN");
+//            new AlertDialog.Builder(mContext, R.style.CustomDialogTheme)
+//                    .setTitle("Error!")
+//                    .setMessage("Scanned ISBN does not match book's ISBN")
+//                    .setPositiveButton("OK", null)
+//                    .show();
+//
     }
 
 }
