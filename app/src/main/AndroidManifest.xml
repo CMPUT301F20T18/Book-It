@@ -48,6 +48,8 @@
         <activity android:name=".AddBookActivity" />
         <activity android:name=".ChooseLocationActivity" />
         <activity android:name=".ViewRequestsActivity" />
+        <activity android:name=".InitializeLocationActivity" />
+
         <activity
             android:name=".SplashScreen"
             android:theme="@style/SplashTheme"

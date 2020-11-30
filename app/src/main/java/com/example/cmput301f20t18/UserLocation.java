@@ -29,6 +29,11 @@ public class UserLocation {
 
     }
 
+    public UserLocation(String title) {
+        this.title = title;
+        this.latitude = 0.0;
+        this.longitude = 0.0;
+    }
 
     /**
      * Get the title of a location
