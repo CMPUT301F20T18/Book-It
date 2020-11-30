@@ -155,6 +155,8 @@ public class User {
 
                 // update the transaction
                 transRef.document(Integer.toString(t_id)).update("status", Transaction.STATUS_ACCEPTED);
+                transRef.document(Integer.toString(t_id)).update("location", location);
+
 
 
                 // update the user book
