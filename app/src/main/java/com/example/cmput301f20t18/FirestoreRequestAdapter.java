@@ -52,7 +52,6 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
     @Override
     protected void onBindViewHolder(@NonNull FirestoreRequestAdapter.requestViewHolder holder, int position, @NonNull Transaction transaction) {
         holder.borrower_name.setText(transaction.getBorrower_username());
-
         String requestName = transaction.getBorrower_username();
         Log.d(TAG, "Requester is " + requestName);
         FirebaseFirestore db = FirebaseFirestore.getInstance();
@@ -83,8 +82,7 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
             @Override
             public void onClick(View v) {
                 ((Activity)v.getContext()).finish();
-
-                Intent intent = new Intent(v.getContext(), ChooseLocationActivity.class);
+                Intent intent = new Intent(v.getContext(), InitializeLocationActivity.class);
                 intent.putExtra("bookID", transaction.getBookID());
                 intent.putExtra("t_id", transaction.getID());
                 v.getContext().startActivity(intent);

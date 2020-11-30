@@ -181,9 +181,6 @@ public class User {
                                 if (task1.isSuccessful()) {
                                     Book book = task1.getResult().toObject(Book.class);
 
-                                    User current = new User();
-                                    current.ownerSetPickupLocation(location, bookID);
-
                                     // send a notification
                                     Notification notification = new Notification(transaction.getOwner_username(), transaction.getBorrower_username(), book.getTitle(), Notification.OWNER_ACCEPT_REQUEST );
                                     notification.prepareMessage();
