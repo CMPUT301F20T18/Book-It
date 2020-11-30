@@ -93,7 +93,6 @@ public class HomeScreen extends AppCompatActivity implements CustomBottomSheetDi
                     String token = task.getResult();
                     DB.collection("users").document(auth.getUid()).update("instanceToken", token);
 
-
                 }
             }
         });
