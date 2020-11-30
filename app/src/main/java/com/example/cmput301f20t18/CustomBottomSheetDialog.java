@@ -147,7 +147,6 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
                 intent.putExtra("bookID", bookID);
                 intent.putExtra("type", AddBookActivity.EDIT_BOOK);
                 ((Activity)context).startActivityForResult(intent, 5);
-                ((Activity)context).finish();
                 break;
 
             case CustomBottomSheetDialog.DELETE_BUTTON:

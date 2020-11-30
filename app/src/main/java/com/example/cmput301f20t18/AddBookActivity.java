@@ -233,12 +233,6 @@ public class AddBookActivity extends AppCompatActivity {
                 Log.d(TAG, "onClick: bookID " + bookID);
                 Log.d(TAG, "onClick: Type of Add " + type);
 
-                Long isbn = 0L;
-                Integer year = -1;
-                try {
-                    isbn = Long.parseLong(book_isbn);
-                    year = Integer.parseInt(book_year);
-                } catch (Exception ignore){}
 
                 ArrayList<String> photoStrings = new ArrayList<>();
                 for (Bitmap photo: imageRecyclerViewAdapter.getPhotos()){
@@ -256,6 +250,8 @@ public class AddBookActivity extends AppCompatActivity {
                 try {
                     if (CheckBookValidity.bookValid(book_title, book_author, book_isbn, book_year)) {
                         Log.d(TAG, "Validity check passed");
+                        Long isbn = Long.parseLong(book_isbn);
+                        Integer year = Integer.parseInt(book_year);
 
                         if (type == ADD_BOOK || type == ADD_SCAN) {
 
