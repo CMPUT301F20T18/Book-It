@@ -113,37 +113,37 @@ public class Notification {
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    User target = task.getResult().toObjects(User.class).get(0); // username is unique and non null
+                    if (task.getResult().toObjects(User.class).size() > 0) {
+                        User target = task.getResult().toObjects(User.class).get(0); // username is unique and non null
 
 
-                    // find the current date
-                    DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
-                    LocalDateTime now = LocalDateTime.now();
+                        // find the current date
+                        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy/MM/dd HH:mm:ss");
+                        LocalDateTime now = LocalDateTime.now();
 
 
-                    // create the ID for the notification
-                    String ID = target.getUsername() + "-" + now.toString();
-                    ID = ID.replace('.', ':');
-                    Log.d(TAG, "ID: " + ID);
+                        // create the ID for the notification
+                        String ID = target.getUsername() + "-" + now.toString();
+                        ID = ID.replace('.', ':');
+                        Log.d(TAG, "ID: " + ID);
 
-                    // create the notification map
-                    Map<Object, Object> notification = new HashMap<>();
-                    notification.put("target", target.getInstanceToken());
-                    notification.put("message", Notification.this.message);
+                        // create the notification map
+                        Map<Object, Object> notification = new HashMap<>();
+                        notification.put("target", target.getInstanceToken());
+                        notification.put("message", Notification.this.message);
 
-                    // write our notification to the DB
-                    RTDB.getReference().child("Notifications").child(ID.replace('.', ':')).setValue(notification);
+                        // write our notification to the DB
+                        RTDB.getReference().child("Notifications").child(ID.replace('.', ':')).setValue(notification);
 
 
-                    UserNotification notif = new UserNotification(ID.replace('.', ':'), message);
+                        UserNotification notif = new UserNotification(ID.replace('.', ':'), message);
 
-                    // write our notification to RTDB
-                    userRef.document(target.getDbID()).collection("notifications").document(ID.replace('.', ':')).set(notif);
+                        // write our notification to RTDB
+                        userRef.document(target.getDbID()).collection("notifications").document(ID.replace('.', ':')).set(notif);
 
-                }
-
-                else {
-                    Log.d(TAG, "sendNotification - Error Finding User!");
+                    } else {
+                        Log.d(TAG, "sendNotification - Error Finding User!");
+                    }
                 }
             }
         });
