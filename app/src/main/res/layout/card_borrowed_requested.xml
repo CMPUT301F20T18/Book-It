@@ -29,6 +29,9 @@
             app:layout_constraintEnd_toEndOf="parent"
             />
 
+        <include layout="@layout/component_book_more"
+            android:visibility="invisible"/>
+
         <Button
             android:id="@+id/button_cancel_request"
             android:layout_width="wrap_content"
