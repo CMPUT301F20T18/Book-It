@@ -83,10 +83,9 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
             view = inflater.inflate(R.layout.bottom_sheet_mybooks_no_cancel, container, false);
         }
 
-        try {
-            buttonCancel = view.findViewById(R.id.button_cancel_pick_up);
-
-            // owner wants to cancel the pickup
+        buttonCancel = view.findViewById(R.id.button_cancel_pick_up);
+        if (buttonCancel != null) {
+            // owner/borrower wants to cancel the pickup
             buttonCancel.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -94,9 +93,9 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
                     dismiss();
                 }
             });
-        } catch (Exception ignored) {}
+        }
 
-        try {
+        if (owner) {
             buttonEdit = view.findViewById(R.id.button_edit_book);
             buttonDelete = view.findViewById(R.id.button_delete_book);
 
@@ -118,7 +117,7 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
                     dismiss();
                 }
             });
-        } catch (Exception ignored) {}
+        }
 
         return view;
     }
@@ -128,16 +127,39 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
         super.onViewCreated(view, savedInstanceState);
     }
 
+    /**
+     * Allows this class to interface with the calling class
+     */
     public interface BottomSheetListener {
+        /**
+         * Allows information to be passed back to calling class.
+         * @param button Button ID (see constants in {@link CustomBottomSheetDialog})
+         * @param status Book status
+         * @param bookID Book ID
+         * @param owner Whether or not the book is owned by the user
+         */
         void onButtonClick(int button, int status, int bookID, boolean owner);
     }
 
+    /**
+     * Performs action depending on which button was pressed. This method is necessary to receive
+     * context from the activity.
+     *
+     * @param button Button ID (see constants in {@link CustomBottomSheetDialog})
+     * @param status Book status
+     * @param bookID Book ID
+     * @param owner Whether or not the book is owned by the user
+     * @param context Context of the instantiating Activity
+     * @see HomeScreen
+     * @see PostScanActivity
+     */
     public static void buttonAction(int button, int status, int bookID, boolean owner, Context context) {
         User current = new User();
         switch (button) {
             case CustomBottomSheetDialog.CANCEL_BUTTON:
 
                 if (owner) {
+                    // Owner wants to cancel pick up
                     new AlertDialog.Builder(context, R.style.CustomDialogTheme)
                             .setTitle("Cancel pick up")
                             .setMessage("Are you sure you want to cancel this pick up?")
@@ -150,6 +172,7 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
                             .setNeutralButton("Back", null)
                             .show();
                 } else {
+                    // Borrower wants to cancel pick up
                     new AlertDialog.Builder(context, R.style.CustomDialogTheme)
                             .setTitle("Cancel pick up")
                             .setMessage("Are you sure you want to cancel this pick up?")
@@ -161,7 +184,6 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
                             })
                             .setNeutralButton("Back", null)
                             .show();
-
                 }
                 break;
 
@@ -175,7 +197,8 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
 
             case CustomBottomSheetDialog.DELETE_BUTTON:
                 String alertMessage = "";
-                switch (status) {
+
+                switch (status) { // Different warning message depending on book status
                     case Book.STATUS_AVAILABLE:
                         alertMessage = "Are you sure you want to delete this book?";
                         break;
@@ -207,6 +230,7 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
                         .show();
                 break;
             default:
+                // Should never reach this point
                 Log.e(TAG, "onButtonClick: Invalid button ID");
         }
     }
@@ -215,6 +239,7 @@ public class CustomBottomSheetDialog  extends BottomSheetDialogFragment {
     public void onAttach(@NonNull Context context) {
         super.onAttach(context);
 
+        // Ensures that this dialog is only instantiated from classes that implement BottomSheetListener
         try {
             mListener = (BottomSheetListener) context;
         } catch (ClassCastException e) {
