@@ -491,6 +491,7 @@ public class User {
                                                              }
 
 
+
                                                              batch.commit();
 
                                                              // delete old username from list and add the new one
@@ -631,12 +632,6 @@ public class User {
             }
         });
     }
-
-
-
-
-
-
 
 
 

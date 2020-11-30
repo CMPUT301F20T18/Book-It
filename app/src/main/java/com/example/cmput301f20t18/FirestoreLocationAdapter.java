@@ -57,7 +57,7 @@ public class FirestoreLocationAdapter extends FirestoreRecyclerAdapter<UserLocat
                 @Override
                 public void onClick(View v) {
                     User current = new User();
-                    current.ownerAcceptRequest(t_id, location, bookID);
+                    current.ownerSetPickupLocation(location, bookID);
                     ((Activity)context).finish();
 
                 }
