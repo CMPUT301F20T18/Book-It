@@ -24,6 +24,7 @@ import com.google.firebase.firestore.CollectionReference;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.List;
 import java.util.Objects;
 
 /**
@@ -60,14 +61,17 @@ public class FirestoreRequestAdapter extends FirestoreRecyclerAdapter<Transactio
             @Override
             public void onComplete(@NonNull Task<QuerySnapshot> task) {
                 if (task.isSuccessful()) {
-                    User borrower = task.getResult().toObjects(User.class).get(0);
-                    String photoString = borrower.getProfile_picture();
+                    List borrowers = task.getResult().toObjects(User.class);
+                        if(borrowers.size()>0) {
+                            User borrower = (User) borrowers.get(0);
+                            String photoString = borrower.getProfile_picture();
 
-                        if(!photoString.equals("") && photoString!=null) {
-                            Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                            Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
-                            holder.profile_pic.setImageBitmap(photo);
-                            Log.d(TAG, "Picture attached");
+                            if (!photoString.equals("") && photoString != null) {
+                                Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                                Bitmap photo = photoAdapter.makeCircularImage(bm, holder.profile_pic.getHeight());
+                                holder.profile_pic.setImageBitmap(photo);
+                                Log.d(TAG, "Picture attached");
+                            }
                         }
                 }
 
