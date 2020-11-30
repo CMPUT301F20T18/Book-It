@@ -5,14 +5,15 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:orientation="vertical">
     <androidx.cardview.widget.CardView
+        android:id="@+id/profile_card"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="72dp"
         android:layout_margin="5dp"
         app:cardCornerRadius="8dp"
         app:cardBackgroundColor="@color/colorGray2">
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="match_parent">
             <androidx.cardview.widget.CardView
                 android:id="@+id/image_view"
                 android:layout_width="60dp"
@@ -41,28 +42,15 @@
                 android:id="@+id/text_username"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="4dp"
-                android:layout_marginTop="6dp"
+                android:layout_marginTop="8dp"
                 android:layout_toEndOf="@id/image_view"
                 android:fontFamily="@font/poppins_light"
+                android:maxLines="1"
+                android:ellipsize="end"
                 android:text="Username"
                 android:textColor="@color/colorBlue"
                 android:textSize="18sp" />
-            <Button
-                android:id="@+id/button_view_profile"
-                android:fontFamily="@font/poppins_light"
-                android:textSize="15sp"
-                android:textColor="@color/colorAccent"
-                android:text="View Profile"
-                android:layout_width="120dp"
-                android:layout_height="40dp"
-                android:layout_marginEnd="6dp"
-                android:background="@drawable/good_button_background"
-                style="?android:attr/borderlessButtonStyle"
-                android:paddingHorizontal="12dp"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                app:layout_constraintTop_toTopOf="parent"/>
+
         </RelativeLayout>
     </androidx.cardview.widget.CardView>
 </LinearLayout>
