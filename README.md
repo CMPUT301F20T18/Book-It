@@ -6,4 +6,4 @@ JavaDocs located under Doc within project
 
 
 Link to video:
-https://docs.google.com/document/d/1lcvJb2UM_O90QNO3-jZmoZdJfSdE8Ew7YfogTgIDQSg/edit?usp=sharing
+https://drive.google.com/file/d/1ZGgTfdu2n6EYQrLtHiqWCjR9NHcxbpqW/view?usp=sharing
