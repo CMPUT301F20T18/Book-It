@@ -94,9 +94,13 @@
             android:layout_height="43dp"
             android:layout_marginStart="15dp"
             android:layout_marginTop="40dp"
+            android:paddingEnd="9dp"
+            android:paddingStart="0dp"
+            android:maxLines="1"
+            android:ellipsize="end"
             android:fontFamily="@font/poppins_medium"
             android:textColor="@color/colorBlue"
-            android:textSize="30sp"
+            android:textSize="24sp"
             app:layout_constraintStart_toEndOf="@+id/frame_image_user"
             app:layout_constraintTop_toTopOf="parent" />
 
