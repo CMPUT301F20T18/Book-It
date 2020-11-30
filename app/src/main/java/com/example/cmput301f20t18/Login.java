@@ -26,6 +26,10 @@ import com.google.firebase.auth.FirebaseAuthException;
  * Allows the users to sign in / opt to register for the application
  * @author Jacob Deinum
  * UI contributions
+ *
+ * The image used on this page is from Undraw.co
+ * License: Copyright 2020 Katerina Limpitsouni (https://undraw.co/license)
+ *
  * @author Johnathon Gil
  * @see Register
  * @see User
