@@ -42,6 +42,7 @@ import com.google.firebase.firestore.QueryDocumentSnapshot;
 import com.google.firebase.firestore.QuerySnapshot;
 
 import java.util.ArrayList;
+import java.util.List;
 
 /**
  * SearchFragment is a fragment which handles user searching for other users and books
@@ -669,13 +670,16 @@ public class SearchFragment extends Fragment {
                     @Override
                     public void onComplete(@NonNull Task<QuerySnapshot> task) {
                         if (task.isSuccessful()) {
-                            User borrower = task.getResult().toObjects(User.class).get(0);
-                            String photoString = borrower.getProfile_picture();
-                            if (photoString != null && !photoString.equals("")) {
-                                Bitmap bm = photoAdapter.stringToBitmap(photoString);
-                                Bitmap photo = photoAdapter.makeCircularImage(bm, buttonProfile.getHeight());
-                                buttonProfile.setImageBitmap(photo);
-                                Log.d(TAG, "Picture attached");
+                            List borrowers = task.getResult().toObjects(User.class);
+                            if(borrowers.size()>0) {
+                                User borrower = (User) borrowers.get(0);
+                                String photoString = borrower.getProfile_picture();
+                                if (photoString != null && !photoString.equals("")) {
+                                    Bitmap bm = photoAdapter.stringToBitmap(photoString);
+                                    Bitmap photo = photoAdapter.makeCircularImage(bm, buttonProfile.getHeight());
+                                    buttonProfile.setImageBitmap(photo);
+                                    Log.d(TAG, "Picture attached");
+                                }
                             }
                         } else {
                             Log.d(TAG, "Error Querying for borrower information");
